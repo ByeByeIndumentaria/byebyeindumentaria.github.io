@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BYE BYE — Catálogo Verano 2027</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header id="site-header">
+    <div class="header-inner">
+      <div class="header-left">
+        <span class="collection-tag">SS 2027 — Made for summer.</span>
+      </div>
+      <div class="header-brand">
+        <h1 class="brand-name">BYE BYE</h1>
+      </div>
+      <div class="header-right">
+        <button class="cart-btn" id="cart-toggle" aria-label="Ver carrito">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>
+          </svg>
+          <span class="cart-count" id="cart-count">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-content">
+      <p class="hero-eyebrow">Colección Verano</p>
+      <h2 class="hero-title">Prendas de<br><em>temporada</em></h2>
+      <p class="hero-sub">Diseños pensados para el verano. Elegí tu estilo.</p>
+    </div>
+  </section>
+
+  <!-- FILTERS -->
+  <section class="filters-section" id="catalogo">
+    <div class="filters-inner">
+      <div class="filter-group">
+        <span class="filter-label">Género</span>
+        <div class="filter-pills" id="gender-filters">
+          <button class="pill active" data-filter="gender" data-value="all">Todos</button>
+          <button class="pill" data-filter="gender" data-value="MUJER">Mujer</button>
+          <button class="pill" data-filter="gender" data-value="HOMBRE">Hombre</button>
+        </div>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Categoría</span>
+        <div class="filter-pills" id="category-filters">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+    <div class="results-info">
+      <span id="results-count"></span>
+    </div>
+  </section>
+
+  <!-- PRODUCT GRID -->
+  <main class="catalog-grid" id="product-grid">
+    <!-- Cards rendered by JS -->
+  </main>
+
+  <!-- EMPTY STATE -->
+  <div class="empty-state" id="empty-state" style="display:none">
+    <p>No hay productos para los filtros seleccionados.</p>
+  </div>
+
+  <!-- CART SIDEBAR -->
+  <aside class="cart-sidebar" id="cart-sidebar">
+    <div class="cart-header">
+      <h3>Tu selección</h3>
+      <button class="close-cart" id="close-cart" aria-label="Cerrar carrito">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="cart-items" id="cart-items">
+      <!-- Cart items rendered by JS -->
+    </div>
+    <div class="cart-empty" id="cart-empty">
+      <p>Aún no agregaste prendas.</p>
+      <p class="cart-empty-hint">Explorá el catálogo y sumá lo que te gusta.</p>
+    </div>
+    <div class="cart-actions" id="cart-actions" style="display:none">
+      <button class="btn-primary" id="btn-whatsapp">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+        Enviar por WhatsApp
+      </button>
+      <button class="btn-secondary" id="btn-pdf">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
+        </svg>
+        Descargar PDF
+      </button>
+      <button class="btn-ghost" id="btn-clear">Vaciar selección</button>
+    </div>
+  </aside>
+  <div class="cart-overlay" id="cart-overlay"></div>
+
+  <!-- PRODUCT MODAL -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal" id="product-modal">
+      <button class="modal-close" id="modal-close" aria-label="Cerrar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+      <div class="modal-image-wrap">
+        <img id="modal-img" src="" alt="" />
+        <div class="modal-badges">
+          <span class="badge-gender" id="modal-gender"></span>
+          <span class="badge-cat" id="modal-subcat"></span>
+        </div>
+      </div>
+      <div class="modal-info">
+        <p class="modal-collection" id="modal-collection">VERANO 2027</p>
+        <h2 class="modal-title" id="modal-name"></h2>
+        <p class="modal-desc" id="modal-desc"></p>
+        <div class="modal-colors" id="modal-colors"></div>
+        <div class="modal-sizes" id="modal-sizes"></div>
+        <div class="modal-drive-link" id="modal-drive-wrap">
+          <a id="modal-drive-link" href="#" target="_blank" class="drive-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Ver fotos en Google Drive
+          </a>
+        </div>
+        <button class="btn-add-modal" id="modal-add-btn">Agregar a la selección</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <footer class="site-footer">
+    <p>BYE BYE — Catálogo Verano 2027</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
