@@ -248,7 +248,7 @@ const products = [
     driveLink: "https://drive.google.com/drive/folders/10kCK4b5AHlkQCwhECs1RpcCZNnRoLCf9"
   },
   {
-    id: 33, name: "Camisa Lino", category: "HOMBRE", subcategory: "Remeras",
+    id: 33, name: "Camisa Lino", category: "HOMBRE", subcategory: "Camisas",
     description: "Camisa de lino con caída natural. Ideal para looks casuales o formales.",
     colors: ["Blanco", "Beige", "Gris", "Gris Verdoso", "Celeste"],
     sizes: ["S", "M", "L", "XL", "XXL"],
