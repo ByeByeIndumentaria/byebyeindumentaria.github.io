@@ -262,16 +262,16 @@ a { text-decoration: none; color: inherit; }
 }
 .card-badge-stock {
   position: absolute;
-  top: 10px; right: 10px;
+  top: 40px; left: 10px;
   font-size: 10px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+  background: var(--black);
+  color: var(--white);
   padding: 3px 8px;
   border-radius: 999px;
   z-index: 1;
 }
-.card-badge-stock.in-stock { background: var(--white); color: var(--black); }
-.card-badge-stock.out-stock { background: #991b1b; color: var(--white); }
 .product-card.out-of-stock .card-img-wrap img,
 .product-card.out-of-stock .card-placeholder { filter: grayscale(1); opacity: 0.58; }
 

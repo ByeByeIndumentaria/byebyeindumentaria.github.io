@@ -652,7 +652,7 @@ function getCollectionProducts() {
 }
 
 function getStockLabel(product) {
-  return product.inStock ? "En stock" : "Fuera de stock";
+  return product.inStock ? "En stock" : "Sin stock";
 }
 
 function buildCollectionFilters() {
@@ -807,7 +807,7 @@ function renderProducts() {
     card.innerHTML = `
       <div class="card-img-wrap">
         <span class="card-badge-gender">${p.category === 'MUJER' ? 'Mujer' : 'Hombre'}</span>
-        <span class="card-badge-stock ${p.inStock ? 'in-stock' : 'out-stock'}">${getStockLabel(p)}</span>
+        ${p.inStock ? '' : `<span class="card-badge-stock">Sin stock</span>`}
         <img class="card-img" src="" alt="${p.name}" style="display:none;width:100%;height:100%;object-fit:cover;" />
         <div class="card-placeholder" id="ph-${p.id}">
           <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
