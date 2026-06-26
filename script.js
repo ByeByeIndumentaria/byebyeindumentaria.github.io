@@ -788,6 +788,7 @@ function getFilteredProducts() {
 
 function renderProducts() {
   const filtered = getFilteredProducts();
+  resetProductImageObserver();
   productGrid.innerHTML = '';
 
   resultsCountEl.textContent = `${filtered.length} prenda${filtered.length !== 1 ? 's' : ''}`;
@@ -808,7 +809,7 @@ function renderProducts() {
       <div class="card-img-wrap">
         <span class="card-badge-gender">${p.category === 'MUJER' ? 'Mujer' : 'Hombre'}</span>
         ${p.inStock ? '' : `<span class="card-badge-stock">Sin stock</span>`}
-        <img class="card-img" src="" alt="${p.name}" style="display:none;width:100%;height:100%;object-fit:cover;" />
+        <img class="card-img" src="" alt="${p.name}" loading="lazy" decoding="async" style="display:none;width:100%;height:100%;object-fit:cover;" />
         <div class="card-placeholder" id="ph-${p.id}">
           <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
             <path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.57a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.57a2 2 0 00-1.34-2.23z"/>
@@ -841,12 +842,47 @@ function renderProducts() {
 
     productGrid.appendChild(card);
 
-    // Load first available image for this product
-    loadProductImage(p.id, card.querySelector('.card-img'), card.querySelector(`#ph-${p.id}`));
+    queueProductImage(p.id, card.querySelector('.card-img'), card.querySelector(`#ph-${p.id}`));
   });
 }
 
 // ── IMAGE LOADER ─────────────────────────────────
+let productImageObserver = null;
+
+function resetProductImageObserver() {
+  if (!productImageObserver) return;
+  productImageObserver.disconnect();
+  productImageObserver = null;
+}
+
+function getProductImageObserver() {
+  if (!('IntersectionObserver' in window)) return null;
+  if (!productImageObserver) {
+    productImageObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const imgEl = entry.target;
+        observer.unobserve(imgEl);
+        const id = parseInt(imgEl.dataset.productId, 10);
+        if (!id) return;
+        loadProductImage(id, imgEl, document.getElementById(`ph-${id}`));
+      });
+    }, { rootMargin: '500px 0px' });
+  }
+  return productImageObserver;
+}
+
+function queueProductImage(id, imgEl, placeholderEl) {
+  if (!imgEl) return;
+  imgEl.dataset.productId = String(id);
+  const observer = getProductImageObserver();
+  if (observer) {
+    observer.observe(imgEl);
+    return;
+  }
+  loadProductImage(id, imgEl, placeholderEl);
+}
+
 // Tries extensions in order: jpg, JPG, jpeg, JPEG, png, PNG
 function loadProductImage(id, imgEl, placeholderEl, photoNum) {
   const n = photoNum || 1;
