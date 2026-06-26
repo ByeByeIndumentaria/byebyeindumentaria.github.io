@@ -842,17 +842,25 @@ function renderProducts() {
 
     productGrid.appendChild(card);
 
-    queueProductImage(p.id, card.querySelector('.card-img'), card.querySelector(`#ph-${p.id}`));
+    queueProductImage(
+      p.id,
+      card.querySelector('.card-img'),
+      card.querySelector(`#ph-${p.id}`),
+      card.querySelector('.card-img-wrap')
+    );
   });
 }
 
 // ── IMAGE LOADER ─────────────────────────────────
 let productImageObserver = null;
+let queuedProductImages = new Map();
 
 function resetProductImageObserver() {
-  if (!productImageObserver) return;
-  productImageObserver.disconnect();
-  productImageObserver = null;
+  if (productImageObserver) {
+    productImageObserver.disconnect();
+    productImageObserver = null;
+  }
+  queuedProductImages.clear();
 }
 
 function getProductImageObserver() {
@@ -861,23 +869,27 @@ function getProductImageObserver() {
     productImageObserver = new IntersectionObserver((entries, observer) => {
       entries.forEach(entry => {
         if (!entry.isIntersecting) return;
-        const imgEl = entry.target;
-        observer.unobserve(imgEl);
-        const id = parseInt(imgEl.dataset.productId, 10);
+        const targetEl = entry.target;
+        observer.unobserve(targetEl);
+        const id = parseInt(targetEl.dataset.productId, 10);
         if (!id) return;
-        loadProductImage(id, imgEl, document.getElementById(`ph-${id}`));
+        const queued = queuedProductImages.get(id);
+        if (!queued) return;
+        queuedProductImages.delete(id);
+        loadProductImage(id, queued.imgEl, queued.placeholderEl);
       });
     }, { rootMargin: '500px 0px' });
   }
   return productImageObserver;
 }
 
-function queueProductImage(id, imgEl, placeholderEl) {
+function queueProductImage(id, imgEl, placeholderEl, observeEl) {
   if (!imgEl) return;
-  imgEl.dataset.productId = String(id);
   const observer = getProductImageObserver();
-  if (observer) {
-    observer.observe(imgEl);
+  if (observer && observeEl) {
+    observeEl.dataset.productId = String(id);
+    queuedProductImages.set(id, { imgEl, placeholderEl });
+    observer.observe(observeEl);
     return;
   }
   loadProductImage(id, imgEl, placeholderEl);
