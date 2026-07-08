@@ -1390,44 +1390,61 @@ function openModal(p) {
   const oldDots = modalImgWrap.querySelector('.modal-gallery-dots');
   if (oldDots) oldDots.remove();
 
-  // Build gallery from every photo that exists for this product.
-  let loadedSrcs = getProductImageSources(p.id);
+  // Build gallery without blocking the modal opening.
+  const gallerySrcs = getProductImageSources(p.id);
   let galleryIdx = 0;
+  let dots = null;
+  modalImg.onclick = null;
+  modalImg.style.cursor = '';
 
-  function finishGallery() {
-    if (loadedSrcs.length === 0) return;
-
-    galleryIdx = 0;
-    modalImg.src = loadedSrcs[0];
-    modalImg.style.display = 'block';
-
-    // Build dots if multiple photos
-    if (loadedSrcs.length > 1) {
-      const dots = document.createElement('div');
-      dots.className = 'modal-gallery-dots';
-      loadedSrcs.forEach((_, i) => {
-        const d = document.createElement('button');
-        d.className = 'gallery-dot' + (i === 0 ? ' active' : '');
-        d.addEventListener('click', (e) => {
-          e.stopPropagation();
-          galleryIdx = i;
-          modalImg.src = loadedSrcs[i];
-          dots.querySelectorAll('.gallery-dot').forEach((dot, di) => dot.classList.toggle('active', di === i));
-        });
-        dots.appendChild(d);
-      });
-      modalImgWrap.appendChild(dots);
-
-      // Swipe / click to advance
-      modalImg.style.cursor = 'pointer';
-      modalImg.onclick = (e) => {
-        e.stopPropagation();
-        galleryIdx = (galleryIdx + 1) % loadedSrcs.length;
-        modalImg.src = loadedSrcs[galleryIdx];
-        dots.querySelectorAll('.gallery-dot').forEach((dot, di) => dot.classList.toggle('active', di === galleryIdx));
-      };
-    }
+  function updateDots() {
+    if (!dots) return;
+    dots.querySelectorAll('.gallery-dot').forEach((dot, di) => {
+      dot.classList.toggle('active', di === galleryIdx);
+    });
   }
+
+  function preloadNextImage() {
+    if (gallerySrcs.length < 2) return;
+    const nextIdx = (galleryIdx + 1) % gallerySrcs.length;
+    const preload = new Image();
+    preload.src = gallerySrcs[nextIdx];
+  }
+
+  function showGalleryImage(index) {
+    if (!gallerySrcs.length) return;
+    galleryIdx = index;
+    modalImg.style.display = 'none';
+    modalImg.onload = () => {
+      modalImg.style.display = 'block';
+      preloadNextImage();
+    };
+    modalImg.src = gallerySrcs[galleryIdx];
+    updateDots();
+  }
+
+  if (gallerySrcs.length > 1) {
+    dots = document.createElement('div');
+    dots.className = 'modal-gallery-dots';
+    gallerySrcs.forEach((_, i) => {
+      const d = document.createElement('button');
+      d.className = 'gallery-dot' + (i === 0 ? ' active' : '');
+      d.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showGalleryImage(i);
+      });
+      dots.appendChild(d);
+    });
+    modalImgWrap.appendChild(dots);
+
+    modalImg.style.cursor = 'pointer';
+    modalImg.onclick = (e) => {
+      e.stopPropagation();
+      showGalleryImage((galleryIdx + 1) % gallerySrcs.length);
+    };
+  }
+
+  showGalleryImage(0);
 
   const addBtn = document.getElementById('modal-add-btn');
   addBtn.disabled = !p.inStock;
