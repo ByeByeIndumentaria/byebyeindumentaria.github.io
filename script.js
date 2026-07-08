@@ -326,6 +326,451 @@ const products = [
   }
 ];
 
+// -- PRODUCT IMAGES --------------------------------
+// This list is generated from the files inside images/.
+const productImagesById = {
+  "1": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "2": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "3": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "4": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "5": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "6": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "7": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "8": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "9": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "10": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "11": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "12": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "13": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "14": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "15": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "16": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "17": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "18": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "19": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "20": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "21": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "22": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "23": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "24": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "25": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "26": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "27": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "28": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "29": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "30": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "31": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "32": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14
+  ],
+  "33": [
+    1,
+    2,
+    3
+  ],
+  "34": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "35": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13
+  ],
+  "36": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "37": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "38": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "39": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "40": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "41": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "42": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13
+  ],
+  "43": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ]
+};
+
+function getProductImageSources(id) {
+  return (productImagesById[String(id)] || []).map(photoNumber => `images/prod_${id}_${photoNumber}.jpg`);
+}
+
 // Para sumar productos nuevos rapido, copias este formato, cambias el id,
 // nombre, categoria, colores, talles y despues agregas su curva en packagingByProductId.
 const extraProducts = [];
@@ -895,25 +1340,16 @@ function queueProductImage(id, imgEl, placeholderEl, observeEl) {
   loadProductImage(id, imgEl, placeholderEl);
 }
 
-// Tries extensions in order: jpg, JPG, jpeg, JPEG, png, PNG
-function loadProductImage(id, imgEl, placeholderEl, photoNum) {
-  const n = photoNum || 1;
-  const exts = ['jpg', 'JPG', 'jpeg', 'JPEG', 'png', 'PNG'];
-  let idx = 0;
-
-  function tryNext() {
-    if (idx >= exts.length) return; // all failed, keep placeholder
-    const src = `images/prod_${id}_${n}.${exts[idx]}`;
-    const tester = new Image();
-    tester.onload = () => {
-      imgEl.src = src;
-      imgEl.style.display = 'block';
-      if (placeholderEl) placeholderEl.style.display = 'none';
-    };
-    tester.onerror = () => { idx++; tryNext(); };
-    tester.src = src;
-  }
-  tryNext();
+function loadProductImage(id, imgEl, placeholderEl) {
+  const [src] = getProductImageSources(id);
+  if (!src) return;
+  const tester = new Image();
+  tester.onload = () => {
+    imgEl.src = src;
+    imgEl.style.display = 'block';
+    if (placeholderEl) placeholderEl.style.display = 'none';
+  };
+  tester.src = src;
 }
 
 // ── MODAL ────────────────────────────────────────
@@ -954,38 +1390,11 @@ function openModal(p) {
   const oldDots = modalImgWrap.querySelector('.modal-gallery-dots');
   if (oldDots) oldDots.remove();
 
-  // Try to load up to 8 photos and build a simple gallery
-  let loadedSrcs = [];
+  // Build gallery from every photo that exists for this product.
+  let loadedSrcs = getProductImageSources(p.id);
   let galleryIdx = 0;
-  let checked = 0;
-  const maxPhotos = 8;
-  const exts = ['jpg', 'JPG', 'jpeg', 'JPEG', 'png', 'PNG'];
-
-  function tryLoadPhoto(n) {
-    let extIdx = 0;
-    function tryExt() {
-      if (extIdx >= exts.length) {
-        checked++;
-        if (checked === maxPhotos) finishGallery();
-        return;
-      }
-      const src = `images/prod_${p.id}_${n}.${exts[extIdx]}`;
-      const t = new Image();
-      t.onload = () => {
-        loadedSrcs[n - 1] = src;
-        checked++;
-        if (checked === maxPhotos) finishGallery();
-      };
-      t.onerror = () => { extIdx++; tryExt(); };
-      t.src = src;
-    }
-    tryExt();
-  }
-
-  for (let i = 1; i <= maxPhotos; i++) tryLoadPhoto(i);
 
   function finishGallery() {
-    loadedSrcs = loadedSrcs.filter(Boolean);
     if (loadedSrcs.length === 0) return;
 
     galleryIdx = 0;
