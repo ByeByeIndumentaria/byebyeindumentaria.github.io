@@ -1385,6 +1385,7 @@ function openModal(p) {
   const modalImgWrap = document.querySelector('.modal-image-wrap');
   modalImg.style.display = 'none';
   modalImg.alt = p.name;
+  modalImgWrap.style.aspectRatio = '3 / 4';
 
   // Remove old gallery controls if any
   modalImgWrap.querySelectorAll('.modal-gallery-dots, .gallery-arrow').forEach(el => el.remove());
@@ -1418,6 +1419,9 @@ function openModal(p) {
     galleryIdx = index;
     modalImg.style.display = 'none';
     modalImg.onload = () => {
+      const ratioW = modalImg.naturalWidth || 3;
+      const ratioH = modalImg.naturalHeight || 4;
+      modalImgWrap.style.aspectRatio = `${ratioW} / ${ratioH}`;
       modalImg.style.display = 'block';
       preloadNeighborImages();
     };
