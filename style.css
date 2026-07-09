@@ -114,10 +114,10 @@ a { text-decoration: none; color: inherit; }
   position: relative;
   overflow: hidden;
   background-image:
-    linear-gradient(90deg, rgba(29,23,17,0.86) 0%, rgba(104,54,29,0.58) 42%, rgba(29,23,17,0.18) 100%),
-    url("images/prod_6_1.jpg");
+    linear-gradient(90deg, rgba(29,23,17,0.18) 0%, rgba(55,37,22,0.22) 44%, rgba(29,23,17,0.76) 100%),
+    url("images/banner-verano-2027.jpg");
   background-size: cover;
-  background-position: center 36%;
+  background-position: center center;
 }
 .hero::before {
   content: "BYE BYE";
@@ -139,7 +139,18 @@ a { text-decoration: none; color: inherit; }
   background: linear-gradient(0deg, #f8efdf 0%, rgba(248,239,223,0) 100%);
   pointer-events: none;
 }
-.hero-content { max-width: 1400px; margin: 0 auto; position: relative; z-index: 1; }
+.hero-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+  min-height: 330px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  text-align: right;
+}
 .hero-eyebrow {
   font-size: 12px;
   letter-spacing: 0.24em;
@@ -159,7 +170,7 @@ a { text-decoration: none; color: inherit; }
 .hero-sub {
   font-size: 16px;
   color: rgba(255,250,241,0.82);
-  max-width: 455px;
+  max-width: 360px;
 }
 
 /* ── FILTERS ──────────────────────────── */
@@ -743,7 +754,8 @@ a { text-decoration: none; color: inherit; }
   .header-brand { grid-column: 1; }
   .header-right { grid-column: 2; }
 
-  .hero { min-height: 430px; padding: 58px 20px 52px; background-position: center top; }
+  .hero { min-height: 430px; padding: 58px 20px 52px; background-position: 43% center; }
+  .hero-content { min-height: 300px; align-items: flex-end; text-align: right; }
   .hero-title { font-size: 52px; }
 
   .filters-section { padding: 14px 20px 12px; }
