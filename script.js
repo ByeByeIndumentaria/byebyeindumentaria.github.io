@@ -1443,7 +1443,6 @@ function openModal(p) {
     prevBtn.className = 'gallery-arrow gallery-arrow-prev';
     prevBtn.type = 'button';
     prevBtn.setAttribute('aria-label', 'Foto anterior');
-    prevBtn.innerHTML = '&#8249;';
     prevBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       showGalleryImage((galleryIdx - 1 + gallerySrcs.length) % gallerySrcs.length);
@@ -1453,7 +1452,6 @@ function openModal(p) {
     nextBtn.className = 'gallery-arrow gallery-arrow-next';
     nextBtn.type = 'button';
     nextBtn.setAttribute('aria-label', 'Foto siguiente');
-    nextBtn.innerHTML = '&#8250;';
     nextBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       showGalleryImage((galleryIdx + 1) % gallerySrcs.length);
