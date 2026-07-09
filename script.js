@@ -1529,10 +1529,13 @@ function updateCartUI() {
   cartItemsEl.innerHTML = '';
   cart.forEach(p => {
     const item = document.createElement('div');
+    const cartImageSrc = getProductImageSources(p.id)[0] || '';
+    const placeholderDisplay = cartImageSrc ? 'none' : 'flex';
     item.className = 'cart-item';
     item.innerHTML = `
       <div class="cart-item-img">
-        <div class="cart-item-img-placeholder">
+        ${cartImageSrc ? `<img src="${cartImageSrc}" alt="${p.name}" loading="lazy" decoding="async" />` : ''}
+        <div class="cart-item-img-placeholder" style="display:${placeholderDisplay};">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.57a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.57a2 2 0 00-1.34-2.23z"/>
           </svg>
@@ -1549,6 +1552,14 @@ function updateCartUI() {
         </svg>
       </button>
     `;
+    const cartImg = item.querySelector('.cart-item-img img');
+    if (cartImg) {
+      cartImg.addEventListener('error', () => {
+        cartImg.style.display = 'none';
+        const placeholder = item.querySelector('.cart-item-img-placeholder');
+        if (placeholder) placeholder.style.display = 'flex';
+      });
+    }
     item.querySelector('.cart-item-remove').addEventListener('click', () => removeFromCart(p.id));
     cartItemsEl.appendChild(item);
   });
