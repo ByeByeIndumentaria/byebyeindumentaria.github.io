@@ -522,6 +522,28 @@ a { text-decoration: none; color: inherit; }
   width: 100%; height: 100%;
   object-fit: contain;
 }
+.gallery-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(0,0,0,0.12);
+  border-radius: 50%;
+  background: rgba(255,255,255,0.88);
+  color: var(--black);
+  font-size: 34px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+.gallery-arrow:hover { background: var(--white); }
+.gallery-arrow-prev { left: 14px; }
+.gallery-arrow-next { right: 14px; }
 .modal-badges {
   position: absolute; top: 14px; left: 14px;
   display: flex; flex-direction: column; gap: 6px;

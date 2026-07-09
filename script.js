@@ -1386,9 +1386,8 @@ function openModal(p) {
   modalImg.style.display = 'none';
   modalImg.alt = p.name;
 
-  // Remove old gallery dots if any
-  const oldDots = modalImgWrap.querySelector('.modal-gallery-dots');
-  if (oldDots) oldDots.remove();
+  // Remove old gallery controls if any
+  modalImgWrap.querySelectorAll('.modal-gallery-dots, .gallery-arrow').forEach(el => el.remove());
 
   // Build gallery without blocking the modal opening.
   const gallerySrcs = getProductImageSources(p.id);
@@ -1404,11 +1403,14 @@ function openModal(p) {
     });
   }
 
-  function preloadNextImage() {
+  function preloadNeighborImages() {
     if (gallerySrcs.length < 2) return;
     const nextIdx = (galleryIdx + 1) % gallerySrcs.length;
-    const preload = new Image();
-    preload.src = gallerySrcs[nextIdx];
+    const prevIdx = (galleryIdx - 1 + gallerySrcs.length) % gallerySrcs.length;
+    [prevIdx, nextIdx].forEach(idx => {
+      const preload = new Image();
+      preload.src = gallerySrcs[idx];
+    });
   }
 
   function showGalleryImage(index) {
@@ -1417,7 +1419,7 @@ function openModal(p) {
     modalImg.style.display = 'none';
     modalImg.onload = () => {
       modalImg.style.display = 'block';
-      preloadNextImage();
+      preloadNeighborImages();
     };
     modalImg.src = gallerySrcs[galleryIdx];
     updateDots();
@@ -1437,11 +1439,28 @@ function openModal(p) {
     });
     modalImgWrap.appendChild(dots);
 
-    modalImg.style.cursor = 'pointer';
-    modalImg.onclick = (e) => {
+    const prevBtn = document.createElement('button');
+    prevBtn.className = 'gallery-arrow gallery-arrow-prev';
+    prevBtn.type = 'button';
+    prevBtn.setAttribute('aria-label', 'Foto anterior');
+    prevBtn.innerHTML = '&#8249;';
+    prevBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      showGalleryImage((galleryIdx - 1 + gallerySrcs.length) % gallerySrcs.length);
+    });
+
+    const nextBtn = document.createElement('button');
+    nextBtn.className = 'gallery-arrow gallery-arrow-next';
+    nextBtn.type = 'button';
+    nextBtn.setAttribute('aria-label', 'Foto siguiente');
+    nextBtn.innerHTML = '&#8250;';
+    nextBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       showGalleryImage((galleryIdx + 1) % gallerySrcs.length);
-    };
+    });
+
+    modalImgWrap.appendChild(prevBtn);
+    modalImgWrap.appendChild(nextBtn);
   }
 
   showGalleryImage(0);
