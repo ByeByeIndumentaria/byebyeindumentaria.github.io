@@ -497,12 +497,11 @@ a { text-decoration: none; color: inherit; }
 .modal {
   background: #f4ede3;
   border-radius: 10px;
-  max-width: 940px;
-  width: 100%;
+  width: min(var(--modal-w, 940px), calc(100vw - 40px));
   max-height: 90vh;
   overflow: hidden;
   display: grid;
-  grid-template-columns: minmax(320px, 0.9fr) minmax(0, 1fr);
+  grid-template-columns: var(--modal-media-w, 420px) minmax(420px, 1fr);
   position: relative;
   box-shadow: var(--shadow-lg);
   animation: modalIn 0.28s ease;
@@ -769,6 +768,7 @@ a { text-decoration: none; color: inherit; }
 
   .modal {
     grid-template-columns: 1fr;
+    width: min(100%, calc(100vw - 32px));
     overflow-y: auto;
   }
   .modal-image-wrap {

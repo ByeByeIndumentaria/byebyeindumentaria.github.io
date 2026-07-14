@@ -1485,6 +1485,7 @@ function loadProductImage(id, imgEl, placeholderEl) {
 function openModal(p) {
   currentModalProduct = p;
   const inCart = cart.some(c => c.id === p.id);
+  const modalEl = document.getElementById('product-modal');
 
   document.getElementById('modal-name').textContent = p.name;
   document.getElementById('modal-gender').textContent = p.category === 'MUJER' ? 'Mujer' : 'Hombre';
@@ -1509,6 +1510,8 @@ function openModal(p) {
   modalImg.style.display = 'none';
   modalImg.alt = p.name;
   modalImgWrap.style.aspectRatio = '3 / 4';
+  modalEl.style.removeProperty('--modal-media-w');
+  modalEl.style.removeProperty('--modal-w');
 
   // Remove old gallery controls if any
   modalImgWrap.querySelectorAll('.modal-gallery-dots, .gallery-arrow').forEach(el => el.remove());
@@ -1543,14 +1546,30 @@ function openModal(p) {
     });
   }
 
+  function fitModalToImage() {
+    const ratioW = modalImg.naturalWidth || 3;
+    const ratioH = modalImg.naturalHeight || 4;
+    const ratio = ratioW / ratioH;
+    const viewportW = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+    const viewportH = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+    const maxImageH = Math.min(viewportH * 0.86, 760);
+    const infoW = 500;
+    const gapW = 40;
+    const maxModalW = Math.max(320, viewportW - gapW);
+    const mediaW = Math.max(320, Math.min(maxImageH * ratio, 620, maxModalW - infoW));
+    const modalW = Math.min(maxModalW, mediaW + infoW);
+
+    modalImgWrap.style.aspectRatio = `${ratioW} / ${ratioH}`;
+    modalEl.style.setProperty('--modal-media-w', `${Math.round(mediaW)}px`);
+    modalEl.style.setProperty('--modal-w', `${Math.round(modalW)}px`);
+  }
+
   function showGalleryImage(index) {
     if (!gallerySrcs.length) return;
     galleryIdx = index;
     modalImg.style.display = 'none';
     modalImg.onload = () => {
-      const ratioW = modalImg.naturalWidth || 3;
-      const ratioH = modalImg.naturalHeight || 4;
-      modalImgWrap.style.aspectRatio = `${ratioW} / ${ratioH}`;
+      fitModalToImage();
       modalImg.style.display = 'block';
       preloadNeighborImages();
     };
