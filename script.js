@@ -1551,6 +1551,7 @@ function openModal(p) {
       preloadNeighborImages();
     };
     modalImg.src = gallerySrcs[galleryIdx];
+    modalImgWrap.style.setProperty('--modal-image-bg', `url("${gallerySrcs[galleryIdx]}")`);
     updateDots();
     updateColorChips();
   }
