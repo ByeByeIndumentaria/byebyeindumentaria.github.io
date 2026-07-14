@@ -323,6 +323,20 @@ const products = [
     colors: ["Blanco", "Rosa", "Celeste", "Marino", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
     driveLink: ""
+  },
+  {
+    id: 44, name: "Traje de baño surf", category: "HOMBRE", subcategory: "Pantalones",
+    description: "Traje de baño surf para hombre. Liviano, fresco y listo para el verano.",
+    colors: ["Beige", "Gris", "Petróleo", "Marino", "Negro"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    driveLink: ""
+  },
+  {
+    id: 45, name: "Chomba Jersey Lisa", category: "HOMBRE", subcategory: "Remeras",
+    description: "Chomba jersey lisa para hombre. Básica, cómoda y versátil.",
+    colors: ["Blanco", "Beige", "Melange", "Celeste", "Petróleo", "Marino", "Negro"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    driveLink: ""
   }
 ];
 
@@ -632,7 +646,9 @@ const productImagesById = {
     1,
     2,
     3,
-    4
+    4,
+    5,
+    6
   ],
   "32": [
     1,
@@ -751,10 +767,7 @@ const productImagesById = {
     7,
     8,
     9,
-    10,
-    11,
-    12,
-    13
+    10
   ],
   "43": [
     1,
@@ -764,11 +777,47 @@ const productImagesById = {
     5,
     6,
     7
+  ],
+  "44": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "45": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
   ]
 };
 
 function getProductImageSources(id) {
   return (productImagesById[String(id)] || []).map(photoNumber => `images/prod_${id}_${photoNumber}.jpg`);
+}
+
+// Aca se puede indicar que foto corresponde a cada color.
+// Ejemplo: 5: { "Negro": 4 } hace que Negro abra prod_5_4.jpg.
+const colorImageByProductId = {};
+
+function getColorGalleryIndex(product, colorIndex, galleryLength) {
+  const color = product.colors[colorIndex];
+  const customMap = colorImageByProductId[product.id] || {};
+  const customPhotoNumber = customMap[color];
+
+  if (!customPhotoNumber) return null;
+
+  const mappedIndex = Number(customPhotoNumber) - 1;
+  return mappedIndex >= 0 && mappedIndex < galleryLength ? mappedIndex : null;
 }
 
 // Para sumar productos nuevos rapido, copias este formato, cambias el id,
@@ -1050,6 +1099,23 @@ const packagingByProductId = {
     { color: "Celeste", sizePieces: { S: 2, M: 2, L: 2, XL: 1, XXL: 1 } },
     { color: "Marino", sizePieces: { S: 2, M: 2, L: 2, XL: 1, XXL: 1 } },
     { color: "Negro", sizePieces: { S: 2, M: 2, L: 2, XL: 1, XXL: 1 } }
+  ] },
+  44: { totalPieces: 60, rows: [
+    { color: "Beige", sizePieces: { S: 2, M: 2, L: 3, XL: 3, XXL: 2 } },
+    { color: "Gris", sizePieces: { S: 2, M: 2, L: 3, XL: 3, XXL: 2 } },
+    { color: "Petróleo", sizePieces: { S: 2, M: 2, L: 3, XL: 3, XXL: 2 } },
+    { color: "Marino", sizePieces: { S: 2, M: 2, L: 3, XL: 3, XXL: 2 } },
+    { color: "Negro", sizePieces: { S: 2, M: 2, L: 3, XL: 3, XXL: 2 } }
+  ] },
+  45: { totalPieces: 80, rows: [
+    { color: "Blanco", sizePieces: { S: 1, M: 2, L: 3, XL: 2, XXL: 2 } },
+    { color: "Beige", sizePieces: { S: 1, M: 2, L: 3, XL: 2, XXL: 2 } },
+    { color: "Melange", sizePieces: { S: 1, M: 2, L: 3, XL: 2, XXL: 2 } },
+    { color: "Celeste", sizePieces: { S: 1, M: 2, L: 3, XL: 2, XXL: 2 } },
+    { color: "Petróleo", sizePieces: { S: 1, M: 2, L: 3, XL: 2, XXL: 2 } },
+    { color: "Marino", sizePieces: { S: 1, M: 2, L: 3, XL: 2, XXL: 2 } },
+    { color: "Negro", sizePieces: { S: 1, M: 2, L: 3, XL: 2, XXL: 2 } },
+    { color: "Negro", sizePieces: { S: 1, M: 2, L: 3, XL: 2, XXL: 2 } }
   ] }
 };
 
@@ -1365,7 +1431,7 @@ function openModal(p) {
 
   // Colors
   const colorsEl = document.getElementById('modal-colors');
-  colorsEl.innerHTML = p.colors.map(c => `<span class="color-chip">${c}</span>`).join('');
+  colorsEl.innerHTML = p.colors.map((c, i) => `<button type="button" class="color-chip" data-color-index="${i}">${c}</button>`).join('');
 
   // Sizes
   const sizesEl = document.getElementById('modal-sizes');
@@ -1404,6 +1470,12 @@ function openModal(p) {
     });
   }
 
+  function updateColorChips() {
+    colorsEl.querySelectorAll('.color-chip').forEach(chip => {
+      chip.classList.toggle('active', Number(chip.dataset.galleryIndex) === galleryIdx);
+    });
+  }
+
   function preloadNeighborImages() {
     if (gallerySrcs.length < 2) return;
     const nextIdx = (galleryIdx + 1) % gallerySrcs.length;
@@ -1427,7 +1499,17 @@ function openModal(p) {
     };
     modalImg.src = gallerySrcs[galleryIdx];
     updateDots();
+    updateColorChips();
   }
+
+  colorsEl.querySelectorAll('.color-chip').forEach((chip, colorIndex) => {
+    const galleryIndex = getColorGalleryIndex(p, colorIndex, gallerySrcs.length);
+    chip.dataset.galleryIndex = galleryIndex ?? '';
+    chip.disabled = galleryIndex === null;
+    chip.addEventListener('click', () => {
+      if (galleryIndex !== null) showGalleryImage(galleryIndex);
+    });
+  });
 
   if (gallerySrcs.length > 1) {
     dots = document.createElement('div');
