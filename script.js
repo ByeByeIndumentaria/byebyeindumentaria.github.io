@@ -986,8 +986,8 @@ const packagingByProductId = {
     { color: "Negro", sizePieces: { S: 2, M: 3, L: 3, XL: 2 } }
   ] },
   28: { totalPieces: 40, rows: [
-    { color: "Crudo", sizePieces: { S: 2, M: 3, L: 3, XL: 2 } },
-    { color: "Beige", sizePieces: { S: 2, M: 3, L: 3, XL: 2 } },
+    { color: "Blanco", sizePieces: { S: 2, M: 3, L: 3, XL: 2 } },
+    { color: "Rojo", sizePieces: { S: 2, M: 3, L: 3, XL: 2 } },
     { color: "Chocolate", sizePieces: { S: 2, M: 3, L: 3, XL: 2 } },
     { color: "Negro", sizePieces: { S: 2, M: 3, L: 3, XL: 2 } }
   ] },
