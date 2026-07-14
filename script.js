@@ -800,22 +800,90 @@ const productImagesById = {
   ]
 };
 
-function getProductImageSources(id) {
-  return (productImagesById[String(id)] || []).map(photoNumber => `images/prod_${id}_${photoNumber}.jpg`);
+function getProductImagePhotoNumbers(id) {
+  return productImagesById[String(id)] || [];
 }
 
-// Aca se puede indicar que foto corresponde a cada color.
-// Ejemplo: 5: { "Negro": 4 } hace que Negro abra prod_5_4.jpg.
-const colorImageByProductId = {};
+function getProductImageSources(id) {
+  return getProductImagePhotoNumbers(id).map(photoNumber => `images/prod_${id}_${photoNumber}.jpg`);
+}
+
+// Foto principal por color. El numero corresponde a prod_ID_NUMERO.jpg.
+const colorImageByProductId = {
+  1: { "Blanco": 6, "Gris Melange": 7, "Negro": 8 },
+  2: { "Blanco": 4, "Celeste": 5, "Negro": 6 },
+  3: { "Beige": 6, "Amarillo": 7, "Blanco": 8, "Celeste": 9, "Negro": 10 },
+  4: { "Blanco": 6, "Gris Melange": 7, "Negro": 8 },
+  5: { "Beige": 5, "Negro": 6, "Crudo": 7, "Chocolate": 8 },
+  6: { "Lino": 5, "Chocolate": 6, "Blanco": 7, "Negro": 8 },
+  7: { "Crudo": 5, "Blanco": 6, "Militar": 7, "Negro": 8 },
+  8: { "Negro": 5, "Beige": 6, "Oliva": 7, "Verde": 7, "Blanco": 8 },
+  9: { "Beige": 5, "Negro": 6, "Oliva": 7, "Blanco": 8 },
+  10: { "Negro": 4, "Blanco": 5, "Oliva": 6, "Beige": 7, "Chocolate": 8 },
+  11: { "Negro": 4, "Crudo": 5, "Blanco": 6 },
+  12: { "Marrón": 4, "Marron": 4, "Negro": 5, "Blanco": 6 },
+  13: { "Negro": 5, "Chocolate": 6, "Blanco": 7, "Crudo": 8 },
+  14: { "Negro": 5, "Blanco": 6, "Crudo": 7, "Chocolate": 8 },
+  15: { "Crudo": 4, "Blanco": 5, "Negro": 6 },
+  16: { "Negro": 4, "Beige": 5, "Blanco": 6, "Oliva": 7, "Chocolate": 8 },
+  17: { "Negro": 4, "Chocolate": 5, "Crudo": 6 },
+  18: { "Blanco": 4, "Negro": 5 },
+  19: { "Camel": 6, "Negro": 7, "Estampa 1": 8, "Estampa 2": 9 },
+  20: { "Animal Print": 6, "Anima Print": 6, "Negro": 7, "Chocolate": 8 },
+  21: { "Estampado": 3, "Chocolate": 4, "Negro": 5, "Rojo": 6 },
+  22: { "Estampado": 7, "Blanco": 8, "Negro": 9, "Chocolate": 10, "Oliva": 11 },
+  23: { "Crudo": 7, "Blanco": 8, "Negro": 9, "Estampa": 10 },
+  24: { "Estampado": 7, "Estampa": 7, "Negro": 8, "Oliva": 9 },
+  25: { "Marino": 3, "Negro": 4, "Estampado": 5, "Estampa": 5, "Camel": 6 },
+  26: { "Estampa 1": 8, "Estampa 2": 9, "Camel": 10, "Negro": 11 },
+  27: { "Blanco": 5, "Negro": 6, "Crudo": 7 },
+  28: { "Rojo": 7, "Negro": 8, "Chocolate": 9, "Blanco": 10 },
+  29: { "Estampa 1": 8, "Estampa 2": 9 },
+  30: { "Estampa": 8, "Negro": 9, "Crudo": 10 },
+  31: { "Estampa 1": 1, "Estampa 2": 2, "Negro": 3 },
+  32: { "Oliva": 5, "Beige": 6, "Crudo": 7, "Negro": 8, "Oliva Oscuro": 9, "Oliva oscuro": 9, "Gris": 10, "Blanco": 11, "Marrón": 12, "Marron": 12, "Gris Oscuro": 13, "Gris oscuro": 13, "Khaki": 14, "Caqui": 14 },
+  33: { "Marino": 3, "Blanco": 4, "Gris": 5, "Gris Claro": 5, "Gris claro": 5, "Gris Verdoso": 6, "Verde, petróleo": 6, "Petróleo": 6, "Negro": 7 },
+  35: { "Oliva": 4, "Negro": 5, "Marino": 6, "Beige": 8, "Celeste": 9, "Blanco": 10, "Petróleo": 11, "Melange": 12, "Crudo": 13 },
+  36: { "Petróleo": 6, "Melange": 7, "Blanco": 8, "Negro": 9, "Marino": 10 },
+  37: { "Beige vivo negro": 4, "Blanco vivo marino": 5, "Celeste vivo negro": 6, "Melange vivo blanco": 7, "Petróleo vivo blanco": 8, "Marino vivo gris": 9, "Marino vivo blanco": 9, "Negro vivo gris": 10, "Negro vivo blanco": 11 },
+  38: { "Blanco vivo marino": 4, "Beige vivo negro": 5, "Melange vivo blanco": 6, "Marino vivo blanco": 7, "Negro vivo blanco": 8, "Negro vivo gris": 9 },
+  39: { "Blanco": 4, "Gris": 5, "Marino": 6, "Negro": 7 },
+  40: { "Blanco": 4, "Negro": 5 },
+  41: { "Negro": 4, "Gris Claro": 5, "Gris claro": 5, "Gris": 6, "Gris Oscuro": 6, "Gris oscuro": 6, "Gris Topo": 7, "Gris topo": 7, "Oliva": 8, "Beige": 9 },
+  42: { "Chocolate": 4, "Beige": 5, "Gris": 6, "Celeste": 7, "Petróleo": 8, "Marino": 9, "Negro": 10 },
+  43: { "Celeste": 3, "Blanco": 4, "Rosa": 5, "Negro": 6, "Marino": 7 },
+  44: { "Negro": 4, "Marino": 5, "Petróleo": 6, "Gris": 7, "Beige": 8 },
+  45: { "Negro": 3, "Marino": 4, "Azul marino": 4, "Blanco": 5, "Beige": 6, "Melange": 7, "Gris": 7, "Celeste": 7, "Petróleo": 8 }
+};
+
+function normalizeColorName(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function getColorPhotoNumber(product, color) {
+  const customMap = colorImageByProductId[product.id] || {};
+  if (customMap[color]) return customMap[color];
+
+  const normalizedColor = normalizeColorName(color);
+  const matchingEntry = Object.entries(customMap).find(([mappedColor]) => {
+    return normalizeColorName(mappedColor) === normalizedColor;
+  });
+
+  return matchingEntry ? matchingEntry[1] : null;
+}
 
 function getColorGalleryIndex(product, colorIndex, galleryLength) {
   const color = product.colors[colorIndex];
-  const customMap = colorImageByProductId[product.id] || {};
-  const customPhotoNumber = customMap[color];
+  const customPhotoNumber = getColorPhotoNumber(product, color);
 
   if (!customPhotoNumber) return null;
 
-  const mappedIndex = Number(customPhotoNumber) - 1;
+  const mappedIndex = getProductImagePhotoNumbers(product.id).indexOf(Number(customPhotoNumber));
   return mappedIndex >= 0 && mappedIndex < galleryLength ? mappedIndex : null;
 }
 
