@@ -26,217 +26,217 @@ const products = [
     description: "Set de algodón fresco y confortable. Ideal para el verano.",
     colors: ["Blanco", "Melange", "Negro"],
     sizes: ["S", "M", "L", "XL"],
-    driveLink: "https://drive.google.com/drive/folders/1Z0StXP7Brv6ZxDvTFHA0oXeQZPRN9tMe"
+    driveLink: ""
   },
   {
     id: 2, name: "Remera Broderie", category: "MUJER", subcategory: "Remeras",
     description: "Remera con detalle bordado tipo broderie. Diseño delicado y femenino.",
     colors: ["Blanco", "Celeste", "Negro"],
     sizes: ["S", "M", "L", "XL"],
-    driveLink: "https://drive.google.com/drive/folders/13Pb6aX6Ahsl0CGxnDRZfos4Xpf0icI2L"
+    driveLink: ""
   },
   {
     id: 3, name: "Remera Puntilla", category: "MUJER", subcategory: "Remeras",
     description: "Remera con encaje de puntilla, combinación de textura y feminidad.",
     colors: ["Blanco", "Celeste", "Amarillo", "Beige", "Negro"],
     sizes: ["S", "M", "L", "XL"],
-    driveLink: "https://drive.google.com/drive/folders/1qZ-cnXV1XjnzzKcC6LLoyxG6Cukm4a1w"
+    driveLink: ""
   },
   {
     id: 4, name: "Chomba Algodón", category: "MUJER", subcategory: "Remeras",
     description: "Chomba de algodón clásica, fresca y versátil para el verano.",
     colors: ["Blanco", "Melange", "Negro"],
     sizes: ["S", "M", "L", "XL"],
-    driveLink: "https://drive.google.com/drive/folders/1TRK8xKRj538h_-gNiw-rbvN5e1WJXBHu"
+    driveLink: ""
   },
   {
     id: 5, name: "Chomba Tejida", category: "MUJER", subcategory: "Remeras",
     description: "Chomba de tejido artesanal con textura natural y elegante.",
     colors: ["Crudo", "Beige", "Chocolate", "Negro"],
     sizes: ["S", "M", "L", "XL"],
-    driveLink: "https://drive.google.com/drive/folders/1QdMaj5Qz4rRR585dWSSR-4-4DdDcBlZb"
+    driveLink: ""
   },
   {
     id: 6, name: "Set Lino", category: "MUJER", subcategory: "Conjuntos",
     description: "Conjunto en lino premium. Liviano, transpirable y de líneas limpias.",
     colors: ["Blanco", "Lino", "Chocolate", "Negro"],
     sizes: ["S", "M", "L", "XL"],
-    driveLink: "https://drive.google.com/drive/folders/1kk8tVct1mUJe01hrzWPcsDYqKVfmyQKf"
+    driveLink: ""
   },
   {
     id: 7, name: "Vestido Camisero", category: "MUJER", subcategory: "Vestidos",
     description: "Vestido camisero de corte relajado. Estilo atemporal para el verano.",
     colors: ["Crudo", "Militar", "Negro"],
     sizes: ["S", "M", "L"],
-    driveLink: "https://drive.google.com/drive/folders/1PodtHSPMdOvt_xbRvUyd1DtqDPcMGUYL"
+    driveLink: ""
   },
   {
     id: 8, name: "Chaleco Lino Conjunto", category: "MUJER", subcategory: "Conjuntos",
     description: "Chaleco de lino parte del conjunto coordinado. Corte sastrero.",
     colors: ["Blanco", "Beige", "Oliva", "Negro"],
     sizes: ["S", "M", "L"],
-    driveLink: "https://drive.google.com/drive/folders/19Zl3NQK1Hy0aaZyBrJtzxbpw8NBtYWji"
+    driveLink: ""
   },
   {
     id: 9, name: "Pantalón Lino Conjunto", category: "MUJER", subcategory: "Conjuntos",
     description: "Pantalón de lino para combinar con el chaleco del conjunto.",
     colors: ["Blanco", "Beige", "Oliva", "Negro"],
     sizes: ["S", "M", "L"],
-    driveLink: "https://drive.google.com/drive/folders/19Zl3NQK1Hy0aaZyBrJtzxbpw8NBtYWji"
+    driveLink: ""
   },
   {
     id: 10, name: "Chaleco Sastrero", category: "MUJER", subcategory: "Conjuntos",
     description: "Chaleco de estilo sastrero. Elegante y estructurado.",
     colors: ["Blanco", "Beige", "Oliva", "Chocolate", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
-    driveLink: "https://drive.google.com/drive/folders/1zQcVnGgHlM1veh3PAK3K3SRtMm2pZ83x"
+    driveLink: ""
   },
   {
     id: 11, name: "Musculosa Arandelas", category: "MUJER", subcategory: "Remeras",
     description: "Musculosa con detalle de arandelas. Casual y femenina.",
     colors: ["Blanco", "Crudo", "Negro"],
     sizes: ["S", "M", "L", "XL"],
-    driveLink: "https://drive.google.com/drive/folders/1852OsH07Z6ydKURacb8d4rmlTZa_2x4s"
+    driveLink: ""
   },
   {
     id: 12, name: "Enterito Cinto", category: "MUJER", subcategory: "Monos",
     description: "Enterito con cinto ajustable. Prenda única muy versátil.",
     colors: ["Blanco", "Marrón", "Negro"],
     sizes: ["S", "M", "L", "XL"],
-    driveLink: "https://drive.google.com/drive/folders/1Ia7_ul_P6ncpMv6pJpDtwb8o0B8W54_Q"
+    driveLink: ""
   },
   {
     id: 13, name: "Camisa Lino Conjunto", category: "MUJER", subcategory: "Conjuntos",
     description: "Camisa de lino parte del conjunto con jogger. Corte relajado.",
     colors: ["Blanco", "Crudo", "Khaki", "Oliva", "Negro"],
     sizes: ["S", "M", "L", "XL"],
-    driveLink: "https://drive.google.com/drive/folders/11ILa9pWzniQ8Gvf3k9YUDOp53OTtMktA"
+    driveLink: ""
   },
   {
     id: 14, name: "Jogger Lino Conjunto", category: "MUJER", subcategory: "Conjuntos",
     description: "Jogger de lino para combinar con la camisa del conjunto.",
     colors: ["Blanco", "Crudo", "Caqui", "Oliva", "Negro"],
     sizes: ["S", "M", "L", "XL"],
-    driveLink: "https://drive.google.com/drive/folders/11ILa9pWzniQ8Gvf3k9YUDOp53OTtMktA"
+    driveLink: ""
   },
   {
     id: 15, name: "Pantalón Sastrero", category: "MUJER", subcategory: "Pantalones",
     description: "Pantalón de corte sastrero. Líneas limpias y modernas.",
     colors: ["Beige", "Negro"],
     sizes: ["S", "M", "L", "XL"],
-    driveLink: "https://drive.google.com/drive/folders/17ScAv--Yk098pnmBBN1fV3lFl0Xhy4pa"
+    driveLink: ""
   },
   {
     id: 16, name: "Short Brezo", category: "MUJER", subcategory: "Pantalones",
     description: "Short fresco ideal para los días de calor.",
     colors: ["Blanco", "Beige", "Oliva", "Chocolate", "Negro"],
     sizes: ["S", "M", "L", "XL"],
-    driveLink: "https://drive.google.com/drive/folders/1-ggL38EPIJG_qDWy3PEPXeRW4I6Rmmqw"
+    driveLink: ""
   },
   {
     id: 17, name: "Enterito Escote V", category: "MUJER", subcategory: "Monos",
     description: "Enterito con escote en V, estilizado y moderno.",
     colors: ["Estampa 1", "Beige", "Estampa 2", "Negro"],
     sizes: ["S", "M", "L"],
-    driveLink: "https://drive.google.com/drive/folders/1nLX5VuR3Wq-vuvx9yOGa8IVtY9fa67Iw"
+    driveLink: ""
   },
   {
     id: 18, name: "Pantalón Broderie", category: "MUJER", subcategory: "Pantalones",
     description: "Pantalón con detalle bordado tipo broderie.",
     colors: ["Blanco", "Celeste", "Negro"],
     sizes: ["S", "M", "L", "XL"],
-    driveLink: "https://drive.google.com/drive/folders/13Pb6aX6Ahsl0CGxnDRZfos4Xpf0icI2L"
+    driveLink: ""
   },
   {
     id: 19, name: "Vestido Gasa", category: "MUJER", subcategory: "Vestidos",
     description: "Vestido en gasa liviana. Fluido y romántico para el verano.",
     colors: ["Estampa 1", "Estampa 2", "Camel", "Negro"],
     sizes: ["S", "M", "L"],
-    driveLink: "https://drive.google.com/drive/folders/1IvabM_fQrJ_YHH6yrfcX9ePaqmo-41dH"
+    driveLink: ""
   },
   {
     id: 20, name: "Vestido Gasa Largo", category: "MUJER", subcategory: "Vestidos",
     description: "Vestido largo en gasa, ideal para eventos o salidas nocturnas.",
     colors: ["Varios colores"],
     sizes: ["S", "M", "L"],
-    driveLink: "https://drive.google.com/drive/folders/1_vDH_KQa_Rq6AmUltU8sLUbRZAczXbsd"
+    driveLink: ""
   },
   {
     id: 21, name: "Vestido Gasa Corto", category: "MUJER", subcategory: "Vestidos",
     description: "Vestido corto en gasa para looks veraniegos.",
     colors: ["Varios colores"],
     sizes: ["S", "M", "L"],
-    driveLink: "https://drive.google.com/drive/folders/168T1Drp0K4iQEQQW1cNMkxbfn-L4CMhy"
+    driveLink: ""
   },
   {
     id: 22, name: "Vestido Nudo", category: "MUJER", subcategory: "Vestidos",
     description: "Vestido con detalle de nudo. Ajuste perfecto y estilo definido.",
     colors: ["Blanco", "Rojo", "Chocolate", "Negro"],
     sizes: ["S", "M", "L", "XL"],
-    driveLink: "https://drive.google.com/drive/folders/1UC18Dml0K-Z-cwiIxWpTZBHpUmBnNlDe"
+    driveLink: ""
   },
   {
     id: 23, name: "Vestido Básico", category: "MUJER", subcategory: "Vestidos",
     description: "Vestido básico esencial. Corte limpio y atemporal.",
     colors: ["Blanco", "Negro", "Varios"],
     sizes: ["S", "M", "L", "XL"],
-    driveLink: "https://drive.google.com/drive/folders/1uZdeu22QjteZvTrDnCRrL3bck6Q2k8Ze"
+    driveLink: ""
   },
   {
     id: 24, name: "Vestido Camisero Largo", category: "MUJER", subcategory: "Vestidos",
     description: "Versión larga del vestido camisero. Ideal para el día a día.",
     colors: ["Varios colores"],
     sizes: ["S", "M", "L"],
-    driveLink: "https://drive.google.com/drive/folders/1ay7bTpnbX5Q9aDu_9p1A5MEL6Lnjs27R"
+    driveLink: ""
   },
   {
     id: 25, name: "Vestido Camisero Corto", category: "MUJER", subcategory: "Vestidos",
     description: "Versión corta del vestido camisero. Fresco y fácil de combinar.",
     colors: ["Varios colores"],
     sizes: ["S", "M", "L"],
-    driveLink: "https://drive.google.com/drive/folders/1AW7qaYrllrxMGPXGrwDr-7VxRF-VGdhP"
+    driveLink: ""
   },
   {
     id: 26, name: "Set Lino Estampado", category: "MUJER", subcategory: "Conjuntos",
     description: "Conjunto de lino con estampados originales de la temporada.",
     colors: ["Estampa 1", "Estampa 2", "Camel", "Negro"],
     sizes: ["S", "M", "L", "XL"],
-    driveLink: "https://drive.google.com/drive/folders/1LA0lcgqctXeFnmM3oFB--7jkZbz1iviI"
+    driveLink: ""
   },
   {
     id: 27, name: "Musculosa Nudo", category: "MUJER", subcategory: "Remeras",
     description: "Musculosa con nudo frontal. Casual y femenina para el verano.",
     colors: ["Varios colores"],
     sizes: ["S", "M", "L", "XL"],
-    driveLink: "https://drive.google.com/drive/folders/1S_j38nYai1u9IX4vs0agrfVpHeSHRpVY"
+    driveLink: ""
   },
   {
     id: 28, name: "Vestido Escote V", category: "MUJER", subcategory: "Vestidos",
     description: "Vestido con escote en V profundo. Elegante y sensual.",
     colors: ["Blanco", "Rojo", "Chocolate", "Negro"],
     sizes: ["S", "M", "L"],
-    driveLink: "https://drive.google.com/drive/folders/1V5Cf8IhUG2J-N2pUM9HmhV9pULpFSCQv"
+    driveLink: ""
   },
   {
     id: 29, name: "Vestido Túnica", category: "MUJER", subcategory: "Vestidos",
     description: "Vestido tipo túnica, cómodo y amplio para el calor.",
     colors: ["Estampa 1", "Estampa 2"],
     sizes: ["M"],
-    driveLink: "https://drive.google.com/drive/folders/11OXMrrwRXoawPBDPFoex_9CpPj-zKquy"
+    driveLink: ""
   },
   {
     id: 30, name: "Vestido Trenza", category: "MUJER", subcategory: "Vestidos",
     description: "Vestido con detalle de trenza. Acabado artesanal y único.",
     colors: ["Varios colores"],
     sizes: ["S", "M", "L"],
-    driveLink: "https://drive.google.com/drive/folders/11K5C02_jXz1b69YSvfwwLjXOV_dR09F-"
+    driveLink: ""
   },
   {
     id: 31, name: "Set Estampado", category: "MUJER", subcategory: "Conjuntos",
     description: "Conjunto con estampados de temporada. Diseño fresco y moderno.",
     colors: ["Varios estampados"],
     sizes: ["S", "M", "L", "XL"],
-    driveLink: "https://drive.google.com/drive/folders/1uHtUDsgqLAMcYyIaBoapJykcI1rwGoCe"
+    driveLink: ""
   },
 
   // ── HOMBRE ──
@@ -245,77 +245,77 @@ const products = [
     description: "Bermuda de lino premium para el verano. Cómoda y sofisticada.",
     colors: ["Oliva", "Khaki", "Gris Oscuro", "Marrón", "Blanco"],
     sizes: ["S", "M", "L", "XL", "XXL"],
-    driveLink: "https://drive.google.com/drive/folders/10kCK4b5AHlkQCwhECs1RpcCZNnRoLCf9"
+    driveLink: ""
   },
   {
     id: 33, name: "Camisa Lino", category: "HOMBRE", subcategory: "Camisas",
     description: "Camisa de lino con caída natural. Ideal para looks casuales o formales.",
     colors: ["Blanco", "Beige", "Gris", "Gris Verdoso", "Celeste"],
     sizes: ["S", "M", "L", "XL", "XXL"],
-    driveLink: "https://drive.google.com/drive/folders/11xJyUmqjSWywSeL4y-HLB83PjulODiwX"
+    driveLink: ""
   },
   {
     id: 34, name: "Chomba Jersey Lisa Plus", category: "HOMBRE", subcategory: "Remeras",
     description: "Chomba de jersey lisa en talles grandes. Premium comfort.",
     colors: ["Blanco", "Beige", "Melange", "Celeste", "Petróleo", "Marino", "Negro"],
     sizes: ["XL", "XXL", "3XL", "4XL"],
-    driveLink: "https://drive.google.com/drive/folders/1glaWnOJ2A43-PQm0zG25OvaLgcIYZ_vY"
+    driveLink: ""
   },
   {
     id: 35, name: "Chomba Piqué Lisa", category: "HOMBRE", subcategory: "Remeras",
     description: "Chomba de piqué lisa clásica. Colores neutros y vibrantes.",
     colors: ["Blanco", "Crudo", "Beige", "Melange", "Celeste", "Marino", "Oliva", "Petróleo", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
-    driveLink: "https://drive.google.com/drive/folders/1SJcTJqm7eDQQhcReg41pG774C4SnLZmO"
+    driveLink: ""
   },
   {
     id: 36, name: "Chomba Piqué Lisa Plus", category: "HOMBRE", subcategory: "Remeras",
     description: "Chomba de piqué lisa en talles grandes. Misma calidad, mayor amplitud.",
     colors: ["Blanco", "Melange", "Petróleo", "Marino", "Negro"],
     sizes: ["XL", "XXL", "3XL", "4XL"],
-    driveLink: "https://drive.google.com/drive/folders/17GgLeSQnmV3OOMIVGrPUCm2XewhipPn5"
+    driveLink: ""
   },
   {
     id: 37, name: "Chomba Piqué Penguin", category: "HOMBRE", subcategory: "Remeras",
     description: "Chomba piqué con detalle tipo penguin. Diseño clásico y deportivo.",
     colors: ["Blanco", "Beige", "Celeste", "Melange", "Petróleo", "Marino", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
-    driveLink: "https://drive.google.com/drive/folders/1DK20_antntq4DDhPR6WtrdHHTcgN-YOH"
+    driveLink: ""
   },
   {
     id: 38, name: "Chomba Piqué Vivo", category: "HOMBRE", subcategory: "Remeras",
     description: "Chomba piqué con vivos en contraste. Diseño deportivo elegante.",
     colors: ["Blanco vivo marino", "Beige vivo negro", "Melange vivo blanco", "Marino vivo blanco", "Negro vivo blanco"],
     sizes: ["S", "M", "L", "XL", "XXL"],
-    driveLink: "https://drive.google.com/drive/folders/1ncEtzgxrHAGSY83mBCuCV2ct-7VxRF-VGdhP".replace('7VxRF', '6famf7')
+    driveLink: ""
   },
   {
     id: 39, name: "Remera Deportiva", category: "HOMBRE", subcategory: "Remeras",
     description: "Remera deportiva técnica. Ideal para actividad física y uso casual.",
     colors: ["Blanco", "Gris", "Marino", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
-    driveLink: "https://drive.google.com/drive/folders/19bkr0lNHftz7nfY9AGvBlUvtzLmJsl0o"
+    driveLink: ""
   },
   {
     id: 40, name: "Remera Algodón", category: "HOMBRE", subcategory: "Remeras",
     description: "Remera de algodón lisa. Del S al 6XL para todos los talles.",
     colors: ["Blanco", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL", "3XL", "4XL", "5XL", "6XL"],
-    driveLink: "https://drive.google.com/drive/folders/1_duIAgMVikz_ik9-e-mSqKSN4XYFJecr"
+    driveLink: ""
   },
   {
     id: 41, name: "Pantalón Lino", category: "HOMBRE", subcategory: "Pantalones",
     description: "Pantalón de lino para hombre. Liviano, transpirable y elegante.",
     colors: ["Beige", "Oliva", "Gris Topo", "Gris", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
-    driveLink: "https://drive.google.com/drive/folders/1qJx8DJTUpncHSOJVM7tP96g2V-mGAHPW"
+    driveLink: ""
   },
   {
     id: 42, name: "Traje de Baño", category: "HOMBRE", subcategory: "Pantalones",
     description: "Traje de baño liso y surf. Colores actuales de la temporada.",
     colors: ["Beige", "Gris", "Petroleo", "Marino", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
-    driveLink: "https://drive.google.com/drive/folders/1-VcVfCvNXHHpCajrWZIEHOOIkXQaiB5l"
+    driveLink: ""
   },
   {
     id: 43, name: "Camisa", category: "HOMBRE", subcategory: "Camisas",
@@ -893,9 +893,6 @@ const extraProducts = [];
 
 products.push(...extraProducts);
 
-// Fix a driveLink that was accidentally corrupted above
-products[37].driveLink = "https://drive.google.com/drive/folders/1ncEtzgxrHAGSY83mBCuCV2ct-6famf7";
-
 
 // -- PACKAGING / SIZE CURVES -----------------------
 // Data extracted from the Verano 2027 DAMA and HOMBRE catalogs.
@@ -1404,12 +1401,11 @@ function renderProducts() {
       <div class="card-info">
         <p class="card-subcat">${p.subcategory}</p>
         <p class="card-name">${p.name}</p>
-        ${p.driveLink ? `<a class="card-drive" href="${p.driveLink}" target="_blank" onclick="event.stopPropagation()">Ver fotos →</a>` : ""}
       </div>
     `;
 
     card.addEventListener('click', (e) => {
-      if (e.target.closest('.card-add') || e.target.closest('.card-drive')) return;
+      if (e.target.closest('.card-add')) return;
       openModal(p);
     });
 
@@ -1506,12 +1502,6 @@ function openModal(p) {
 
   // Packaging / curve
   renderPackagingTable(p);
-
-  // Drive link
-  const modalDriveWrap = document.getElementById('modal-drive-wrap');
-  const modalDriveLink = document.getElementById('modal-drive-link');
-  modalDriveWrap.style.display = p.driveLink ? '' : 'none';
-  modalDriveLink.href = p.driveLink || '#';
 
   // Load modal image from local folder
   const modalImg = document.getElementById('modal-img');
@@ -1850,12 +1840,6 @@ function downloadPDF() {
     doc.text(getTotalPiecesLabel(p), margin + 42, y);
     y += 6;
 
-    // Drive link
-    doc.setTextColor(100, 120, 200);
-    doc.setFontSize(7.5);
-    doc.text('Ver fotos: ' + p.driveLink, margin + 12, y);
-
-    y += 4;
     doc.setDrawColor(235, 235, 235);
     doc.line(margin, y, pageW - margin, y);
     y += 8;
