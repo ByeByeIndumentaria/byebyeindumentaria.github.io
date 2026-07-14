@@ -618,15 +618,15 @@ a { text-decoration: none; color: inherit; }
   border: 1px solid var(--gray-200);
   border-radius: 999px;
   color: var(--gray-800);
-  background: transparent;
+  background: var(--white);
   cursor: pointer;
   transition: background var(--transition), border-color var(--transition), color var(--transition);
 }
 .color-chip:not(:disabled):hover,
 .color-chip.active {
-  background: var(--olive);
-  border-color: var(--olive);
-  color: #fffaf1;
+  background: var(--white);
+  border-color: var(--gray-200);
+  color: var(--gray-800);
 }
 .color-chip:disabled {
   cursor: default;
