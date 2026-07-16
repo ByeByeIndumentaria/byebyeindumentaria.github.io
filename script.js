@@ -840,7 +840,7 @@ const colorImageByProductId = {
   28: { "Rojo": 7, "Negro": 8, "Chocolate": 9, "Blanco": 10 },
   29: { "Estampa 1": 8, "Estampa 2": 9 },
   30: { "Estampa": 8, "Negro": 9, "Crudo": 10 },
-  31: { "Estampa 1": 1, "Estampa 2": 2, "Negro": 3 },
+  31: { "Estampa 1": 4, "Estampa 2": 5, "Negro": 6 },
   32: { "Oliva": 5, "Beige": 6, "Crudo": 7, "Negro": 8, "Oliva Oscuro": 9, "Oliva oscuro": 9, "Gris": 10, "Blanco": 11, "Marrón": 12, "Marron": 12, "Gris Oscuro": 13, "Gris oscuro": 13, "Khaki": 14, "Caqui": 14 },
   33: { "Marino": 3, "Blanco": 4, "Gris": 5, "Gris Claro": 5, "Gris claro": 5, "Gris Verdoso": 6, "Verde, petróleo": 6, "Petróleo": 6, "Negro": 7 },
   35: { "Oliva": 4, "Negro": 5, "Marino": 6, "Beige": 8, "Celeste": 9, "Blanco": 10, "Petróleo": 11, "Melange": 12, "Crudo": 13 },
