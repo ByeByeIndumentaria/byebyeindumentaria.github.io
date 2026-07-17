@@ -994,6 +994,94 @@ const extraProducts = [
     sizes: ["5XL", "6XL", "7XL"],
     collection: "invierno-2027",
     driveLink: ""
+  },
+  {
+    id: 58, name: "Lola", category: "MUJER", subcategory: "Abrigos",
+    description: "Campera de invierno para mujer. Abrigada, cómoda y de uso diario.",
+    colors: ["Negro", "Ocre"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    collection: "invierno-2027",
+    driveLink: ""
+  },
+  {
+    id: 59, name: "Clara", category: "MUJER", subcategory: "Abrigos",
+    description: "Campera de invierno para mujer. Silueta abrigada con colores neutros.",
+    colors: ["Negro", "Chocolate", "Beige"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    collection: "invierno-2027",
+    driveLink: ""
+  },
+  {
+    id: 60, name: "Civita", category: "MUJER", subcategory: "Abrigos",
+    description: "Campera de invierno para mujer con capucha. Abrigada y versátil.",
+    colors: ["Negro", "Beige", "Camel", "Rosa"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    collection: "invierno-2027",
+    driveLink: ""
+  },
+  {
+    id: 61, name: "Ana", category: "MUJER", subcategory: "Abrigos",
+    description: "Campera de invierno para mujer. Diseño corto con estilo urbano.",
+    colors: ["Chocolate", "Camel"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    collection: "invierno-2027",
+    driveLink: ""
+  },
+  {
+    id: 62, name: "Polesella", category: "MUJER", subcategory: "Abrigos",
+    description: "Campera de invierno para mujer. Diseño clásico en cuero y tonos oscuros.",
+    colors: ["Chocolate", "Negro"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    collection: "invierno-2027",
+    driveLink: ""
+  },
+  {
+    id: 63, name: "Micaela", category: "MUJER", subcategory: "Abrigos",
+    description: "Campera de invierno para mujer. Abrigo corto en tonos neutros.",
+    colors: ["Negro", "Gris", "Beige"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    collection: "invierno-2027",
+    driveLink: ""
+  },
+  {
+    id: 64, name: "Liberti", category: "MUJER", subcategory: "Abrigos",
+    description: "Tapado de invierno para mujer. Silueta larga y colores combinables.",
+    colors: ["Negro", "Arena", "Melange", "Caqui"],
+    sizes: ["S", "M", "L", "XL"],
+    collection: "invierno-2027",
+    driveLink: ""
+  },
+  {
+    id: 65, name: "Dunst Long Castana", category: "MUJER", subcategory: "Abrigos",
+    description: "Tapado largo de invierno para mujer. Abrigado, elegante y de uso diario.",
+    colors: ["Negro", "Arena", "Melange", "Caqui"],
+    sizes: ["S", "M", "L", "XL"],
+    collection: "invierno-2027",
+    driveLink: ""
+  },
+  {
+    id: 66, name: "Elena", category: "MUJER", subcategory: "Abrigos",
+    description: "Piloto de invierno para mujer. Disponible en tonos clásicos de temporada.",
+    colors: ["Negro", "Iced Coffee"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    collection: "invierno-2027",
+    driveLink: ""
+  },
+  {
+    id: 67, name: "Accadia", category: "MUJER", subcategory: "Abrigos",
+    description: "Campera de invierno para mujer con capucha. Cómoda y abrigada.",
+    colors: ["Beige/Oliva", "Negro"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    collection: "invierno-2027",
+    driveLink: ""
+  },
+  {
+    id: 68, name: "Tonara", category: "MUJER", subcategory: "Abrigos",
+    description: "Campera de invierno para mujer. Disponible en beige, militar y negro.",
+    colors: ["Beige/Oliva", "Negro"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    collection: "invierno-2027",
+    driveLink: ""
   }
 ];
 
@@ -1348,6 +1436,60 @@ const packagingByProductId = {
   57: { totalPieces: 18, totalLabel: "18 piezas por color", rows: [
     { color: "Negro", sizePieces: { "5XL": 6, "6XL": 6, "7XL": 6 } },
     { color: "Azul oscuro", sizePieces: { "5XL": 6, "6XL": 6, "7XL": 6 } }
+  ] },
+  58: { totalPieces: 24, totalLabel: "24 piezas por color", rows: [
+    { color: "Negro", sizePieces: { S: 3, M: 6, L: 6, XL: 6, XXL: 3 } },
+    { color: "Ocre", sizePieces: { S: 3, M: 6, L: 6, XL: 6, XXL: 3 } }
+  ] },
+  59: { totalPieces: 24, totalLabel: "24 piezas por color", rows: [
+    { color: "Negro", sizePieces: { S: 3, M: 6, L: 6, XL: 6, XXL: 3 } },
+    { color: "Beige", sizePieces: { S: 3, M: 6, L: 6, XL: 6, XXL: 3 } },
+    { color: "Chocolate", sizePieces: { S: 3, M: 6, L: 6, XL: 6, XXL: 3 } }
+  ] },
+  60: { totalPieces: 24, rows: [
+    { color: "Negro", sizePieces: { S: 1, M: 1, L: 2, XL: 1, XXL: 1 } },
+    { color: "Beige", sizePieces: { S: 1, M: 1, L: 2, XL: 1, XXL: 1 } },
+    { color: "Camel", sizePieces: { S: 1, M: 1, L: 2, XL: 1, XXL: 1 } },
+    { color: "Rosa", sizePieces: { S: 1, M: 1, L: 2, XL: 1, XXL: 1 } }
+  ] },
+  61: { totalPieces: 24, totalLabel: "24 piezas por color", rows: [
+    { color: "Chocolate", sizePieces: { S: 3, M: 6, L: 6, XL: 6, XXL: 3 } },
+    { color: "Camel", sizePieces: { S: 3, M: 6, L: 6, XL: 6, XXL: 3 } }
+  ] },
+  62: { totalPieces: 24, totalLabel: "24 piezas por color", rows: [
+    { color: "Chocolate", sizePieces: { S: 3, M: 6, L: 6, XL: 6, XXL: 3 } },
+    { color: "Negro", sizePieces: { S: 3, M: 6, L: 6, XL: 6, XXL: 3 } }
+  ] },
+  63: { totalPieces: 24, totalLabel: "24 piezas por color", rows: [
+    { color: "Negro", sizePieces: { S: 3, M: 6, L: 6, XL: 6, XXL: 3 } },
+    { color: "Beige", sizePieces: { S: 3, M: 6, L: 6, XL: 6, XXL: 3 } },
+    { color: "Gris", sizePieces: { S: 3, M: 6, L: 6, XL: 6, XXL: 3 } }
+  ] },
+  64: { totalPieces: 30, rows: [
+    { color: "Negro", sizePieces: { S: 1, M: 2, L: 2, XL: 1 } },
+    { color: "Negro", sizePieces: { S: 1, M: 2, L: 2, XL: 1 } },
+    { color: "Arena", sizePieces: { S: 1, M: 2, L: 2, XL: 1 } },
+    { color: "Melange", sizePieces: { S: 1, M: 2, L: 2, XL: 1 } },
+    { color: "Caqui", sizePieces: { S: 1, M: 2, L: 2, XL: 1 } }
+  ] },
+  65: { totalPieces: 30, rows: [
+    { color: "Negro", sizePieces: { S: 1, M: 2, L: 2, XL: 1 } },
+    { color: "Negro", sizePieces: { S: 1, M: 2, L: 2, XL: 1 } },
+    { color: "Arena", sizePieces: { S: 1, M: 2, L: 2, XL: 1 } },
+    { color: "Melange", sizePieces: { S: 1, M: 2, L: 2, XL: 1 } },
+    { color: "Caqui", sizePieces: { S: 1, M: 2, L: 2, XL: 1 } }
+  ] },
+  66: { totalPieces: 20, totalLabel: "20 piezas por color", rows: [
+    { color: "Negro", sizePieces: { S: 2, M: 4, L: 6, XL: 6, XXL: 2 } },
+    { color: "Iced Coffee", sizePieces: { S: 2, M: 4, L: 6, XL: 6, XXL: 2 } }
+  ] },
+  67: { totalPieces: 40, rows: [
+    { color: "Beige/Oliva", sizePieces: { S: 2, M: 4, L: 4, XL: 4, XXL: 2 }, pieces: 16 },
+    { color: "Negro", sizePieces: { S: 3, M: 6, L: 6, XL: 6, XXL: 3 }, pieces: 24 }
+  ] },
+  68: { totalPieces: 40, rows: [
+    { color: "Beige/Oliva", sizePieces: { S: 2, M: 4, L: 4, XL: 4, XXL: 2 }, pieces: 16 },
+    { color: "Negro", sizePieces: { S: 3, M: 6, L: 6, XL: 6, XXL: 3 }, pieces: 24 }
   ] }
 };
 
