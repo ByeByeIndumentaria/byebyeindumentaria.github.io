@@ -337,6 +337,13 @@ const products = [
     colors: ["Blanco", "Beige", "Melange", "Celeste", "Petróleo", "Marino", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
     driveLink: ""
+  },
+  {
+    id: 46, name: "Pantalón Sastrero", category: "MUJER", subcategory: "Pantalones",
+    description: "Pantalón sastrero de mujer. Clásico, amplio y fácil de combinar.",
+    colors: ["Blanco", "Beige", "Oliva", "Chocolate", "Negro"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    driveLink: ""
   }
 ];
 
@@ -797,6 +804,15 @@ const productImagesById = {
     6,
     7,
     8
+  ],
+  "46": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
   ]
 };
 
@@ -853,7 +869,8 @@ const colorImageByProductId = {
   42: { "Chocolate": 4, "Beige": 5, "Gris": 6, "Celeste": 7, "Petróleo": 8, "Marino": 9, "Negro": 10 },
   43: { "Celeste": 3, "Blanco": 4, "Rosa": 5, "Negro": 6, "Marino": 7 },
   44: { "Negro": 4, "Marino": 5, "Petróleo": 6, "Gris": 7, "Beige": 8 },
-  45: { "Negro": 3, "Marino": 4, "Azul marino": 4, "Blanco": 5, "Beige": 6, "Melange": 7, "Gris": 7, "Celeste": 7, "Petróleo": 8 }
+  45: { "Negro": 3, "Marino": 4, "Azul marino": 4, "Blanco": 5, "Beige": 6, "Melange": 7, "Gris": 7, "Celeste": 7, "Petróleo": 8 },
+  46: { "Negro": 3, "Blanco": 4, "Beige": 5, "Chocolate": 6, "Oliva": 7 }
 };
 
 function normalizeColorName(value) {
@@ -1180,6 +1197,13 @@ const packagingByProductId = {
     { color: "Marino", sizePieces: { S: 1, M: 2, L: 3, XL: 2, XXL: 2 } },
     { color: "Negro", sizePieces: { S: 1, M: 2, L: 3, XL: 2, XXL: 2 } },
     { color: "Negro", sizePieces: { S: 1, M: 2, L: 3, XL: 2, XXL: 2 } }
+  ] },
+  46: { totalPieces: 64, rows: [
+    { color: "Blanco", sizePieces: { S: 4, M: 4, L: 3, XL: 3, XXL: 2 } },
+    { color: "Beige", sizePieces: { S: 4, M: 4, L: 3, XL: 3, XXL: 2 } },
+    { color: "Oliva", sizePieces: { S: 2, M: 2, L: 2, XL: 1, XXL: 1 } },
+    { color: "Chocolate", sizePieces: { S: 2, M: 2, L: 2, XL: 1, XXL: 1 } },
+    { color: "Negro", sizePieces: { S: 4, M: 4, L: 3, XL: 3, XXL: 2 } }
   ] }
 };
 
