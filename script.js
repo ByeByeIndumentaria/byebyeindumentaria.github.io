@@ -7,7 +7,7 @@
 // -- COLLECTIONS ----------------------------------
 const collections = [
   { id: "verano-2027", name: "Verano 2027", label: "SS 2027", tagline: "Made for summer." },
-  { id: "invierno-2027", name: "Invierno 2027", label: "FW 2027", tagline: "Próximamente.", disabled: true }
+  { id: "invierno-2027", name: "Invierno 2027", label: "FW 2027", tagline: "Abrigos y prendas de invierno." }
 ];
 
 // -- EASY CATALOG CONTROL -------------------------
@@ -906,7 +906,96 @@ function getColorGalleryIndex(product, colorIndex, galleryLength) {
 
 // Para sumar productos nuevos rapido, copias este formato, cambias el id,
 // nombre, categoria, colores, talles y despues agregas su curva en packagingByProductId.
-const extraProducts = [];
+const extraProducts = [
+  {
+    id: 47, name: "Barzio", category: "HOMBRE", subcategory: "Abrigos",
+    description: "Campera de invierno para hombre. Abrigada, versátil y preparada para bajas temperaturas.",
+    colors: ["Negro", "Beige"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    collection: "invierno-2027",
+    driveLink: ""
+  },
+  {
+    id: 48, name: "Merano", category: "HOMBRE", subcategory: "Abrigos",
+    description: "Campera larga de invierno para hombre. Diseño abrigado y urbano.",
+    colors: ["Negro", "Marino"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    collection: "invierno-2027",
+    driveLink: ""
+  },
+  {
+    id: 49, name: "Saluzzo", category: "HOMBRE", subcategory: "Abrigos",
+    description: "Campera de invierno para hombre con capucha. Abrigada y de uso diario.",
+    colors: ["Blanco", "Negro", "Beige"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    collection: "invierno-2027",
+    driveLink: ""
+  },
+  {
+    id: 50, name: "Acuto Sanwich", category: "HOMBRE", subcategory: "Abrigos",
+    description: "Campera inflable de invierno para hombre. Liviana, cómoda y abrigada.",
+    colors: ["Negro", "Camel", "Caqui", "Chocolate"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    collection: "invierno-2027",
+    driveLink: ""
+  },
+  {
+    id: 51, name: "Taft", category: "HOMBRE", subcategory: "Abrigos",
+    description: "Campera liviana de invierno para hombre. Disponible en colores clásicos.",
+    colors: ["Negro", "Marino"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    collection: "invierno-2027",
+    driveLink: ""
+  },
+  {
+    id: 52, name: "Harold", category: "HOMBRE", subcategory: "Abrigos",
+    description: "Campera de paño para hombre. Diseño con capucha y combinaciones de invierno.",
+    colors: ["Negro", "Negro melange", "Melange oscuro", "Melange", "Caqui"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    collection: "invierno-2027",
+    driveLink: ""
+  },
+  {
+    id: 53, name: "Bulciago", category: "HOMBRE", subcategory: "Abrigos",
+    description: "Campera de cuero para hombre. Clásica, sobria y de abrigo liviano.",
+    colors: ["Negro"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    collection: "invierno-2027",
+    driveLink: ""
+  },
+  {
+    id: 54, name: "Ailano", category: "HOMBRE", subcategory: "Abrigos",
+    description: "Trench de invierno para hombre. Corte clásico con cinturón.",
+    colors: ["Negro", "Beige", "Camel"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    collection: "invierno-2027",
+    driveLink: ""
+  },
+  {
+    id: 55, name: "Leonel", category: "HOMBRE", subcategory: "Abrigos",
+    description: "Tapado de invierno para hombre con capucha. Abrigado y elegante.",
+    colors: ["Melange", "Negro", "Melange oscuro", "Caqui"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    collection: "invierno-2027",
+    driveLink: ""
+  },
+  {
+    id: 56, name: "Juan", category: "HOMBRE", subcategory: "Abrigos",
+    description: "Tapado de invierno para hombre. Silueta larga y colores neutros.",
+    colors: ["Negro", "Marrón", "Gris"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    collection: "invierno-2027",
+    driveLink: ""
+  },
+  {
+    id: 57, name: "Felipe Fur Plus", category: "HOMBRE", subcategory: "Abrigos Plus",
+    description: "Campera plus size de invierno para hombre. Abrigada y cómoda.",
+    colors: ["Negro", "Azul oscuro"],
+    sizes: ["5XL", "6XL", "7XL"],
+    collection: "invierno-2027",
+    driveLink: ""
+  }
+];
 
 products.push(...extraProducts);
 
@@ -1204,6 +1293,61 @@ const packagingByProductId = {
     { color: "Oliva", sizePieces: { S: 2, M: 2, L: 2, XL: 1, XXL: 1 } },
     { color: "Chocolate", sizePieces: { S: 2, M: 2, L: 2, XL: 1, XXL: 1 } },
     { color: "Negro", sizePieces: { S: 4, M: 4, L: 3, XL: 3, XXL: 2 } }
+  ] },
+  47: { totalPieces: 18, totalLabel: "18 piezas por color", rows: [
+    { color: "Negro", sizePieces: { S: 2, M: 2, L: 4, XL: 4, XXL: 4 } },
+    { color: "Beige", sizePieces: { S: 2, M: 2, L: 4, XL: 4, XXL: 4 } }
+  ] },
+  48: { totalPieces: 24, totalLabel: "24 piezas por color", rows: [
+    { color: "Negro", sizePieces: { S: 3, M: 6, L: 6, XL: 6, XXL: 3 } },
+    { color: "Marino", sizePieces: { S: 3, M: 6, L: 6, XL: 6, XXL: 3 } }
+  ] },
+  49: { totalPieces: 24, rows: [
+    { color: "Blanco", sizePieces: { S: 1, M: 1, L: 2, XL: 1, XXL: 1 } },
+    { color: "Negro", sizePieces: { S: 1, M: 1, L: 2, XL: 1, XXL: 1 } },
+    { color: "Negro", sizePieces: { S: 1, M: 1, L: 2, XL: 1, XXL: 1 } },
+    { color: "Beige", sizePieces: { S: 1, M: 1, L: 2, XL: 1, XXL: 1 } }
+  ] },
+  50: { totalPieces: 30, rows: [
+    { color: "Negro", sizePieces: { S: 1, M: 1, L: 2, XL: 1, XXL: 1 } },
+    { color: "Camel", sizePieces: { S: 1, M: 1, L: 2, XL: 1, XXL: 1 } },
+    { color: "Camel", sizePieces: { S: 1, M: 1, L: 2, XL: 1, XXL: 1 } },
+    { color: "Caqui", sizePieces: { S: 1, M: 1, L: 2, XL: 1, XXL: 1 } },
+    { color: "Chocolate", sizePieces: { S: 1, M: 1, L: 2, XL: 1, XXL: 1 } }
+  ] },
+  51: { totalPieces: 24, totalLabel: "24 piezas por color", rows: [
+    { color: "Negro", sizePieces: { S: 3, M: 6, L: 6, XL: 6, XXL: 3 } },
+    { color: "Marino", sizePieces: { S: 3, M: 6, L: 6, XL: 6, XXL: 3 } }
+  ] },
+  52: { totalPieces: 30, rows: [
+    { color: "Negro", sizePieces: { S: 1, M: 1, L: 2, XL: 1, XXL: 1 } },
+    { color: "Negro", sizePieces: { S: 1, M: 1, L: 2, XL: 1, XXL: 1 } },
+    { color: "Melange oscuro", sizePieces: { S: 1, M: 1, L: 2, XL: 1, XXL: 1 } },
+    { color: "Melange", sizePieces: { S: 1, M: 1, L: 2, XL: 1, XXL: 1 } },
+    { color: "Caqui", sizePieces: { S: 1, M: 1, L: 2, XL: 1, XXL: 1 } }
+  ] },
+  53: { totalPieces: 24, rows: [
+    { color: "Negro", sizePieces: { S: 3, M: 6, L: 6, XL: 6, XXL: 3 } }
+  ] },
+  54: { totalPieces: 24, rows: [
+    { color: "Negro", sizePieces: { S: 1, M: 2, L: 2, XL: 2, XXL: 1 } },
+    { color: "Beige", sizePieces: { S: 1, M: 2, L: 2, XL: 2, XXL: 1 } },
+    { color: "Camel", sizePieces: { S: 1, M: 2, L: 2, XL: 2, XXL: 1 } }
+  ] },
+  55: { totalPieces: 30, rows: [
+    { color: "Melange", sizePieces: { S: 1, M: 1, L: 2, XL: 1, XXL: 1 } },
+    { color: "Negro", sizePieces: { S: 2, M: 2, L: 4, XL: 2, XXL: 2 } },
+    { color: "Melange oscuro", sizePieces: { S: 1, M: 1, L: 2, XL: 1, XXL: 1 } },
+    { color: "Caqui", sizePieces: { S: 1, M: 1, L: 2, XL: 1, XXL: 1 } }
+  ] },
+  56: { totalPieces: 24, totalLabel: "24 piezas por color", rows: [
+    { color: "Negro", sizePieces: { S: 3, M: 6, L: 6, XL: 6, XXL: 3 } },
+    { color: "Marrón", sizePieces: { S: 3, M: 6, L: 6, XL: 6, XXL: 3 } },
+    { color: "Gris", sizePieces: { S: 3, M: 6, L: 6, XL: 6, XXL: 3 } }
+  ] },
+  57: { totalPieces: 18, totalLabel: "18 piezas por color", rows: [
+    { color: "Negro", sizePieces: { "5XL": 6, "6XL": 6, "7XL": 6 } },
+    { color: "Azul oscuro", sizePieces: { "5XL": 6, "6XL": 6, "7XL": 6 } }
   ] }
 };
 
@@ -1538,7 +1682,7 @@ function openModal(p) {
   modalEl.style.removeProperty('--modal-w');
 
   // Remove old gallery controls if any
-  modalImgWrap.querySelectorAll('.modal-gallery-dots, .gallery-arrow').forEach(el => el.remove());
+  modalImgWrap.querySelectorAll('.modal-gallery-dots, .gallery-arrow, .modal-empty-image').forEach(el => el.remove());
 
   // Build gallery without blocking the modal opening.
   const gallerySrcs = getProductImageSources(p.id);
@@ -1546,6 +1690,16 @@ function openModal(p) {
   let dots = null;
   modalImg.onclick = null;
   modalImg.style.cursor = '';
+
+  if (!gallerySrcs.length) {
+    const emptyImage = document.createElement('div');
+    emptyImage.className = 'modal-empty-image';
+    emptyImage.innerHTML = `
+      <span class="modal-empty-kicker">Foto pendiente</span>
+      <strong>${p.name}</strong>
+    `;
+    modalImgWrap.appendChild(emptyImage);
+  }
 
   function updateDots() {
     if (!dots) return;
