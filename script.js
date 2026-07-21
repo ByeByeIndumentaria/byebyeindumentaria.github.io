@@ -813,6 +813,70 @@ const productImagesById = {
     5,
     6,
     7
+  ],
+  "58": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "59": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "60": [
+    1
+  ],
+  "61": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "62": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "63": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "64": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "65": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "66": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "68": [
+    1
   ]
 };
 
@@ -870,7 +934,17 @@ const colorImageByProductId = {
   43: { "Celeste": 3, "Blanco": 4, "Rosa": 5, "Negro": 6, "Marino": 7 },
   44: { "Negro": 4, "Marino": 5, "Petróleo": 6, "Gris": 7, "Beige": 8 },
   45: { "Negro": 3, "Marino": 4, "Azul marino": 4, "Blanco": 5, "Beige": 6, "Melange": 7, "Gris": 7, "Celeste": 7, "Petróleo": 8 },
-  46: { "Negro": 3, "Blanco": 4, "Beige": 5, "Chocolate": 6, "Oliva": 7 }
+  46: { "Negro": 3, "Blanco": 4, "Beige": 5, "Chocolate": 6, "Oliva": 7 },
+  58: { "Ocre": 1 },
+  59: { "Negro": 1 },
+  60: { "Rosa": 1 },
+  61: { "Chocolate": 1 },
+  62: { "Negro": 1 },
+  63: { "Negro": 1 },
+  64: { "Negro": 1 },
+  65: { "Negro": 1 },
+  66: { "Iced Coffee": 1 },
+  68: { "Beige/Oliva": 1, "Oliva": 1, "Beige": 1 }
 };
 
 function normalizeColorName(value) {
