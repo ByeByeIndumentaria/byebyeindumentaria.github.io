@@ -7,7 +7,7 @@
 // -- COLLECTIONS ----------------------------------
 const collections = [
   { id: "verano-2027", name: "Verano 2027", label: "SS 2027", tagline: "Made for summer." },
-  { id: "invierno-2027", name: "Invierno 2027", label: "FW 2027", tagline: "Abrigos y prendas de invierno." }
+  { id: "invierno-2027", name: "Invierno", label: "FW 2027", tagline: "Abrigos y prendas de invierno." }
 ];
 
 // -- EASY CATALOG CONTROL -------------------------
