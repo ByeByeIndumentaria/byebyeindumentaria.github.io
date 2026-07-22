@@ -960,7 +960,7 @@ const colorImageByProductId = {
   8: { "Negro": 5, "Beige": 6, "Oliva": 7, "Verde": 7, "Blanco": 8 },
   9: { "Beige": 5, "Negro": 6, "Oliva": 7, "Blanco": 8 },
   10: { "Negro": 4, "Blanco": 5, "Oliva": 6, "Beige": 7, "Chocolate": 8 },
-  11: { "Negro": 4, "Crudo": 5, "Blanco": 6 },
+  11: { "Negro": 3, "Crudo": 4, "Blanco": 5 },
   12: { "Marrón": 4, "Marron": 4, "Negro": 5, "Blanco": 6 },
   13: { "Negro": 5, "Chocolate": 6, "Blanco": 7, "Crudo": 8 },
   14: { "Negro": 5, "Blanco": 6, "Crudo": 7, "Chocolate": 8 },
