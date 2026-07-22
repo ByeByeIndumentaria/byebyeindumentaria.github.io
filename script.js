@@ -814,6 +814,67 @@ const productImagesById = {
     6,
     7
   ],
+  "47": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "48": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "49": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "50": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "51": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "52": [
+    1
+  ],
+  "53": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "54": [
+    1,
+    2,
+    3
+  ],
+  "56": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
   "58": [
     1,
     2,
@@ -935,6 +996,15 @@ const colorImageByProductId = {
   44: { "Negro": 4, "Marino": 5, "Petróleo": 6, "Gris": 7, "Beige": 8 },
   45: { "Negro": 3, "Marino": 4, "Azul marino": 4, "Blanco": 5, "Beige": 6, "Melange": 7, "Gris": 7, "Celeste": 7, "Petróleo": 8 },
   46: { "Negro": 3, "Blanco": 4, "Beige": 5, "Chocolate": 6, "Oliva": 7 },
+  47: { "Beige": 1 },
+  48: { "Negro": 1 },
+  49: { "Blanco": 1 },
+  50: { "Negro": 1 },
+  51: { "Negro": 1 },
+  52: { "Negro": 1, "Negro melange": 1, "Melange oscuro": 1, "Melange": 1 },
+  53: { "Negro": 1 },
+  54: { "Camel": 1 },
+  56: { "Marrón": 1 },
   58: { "Ocre": 1 },
   59: { "Negro": 1 },
   60: { "Rosa": 1 },
