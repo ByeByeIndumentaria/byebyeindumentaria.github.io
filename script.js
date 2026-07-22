@@ -120,14 +120,14 @@ const products = [
     driveLink: ""
   },
   {
-    id: 15, name: "Pantalón Sastrero", category: "MUJER", subcategory: "Pantalones",
+    id: 15, name: "Pantalón Sastrero", category: "MUJER", subcategory: "Conjuntos",
     description: "Pantalón de corte sastrero. Líneas limpias y modernas.",
     colors: ["Beige", "Negro"],
     sizes: ["S", "M", "L", "XL"],
     driveLink: ""
   },
   {
-    id: 16, name: "Short Brezo", category: "MUJER", subcategory: "Pantalones",
+    id: 16, name: "Short Brezo", category: "MUJER", subcategory: "Shorts",
     description: "Short fresco ideal para los días de calor.",
     colors: ["Blanco", "Beige", "Oliva", "Chocolate", "Negro"],
     sizes: ["S", "M", "L", "XL"],
@@ -241,7 +241,7 @@ const products = [
 
   // ── HOMBRE ──
   {
-    id: 32, name: "Bermuda Lino", category: "HOMBRE", subcategory: "Pantalones",
+    id: 32, name: "Bermuda Lino", category: "HOMBRE", subcategory: "Bermudas",
     description: "Bermuda de lino premium para el verano. Cómoda y sofisticada.",
     colors: ["Oliva", "Khaki", "Gris Oscuro", "Marrón", "Blanco"],
     sizes: ["S", "M", "L", "XL", "XXL"],
@@ -255,35 +255,35 @@ const products = [
     driveLink: ""
   },
   {
-    id: 34, name: "Chomba Jersey Lisa Plus", category: "HOMBRE", subcategory: "Remeras",
+    id: 34, name: "Chomba Jersey Lisa Plus", category: "HOMBRE", subcategory: "Chombas",
     description: "Chomba de jersey lisa en talles grandes. Premium comfort.",
     colors: ["Blanco", "Beige", "Melange", "Celeste", "Petróleo", "Marino", "Negro"],
     sizes: ["XL", "XXL", "3XL", "4XL"],
     driveLink: ""
   },
   {
-    id: 35, name: "Chomba Piqué Lisa", category: "HOMBRE", subcategory: "Remeras",
+    id: 35, name: "Chomba Piqué Lisa", category: "HOMBRE", subcategory: "Chombas",
     description: "Chomba de piqué lisa clásica. Colores neutros y vibrantes.",
     colors: ["Blanco", "Crudo", "Beige", "Melange", "Celeste", "Marino", "Oliva", "Petróleo", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
     driveLink: ""
   },
   {
-    id: 36, name: "Chomba Piqué Lisa Plus", category: "HOMBRE", subcategory: "Remeras",
+    id: 36, name: "Chomba Piqué Lisa Plus", category: "HOMBRE", subcategory: "Chombas",
     description: "Chomba de piqué lisa en talles grandes. Misma calidad, mayor amplitud.",
     colors: ["Blanco", "Melange", "Petróleo", "Marino", "Negro"],
     sizes: ["XL", "XXL", "3XL", "4XL"],
     driveLink: ""
   },
   {
-    id: 37, name: "Chomba Piqué Penguin", category: "HOMBRE", subcategory: "Remeras",
+    id: 37, name: "Chomba Piqué Penguin", category: "HOMBRE", subcategory: "Chombas",
     description: "Chomba piqué con detalle tipo penguin. Diseño clásico y deportivo.",
     colors: ["Blanco", "Beige", "Celeste", "Melange", "Petróleo", "Marino", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
     driveLink: ""
   },
   {
-    id: 38, name: "Chomba Piqué Vivo", category: "HOMBRE", subcategory: "Remeras",
+    id: 38, name: "Chomba Piqué Vivo", category: "HOMBRE", subcategory: "Chombas",
     description: "Chomba piqué con vivos en contraste. Diseño deportivo elegante.",
     colors: ["Blanco vivo marino", "Beige vivo negro", "Melange vivo blanco", "Marino vivo blanco", "Negro vivo blanco"],
     sizes: ["S", "M", "L", "XL", "XXL"],
@@ -311,7 +311,7 @@ const products = [
     driveLink: ""
   },
   {
-    id: 42, name: "Traje de Baño", category: "HOMBRE", subcategory: "Pantalones",
+    id: 42, name: "Traje de Baño", category: "HOMBRE", subcategory: "Trajes de baño",
     description: "Traje de baño liso y surf. Colores actuales de la temporada.",
     colors: ["Beige", "Gris", "Petroleo", "Marino", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
@@ -325,21 +325,21 @@ const products = [
     driveLink: ""
   },
   {
-    id: 44, name: "Traje de baño surf", category: "HOMBRE", subcategory: "Pantalones",
+    id: 44, name: "Traje de baño surf", category: "HOMBRE", subcategory: "Trajes de baño",
     description: "Traje de baño surf para hombre. Liviano, fresco y listo para el verano.",
     colors: ["Beige", "Gris", "Petróleo", "Marino", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
     driveLink: ""
   },
   {
-    id: 45, name: "Chomba Jersey Lisa", category: "HOMBRE", subcategory: "Remeras",
+    id: 45, name: "Chomba Jersey Lisa", category: "HOMBRE", subcategory: "Chombas",
     description: "Chomba jersey lisa para hombre. Básica, cómoda y versátil.",
     colors: ["Blanco", "Beige", "Melange", "Celeste", "Petróleo", "Marino", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
     driveLink: ""
   },
   {
-    id: 46, name: "Pantalón Sastrero", category: "MUJER", subcategory: "Pantalones",
+    id: 46, name: "Pantalón Sastrero", category: "MUJER", subcategory: "Conjuntos",
     description: "Pantalón sastrero de mujer. Clásico, amplio y fácil de combinar.",
     colors: ["Blanco", "Beige", "Oliva", "Chocolate", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
