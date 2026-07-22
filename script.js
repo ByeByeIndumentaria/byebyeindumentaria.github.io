@@ -243,8 +243,8 @@ const products = [
   {
     id: 32, name: "Bermuda Lino", category: "HOMBRE", subcategory: "Bermudas",
     description: "Bermuda de lino premium para el verano. Cómoda y sofisticada.",
-    colors: ["Oliva", "Khaki", "Gris Oscuro", "Marrón", "Blanco"],
-    sizes: ["S", "M", "L", "XL", "XXL"],
+    colors: ["Oliva", "Khaki", "Gris Oscuro", "Marrón", "Blanco", "Gris Oliva", "Negro", "Crudo", "Beige"],
+    sizes: ["30", "32", "34", "36"],
     driveLink: ""
   },
   {
@@ -982,7 +982,7 @@ const colorImageByProductId = {
   30: { "Estampa": 8, "Negro": 9, "Crudo": 10 },
   31: { "Estampa 1": 4, "Estampa 2": 5, "Negro": 6 },
 
-  32: { "Oliva": 5, "Beige": 6, "Crudo": 7, "Negro": 8, "Oliva Oscuro": 9, "Oliva oscuro": 9, "Gris": 10, "Blanco": 11, "Marrón": 12, "Marron": 12, "Gris Oscuro": 13, "Gris oscuro": 13, "Khaki": 14, "Caqui": 14 },
+  32: { "Oliva": 5, "Beige": 6, "Crudo": 7, "Negro": 8, "Oliva Oscuro": 9, "Oliva oscuro": 9, "Gris Oliva": 9, "Gris": 10, "Blanco": 11, "Marrón": 12, "Marron": 12, "Gris Oscuro": 13, "Gris oscuro": 13, "Khaki": 14, "Caqui": 14 },
   33: { "Marino": 3, "Blanco": 4, "Gris": 5, "Gris Claro": 5, "Gris claro": 5, "Gris Verdoso": 6, "Verde, petróleo": 6, "Petróleo": 6, "Negro": 7 },
   35: { "Oliva": 4, "Negro": 5, "Marino": 6, "Beige": 8, "Celeste": 9, "Blanco": 10, "Petróleo": 11, "Melange": 12, "Crudo": 13 },
   36: { "Petróleo": 6, "Melange": 7, "Blanco": 8, "Negro": 9, "Marino": 10 },
@@ -1413,15 +1413,15 @@ const packagingByProductId = {
     totalPieces: 378,
     totalLabel: "42 piezas por color",
     rows: [
-      { color: "Oliva", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "42 piezas por color" },
-      { color: "Beige", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "42 piezas por color" },
-      { color: "Crudo", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "42 piezas por color" },
-      { color: "Negro", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "42 piezas por color" },
-      { color: "Oliva oscuro", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "42 piezas por color" },
-      { color: "Gris", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "42 piezas por color" },
-      { color: "Blanco", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "42 piezas por color" },
-      { color: "Marrón", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "42 piezas por color" },
-      { color: "Caqui", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "42 piezas por color" },
+      { color: "Oliva", sizePieces: { "30": 1, "32": 2, "34": 2, "36": 1 }, pieces: "42 piezas por color" },
+      { color: "Khaki", sizePieces: { "30": 1, "32": 2, "34": 2, "36": 1 }, pieces: "42 piezas por color" },
+      { color: "Gris Oscuro", sizePieces: { "30": 1, "32": 2, "34": 2, "36": 1 }, pieces: "42 piezas por color" },
+      { color: "Marrón", sizePieces: { "30": 1, "32": 2, "34": 2, "36": 1 }, pieces: "42 piezas por color" },
+      { color: "Blanco", sizePieces: { "30": 1, "32": 2, "34": 2, "36": 1 }, pieces: "42 piezas por color" },
+      { color: "Gris Oliva", sizePieces: { "30": 1, "32": 2, "34": 2, "36": 1 }, pieces: "42 piezas por color" },
+      { color: "Negro", sizePieces: { "30": 1, "32": 2, "34": 2, "36": 1 }, pieces: "42 piezas por color" },
+      { color: "Crudo", sizePieces: { "30": 1, "32": 2, "34": 2, "36": 1 }, pieces: "42 piezas por color" },
+      { color: "Beige", sizePieces: { "30": 1, "32": 2, "34": 2, "36": 1 }, pieces: "42 piezas por color" },
     ],
   },
   33: {
@@ -1439,7 +1439,7 @@ const packagingByProductId = {
   },
   34: {
     totalPieces: 72,
-    totalLabel: "12 piezas por color",
+    totalLabel: "72 piezas totales",
     rows: [
       { color: "Blanco", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 }, pieces: "12 piezas por color" },
       { color: "Melange", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 }, pieces: "12 piezas por color" },
@@ -1451,7 +1451,7 @@ const packagingByProductId = {
   },
   35: {
     totalPieces: 100,
-    totalLabel: "10 piezas por color",
+    totalLabel: "100 piezas totales",
     rows: [
       { color: "Blanco", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "10 piezas por color" },
       { color: "Crudo", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "10 piezas por color" },
@@ -1467,7 +1467,7 @@ const packagingByProductId = {
   },
   36: {
     totalPieces: 72,
-    totalLabel: "12 piezas por color",
+    totalLabel: "72 piezas totales",
     rows: [
       { color: "Blanco", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 }, pieces: "12 piezas por color" },
       { color: "Melange", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 }, pieces: "12 piezas por color" },
