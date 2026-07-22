@@ -981,6 +981,7 @@ const colorImageByProductId = {
   29: { "Estampa 1": 8, "Estampa 2": 9 },
   30: { "Estampa": 8, "Negro": 9, "Crudo": 10 },
   31: { "Estampa 1": 4, "Estampa 2": 5, "Negro": 6 },
+
   32: { "Oliva": 5, "Beige": 6, "Crudo": 7, "Negro": 8, "Oliva Oscuro": 9, "Oliva oscuro": 9, "Gris": 10, "Blanco": 11, "Marrón": 12, "Marron": 12, "Gris Oscuro": 13, "Gris oscuro": 13, "Khaki": 14, "Caqui": 14 },
   33: { "Marino": 3, "Blanco": 4, "Gris": 5, "Gris Claro": 5, "Gris claro": 5, "Gris Verdoso": 6, "Verde, petróleo": 6, "Petróleo": 6, "Negro": 7 },
   35: { "Oliva": 4, "Negro": 5, "Marino": 6, "Beige": 8, "Celeste": 9, "Blanco": 10, "Petróleo": 11, "Melange": 12, "Crudo": 13 },
@@ -1407,107 +1408,166 @@ const packagingByProductId = {
     { color: "Estampa 2", sizePieces: { S: 1, M: 2, L: 3, XL: 2 } },
     { color: "Negro", sizePieces: { S: 1, M: 2, L: 3, XL: 2 } }
   ] },
-  32: { totalPieces: 378, rows: [
-    { color: "Oliva", sizePieces: { "30": 1, "32": 2, "34": 2, "36": 1 } },
-    { color: "Khaki", sizePieces: { "30": 1, "32": 2, "34": 2, "36": 1 } },
-    { color: "Gris Oscuro", sizePieces: { "30": 1, "32": 2, "34": 2, "36": 1 } },
-    { color: "Marrón", sizePieces: { "30": 1, "32": 2, "34": 2, "36": 1 } },
-    { color: "Blanco", sizePieces: { "30": 1, "32": 2, "34": 2, "36": 1 } },
-    { color: "Gris", sizePieces: { "30": 1, "32": 2, "34": 2, "36": 1 } },
-    { color: "Negro", sizePieces: { "30": 1, "32": 2, "34": 2, "36": 1 } },
-    { color: "Crudo", sizePieces: { "30": 1, "32": 2, "34": 2, "36": 1 } },
-    { color: "Beige", sizePieces: { "30": 1, "32": 2, "34": 2, "36": 1 } }
-  ] },
-  33: { totalPieces: 168, rows: [
-    { color: "Blanco", sizePieces: { S: 1, M: 2, L: 2, XL: 2, XXL: 1 } },
-    { color: "Beige", sizePieces: { S: 1, M: 2, L: 2, XL: 2, XXL: 1 } },
-    { color: "Gris", sizePieces: { S: 1, M: 2, L: 2, XL: 2, XXL: 1 } },
-    { color: "Gris Verdoso", sizePieces: { S: 1, M: 2, L: 2, XL: 2, XXL: 1 } },
-    { color: "Celeste", sizePieces: { S: 1, M: 2, L: 2, XL: 2, XXL: 1 } },
-    { color: "Marino", sizePieces: { S: 1, M: 2, L: 2, XL: 2, XXL: 1 } },
-    { color: "Negro", sizePieces: { S: 1, M: 2, L: 2, XL: 2, XXL: 1 } }
-  ] },
-  34: { totalPieces: 72, rows: [
-    { color: "Blanco", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 } },
-    { color: "Melange", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 } },
-    { color: "Petróleo", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 } },
-    { color: "Marino", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 } },
-    { color: "Negro", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 } }
-  ] },
-  35: { totalPieces: 100, rows: [
-    { color: "Blanco", sizePieces: { S: 1, M: 2, L: 3, XL: 2, XXL: 2 } },
-    { color: "Crudo", sizePieces: { S: 1, M: 2, L: 3, XL: 2, XXL: 2 } },
-    { color: "Beige", sizePieces: { S: 1, M: 2, L: 3, XL: 2, XXL: 2 } },
-    { color: "Melange", sizePieces: { S: 1, M: 2, L: 3, XL: 2, XXL: 2 } },
-    { color: "Celeste", sizePieces: { S: 1, M: 2, L: 3, XL: 2, XXL: 2 } },
-    { color: "Marino", sizePieces: { S: 1, M: 2, L: 3, XL: 2, XXL: 2 } },
-    { color: "Oliva", sizePieces: { S: 1, M: 2, L: 3, XL: 2, XXL: 2 } },
-    { color: "Petróleo", sizePieces: { S: 1, M: 2, L: 3, XL: 2, XXL: 2 } },
-    { color: "Negro", sizePieces: { S: 1, M: 2, L: 3, XL: 2, XXL: 2 } }
-  ] },
-  36: { totalPieces: 72, rows: [
-    { color: "Blanco", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 } },
-    { color: "Melange", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 } },
-    { color: "Petróleo", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 } },
-    { color: "Marino", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 } },
-    { color: "Negro", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 } }
-  ] },
-  37: { totalPieces: 75, rows: [
-    { color: "Blanco vivo marino", sizePieces: { S: 1, M: 2, L: 3, XL: 2, XXL: 2 } },
-    { color: "Beige vivo negro", sizePieces: { S: 1, M: 2, L: 3, XL: 2, XXL: 2 } },
-    { color: "Celeste vivo negro", sizePieces: { S: 1, M: 2, L: 3, XL: 2, XXL: 2 } },
-    { color: "Melange vivo blanco", sizePieces: { S: 1, M: 2, L: 3, XL: 2, XXL: 2 } },
-    { color: "Petróleo vivo blanco", sizePieces: { S: 1, M: 2, L: 3, XL: 2, XXL: 2 } },
-    { color: "Marino vivo gris", sizePieces: { S: 1, M: 2, L: 3, XL: 2, XXL: 2 } },
-    { color: "Negro vivo blanco", sizePieces: { S: 1, M: 2, L: 3, XL: 2, XXL: 2 } }
-  ] },
-  38: { totalPieces: 60, rows: [
-    { color: "Blanco vivo marino", sizePieces: { S: 1, M: 2, L: 3, XL: 2, XXL: 2 } },
-    { color: "Beige vivo negro", sizePieces: { S: 1, M: 2, L: 3, XL: 2, XXL: 2 } },
-    { color: "Melange vivo blanco", sizePieces: { S: 1, M: 2, L: 3, XL: 2, XXL: 2 } },
-    { color: "Marino vivo blanco", sizePieces: { S: 1, M: 2, L: 3, XL: 2, XXL: 2 } },
-    { color: "Negro vivo gris", sizePieces: { S: 1, M: 2, L: 3, XL: 2, XXL: 2 } },
-    { color: "Negro vivo blanco", sizePieces: { S: 1, M: 2, L: 3, XL: 2, XXL: 2 } }
-  ] },
-  39: { totalPieces: 192, rows: [
-    { color: "Blanco", sizePieces: { S: 2, M: 2, L: 2, XL: 1, XXL: 1 } },
-    { color: "Gris", sizePieces: { S: 2, M: 2, L: 2, XL: 1, XXL: 1 } },
-    { color: "Marino", sizePieces: { S: 2, M: 2, L: 2, XL: 1, XXL: 1 } },
-    { color: "Negro", sizePieces: { S: 2, M: 2, L: 2, XL: 1, XXL: 1 } }
-  ] },
-  40: { totalPieces: 180, rows: [
-    { color: "Blanco", curveText: "S al 6XL por talle" },
-    { color: "Negro", curveText: "S al 6XL por talle" }
-  ] },
-  41: { totalPieces: 288, rows: [
-    { color: "Beige", sizePieces: { "30": 2, "32": 2, "34": 2, "36": 1, "38": 1 } },
-    { color: "Oliva", sizePieces: { "30": 2, "32": 2, "34": 2, "36": 1, "38": 1 } },
-    { color: "Gris Topo", sizePieces: { "30": 2, "32": 2, "34": 2, "36": 1, "38": 1 } },
-    { color: "Gris", sizePieces: { "30": 2, "32": 2, "34": 2, "36": 1, "38": 1 } },
-    { color: "Gris Claro", sizePieces: { "30": 2, "32": 2, "34": 2, "36": 1, "38": 1 } },
-    { color: "Negro", sizePieces: { "30": 2, "32": 2, "34": 2, "36": 1, "38": 1 } }
-  ] },
-  42: { totalPieces: 72, rows: [
-    { color: "Beige", sizePieces: { S: 2, M: 2, L: 3, XL: 3, XXL: 2 } },
-    { color: "Gris", sizePieces: { S: 2, M: 2, L: 3, XL: 3, XXL: 2 } },
-    { color: "Petróleo", sizePieces: { S: 2, M: 2, L: 3, XL: 3, XXL: 2 } },
-    { color: "Marino", sizePieces: { S: 2, M: 2, L: 3, XL: 3, XXL: 2 } },
-    { color: "Negro", sizePieces: { S: 4, M: 4, L: 6, XL: 6, XXL: 4 } }
-  ] },
-  43: { totalPieces: 240, rows: [
-    { color: "Blanco", sizePieces: { S: 2, M: 2, L: 2, XL: 1, XXL: 1 } },
-    { color: "Rosa", sizePieces: { S: 2, M: 2, L: 2, XL: 1, XXL: 1 } },
-    { color: "Celeste", sizePieces: { S: 2, M: 2, L: 2, XL: 1, XXL: 1 } },
-    { color: "Marino", sizePieces: { S: 2, M: 2, L: 2, XL: 1, XXL: 1 } },
-    { color: "Negro", sizePieces: { S: 2, M: 2, L: 2, XL: 1, XXL: 1 } }
-  ] },
-  44: { totalPieces: 60, rows: [
-    { color: "Beige", sizePieces: { S: 2, M: 2, L: 3, XL: 3, XXL: 2 } },
-    { color: "Gris", sizePieces: { S: 2, M: 2, L: 3, XL: 3, XXL: 2 } },
-    { color: "Petróleo", sizePieces: { S: 2, M: 2, L: 3, XL: 3, XXL: 2 } },
-    { color: "Marino", sizePieces: { S: 2, M: 2, L: 3, XL: 3, XXL: 2 } },
-    { color: "Negro", sizePieces: { S: 2, M: 2, L: 3, XL: 3, XXL: 2 } }
-  ] },
+
+  32: {
+    totalPieces: 378,
+    totalLabel: "42 piezas por color",
+    rows: [
+      { color: "Oliva", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "42 piezas por color" },
+      { color: "Beige", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "42 piezas por color" },
+      { color: "Crudo", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "42 piezas por color" },
+      { color: "Negro", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "42 piezas por color" },
+      { color: "Oliva oscuro", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "42 piezas por color" },
+      { color: "Gris", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "42 piezas por color" },
+      { color: "Blanco", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "42 piezas por color" },
+      { color: "Marrón", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "42 piezas por color" },
+      { color: "Caqui", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "42 piezas por color" },
+    ],
+  },
+  33: {
+    totalPieces: 168,
+    totalLabel: "24 piezas por color",
+    rows: [
+      { color: "Marino", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "24 piezas por color" },
+      { color: "Blanco", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "24 piezas por color" },
+      { color: "Gris claro", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "24 piezas por color" },
+      { color: "Gris verdoso", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "24 piezas por color" },
+      { color: "Negro", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "24 piezas por color" },
+      { color: "Blanco", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "24 piezas por color" },
+      { color: "Negro", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "24 piezas por color" },
+    ],
+  },
+  34: {
+    totalPieces: 72,
+    totalLabel: "12 piezas por color",
+    rows: [
+      { color: "Blanco", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 }, pieces: "12 piezas por color" },
+      { color: "Melange", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 }, pieces: "12 piezas por color" },
+      { color: "Petróleo", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 }, pieces: "12 piezas por color" },
+      { color: "Marino", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 }, pieces: "12 piezas por color" },
+      { color: "Negro", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 }, pieces: "12 piezas por color" },
+      { color: "Negro", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 }, pieces: "12 piezas por color" },
+    ],
+  },
+  35: {
+    totalPieces: 100,
+    totalLabel: "10 piezas por color",
+    rows: [
+      { color: "Blanco", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "10 piezas por color" },
+      { color: "Crudo", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "10 piezas por color" },
+      { color: "Beige", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "10 piezas por color" },
+      { color: "Melange", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "10 piezas por color" },
+      { color: "Celeste", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "10 piezas por color" },
+      { color: "Marino", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "10 piezas por color" },
+      { color: "Oliva", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "10 piezas por color" },
+      { color: "Petróleo", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "10 piezas por color" },
+      { color: "Negro", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "10 piezas por color" },
+      { color: "Negro", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "10 piezas por color" },
+    ],
+  },
+  36: {
+    totalPieces: 72,
+    totalLabel: "12 piezas por color",
+    rows: [
+      { color: "Blanco", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 }, pieces: "12 piezas por color" },
+      { color: "Melange", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 }, pieces: "12 piezas por color" },
+      { color: "Petróleo", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 }, pieces: "12 piezas por color" },
+      { color: "Marino", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 }, pieces: "12 piezas por color" },
+      { color: "Negro", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 }, pieces: "12 piezas por color" },
+      { color: "Negro", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 }, pieces: "12 piezas por color" },
+    ],
+  },
+  37: {
+    totalPieces: 75,
+    totalLabel: "75 piezas totales",
+    rows: [
+      { color: "Blanco vivo marino", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 } },
+      { color: "Beige vivo negro", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 } },
+      { color: "Celeste vivo negro", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 } },
+      { color: "Melange vivo blanco", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 } },
+      { color: "Petróleo vivo blanco", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 } },
+      { color: "Marino vivo blanco", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 } },
+      { color: "Negro vivo gris", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 } },
+      { color: "Negro vivo blanco", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 } },
+    ],
+  },
+  38: {
+    totalPieces: 60,
+    totalLabel: "60 piezas totales",
+    rows: [
+      { color: "Blanco vivo marino", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 } },
+      { color: "Beige vivo negro", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 } },
+      { color: "Melange vivo blanco", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 } },
+      { color: "Marino vivo blanco", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 } },
+      { color: "Negro vivo gris", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 } },
+      { color: "Negro vivo blanco", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 } },
+    ],
+  },
+  39: {
+    totalPieces: 192,
+    totalLabel: "48 piezas por color",
+    rows: [
+      { color: "Blanco", sizePieces: { "S": 2, "M": 2, "L": 2, "XL": 1, "XXL": 1 }, pieces: "48 piezas por color" },
+      { color: "Gris", sizePieces: { "S": 2, "M": 2, "L": 2, "XL": 1, "XXL": 1 }, pieces: "48 piezas por color" },
+      { color: "Marino", sizePieces: { "S": 2, "M": 2, "L": 2, "XL": 1, "XXL": 1 }, pieces: "48 piezas por color" },
+      { color: "Negro", sizePieces: { "S": 2, "M": 2, "L": 2, "XL": 1, "XXL": 1 }, pieces: "48 piezas por color" },
+    ],
+  },
+  40: {
+    totalPieces: 180,
+    totalLabel: "90 piezas por talle por color",
+    rows: [
+      { color: "Blanco", curveText: "S al 6XL", pieces: "90 por talle" },
+      { color: "Negro", curveText: "S al 6XL", pieces: "90 por talle" },
+    ],
+  },
+  41: {
+    totalPieces: 288,
+    totalLabel: "48 piezas por color",
+    rows: [
+      { color: "Beige", sizePieces: { "30": 2, "32": 2, "34": 2, "36": 1, "38": 1 }, pieces: "48 piezas por color" },
+      { color: "Oliva", sizePieces: { "30": 2, "32": 2, "34": 2, "36": 1, "38": 1 }, pieces: "48 piezas por color" },
+      { color: "Gris Topo", sizePieces: { "30": 2, "32": 2, "34": 2, "36": 1, "38": 1 }, pieces: "48 piezas por color" },
+      { color: "Gris", sizePieces: { "30": 2, "32": 2, "34": 2, "36": 1, "38": 1 }, pieces: "48 piezas por color" },
+      { color: "Gris Claro", sizePieces: { "30": 2, "32": 2, "34": 2, "36": 1, "38": 1 }, pieces: "48 piezas por color" },
+      { color: "Negro", sizePieces: { "30": 2, "32": 2, "34": 2, "36": 1, "38": 1 }, pieces: "48 piezas por color" },
+    ],
+  },
+  42: {
+    totalPieces: 96,
+    totalLabel: "96 piezas totales",
+    rows: [
+      { color: "Beige", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 } },
+      { color: "Gris", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 } },
+      { color: "Chocolate", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 } },
+      { color: "Celeste", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 } },
+      { color: "Petróleo", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 } },
+      { color: "Marino", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 } },
+      { color: "Negro", sizePieces: { "S": 4, "M": 4, "L": 6, "XL": 6, "XXL": 4 } },
+    ],
+  },
+  43: {
+    totalPieces: 240,
+    totalLabel: "48 piezas por color",
+    rows: [
+      { color: "Blanco", sizePieces: { "S": 2, "M": 2, "L": 2, "XL": 1, "XXL": 1 }, pieces: "48 piezas por color" },
+      { color: "Rosa", sizePieces: { "S": 2, "M": 2, "L": 2, "XL": 1, "XXL": 1 }, pieces: "48 piezas por color" },
+      { color: "Celeste", sizePieces: { "S": 2, "M": 2, "L": 2, "XL": 1, "XXL": 1 }, pieces: "48 piezas por color" },
+      { color: "Marino", sizePieces: { "S": 2, "M": 2, "L": 2, "XL": 1, "XXL": 1 }, pieces: "48 piezas por color" },
+      { color: "Negro", sizePieces: { "S": 2, "M": 2, "L": 2, "XL": 1, "XXL": 1 }, pieces: "48 piezas por color" },
+    ],
+  },
+  44: {
+    totalPieces: 72,
+    totalLabel: "72 piezas totales",
+    rows: [
+      { color: "Beige", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 } },
+      { color: "Gris", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 } },
+      { color: "Petróleo", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 } },
+      { color: "Marino", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 } },
+      { color: "Negro", sizePieces: { "S": 4, "M": 4, "L": 6, "XL": 6, "XXL": 4 } },
+    ],
+  },
   45: { totalPieces: 80, rows: [
     { color: "Blanco", sizePieces: { S: 1, M: 2, L: 3, XL: 2, XXL: 2 } },
     { color: "Beige", sizePieces: { S: 1, M: 2, L: 3, XL: 2, XXL: 2 } },
@@ -1706,7 +1766,7 @@ function renderPackagingTable(product) {
     <tr>
       <td>${row.color}</td>
       <td>${formatCurve(row)}</td>
-      <td>${Object.values(row.sizePieces || {}).reduce((sum, value) => sum + Number(value || 0), 0) || row.curveText || "-"}</td>
+      <td>${row.pieces || (row.sizePieces ? Object.values(row.sizePieces).reduce((sum, value) => sum + Number(value || 0), 0) : "-")}</td>
     </tr>
   `).join("");
 
