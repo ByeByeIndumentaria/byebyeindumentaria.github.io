@@ -71,21 +71,21 @@ const products = [
     driveLink: ""
   },
   {
-    id: 8, name: "Chaleco Lino Conjunto", category: "MUJER", subcategory: "Conjuntos",
+    id: 8, name: "Chaleco Lino Conjunto", category: "MUJER", subcategory: "Conjuntos", subcategories: ["Conjuntos", "Chalecos"],
     description: "Chaleco de lino parte del conjunto coordinado. Corte sastrero.",
     colors: ["Blanco", "Beige", "Oliva", "Negro"],
     sizes: ["S", "M", "L"],
     driveLink: ""
   },
   {
-    id: 9, name: "Pantalón Lino Conjunto", category: "MUJER", subcategory: "Conjuntos",
+    id: 9, name: "Pantalón Lino Conjunto", category: "MUJER", subcategory: "Conjuntos", subcategories: ["Conjuntos", "Pantalones"],
     description: "Pantalón de lino para combinar con el chaleco del conjunto.",
     colors: ["Blanco", "Beige", "Oliva", "Negro"],
     sizes: ["S", "M", "L"],
     driveLink: ""
   },
   {
-    id: 10, name: "Chaleco Sastrero", category: "MUJER", subcategory: "Conjuntos",
+    id: 10, name: "Chaleco Sastrero", category: "MUJER", subcategory: "Conjuntos", subcategories: ["Conjuntos", "Chalecos"],
     description: "Chaleco de estilo sastrero. Elegante y estructurado.",
     colors: ["Blanco", "Beige", "Oliva", "Chocolate", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
@@ -106,21 +106,21 @@ const products = [
     driveLink: ""
   },
   {
-    id: 13, name: "Camisa Lino Conjunto", category: "MUJER", subcategory: "Conjuntos",
+    id: 13, name: "Camisa Lino Conjunto", category: "MUJER", subcategory: "Conjuntos", subcategories: ["Conjuntos", "Camisas"],
     description: "Camisa de lino parte del conjunto con jogger. Corte relajado.",
     colors: ["Blanco", "Crudo", "Khaki", "Oliva", "Negro"],
     sizes: ["S", "M", "L", "XL"],
     driveLink: ""
   },
   {
-    id: 14, name: "Jogger Lino Conjunto", category: "MUJER", subcategory: "Conjuntos",
+    id: 14, name: "Jogger Lino Conjunto", category: "MUJER", subcategory: "Conjuntos", subcategories: ["Conjuntos", "Pantalones"],
     description: "Jogger de lino para combinar con la camisa del conjunto.",
     colors: ["Blanco", "Crudo", "Caqui", "Oliva", "Negro"],
     sizes: ["S", "M", "L", "XL"],
     driveLink: ""
   },
   {
-    id: 15, name: "Pantalón Sastrero", category: "MUJER", subcategory: "Conjuntos",
+    id: 15, name: "Pantalón Sastrero", category: "MUJER", subcategory: "Conjuntos", subcategories: ["Conjuntos", "Pantalones"],
     description: "Pantalón de corte sastrero. Líneas limpias y modernas.",
     colors: ["Beige", "Negro"],
     sizes: ["S", "M", "L", "XL"],
@@ -339,7 +339,7 @@ const products = [
     driveLink: ""
   },
   {
-    id: 46, name: "Pantalón Sastrero", category: "MUJER", subcategory: "Conjuntos",
+    id: 46, name: "Pantalón Sastrero", category: "MUJER", subcategory: "Conjuntos", subcategories: ["Conjuntos", "Pantalones"],
     description: "Pantalón sastrero de mujer. Clásico, amplio y fácil de combinar.",
     colors: ["Blanco", "Beige", "Oliva", "Chocolate", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
@@ -942,7 +942,7 @@ const productImagesById = {
   ]
 };
 
-const IMAGE_ASSET_VERSION = "20260724-1";
+const IMAGE_ASSET_VERSION = "20260724-2";
 
 function versionImageSrc(src) {
   return `${src}?v=${IMAGE_ASSET_VERSION}`;
@@ -1771,6 +1771,17 @@ function getCollectionProducts() {
   return products.filter(product => product.collection === activeCollection && !product.isHidden);
 }
 
+function getProductSubcategories(product) {
+  if (Array.isArray(product.subcategories) && product.subcategories.length) {
+    return product.subcategories;
+  }
+  return product.subcategory ? [product.subcategory] : [];
+}
+
+function formatProductSubcategory(product) {
+  return getProductSubcategories(product).join(" / ");
+}
+
 function getStockLabel(product) {
   return product.inStock ? "En stock" : "Sin stock";
 }
@@ -1865,7 +1876,7 @@ function buildCategoryFilters() {
   allBtn.textContent = 'Todas';
   categoryFilters.appendChild(allBtn);
 
-  const cats = [...new Set(getCollectionProducts().map(p => p.subcategory))].sort();
+  const cats = [...new Set(getCollectionProducts().flatMap(getProductSubcategories))].sort();
   cats.forEach(cat => {
     const btn = document.createElement('button');
     btn.className = 'pill';
@@ -1880,7 +1891,7 @@ function updateCategoryFilters() {
   const available = new Set(
     getCollectionProducts()
       .filter(p => activeGender === 'all' || p.category === activeGender)
-      .map(p => p.subcategory)
+      .flatMap(getProductSubcategories)
   );
 
   categoryFilters.querySelectorAll('.pill').forEach(btn => {
@@ -1901,7 +1912,7 @@ function updateCategoryFilters() {
 function getFilteredProducts() {
   return getCollectionProducts().filter(p => {
     const genderOk = activeGender === 'all' || p.category === activeGender;
-    const catOk = activeCategory === 'all' || p.subcategory === activeCategory;
+    const catOk = activeCategory === 'all' || getProductSubcategories(p).includes(activeCategory);
     return genderOk && catOk;
   });
 }
@@ -1944,7 +1955,7 @@ function renderProducts() {
         </button>
       </div>
       <div class="card-info">
-        <p class="card-subcat">${p.subcategory}</p>
+        <p class="card-subcat">${formatProductSubcategory(p)}</p>
         <p class="card-name">${p.name}</p>
       </div>
     `;
@@ -2034,7 +2045,7 @@ function openModal(p) {
 
   document.getElementById('modal-name').textContent = p.name;
   document.getElementById('modal-gender').textContent = p.category === 'MUJER' ? 'Mujer' : 'Hombre';
-  document.getElementById('modal-subcat').textContent = p.subcategory;
+  document.getElementById('modal-subcat').textContent = formatProductSubcategory(p);
   document.getElementById('modal-collection').textContent = `${getActiveCollection().name.toUpperCase()} · ${getStockLabel(p).toUpperCase()}`;
   document.getElementById('modal-desc').textContent = p.description;
 
@@ -2255,7 +2266,7 @@ function updateCartUI() {
         </div>
       </div>
       <div class="cart-item-info">
-        <p class="cart-item-subcat">${p.subcategory}</p>
+        <p class="cart-item-subcat">${formatProductSubcategory(p)}</p>
         <p class="cart-item-name">${p.name}</p>
         <p class="cart-item-gender">${p.category === 'MUJER' ? 'Mujer' : 'Hombre'}</p>
       </div>
@@ -2308,7 +2319,7 @@ function sendWhatsApp() {
   const lines = [`*Mi selección — BYE BYE ${collection.name}*`, ''];
   cart.forEach((p, i) => {
     lines.push(`${i + 1}. *${p.name}*`);
-    lines.push(`   Categoría: ${p.subcategory} | ${p.category === 'MUJER' ? 'Mujer' : 'Hombre'}`);
+    lines.push(`   Categoría: ${formatProductSubcategory(p)} | ${p.category === 'MUJER' ? 'Mujer' : 'Hombre'}`);
     lines.push(`   Colores disponibles: ${p.colors.join(', ')}`);
     lines.push(`   Piezas por caja: ${getTotalPiecesLabel(p)}`);
     lines.push('');
@@ -2395,7 +2406,7 @@ function downloadPDF() {
     doc.setFontSize(8.5);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(100, 100, 100);
-    doc.text(`${p.category === 'MUJER' ? 'Mujer' : 'Hombre'} · ${p.subcategory}`, margin + 12, y);
+    doc.text(`${p.category === 'MUJER' ? 'Mujer' : 'Hombre'} · ${formatProductSubcategory(p)}`, margin + 12, y);
     y += 6;
 
     // Colors
