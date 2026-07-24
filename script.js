@@ -942,6 +942,12 @@ const productImagesById = {
   ]
 };
 
+const IMAGE_ASSET_VERSION = "20260722-2";
+
+function versionImageSrc(src) {
+  return `${src}?v=${IMAGE_ASSET_VERSION}`;
+}
+
 const productImageExtensionByKey = {
   "34_6": "jpeg",
   "34_7": "jpeg",
@@ -969,7 +975,7 @@ function getProductImagePhotoNumbers(id) {
 function getProductImageSources(id) {
   return getProductImagePhotoNumbers(id).map(photoNumber => {
     const extension = productImageExtensionByKey[`${id}_${photoNumber}`] || "jpg";
-    return `images/prod_${id}_${photoNumber}.${extension}`;
+    return versionImageSrc(`images/prod_${id}_${photoNumber}.${extension}`);
   });
 }
 
