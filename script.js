@@ -865,6 +865,12 @@ const productImagesById = {
     2,
     3
   ],
+  "55": [
+    1,
+    2,
+    3,
+    4
+  ],
   "56": [
     1,
     2,
@@ -942,7 +948,7 @@ const productImagesById = {
   ]
 };
 
-const IMAGE_ASSET_VERSION = "20260724-3";
+const IMAGE_ASSET_VERSION = "20260724-4";
 
 function versionImageSrc(src) {
   return `${src}?v=${IMAGE_ASSET_VERSION}`;
