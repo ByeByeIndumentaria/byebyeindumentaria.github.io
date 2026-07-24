@@ -13,7 +13,7 @@ const collections = [
 // -- EASY CATALOG CONTROL -------------------------
 // Para poner un producto fuera de stock, agregá su número:
 // const OUT_OF_STOCK_PRODUCT_IDS = [12, 43];
-const OUT_OF_STOCK_PRODUCT_IDS = [27, 33];
+const OUT_OF_STOCK_PRODUCT_IDS = [6, 8, 9, 12, 14, 20, 24, 25, 27, 33];
 
 // Para sacar un producto de la página sin borrarlo, agregá su número:
 // const HIDDEN_PRODUCT_IDS = [7, 18];
@@ -942,7 +942,7 @@ const productImagesById = {
   ]
 };
 
-const IMAGE_ASSET_VERSION = "20260722-2";
+const IMAGE_ASSET_VERSION = "20260724-1";
 
 function versionImageSrc(src) {
   return `${src}?v=${IMAGE_ASSET_VERSION}`;
