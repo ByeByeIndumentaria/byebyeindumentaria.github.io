@@ -13,7 +13,7 @@ const collections = [
 // -- EASY CATALOG CONTROL -------------------------
 // Para poner un producto fuera de stock, agregá su número:
 // const OUT_OF_STOCK_PRODUCT_IDS = [12, 43];
-const OUT_OF_STOCK_PRODUCT_IDS = [6, 8, 9, 12, 14, 20, 24, 25, 27, 33];
+const OUT_OF_STOCK_PRODUCT_IDS = [3, 6, 8, 9, 12, 14, 17, 20, 22, 24, 25, 27, 33];
 
 // Para sacar un producto de la página sin borrarlo, agregá su número:
 // const HIDDEN_PRODUCT_IDS = [7, 18];
