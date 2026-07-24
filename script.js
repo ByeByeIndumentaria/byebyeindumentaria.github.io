@@ -1317,7 +1317,7 @@ const winterSourceProducts = [
     ] }
   },
   {
-    id: 73, name: "LERATO GIRLS", category: "NINOS", subcategory: "Abrigos",
+    id: 73, name: "LERATO", category: "NINOS", subcategory: "Abrigos",
     description: "KIDS WOVEN JACKET", orderNumber: "125-352", collection: "invierno-2027",
     colors: ["Negro", "Lila", "Blanco roto", "Rosa"], sizes: ["4", "6", "8", "10", "12", "14", "16"], driveLink: "",
     packaging: { totalPieces: 28, rows: [
@@ -1429,7 +1429,7 @@ const winterSourceProducts = [
     ] }
   },
   {
-    id: 83, name: "LUSTRA GIRLS", category: "NINOS", subcategory: "Abrigos",
+    id: 83, name: "LUSTRA", category: "NINOS", subcategory: "Abrigos",
     description: "KIDS WOVEN JACKET", orderNumber: "125-379", collection: "invierno-2027",
     colors: ["Negro", "Bordó", "Gris", "Champagne"], sizes: ["6", "8", "10", "12", "14", "16"], driveLink: "",
     packaging: { totalPieces: 24, rows: [
@@ -1440,7 +1440,7 @@ const winterSourceProducts = [
     ] }
   },
   {
-    id: 84, name: "RICHARD HOOD BOYS", category: "NINOS", subcategory: "Abrigos",
+    id: 84, name: "RICHARD HOOD", category: "NINOS", subcategory: "Abrigos",
     description: "KIDS WOVEN JACKET", orderNumber: "225-223", collection: "invierno-2027",
     colors: ["Negro", "Marino"], sizes: ["4", "6", "8", "10", "12", "14", "16", "18"], driveLink: "",
     packaging: { totalPieces: 24, rows: [
@@ -1449,7 +1449,7 @@ const winterSourceProducts = [
     ] }
   },
   {
-    id: 85, name: "RICHARD HOOD BOYS", category: "NINOS", subcategory: "Abrigos",
+    id: 85, name: "RICHARD HOOD", category: "NINOS", subcategory: "Abrigos",
     description: "KIDS WOVEN JACKET", orderNumber: "225-224", collection: "invierno-2027",
     colors: ["Negro", "Marino", "Verde oscuro"], sizes: ["4", "6", "8", "10", "12", "14", "16"], driveLink: "",
     packaging: { totalPieces: 21, rows: [
@@ -1459,7 +1459,7 @@ const winterSourceProducts = [
     ] }
   },
   {
-    id: 86, name: "RICHARD HOOD BOYS/BLOCK", category: "NINOS", subcategory: "Abrigos",
+    id: 86, name: "RICHARD HOOD/BLOCK", category: "NINOS", subcategory: "Abrigos",
     description: "KIDS WOVEN JACKET", orderNumber: "225-228", collection: "invierno-2027",
     colors: ["Verde oscuro", "Marino", "Beige"], sizes: ["4", "6", "8", "10", "12", "14", "16"], driveLink: "",
     packaging: { totalPieces: 21, rows: [
@@ -1469,7 +1469,7 @@ const winterSourceProducts = [
     ] }
   },
   {
-    id: 87, name: "MILAN TAFFETA BOYS", category: "NINOS", subcategory: "Abrigos",
+    id: 87, name: "MILAN TAFFETA", category: "NINOS", subcategory: "Abrigos",
     description: "KIDS WOVEN VEST", orderNumber: "225-346", collection: "invierno-2027",
     colors: ["Negro", "Verde militar", "Marino oscuro", "Caqui"], sizes: ["6", "8", "10", "12", "14", "16"], driveLink: "",
     packaging: { totalPieces: 24, rows: [
@@ -1960,9 +1960,17 @@ function applyCatalogData() {
     product.inStock = !OUT_OF_STOCK_PRODUCT_IDS.includes(product.id);
     const packaging = packagingByProductId[product.id];
     if (!packaging) return;
-    product.packaging = packaging;
+    product.packaging = {
+      ...packaging,
+      rows: packaging.rows.map(row => ({
+        ...row,
+        sizePieces: Object.fromEntries(
+          Object.entries(row.sizePieces || {}).map(([size, pieces]) => [normalizeCatalogSize(size), pieces])
+        )
+      }))
+    };
     product.colors = [...new Set(packaging.rows.map(row => row.color))];
-    product.sizes = getPackagingSizes(packaging);
+    product.sizes = getPackagingSizes(product.packaging);
   });
 }
 
@@ -1974,6 +1982,19 @@ function getPackagingSizes(packaging) {
     });
   });
   return sizes.length ? sizes : ["Ver curva"];
+}
+
+function normalizeCatalogSize(size) {
+  const normalizedSizes = {
+    "S/CH": "S",
+    "M/M": "M",
+    "L/G": "L",
+    "XL/EG": "XL",
+    "XXL/EEG": "XXL",
+    "2XL/2EG": "XXL",
+    "2XL": "XXL"
+  };
+  return normalizedSizes[size] || size;
 }
 
 function getTotalPiecesLabel(product) {
