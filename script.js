@@ -1777,6 +1777,20 @@ function getCollectionProducts() {
   return products.filter(product => product.collection === activeCollection && !product.isHidden);
 }
 
+const GENDER_LABELS = {
+  MUJER: "Mujer",
+  HOMBRE: "Hombre",
+  NINOS: "Niños"
+};
+
+function getGenderLabel(category) {
+  return GENDER_LABELS[category] || category;
+}
+
+function isWinterCollection() {
+  return activeCollection === "invierno-2027";
+}
+
 function getProductSubcategories(product) {
   if (Array.isArray(product.subcategories) && product.subcategories.length) {
     return product.subcategories;
@@ -1868,9 +1882,26 @@ const toast = document.getElementById('toast');
 // ── INIT ─────────────────────────────────────────
 function init() {
   buildCollectionFilters();
+  updateGenderFilters();
   buildCategoryFilters();
   renderProducts();
   bindEvents();
+}
+
+function updateGenderFilters() {
+  const kidsFilter = genderFilters.querySelector('[data-value="NINOS"]');
+  if (!kidsFilter) return;
+
+  const showKids = isWinterCollection();
+  kidsFilter.style.display = showKids ? '' : 'none';
+
+  // Nunca dejamos activo Niños al volver a una colección que no lo admite.
+  if (!showKids && activeGender === 'NINOS') {
+    activeGender = 'all';
+    genderFilters.querySelectorAll('.pill').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.value === 'all');
+    });
+  }
 }
 
 // ── CATEGORY FILTERS ────────────────────────────
@@ -1944,7 +1975,7 @@ function renderProducts() {
 
     card.innerHTML = `
       <div class="card-img-wrap">
-        <span class="card-badge-gender">${p.category === 'MUJER' ? 'Mujer' : 'Hombre'}</span>
+        <span class="card-badge-gender">${getGenderLabel(p.category)}</span>
         ${p.inStock ? '' : `<span class="card-badge-stock">Sin stock</span>`}
         <img class="card-img" src="" alt="${p.name}" loading="lazy" decoding="async" style="display:none;width:100%;height:100%;object-fit:cover;" />
         <div class="card-placeholder" id="ph-${p.id}">
@@ -2050,7 +2081,7 @@ function openModal(p) {
   const modalEl = document.getElementById('product-modal');
 
   document.getElementById('modal-name').textContent = p.name;
-  document.getElementById('modal-gender').textContent = p.category === 'MUJER' ? 'Mujer' : 'Hombre';
+  document.getElementById('modal-gender').textContent = getGenderLabel(p.category);
   document.getElementById('modal-subcat').textContent = formatProductSubcategory(p);
   document.getElementById('modal-collection').textContent = `${getActiveCollection().name.toUpperCase()} · ${getStockLabel(p).toUpperCase()}`;
   document.getElementById('modal-desc').textContent = p.description;
@@ -2274,7 +2305,7 @@ function updateCartUI() {
       <div class="cart-item-info">
         <p class="cart-item-subcat">${formatProductSubcategory(p)}</p>
         <p class="cart-item-name">${p.name}</p>
-        <p class="cart-item-gender">${p.category === 'MUJER' ? 'Mujer' : 'Hombre'}</p>
+        <p class="cart-item-gender">${getGenderLabel(p.category)}</p>
       </div>
       <button class="cart-item-remove" data-id="${p.id}" aria-label="Eliminar">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -2325,7 +2356,7 @@ function sendWhatsApp() {
   const lines = [`*Mi selección — BYE BYE ${collection.name}*`, ''];
   cart.forEach((p, i) => {
     lines.push(`${i + 1}. *${p.name}*`);
-    lines.push(`   Categoría: ${formatProductSubcategory(p)} | ${p.category === 'MUJER' ? 'Mujer' : 'Hombre'}`);
+    lines.push(`   Categoría: ${formatProductSubcategory(p)} | ${getGenderLabel(p.category)}`);
     lines.push(`   Colores disponibles: ${p.colors.join(', ')}`);
     lines.push(`   Piezas por caja: ${getTotalPiecesLabel(p)}`);
     lines.push('');
@@ -2412,7 +2443,7 @@ function downloadPDF() {
     doc.setFontSize(8.5);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(100, 100, 100);
-    doc.text(`${p.category === 'MUJER' ? 'Mujer' : 'Hombre'} · ${formatProductSubcategory(p)}`, margin + 12, y);
+    doc.text(`${getGenderLabel(p.category)} · ${formatProductSubcategory(p)}`, margin + 12, y);
     y += 6;
 
     // Colors
@@ -2496,6 +2527,7 @@ function bindEvents() {
       collectionFilters.querySelectorAll('.pill').forEach(b => b.classList.toggle('active', b === btn));
       activeGender = 'all';
       activeCategory = 'all';
+      updateGenderFilters();
       genderFilters.querySelectorAll('.pill').forEach(b => b.classList.toggle('active', b.dataset.value === 'all'));
       categoryFilters.innerHTML = '';
       buildCategoryFilters();
