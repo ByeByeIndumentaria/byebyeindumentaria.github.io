@@ -1269,6 +1269,220 @@ const extraProducts = [
 
 products.push(...extraProducts);
 
+// -- INVIERNO: MP087 / WH3007 ---------------------
+// Nombres y género: columna Article y Description del CI MP087.
+// Colores, talles y curvas: tablas ARTICLE NAME del WH3007.
+// No se agregan fotos hasta contar con los archivos correspondientes.
+const winterSourceProducts = [
+  {
+    id: 69, name: "FELIPE PLUS", category: "HOMBRE", subcategory: "Abrigos",
+    description: "MEN WOVEN JACKET", orderNumber: "225-156", collection: "invierno-2027",
+    colors: ["Negro", "Negro/Oliva 2", "Marino/Negro", "Oliva 2/Marino"], sizes: ["2XL", "3XL", "4XL"], driveLink: "",
+    packaging: { totalPieces: 24, rows: [
+      { color: "Negro", sizePieces: { "2XL": 2, "3XL": 2, "4XL": 2 } },
+      { color: "Negro/Oliva 2", sizePieces: { "2XL": 2, "3XL": 2, "4XL": 2 } },
+      { color: "Marino/Negro", sizePieces: { "2XL": 2, "3XL": 2, "4XL": 2 } },
+      { color: "Oliva 2/Marino", sizePieces: { "2XL": 2, "3XL": 2, "4XL": 2 } }
+    ] }
+  },
+  {
+    id: 70, name: "FELIPE HOOD FUR", category: "HOMBRE", subcategory: "Abrigos",
+    description: "MEN WOVEN JACKET", orderNumber: "225-206", collection: "invierno-2027",
+    colors: ["Negro"], sizes: ["S", "M", "L", "XL", "2XL"], driveLink: "",
+    packaging: { totalPieces: 24, rows: [
+      { color: "Negro", sizePieces: { S: 3, M: 3, L: 6, XL: 6, "2XL": 6 } }
+    ] }
+  },
+  {
+    id: 71, name: "GABRIELLE", category: "MUJER", subcategory: "Abrigos",
+    description: "LADIES WOVEN JACKET", orderNumber: "125-117", collection: "invierno-2027",
+    colors: ["Negro", "Marino", "Beige", "Oliva", "Camel"], sizes: ["S/CH", "M/M", "L/G", "XL/EG"], driveLink: "",
+    packaging: { totalPieces: 36, rows: [
+      { color: "Negro", sizePieces: { "S/CH": 2, "M/M": 4, "L/G": 4, "XL/EG": 2 } },
+      { color: "Marino", sizePieces: { "S/CH": 1, "M/M": 2, "L/G": 2, "XL/EG": 1 } },
+      { color: "Beige", sizePieces: { "S/CH": 1, "M/M": 2, "L/G": 2, "XL/EG": 1 } },
+      { color: "Oliva", sizePieces: { "S/CH": 1, "M/M": 2, "L/G": 2, "XL/EG": 1 } },
+      { color: "Camel", sizePieces: { "S/CH": 1, "M/M": 2, "L/G": 2, "XL/EG": 1 } }
+    ] }
+  },
+  {
+    id: 72, name: "MESSIKA", category: "MUJER", subcategory: "Abrigos",
+    description: "LADIES WOVEN JACKET", orderNumber: "125-345", collection: "invierno-2027",
+    colors: ["Negro", "Beige", "Oliva"], sizes: ["S/CH", "M/M", "L/G", "XL/EG", "XXL/EEG"], driveLink: "",
+    packaging: { totalPieces: 32, rows: [
+      { color: "Negro", sizePieces: { "S/CH": 1, "M/M": 2, "L/G": 2, "XL/EG": 2, "XXL/EEG": 1 } },
+      { color: "Negro", sizePieces: { "S/CH": 1, "M/M": 2, "L/G": 2, "XL/EG": 2, "XXL/EEG": 1 } },
+      { color: "Beige", sizePieces: { "S/CH": 1, "M/M": 2, "L/G": 2, "XL/EG": 2, "XXL/EEG": 1 } },
+      { color: "Oliva", sizePieces: { "S/CH": 1, "M/M": 2, "L/G": 2, "XL/EG": 2, "XXL/EEG": 1 } }
+    ] }
+  },
+  {
+    id: 73, name: "LERATO GIRLS", category: "NINOS", subcategory: "Abrigos",
+    description: "KIDS WOVEN JACKET", orderNumber: "125-352", collection: "invierno-2027",
+    colors: ["Negro", "Lila", "Blanco roto", "Rosa"], sizes: ["4", "6", "8", "10", "12", "14", "16"], driveLink: "",
+    packaging: { totalPieces: 28, rows: [
+      { color: "Negro", sizePieces: { "4": 1, "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Lila", sizePieces: { "4": 1, "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Blanco roto", sizePieces: { "4": 1, "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Rosa", sizePieces: { "4": 1, "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } }
+    ] }
+  },
+  {
+    id: 74, name: "BILLY", category: "HOMBRE", subcategory: "Abrigos",
+    description: "MEN WOVEN VEST", orderNumber: "224-856", collection: "invierno-2027",
+    colors: ["Negro", "Oliva oscuro", "Marino", "Marrón claro"], sizes: ["S/CH", "M/M", "L/G", "XL/EG", "XXL/EEG"], driveLink: "",
+    packaging: { totalPieces: 32, rows: [
+      { color: "Negro", sizePieces: { "S/CH": 1, "M/M": 2, "L/G": 2, "XL/EG": 2, "XXL/EEG": 1 } },
+      { color: "Oliva oscuro", sizePieces: { "S/CH": 1, "M/M": 2, "L/G": 2, "XL/EG": 2, "XXL/EEG": 1 } },
+      { color: "Marino", sizePieces: { "S/CH": 1, "M/M": 2, "L/G": 2, "XL/EG": 2, "XXL/EEG": 1 } },
+      { color: "Marrón claro", sizePieces: { "S/CH": 1, "M/M": 2, "L/G": 2, "XL/EG": 2, "XXL/EEG": 1 } },
+      { color: "Marrón claro", sizePieces: { "S/CH": 2, "M/M": 4, "L/G": 4, "XL/EG": 4, "XXL/EEG": 2 } },
+      { color: "Marino", sizePieces: { "S/CH": 1, "M/M": 2, "L/G": 2, "XL/EG": 2, "XXL/EEG": 1 } },
+      { color: "Negro", sizePieces: { "S/CH": 1, "M/M": 2, "L/G": 2, "XL/EG": 2, "XXL/EEG": 1 } }
+    ] }
+  },
+  {
+    id: 75, name: "PIETRACUPA", category: "MUJER", subcategory: "Abrigos",
+    description: "LADIES WOVEN VEST", orderNumber: "125-472", collection: "invierno-2027",
+    colors: ["Negro", "Camel", "Café"], sizes: ["S/CH", "M/M", "L/G", "XL/EG"], driveLink: "",
+    packaging: { totalPieces: 18, rows: [
+      { color: "Negro", sizePieces: { "S/CH": 1, "M/M": 2, "L/G": 2, "XL/EG": 1 } },
+      { color: "Camel", sizePieces: { "S/CH": 1, "M/M": 2, "L/G": 2, "XL/EG": 1 } },
+      { color: "Café", sizePieces: { "S/CH": 1, "M/M": 2, "L/G": 2, "XL/EG": 1 } }
+    ] }
+  },
+  {
+    id: 76, name: "PIANELLA", category: "MUJER", subcategory: "Abrigos",
+    description: "LADIES WOVEN VEST", orderNumber: "125-473", collection: "invierno-2027",
+    colors: ["Negro", "Camel", "Chocolate"], sizes: ["S/CH", "M/M", "L/G", "XL/EG"], driveLink: "",
+    packaging: { totalPieces: 18, rows: [
+      { color: "Negro", sizePieces: { "S/CH": 1, "M/M": 2, "L/G": 2, "XL/EG": 1 } },
+      { color: "Camel", sizePieces: { "S/CH": 1, "M/M": 2, "L/G": 2, "XL/EG": 1 } },
+      { color: "Chocolate", sizePieces: { "S/CH": 1, "M/M": 2, "L/G": 2, "XL/EG": 1 } }
+    ] }
+  },
+  {
+    id: 77, name: "LINA JERSEY", category: "MUJER", subcategory: "Abrigos",
+    description: "LADIES WOVEN JACKET", orderNumber: "125-411", collection: "invierno-2027",
+    colors: ["Negro", "Chocolate"], sizes: ["S/CH", "M/M", "L/G", "XL/EG", "XXL/EEG"], driveLink: "",
+    packaging: { totalPieces: 24, rows: [
+      { color: "Negro", sizePieces: { "S/CH": 1, "M/M": 2, "L/G": 2, "XL/EG": 2, "XXL/EEG": 1 } },
+      { color: "Negro", sizePieces: { "S/CH": 1, "M/M": 2, "L/G": 2, "XL/EG": 2, "XXL/EEG": 1 } },
+      { color: "Chocolate", sizePieces: { "S/CH": 1, "M/M": 2, "L/G": 2, "XL/EG": 2, "XXL/EEG": 1 } }
+    ] }
+  },
+  {
+    id: 78, name: "BARTAL FUR", category: "HOMBRE", subcategory: "Abrigos",
+    description: "MEN WOVEN JACKET", orderNumber: "125-982", collection: "invierno-2027",
+    colors: ["Negro", "Chocolate", "Camel"], sizes: ["S/CH", "M/M", "L/G", "XL/EG", "XXL/EEG"], driveLink: "",
+    packaging: { totalPieces: 32, rows: [
+      { color: "Negro", sizePieces: { "S/CH": 2, "M/M": 4, "L/G": 4, "XL/EG": 4, "XXL/EEG": 2 } },
+      { color: "Chocolate", sizePieces: { "S/CH": 1, "M/M": 2, "L/G": 2, "XL/EG": 2, "XXL/EEG": 1 } },
+      { color: "Camel", sizePieces: { "S/CH": 1, "M/M": 2, "L/G": 2, "XL/EG": 2, "XXL/EEG": 1 } }
+    ] }
+  },
+  {
+    id: 79, name: "ISADORA TAFFETA", category: "MUJER", subcategory: "Abrigos",
+    description: "LADIES WOVEN VEST", orderNumber: "124-771", collection: "invierno-2027",
+    colors: ["Negro", "Marino", "Rosa", "Piedra"], sizes: ["S/CH", "M/M", "L/G", "XL/EG"], driveLink: "",
+    packaging: { totalPieces: 30, rows: [
+      { color: "Negro", sizePieces: { "S/CH": 1, "M/M": 2, "L/G": 2, "XL/EG": 1 } },
+      { color: "Negro", sizePieces: { "S/CH": 1, "M/M": 2, "L/G": 2, "XL/EG": 1 } },
+      { color: "Marino", sizePieces: { "S/CH": 1, "M/M": 2, "L/G": 2, "XL/EG": 1 } },
+      { color: "Rosa", sizePieces: { "S/CH": 1, "M/M": 2, "L/G": 2, "XL/EG": 1 } },
+      { color: "Piedra", sizePieces: { "S/CH": 1, "M/M": 2, "L/G": 2, "XL/EG": 1 } }
+    ] }
+  },
+  {
+    id: 80, name: "SIRENA HOOD", category: "MUJER", subcategory: "Abrigos",
+    description: "LADIES WOVEN JACKET", orderNumber: "124-773", collection: "invierno-2027",
+    colors: ["Negro", "Oliva claro", "Piedra"], sizes: ["S/CH", "M/M", "L/G", "XL/EG", "2XL/2EG"], driveLink: "",
+    packaging: { totalPieces: 32, rows: [
+      { color: "Negro", sizePieces: { "S/CH": 1, "M/M": 2, "L/G": 2, "XL/EG": 2, "2XL/2EG": 1 } },
+      { color: "Negro", sizePieces: { "S/CH": 1, "M/M": 2, "L/G": 2, "XL/EG": 2, "2XL/2EG": 1 } },
+      { color: "Oliva claro", sizePieces: { "S/CH": 1, "M/M": 2, "L/G": 2, "XL/EG": 2, "2XL/2EG": 1 } },
+      { color: "Piedra", sizePieces: { "S/CH": 1, "M/M": 2, "L/G": 2, "XL/EG": 2, "2XL/2EG": 1 } }
+    ] }
+  },
+  {
+    id: 81, name: "MILAN", category: "HOMBRE", subcategory: "Abrigos",
+    description: "MEN WOVEN VEST", orderNumber: "224-747", collection: "invierno-2027",
+    colors: ["Negro", "Marino", "Marrón claro", "Verde militar"], sizes: ["S/CH", "M/M", "L/G", "XL/EG", "2XL/2EG"], driveLink: "",
+    packaging: { totalPieces: 40, rows: [
+      { color: "Negro", sizePieces: { "S/CH": 1, "M/M": 2, "L/G": 2, "XL/EG": 2, "2XL/2EG": 1 } },
+      { color: "Negro", sizePieces: { "S/CH": 1, "M/M": 2, "L/G": 2, "XL/EG": 2, "2XL/2EG": 1 } },
+      { color: "Marino", sizePieces: { "S/CH": 1, "M/M": 2, "L/G": 2, "XL/EG": 2, "2XL/2EG": 1 } },
+      { color: "Marrón claro", sizePieces: { "S/CH": 1, "M/M": 2, "L/G": 2, "XL/EG": 2, "2XL/2EG": 1 } },
+      { color: "Verde militar", sizePieces: { "S/CH": 1, "M/M": 2, "L/G": 2, "XL/EG": 2, "2XL/2EG": 1 } }
+    ] }
+  },
+  {
+    id: 82, name: "HEDDA PONGEE", category: "MUJER", subcategory: "Abrigos",
+    description: "LADIES WOVEN VEST", orderNumber: "125-318", collection: "invierno-2027",
+    colors: ["Negro", "Vino", "Leche", "Granito"], sizes: ["S/CH", "M/M", "L/G", "XL/EG", "2XL/2EG"], driveLink: "",
+    packaging: { totalPieces: 30, rows: [
+      { color: "Negro", sizePieces: { "S/CH": 1, "M/M": 1, "L/G": 2, "XL/EG": 1, "2XL/2EG": 1 } },
+      { color: "Negro", sizePieces: { "S/CH": 1, "M/M": 1, "L/G": 2, "XL/EG": 1, "2XL/2EG": 1 } },
+      { color: "Vino", sizePieces: { "S/CH": 1, "M/M": 1, "L/G": 2, "XL/EG": 1, "2XL/2EG": 1 } },
+      { color: "Leche", sizePieces: { "S/CH": 1, "M/M": 1, "L/G": 2, "XL/EG": 1, "2XL/2EG": 1 } },
+      { color: "Granito", sizePieces: { "S/CH": 1, "M/M": 1, "L/G": 2, "XL/EG": 1, "2XL/2EG": 1 } }
+    ] }
+  },
+  {
+    id: 83, name: "LUSTRA GIRLS", category: "NINOS", subcategory: "Abrigos",
+    description: "KIDS WOVEN JACKET", orderNumber: "125-379", collection: "invierno-2027",
+    colors: ["Negro", "Bordó", "Gris", "Champagne"], sizes: ["6", "8", "10", "12", "14", "16"], driveLink: "",
+    packaging: { totalPieces: 24, rows: [
+      { color: "Negro", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Bordó", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Gris", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Champagne", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } }
+    ] }
+  },
+  {
+    id: 84, name: "RICHARD HOOD BOYS", category: "NINOS", subcategory: "Abrigos",
+    description: "KIDS WOVEN JACKET", orderNumber: "225-223", collection: "invierno-2027",
+    colors: ["Negro", "Marino"], sizes: ["4", "6", "8", "10", "12", "14", "16", "18"], driveLink: "",
+    packaging: { totalPieces: 24, rows: [
+      { color: "Negro", sizePieces: { "4": 3, "6": 3, "8": 3, "10": 3, "12": 3, "14": 3, "16": 3, "18": 3 } },
+      { color: "Marino", sizePieces: { "4": 3, "6": 3, "8": 3, "10": 3, "12": 3, "14": 3, "16": 3, "18": 3 } }
+    ] }
+  },
+  {
+    id: 85, name: "RICHARD HOOD BOYS", category: "NINOS", subcategory: "Abrigos",
+    description: "KIDS WOVEN JACKET", orderNumber: "225-224", collection: "invierno-2027",
+    colors: ["Negro", "Marino", "Verde oscuro"], sizes: ["4", "6", "8", "10", "12", "14", "16"], driveLink: "",
+    packaging: { totalPieces: 21, rows: [
+      { color: "Negro", sizePieces: { "4": 1, "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Marino", sizePieces: { "4": 1, "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Verde oscuro", sizePieces: { "4": 1, "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } }
+    ] }
+  },
+  {
+    id: 86, name: "RICHARD HOOD BOYS/BLOCK", category: "NINOS", subcategory: "Abrigos",
+    description: "KIDS WOVEN JACKET", orderNumber: "225-228", collection: "invierno-2027",
+    colors: ["Verde oscuro", "Marino", "Beige"], sizes: ["4", "6", "8", "10", "12", "14", "16"], driveLink: "",
+    packaging: { totalPieces: 21, rows: [
+      { color: "Verde oscuro", sizePieces: { "4": 1, "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Marino", sizePieces: { "4": 1, "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Beige", sizePieces: { "4": 1, "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } }
+    ] }
+  },
+  {
+    id: 87, name: "MILAN TAFFETA BOYS", category: "NINOS", subcategory: "Abrigos",
+    description: "KIDS WOVEN VEST", orderNumber: "225-346", collection: "invierno-2027",
+    colors: ["Negro", "Verde militar", "Marino oscuro", "Caqui"], sizes: ["6", "8", "10", "12", "14", "16"], driveLink: "",
+    packaging: { totalPieces: 24, rows: [
+      { color: "Negro", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Verde militar", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Marino oscuro", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Caqui", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } }
+    ] }
+  }
+];
+
+products.push(...winterSourceProducts);
+
 
 // -- PACKAGING / SIZE CURVES -----------------------
 // Data extracted from the Verano 2027 DAMA and HOMBRE catalogs.
@@ -1733,6 +1947,11 @@ const packagingByProductId = {
     { color: "Negro", sizePieces: { S: 3, M: 6, L: 6, XL: 6, XXL: 3 }, pieces: 24 }
   ] }
 };
+
+winterSourceProducts.forEach(product => {
+  packagingByProductId[product.id] = product.packaging;
+  delete product.packaging;
+});
 
 function applyCatalogData() {
   products.forEach(product => {
