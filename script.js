@@ -945,10 +945,63 @@ const productImagesById = {
   ],
   "68": [
     1
+  ],
+  "70": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "71": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "72": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "75": [
+    1,
+    2,
+    3
+  ],
+  "77": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "78": [
+    1
+  ],
+  "79": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "80": [
+    1,
+    2,
+    3,
+    4
   ]
 };
 
-const IMAGE_ASSET_VERSION = "20260724-4";
+const IMAGE_ASSET_VERSION = "20260728-1";
 
 function versionImageSrc(src) {
   return `${src}?v=${IMAGE_ASSET_VERSION}`;
