@@ -1370,17 +1370,6 @@ const winterSourceProducts = [
     ] }
   },
   {
-    id: 73, name: "LERATO", category: "NINOS", subcategory: "Abrigos",
-    description: "KIDS WOVEN JACKET", orderNumber: "125-352", collection: "invierno-2027",
-    colors: ["Negro", "Lila", "Blanco roto", "Rosa"], sizes: ["4", "6", "8", "10", "12", "14", "16"], driveLink: "",
-    packaging: { totalPieces: 28, rows: [
-      { color: "Negro", sizePieces: { "4": 1, "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
-      { color: "Lila", sizePieces: { "4": 1, "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
-      { color: "Blanco roto", sizePieces: { "4": 1, "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
-      { color: "Rosa", sizePieces: { "4": 1, "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } }
-    ] }
-  },
-  {
     id: 74, name: "BILLY", category: "HOMBRE", subcategory: "Abrigos",
     description: "MEN WOVEN VEST", orderNumber: "224-856", collection: "invierno-2027",
     colors: ["Negro", "Oliva oscuro", "Marino", "Marrón claro"], sizes: ["S/CH", "M/M", "L/G", "XL/EG", "XXL/EEG"], driveLink: "",
@@ -1482,54 +1471,12 @@ const winterSourceProducts = [
     ] }
   },
   {
-    id: 83, name: "LUSTRA", category: "NINOS", subcategory: "Abrigos",
-    description: "KIDS WOVEN JACKET", orderNumber: "125-379", collection: "invierno-2027",
-    colors: ["Negro", "Bordó", "Gris", "Champagne"], sizes: ["6", "8", "10", "12", "14", "16"], driveLink: "",
-    packaging: { totalPieces: 24, rows: [
-      { color: "Negro", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
-      { color: "Bordó", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
-      { color: "Gris", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
-      { color: "Champagne", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } }
-    ] }
-  },
-  {
     id: 84, name: "RICHARD HOOD", category: "NINOS", subcategory: "Abrigos",
     description: "KIDS WOVEN JACKET", orderNumber: "225-223", collection: "invierno-2027",
     colors: ["Negro", "Marino"], sizes: ["4", "6", "8", "10", "12", "14", "16", "18"], driveLink: "",
     packaging: { totalPieces: 24, rows: [
       { color: "Negro", sizePieces: { "4": 3, "6": 3, "8": 3, "10": 3, "12": 3, "14": 3, "16": 3, "18": 3 } },
       { color: "Marino", sizePieces: { "4": 3, "6": 3, "8": 3, "10": 3, "12": 3, "14": 3, "16": 3, "18": 3 } }
-    ] }
-  },
-  {
-    id: 85, name: "RICHARD HOOD", category: "NINOS", subcategory: "Abrigos",
-    description: "KIDS WOVEN JACKET", orderNumber: "225-224", collection: "invierno-2027",
-    colors: ["Negro", "Marino", "Verde oscuro"], sizes: ["4", "6", "8", "10", "12", "14", "16"], driveLink: "",
-    packaging: { totalPieces: 21, rows: [
-      { color: "Negro", sizePieces: { "4": 1, "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
-      { color: "Marino", sizePieces: { "4": 1, "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
-      { color: "Verde oscuro", sizePieces: { "4": 1, "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } }
-    ] }
-  },
-  {
-    id: 86, name: "RICHARD HOOD/BLOCK", category: "NINOS", subcategory: "Abrigos",
-    description: "KIDS WOVEN JACKET", orderNumber: "225-228", collection: "invierno-2027",
-    colors: ["Verde oscuro", "Marino", "Beige"], sizes: ["4", "6", "8", "10", "12", "14", "16"], driveLink: "",
-    packaging: { totalPieces: 21, rows: [
-      { color: "Verde oscuro", sizePieces: { "4": 1, "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
-      { color: "Marino", sizePieces: { "4": 1, "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
-      { color: "Beige", sizePieces: { "4": 1, "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } }
-    ] }
-  },
-  {
-    id: 87, name: "MILAN TAFFETA", category: "NINOS", subcategory: "Abrigos",
-    description: "KIDS WOVEN VEST", orderNumber: "225-346", collection: "invierno-2027",
-    colors: ["Negro", "Verde militar", "Marino oscuro", "Caqui"], sizes: ["6", "8", "10", "12", "14", "16"], driveLink: "",
-    packaging: { totalPieces: 24, rows: [
-      { color: "Negro", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
-      { color: "Verde militar", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
-      { color: "Marino oscuro", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
-      { color: "Caqui", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } }
     ] }
   }
 ];
