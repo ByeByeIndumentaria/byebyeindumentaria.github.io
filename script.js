@@ -1730,15 +1730,13 @@ const packagingByProductId = {
     ],
   },
   33: {
-    totalPieces: 168,
+    totalPieces: 120,
     totalLabel: "24 piezas por color",
     rows: [
       { color: "Marino", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "24 piezas por color" },
       { color: "Blanco", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "24 piezas por color" },
       { color: "Gris claro", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "24 piezas por color" },
       { color: "Gris verdoso", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "24 piezas por color" },
-      { color: "Negro", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "24 piezas por color" },
-      { color: "Blanco", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "24 piezas por color" },
       { color: "Negro", sizePieces: { "S": 1, "M": 2, "L": 3, "XL": 2, "XXL": 2 }, pieces: "24 piezas por color" },
     ],
   },
