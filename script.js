@@ -946,6 +946,16 @@ const productImagesById = {
   "68": [
     1
   ],
+  "69": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
   "70": [
     1,
     2,
@@ -963,6 +973,15 @@ const productImagesById = {
     5
   ],
   "72": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "74": [
     1,
     2,
     3,
@@ -998,10 +1017,33 @@ const productImagesById = {
     2,
     3,
     4
+  ],
+  "81": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "82": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "84": [
+    1,
+    2,
+    3,
+    4
   ]
 };
 
-const IMAGE_ASSET_VERSION = "20260728-1";
+const IMAGE_ASSET_VERSION = "20260728-2";
 
 function versionImageSrc(src) {
   return `${src}?v=${IMAGE_ASSET_VERSION}`;
