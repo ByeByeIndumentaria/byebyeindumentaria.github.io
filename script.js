@@ -1266,7 +1266,7 @@ const extraProducts = [
     description: "Tapado de invierno para hombre. Silueta larga y colores neutros.",
     colors: ["Negro", "Marrón", "Gris"],
     sizes: ["S", "M", "L", "XL", "XXL"],
-    orderNumber: "224-480", collection: "invierno-2027",
+    orderNumber: "225-200", collection: "invierno-2027",
     driveLink: ""
   },
   {
