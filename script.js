@@ -1934,13 +1934,13 @@ const packagingByProductId = {
   },
   43: {
     totalPieces: 240,
-    totalLabel: "48 piezas por color",
+    totalLabel: "60 piezas por color",
     rows: [
-      { color: "Blanco", sizePieces: { "S": 2, "M": 2, "L": 2, "XL": 1, "XXL": 1 }, pieces: "48 piezas por color" },
-      { color: "Rosa", sizePieces: { "S": 2, "M": 2, "L": 2, "XL": 1, "XXL": 1 }, pieces: "48 piezas por color" },
-      { color: "Celeste", sizePieces: { "S": 2, "M": 2, "L": 2, "XL": 1, "XXL": 1 }, pieces: "48 piezas por color" },
-      { color: "Marino", sizePieces: { "S": 2, "M": 2, "L": 2, "XL": 1, "XXL": 1 }, pieces: "48 piezas por color" },
-      { color: "Negro", sizePieces: { "S": 2, "M": 2, "L": 2, "XL": 1, "XXL": 1 }, pieces: "48 piezas por color" },
+      { color: "Blanco", sizePieces: { "S": 2, "M": 2, "L": 2, "XL": 1, "XXL": 1 }, pieces: "60 piezas por color" },
+      { color: "Rosa", sizePieces: { "S": 2, "M": 2, "L": 2, "XL": 1, "XXL": 1 }, pieces: "60 piezas por color" },
+      { color: "Celeste", sizePieces: { "S": 2, "M": 2, "L": 2, "XL": 1, "XXL": 1 }, pieces: "60 piezas por color" },
+      { color: "Marino", sizePieces: { "S": 2, "M": 2, "L": 2, "XL": 1, "XXL": 1 }, pieces: "60 piezas por color" },
+      { color: "Negro", sizePieces: { "S": 2, "M": 2, "L": 2, "XL": 1, "XXL": 1 }, pieces: "60 piezas por color" },
     ],
   },
   44: {
