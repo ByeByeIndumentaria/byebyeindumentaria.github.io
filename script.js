@@ -7,8 +7,11 @@
 // -- COLLECTIONS ----------------------------------
 const collections = [
   { id: "verano-2027", name: "Verano 2027", label: "SS 2027", tagline: "Made for summer." },
-  { id: "invierno-2027", name: "Invierno", label: "FW 2027", tagline: "Abrigos y prendas de invierno." }
+  { id: "invierno-2027", name: "Invierno", label: "FW 2027", tagline: "Abrigos y prendas de invierno." },
+  { id: "primavera-2027", name: "Primavera", label: "SP 2027", tagline: "Camperas para media estación." }
 ];
+
+const SPRING_PRODUCT_IDS = [51, 53, 54, 58, 61, 62, 63, 66, 68, 77, 78];
 
 // -- EASY CATALOG CONTROL -------------------------
 // Para poner un producto fuera de stock, agregá su número:
@@ -2052,6 +2055,10 @@ winterSourceProducts.forEach(product => {
 function applyCatalogData() {
   products.forEach(product => {
     product.collection = product.collection || "verano-2027";
+    product.collections = [product.collection];
+    if (SPRING_PRODUCT_IDS.includes(product.id)) {
+      product.collections.push("primavera-2027");
+    }
     product.isHidden = HIDDEN_PRODUCT_IDS.includes(product.id);
     product.inStock = !OUT_OF_STOCK_PRODUCT_IDS.includes(product.id);
     const packaging = packagingByProductId[product.id];
@@ -2110,7 +2117,7 @@ function getActiveCollection() {
 }
 
 function getCollectionProducts() {
-  return products.filter(product => product.collection === activeCollection && !product.isHidden);
+  return products.filter(product => product.collections.includes(activeCollection) && !product.isHidden);
 }
 
 const GENDER_LABELS = {
