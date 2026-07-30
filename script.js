@@ -2417,6 +2417,24 @@ function loadProductImage(id, imgEl, placeholderEl) {
   tester.src = src;
 }
 
+const modalImageCache = new Map();
+
+function preloadModalImage(src, priority = 'auto') {
+  if (!src) return Promise.resolve(false);
+  if (modalImageCache.has(src)) return modalImageCache.get(src);
+
+  const preload = new Image();
+  preload.decoding = 'async';
+  preload.fetchPriority = priority;
+  const ready = new Promise(resolve => {
+    preload.onload = () => resolve(true);
+    preload.onerror = () => resolve(false);
+  });
+  modalImageCache.set(src, ready);
+  preload.src = src;
+  return ready;
+}
+
 // ── MODAL ────────────────────────────────────────
 function openModal(p) {
   currentModalProduct = p;
@@ -2489,10 +2507,7 @@ function openModal(p) {
     if (gallerySrcs.length < 2) return;
     const nextIdx = (galleryIdx + 1) % gallerySrcs.length;
     const prevIdx = (galleryIdx - 1 + gallerySrcs.length) % gallerySrcs.length;
-    [prevIdx, nextIdx].forEach(idx => {
-      const preload = new Image();
-      preload.src = gallerySrcs[idx];
-    });
+    [prevIdx, nextIdx].forEach(idx => preloadModalImage(gallerySrcs[idx], 'low'));
   }
 
   function fitModalToImage() {
@@ -2516,25 +2531,34 @@ function openModal(p) {
   function showGalleryImage(index) {
     if (!gallerySrcs.length) return;
     galleryIdx = index;
-    modalImg.style.display = 'none';
-    modalImg.onload = () => {
+    const targetSrc = gallerySrcs[index];
+    const isFirstImage = !modalImg.src || modalImg.style.display === 'none';
+
+    preloadModalImage(targetSrc, 'high').then(loaded => {
+      if (!loaded || galleryIdx !== index || currentModalProduct !== p) return;
+      modalImg.src = targetSrc;
       fitModalToImage();
       modalImg.style.display = 'block';
       preloadNeighborImages();
-    };
-    modalImg.src = gallerySrcs[galleryIdx];
+    });
+
+    if (isFirstImage) modalImg.style.display = 'none';
     updateDots();
     updateColorChips();
   }
 
+  const colorGalleryIndices = new Set();
   colorsEl.querySelectorAll('.color-chip').forEach((chip, colorIndex) => {
     const galleryIndex = getColorGalleryIndex(p, colorIndex, gallerySrcs.length);
     chip.dataset.galleryIndex = galleryIndex ?? '';
     chip.disabled = galleryIndex === null;
+    if (galleryIndex !== null) colorGalleryIndices.add(galleryIndex);
     chip.addEventListener('click', () => {
       if (galleryIndex !== null) showGalleryImage(galleryIndex);
     });
   });
+
+  colorGalleryIndices.forEach(index => preloadModalImage(gallerySrcs[index], 'low'));
 
   if (gallerySrcs.length > 1) {
     dots = document.createElement('div');
