@@ -2490,8 +2490,8 @@ function openModal(p) {
   }
 
   function fitModalToImage() {
-    const ratioW = modalImg.naturalWidth || 3;
-    const ratioH = modalImg.naturalHeight || 4;
+    const ratioW = 3;
+    const ratioH = 4;
     const ratio = ratioW / ratioH;
     const viewportW = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
     const viewportH = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
@@ -2502,7 +2502,7 @@ function openModal(p) {
     const mediaW = Math.max(320, Math.min(maxImageH * ratio, 620, maxModalW - infoW));
     const modalW = Math.min(maxModalW, mediaW + infoW);
 
-    modalImgWrap.style.aspectRatio = `${ratioW} / ${ratioH}`;
+    modalImgWrap.style.aspectRatio = '3 / 4';
     modalEl.style.setProperty('--modal-media-w', `${Math.round(mediaW)}px`);
     modalEl.style.setProperty('--modal-w', `${Math.round(modalW)}px`);
   }
