@@ -1189,7 +1189,7 @@ const colorImageByProductId = {
   63: { "Negro": 5, "Beige": 6, "Gris": 7 },
   64: { "Negro": 6, "Arena": 7, "Melange": 8, "Caqui": 9 },
   65: { "Negro": 8, "Arena": 9, "Melange": 10, "Caqui": 11 },
-  66: { "Negro": 7, "Iced Coffee": 8 },
+  66: { "Negro": 8, "Iced Coffee": 7 },
   68: { "Oliva": 2, "Beige": 3 },
   69: { "Negro": 5, "Marino/Negro": 6, "Negro/Oliva 2": 7, "Oliva 2/Marino": 8 },
   70: { "Negro": 8 },
