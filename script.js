@@ -2055,10 +2055,9 @@ winterSourceProducts.forEach(product => {
 function applyCatalogData() {
   products.forEach(product => {
     product.collection = product.collection || "verano-2027";
-    product.collections = [product.collection];
-    if (SPRING_PRODUCT_IDS.includes(product.id)) {
-      product.collections.push("primavera-2027");
-    }
+    product.collections = SPRING_PRODUCT_IDS.includes(product.id)
+      ? ["primavera-2027"]
+      : [product.collection];
     product.isHidden = HIDDEN_PRODUCT_IDS.includes(product.id);
     product.inStock = !OUT_OF_STOCK_PRODUCT_IDS.includes(product.id);
     const packaging = packagingByProductId[product.id];
