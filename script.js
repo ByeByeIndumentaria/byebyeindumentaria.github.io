@@ -1005,8 +1005,7 @@ const productImagesById = {
     2,
     3,
     4,
-    5,
-    6
+    5
   ],
   "78": [
     1
@@ -1048,7 +1047,45 @@ const productImagesById = {
   ]
 };
 
-const IMAGE_ASSET_VERSION = "20260728-3";
+const winterImageAdditionsByProductId = {
+  47: [6, 7],
+  48: [6, 7],
+  49: [6, 7, 8],
+  50: [5, 6, 7, 8],
+  51: [7, 8],
+  52: [2, 3, 4, 5],
+  53: [6],
+  54: [4, 5, 6],
+  55: [5, 6, 7, 8],
+  56: [10, 11, 12],
+  58: [6, 7],
+  59: [7, 8, 9],
+  60: [2, 3, 4, 5],
+  61: [5, 6],
+  62: [6, 7],
+  63: [5, 6, 7],
+  64: [6, 7, 8, 9],
+  65: [8, 9, 10, 11],
+  66: [7, 8],
+  68: [2, 3],
+  70: [8],
+  71: [6, 7, 8, 9, 10],
+  72: [8, 9, 10],
+  75: [4, 5, 6],
+  76: [4, 5, 6],
+  78: [2, 3, 4],
+  79: [5, 6, 7, 8],
+  80: [5, 6, 7]
+};
+
+Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumbers]) => {
+  productImagesById[productId] = [...new Set([
+    ...(productImagesById[productId] || []),
+    ...photoNumbers
+  ])].sort((a, b) => a - b);
+});
+
+const IMAGE_ASSET_VERSION = "20260730-4";
 
 function versionImageSrc(src) {
   return `${src}?v=${IMAGE_ASSET_VERSION}`;
@@ -1134,25 +1171,39 @@ const colorImageByProductId = {
   44: { "Negro": 4, "Marino": 5, "Petróleo": 6, "Gris": 7, "Beige": 8 },
   45: { "Negro": 3, "Marino": 4, "Azul marino": 4, "Blanco": 5, "Beige": 6, "Melange": 7, "Gris": 7, "Celeste": 9, "Petróleo": 8 },
   46: { "Negro": 3, "Blanco": 4, "Beige": 5, "Chocolate": 6, "Oliva": 7 },
-  47: { "Beige": 1 },
-  48: { "Negro": 1 },
-  49: { "Blanco": 1 },
-  50: { "Negro": 1 },
-  51: { "Negro": 1 },
-  52: { "Negro": 1, "Negro melange": 1, "Melange oscuro": 1, "Melange": 1 },
-  53: { "Negro": 1 },
-  54: { "Camel": 1 },
-  56: { "Marrón": 1 },
-  58: { "Ocre": 1 },
-  59: { "Negro": 1 },
-  60: { "Rosa": 1 },
-  61: { "Chocolate": 1 },
-  62: { "Negro": 1 },
-  63: { "Negro": 1 },
-  64: { "Negro": 1 },
-  65: { "Negro": 1 },
-  66: { "Iced Coffee": 1 },
-  68: { "Beige/Oliva": 1, "Oliva": 1, "Beige": 1 }
+  47: { "Beige": 6, "Negro": 7 },
+  48: { "Negro": 6, "Marino": 7 },
+  49: { "Blanco": 6, "Beige": 7, "Negro": 8 },
+  50: { "Negro": 5, "Chocolate": 6, "Caqui": 7, "Camel": 8 },
+  51: { "Negro": 7, "Marino": 8 },
+  52: { "Negro": 2, "Melange oscuro": 3, "Melange": 4, "Caqui": 5 },
+  53: { "Negro": 6 },
+  54: { "Negro": 4, "Beige": 5, "Camel": 6 },
+  55: { "Negro": 6, "Melange oscuro": 7, "Melange": 5, "Caqui": 8 },
+  56: { "Negro": 10, "Marrón": 11, "Gris": 12 },
+  58: { "Ocre": 6, "Negro": 7 },
+  59: { "Negro": 7, "Beige": 8, "Chocolate": 9 },
+  60: { "Rosa": 2, "Camel": 3, "Beige": 4, "Negro": 5 },
+  61: { "Chocolate": 5, "Camel": 6 },
+  62: { "Negro": 6, "Chocolate": 7 },
+  63: { "Negro": 5, "Beige": 6, "Gris": 7 },
+  64: { "Negro": 6, "Arena": 7, "Melange": 8, "Caqui": 9 },
+  65: { "Negro": 8, "Arena": 9, "Melange": 10, "Caqui": 11 },
+  66: { "Negro": 7, "Iced Coffee": 8 },
+  68: { "Oliva": 2, "Beige": 3 },
+  69: { "Negro": 5, "Marino/Negro": 6, "Negro/Oliva 2": 7, "Oliva 2/Marino": 8 },
+  70: { "Negro": 8 },
+  71: { "Oliva": 6, "Beige": 7, "Camel": 8, "Marino": 9, "Negro": 10 },
+  72: { "Negro": 8, "Beige": 9, "Oliva": 10 },
+  74: { "Negro": 4, "Oliva oscuro": 5, "Marino": 6, "Marrón claro": 7 },
+  75: { "Camel": 4, "Negro": 5, "Café": 6 },
+  76: { "Camel": 4, "Negro": 5, "Chocolate": 6 },
+  77: { "Chocolate": 4, "Negro": 5 },
+  78: { "Negro": 2, "Chocolate": 3, "Camel": 4 },
+  79: { "Piedra": 5, "Negro": 6, "Marino": 7, "Rosa": 8 },
+  80: { "Negro": 5, "Oliva claro": 6, "Piedra": 7 },
+  81: { "Negro": 4, "Marino": 5, "Marrón claro": 6, "Verde militar": 7 },
+  82: { "Negro": 3, "Vino": 4, "Leche": 5, "Gris": 6 }
 };
 
 function normalizeColorName(value) {
@@ -1360,7 +1411,7 @@ const extraProducts = [
   {
     id: 68, name: "Tonara", category: "MUJER", subcategory: "Abrigos",
     description: "Campera de invierno para mujer. Disponible en beige, militar y negro.",
-    colors: ["Beige/Oliva", "Negro"],
+    colors: ["Oliva", "Beige", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
     orderNumber: "125-548", collection: "invierno-2027",
     driveLink: ""
@@ -1508,13 +1559,13 @@ const winterSourceProducts = [
   {
     id: 82, name: "HEDDA PONGEE", category: "MUJER", subcategory: "Abrigos",
     description: "LADIES WOVEN VEST", orderNumber: "125-318", collection: "invierno-2027",
-    colors: ["Negro", "Vino", "Leche", "Granito"], sizes: ["S/CH", "M/M", "L/G", "XL/EG", "2XL/2EG"], driveLink: "",
+    colors: ["Negro", "Vino", "Leche", "Gris"], sizes: ["S/CH", "M/M", "L/G", "XL/EG", "2XL/2EG"], driveLink: "",
     packaging: { totalPieces: 30, rows: [
       { color: "Negro", sizePieces: { "S/CH": 1, "M/M": 1, "L/G": 2, "XL/EG": 1, "2XL/2EG": 1 } },
       { color: "Negro", sizePieces: { "S/CH": 1, "M/M": 1, "L/G": 2, "XL/EG": 1, "2XL/2EG": 1 } },
       { color: "Vino", sizePieces: { "S/CH": 1, "M/M": 1, "L/G": 2, "XL/EG": 1, "2XL/2EG": 1 } },
       { color: "Leche", sizePieces: { "S/CH": 1, "M/M": 1, "L/G": 2, "XL/EG": 1, "2XL/2EG": 1 } },
-      { color: "Granito", sizePieces: { "S/CH": 1, "M/M": 1, "L/G": 2, "XL/EG": 1, "2XL/2EG": 1 } }
+      { color: "Gris", sizePieces: { "S/CH": 1, "M/M": 1, "L/G": 2, "XL/EG": 1, "2XL/2EG": 1 } }
     ] }
   },
   {
