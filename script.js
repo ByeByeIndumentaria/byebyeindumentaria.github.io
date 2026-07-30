@@ -13,6 +13,41 @@ const collections = [
 
 const SPRING_PRODUCT_IDS = [51, 53, 54, 58, 61, 62, 63, 66, 68, 77, 78];
 
+const OUTERWEAR_SUBCATEGORY_BY_PRODUCT_ID = {
+  47: "Camperas",
+  48: "Camperas",
+  49: "Camperas",
+  50: "Camperas",
+  52: "Tapados",
+  53: "Camperas de cuero",
+  54: "Trench",
+  55: "Tapados",
+  56: "Tapados",
+  58: "Cazadoras",
+  59: "Camperas",
+  60: "Camperas",
+  61: "Cazadoras",
+  62: "Camperas de cuero",
+  63: "Trench",
+  64: "Tapados",
+  65: "Tapados",
+  66: "Trench",
+  69: "Camperas",
+  70: "Camperas",
+  71: "Camperas",
+  72: "Camperas",
+  74: "Chalecos",
+  75: "Chalecos",
+  76: "Chalecos",
+  77: "Camperas de cuero",
+  78: "Camperas de cuero",
+  79: "Chalecos",
+  80: "Camperas",
+  81: "Chalecos",
+  82: "Chalecos",
+  51: "Rompevientos"
+};
+
 // -- EASY CATALOG CONTROL -------------------------
 // Para poner un producto fuera de stock, agregá su número:
 // const OUT_OF_STOCK_PRODUCT_IDS = [12, 43];
@@ -2058,6 +2093,7 @@ function applyCatalogData() {
     product.collections = SPRING_PRODUCT_IDS.includes(product.id)
       ? ["primavera-2027"]
       : [product.collection];
+    product.subcategory = OUTERWEAR_SUBCATEGORY_BY_PRODUCT_ID[product.id] || product.subcategory;
     product.isHidden = HIDDEN_PRODUCT_IDS.includes(product.id);
     product.inStock = !OUT_OF_STOCK_PRODUCT_IDS.includes(product.id);
     const packaging = packagingByProductId[product.id];
