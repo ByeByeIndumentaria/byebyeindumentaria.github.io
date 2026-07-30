@@ -2279,6 +2279,7 @@ function renderProducts() {
       <div class="card-info">
         <p class="card-subcat">${formatProductSubcategory(p)}</p>
         <p class="card-name">${p.name}</p>
+        ${p.orderNumber ? `<p class="card-code">Cód. ${p.orderNumber}</p>` : ''}
       </div>
     `;
 
@@ -2369,6 +2370,9 @@ function openModal(p) {
   document.getElementById('modal-gender').textContent = getGenderLabel(p.category);
   document.getElementById('modal-subcat').textContent = formatProductSubcategory(p);
   document.getElementById('modal-collection').textContent = `${getActiveCollection().name.toUpperCase()} · ${getStockLabel(p).toUpperCase()}`;
+  const modalCode = document.getElementById('modal-code');
+  modalCode.textContent = p.orderNumber ? `Cód. ${p.orderNumber}` : '';
+  modalCode.hidden = !p.orderNumber;
   document.getElementById('modal-desc').textContent = p.description;
 
   // Colors

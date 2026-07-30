@@ -331,6 +331,14 @@ a { text-decoration: none; color: inherit; }
   line-height: 1.25;
   margin-bottom: 4px;
 }
+.card-code {
+  color: var(--gray-400);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.13em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
 /* ── EMPTY STATE ──────────────────────── */
 .empty-state {
   text-align: center;
@@ -631,6 +639,14 @@ a { text-decoration: none; color: inherit; }
   font-size: 32px;
   font-weight: 400;
   line-height: 1.15;
+}
+.modal-code {
+  color: var(--gray-400);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  margin-top: -8px;
+  text-transform: uppercase;
 }
 .modal-desc { font-size: 14px; color: var(--gray-600); line-height: 1.7; }
 
