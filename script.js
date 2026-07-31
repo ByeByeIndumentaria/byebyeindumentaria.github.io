@@ -1193,7 +1193,7 @@ const productImagesById = {
 };
 
 Object.assign(productImagesById, {
-  "88": [1, 2], "89": [1, 2, 3, 4, 5, 6, 7, 8], "90": [1, 2, 3, 4, 5, 6],
+  "88": [1, 2, 3, 4, 5, 6], "89": [1, 2, 3, 4, 5, 6, 7, 8], "90": [1, 2, 3, 4, 5, 6],
   "91": [1], "92": [1], "93": [1], "94": [1], "95": [1], "96": [1],
   "97": [1], "98": [1], "99": [1], "100": [1], "101": [1]
 });
@@ -1236,7 +1236,7 @@ Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumber
   ])].sort((a, b) => a - b);
 });
 
-const IMAGE_ASSET_VERSION = "20260731-11";
+const IMAGE_ASSET_VERSION = "20260731-12";
 
 function versionImageSrc(src) {
   return `${src}?v=${IMAGE_ASSET_VERSION}`;
@@ -1358,6 +1358,7 @@ const colorImageByProductId = {
   85: { "Blanco": 3, "Gris Claro": 4, "Negro": 5, "Marino": 6, "Azul Marino": 6 },
   86: { "Gris": 3, "Gris Claro": 3, "Marino": 4, "Negro": 5 },
   87: { "Negro": 3, "Blanco": 4, "Marino": 5 },
+  88: { "Gris Claro": 2, "Azul": 3, "Marrón": 4, "Chocolate": 5, "Negro": 6 },
   89: { "Crema": 2, "Beige": 3, "Chocolate": 4, "Celeste": 5, "Azul Marino": 6, "Gris Oscuro": 7, "Negro": 8 },
   90: { "Gris Claro": 2, "Beige": 3, "Chocolate": 4, "Azul Marino": 5, "Negro": 6 }
 };
