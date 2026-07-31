@@ -8,10 +8,12 @@
 const collections = [
   { id: "verano-2027", name: "Verano 2027", label: "SS 2027", tagline: "Made for summer." },
   { id: "invierno-2027", name: "Invierno", label: "FW 2027", tagline: "Abrigos y prendas de invierno." },
-  { id: "primavera-2027", name: "Primavera", label: "SP 2027", tagline: "Camperas para media estación." }
+  { id: "primavera-2027", name: "Primavera", label: "SP 2027", tagline: "Camperas para media estación." },
+  { id: "deportivo", name: "Deportivo", label: "SPORT", tagline: "Indumentaria deportiva." }
 ];
 
 const SPRING_PRODUCT_IDS = [51, 53, 54, 58, 61, 62, 63, 66, 68, 77, 78];
+const SPORTS_PRODUCT_IDS = [39, 85];
 
 const OUTERWEAR_SUBCATEGORY_BY_PRODUCT_ID = {
   47: "Camperas",
@@ -367,7 +369,7 @@ const products = [
     driveLink: ""
   },
   {
-    id: 39, name: "Remera Deportiva", category: "HOMBRE", subcategory: "Deportivo",
+    id: 39, name: "Remera Deportiva", category: "HOMBRE", subcategory: "Remeras",
     description: "Remera técnica liviana de manga corta, cuello redondo y calce recto.",
     colors: ["Blanco", "Gris", "Marino", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
@@ -423,7 +425,7 @@ const products = [
     driveLink: ""
   },
   {
-    id: 85, name: "Buzo Deportivo Medio Cierre", category: "HOMBRE", subcategory: "Deportivo",
+    id: 85, name: "Buzo Deportivo Medio Cierre", category: "HOMBRE", subcategory: "Buzos",
     description: "Buzo deportivo de manga larga con cuello alto, medio cierre y detalles reflectivos en los antebrazos.",
     orderNumber: "10950",
     colors: ["Marino", "Gris Claro", "Blanco", "Negro"],
@@ -2143,9 +2145,11 @@ winterSourceProducts.forEach(product => {
 function applyCatalogData() {
   products.forEach(product => {
     product.collection = product.collection || "verano-2027";
-    product.collections = SPRING_PRODUCT_IDS.includes(product.id)
-      ? ["primavera-2027"]
-      : [product.collection];
+    product.collections = SPORTS_PRODUCT_IDS.includes(product.id)
+      ? ["deportivo"]
+      : SPRING_PRODUCT_IDS.includes(product.id)
+        ? ["primavera-2027"]
+        : [product.collection];
     product.subcategory = OUTERWEAR_SUBCATEGORY_BY_PRODUCT_ID[product.id] || product.subcategory;
     product.description = PRODUCT_DESCRIPTION_BY_ID[product.id] || product.description;
     product.isHidden = HIDDEN_PRODUCT_IDS.includes(product.id);
