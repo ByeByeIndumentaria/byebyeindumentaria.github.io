@@ -13,7 +13,7 @@ const collections = [
 ];
 
 const SPRING_PRODUCT_IDS = [51, 53, 54, 58, 61, 62, 63, 66, 68, 77, 78];
-const SPORTS_PRODUCT_IDS = [39, 85];
+const SPORTS_PRODUCT_IDS = [39, 85, 86, 87];
 
 const OUTERWEAR_SUBCATEGORY_BY_PRODUCT_ID = {
   47: "Camperas",
@@ -429,6 +429,22 @@ const products = [
     description: "Buzo deportivo de manga larga con cuello alto, medio cierre y detalles reflectivos en los antebrazos.",
     orderNumber: "10950",
     colors: ["Marino", "Gris Claro", "Blanco", "Negro"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    driveLink: ""
+  },
+  {
+    id: 86, name: "Short Deportivo Reflex", category: "HOMBRE", subcategory: "Shorts",
+    description: "Short deportivo con cintura elastizada y bolsillos con cierre reflectivo.",
+    orderNumber: "10942",
+    colors: ["Marino", "Gris Claro", "Negro"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    driveLink: ""
+  },
+  {
+    id: 87, name: "Short Deportivo Waterproof", category: "HOMBRE", subcategory: "Shorts",
+    description: "Short deportivo con cintura elastizada, cordón ajustable y bolsillos con cierre waterproof.",
+    orderNumber: "10945",
+    colors: ["Negro", "Blanco", "Marino"],
     sizes: ["S", "M", "L", "XL", "XXL"],
     driveLink: ""
   }
@@ -2134,6 +2150,16 @@ const packagingByProductId = {
     { color: "Gris Claro", sizePieces: { S: 1, M: 2, L: 3, XL: 2, XXL: 2 } },
     { color: "Blanco", sizePieces: { S: 1, M: 2, L: 3, XL: 2, XXL: 2 } },
     { color: "Negro", sizePieces: { S: 3, M: 6, L: 9, XL: 6, XXL: 6 } }
+  ] },
+  86: { totalPieces: 81, totalLabel: "81 piezas totales", rows: [
+    { color: "Marino", sizePieces: { S: 2, M: 4, L: 6, XL: 4, XXL: 2 } },
+    { color: "Gris Claro", sizePieces: { S: 2, M: 4, L: 6, XL: 4, XXL: 2 } },
+    { color: "Negro", sizePieces: { S: 5, M: 10, L: 15, XL: 10, XXL: 5 } }
+  ] },
+  87: { totalPieces: 81, totalLabel: "81 piezas totales", rows: [
+    { color: "Negro", sizePieces: { S: 5, M: 10, L: 15, XL: 10, XXL: 5 } },
+    { color: "Blanco", sizePieces: { S: 2, M: 4, L: 6, XL: 4, XXL: 2 } },
+    { color: "Marino", sizePieces: { S: 2, M: 4, L: 6, XL: 4, XXL: 2 } }
   ] }
 };
 
