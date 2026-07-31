@@ -14,6 +14,7 @@ const collections = [
 
 const SPRING_PRODUCT_IDS = [51, 53, 54, 58, 61, 62, 63, 66, 68, 77, 78];
 const SPORTS_PRODUCT_IDS = [39, 85, 86, 87];
+const CONTAIN_IMAGE_PRODUCT_IDS = [86, 87];
 
 const OUTERWEAR_SUBCATEGORY_BY_PRODUCT_ID = {
   47: "Camperas",
@@ -2464,7 +2465,7 @@ function renderProducts() {
       <div class="card-img-wrap">
         <span class="card-badge-gender">${getGenderLabel(p.category)}</span>
         ${p.inStock ? '' : `<span class="card-badge-stock">Sin stock</span>`}
-        <img class="card-img" src="" alt="${p.name}" loading="lazy" decoding="async" style="display:none;width:100%;height:100%;object-fit:cover;" />
+        <img class="card-img" src="" alt="${p.name}" loading="lazy" decoding="async" style="display:none;width:100%;height:100%;object-fit:${CONTAIN_IMAGE_PRODUCT_IDS.includes(p.id) ? 'contain' : 'cover'};background:${CONTAIN_IMAGE_PRODUCT_IDS.includes(p.id) ? '#f4f0e8' : 'transparent'};" />
         <div class="card-placeholder" id="ph-${p.id}">
           <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
             <path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.57a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.57a2 2 0 00-1.34-2.23z"/>
@@ -2611,6 +2612,8 @@ function openModal(p) {
   const modalImgWrap = document.querySelector('.modal-image-wrap');
   modalImg.style.display = 'none';
   modalImg.alt = p.name;
+  modalImg.style.objectFit = CONTAIN_IMAGE_PRODUCT_IDS.includes(p.id) ? 'contain' : 'cover';
+  modalImgWrap.style.background = CONTAIN_IMAGE_PRODUCT_IDS.includes(p.id) ? '#f4f0e8' : '#d6c8b7';
   modalImgWrap.style.aspectRatio = '3 / 4';
   modalEl.style.removeProperty('--modal-media-w');
   modalEl.style.removeProperty('--modal-w');
