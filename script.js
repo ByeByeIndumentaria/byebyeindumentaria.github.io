@@ -9,7 +9,8 @@ const collections = [
   { id: "verano-2027", name: "Verano 2027", label: "SS 2027", tagline: "Made for summer." },
   { id: "invierno-2027", name: "Invierno", label: "FW 2027", tagline: "Abrigos y prendas de invierno." },
   { id: "primavera-2027", name: "Primavera", label: "SP 2027", tagline: "Camperas para media estación." },
-  { id: "deportivo", name: "Deportivo", label: "SPORT", tagline: "Indumentaria deportiva." }
+  { id: "deportivo", name: "Deportivo", label: "SPORT", tagline: "Indumentaria deportiva." },
+  { id: "accesorios", name: "Accesorios", label: "ACCESSORIES", tagline: "Gorros, bolsos y mochilas." }
 ];
 
 const SPRING_PRODUCT_IDS = [51, 53, 54, 58, 61, 62, 63, 66, 68, 77, 78];
@@ -449,6 +450,25 @@ const products = [
     driveLink: ""
   }
 ];
+
+const accessoryProducts = [
+  { id: 88, name: "Gorro de Lana Acanalado", category: "UNISEX", subcategory: "Gorros", description: "Gorro de lana tejido en punto acanalado, de 20 cm de ancho por 29 cm de largo.", orderNumber: "10984", colors: ["Gris Claro", "Azul", "Marrón", "Chocolate", "Negro"], sizes: ["Único"], collection: "accesorios", preserveCatalogColors: true, driveLink: "" },
+  { id: 89, name: "Gorro de Lana Corto", category: "UNISEX", subcategory: "Gorros", description: "Gorro de lana tejido en punto acanalado, de 17 cm de ancho por 27,5 cm de largo.", orderNumber: "10981", colors: ["Crema", "Beige", "Chocolate", "Celeste", "Azul Marino", "Gris Oscuro", "Negro"], sizes: ["Único"], collection: "accesorios", preserveCatalogColors: true, driveLink: "" },
+  { id: 90, name: "Gorro de Lana Liso", category: "UNISEX", subcategory: "Gorros", description: "Gorro de lana de tejido liso, de 20 cm de ancho por 29 cm de largo.", orderNumber: "10923", colors: ["Gris Claro", "Beige", "Chocolate", "Azul Marino", "Negro"], sizes: ["Único"], collection: "accesorios", preserveCatalogColors: true, driveLink: "" },
+  { id: 91, name: "Bolso Bandolera con Bolsillos Laterales", category: "UNISEX", subcategory: "Bolsos", description: "Bolso bandolera de 33 x 27 cm, con tres cierres y bolsillos laterales.", orderNumber: "10000", colors: ["Negro"], sizes: ["Único"], collection: "accesorios", driveLink: "" },
+  { id: 92, name: "Bolso Bandolera USB", category: "UNISEX", subcategory: "Bolsos", description: "Bolso bandolera de 32 x 23 cm, con tres cierres, entrada USB y salida para auriculares.", orderNumber: "9988", colors: ["Negro"], sizes: ["Único"], collection: "accesorios", driveLink: "" },
+  { id: 93, name: "Bolso Bandolera Compacto", category: "UNISEX", subcategory: "Bolsos", description: "Bolso bandolera de 32 x 26 cm con correa regulable y tres cierres.", orderNumber: "9991", colors: ["Negro"], sizes: ["Único"], collection: "accesorios", driveLink: "" },
+  { id: 94, name: "Bandolera de Cuatro Cierres", category: "UNISEX", subcategory: "Bandoleras", description: "Bandolera de 28 x 25 cm, con cuatro cierres y bolsillo trasero.", orderNumber: "9993", colors: ["Negro"], sizes: ["Único"], collection: "accesorios", driveLink: "" },
+  { id: 95, name: "Bandolera Vertical", category: "UNISEX", subcategory: "Bandoleras", description: "Bandolera vertical de 28 x 25 cm, con cuatro cierres y bolsillo trasero.", orderNumber: "9994", colors: ["Negro"], sizes: ["Único"], collection: "accesorios", driveLink: "" },
+  { id: 96, name: "Bandolera Amplia", category: "UNISEX", subcategory: "Bandoleras", description: "Bandolera de 48 x 36 cm, con tres cierres y bolsillo trasero.", orderNumber: "9995", colors: ["Negro"], sizes: ["Único"], collection: "accesorios", driveLink: "" },
+  { id: 97, name: "Bolso Bandolera TSA", category: "UNISEX", subcategory: "Bolsos", description: "Bolso bandolera de 42 x 27 cm, con tres cierres, cerradura TSA y entrada USB.", orderNumber: "9996", colors: ["Negro"], sizes: ["Único"], collection: "accesorios", driveLink: "" },
+  { id: 98, name: "Bolso Bandolera con Broche", category: "UNISEX", subcategory: "Bolsos", description: "Bolso bandolera de 42 x 27 cm, con cierre de broche, tres cierres y bolsillo interno.", orderNumber: "9998", colors: ["Negro"], sizes: ["Único"], collection: "accesorios", driveLink: "" },
+  { id: 99, name: "Riñonera de Tres Cierres", category: "UNISEX", subcategory: "Riñoneras", description: "Riñonera de 19 x 38 cm, con tres cierres, correa regulable y bolsillo interno.", orderNumber: "10004", colors: ["Negro"], sizes: ["Único"], collection: "accesorios", driveLink: "" },
+  { id: 100, name: "Mochila con Hebillas", category: "UNISEX", subcategory: "Mochilas", description: "Mochila con solapa y hebillas, dos cierres, bolsillos laterales, compartimento para notebook y 13 cm de profundidad.", orderNumber: "10010", colors: ["Negro"], sizes: ["Único"], collection: "accesorios", driveLink: "" },
+  { id: 101, name: "Mochila Porta Notebook", category: "UNISEX", subcategory: "Mochilas", description: "Mochila de 49 x 34 x 10 cm, con dos cierres, bolsillo lateral y compartimento para notebook.", orderNumber: "10014", colors: ["Negro"], sizes: ["Único"], collection: "accesorios", driveLink: "" }
+];
+
+products.push(...accessoryProducts);
 
 // -- PRODUCT IMAGES --------------------------------
 // This list is generated from the files inside images/.
@@ -1172,6 +1192,12 @@ const productImagesById = {
   ]
 };
 
+Object.assign(productImagesById, {
+  "88": [1, 2], "89": [1, 2], "90": [1, 2],
+  "91": [1], "92": [1], "93": [1], "94": [1], "95": [1], "96": [1],
+  "97": [1], "98": [1], "99": [1], "100": [1], "101": [1]
+});
+
 const winterImageAdditionsByProductId = {
   47: [6, 7],
   48: [6, 7],
@@ -1210,7 +1236,7 @@ Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumber
   ])].sort((a, b) => a - b);
 });
 
-const IMAGE_ASSET_VERSION = "20260731-7";
+const IMAGE_ASSET_VERSION = "20260731-8";
 
 function versionImageSrc(src) {
   return `${src}?v=${IMAGE_ASSET_VERSION}`;
@@ -2188,6 +2214,23 @@ const packagingByProductId = {
   ] }
 };
 
+Object.assign(packagingByProductId, {
+  88: { totalPieces: 200, totalLabel: "200 piezas surtidas", rows: [{ color: "Surtido", sizePieces: { "Único": 200 } }] },
+  89: { totalPieces: 180, totalLabel: "180 piezas surtidas", rows: [{ color: "Surtido", sizePieces: { "Único": 180 } }] },
+  90: { totalPieces: 100, totalLabel: "100 piezas surtidas", rows: [{ color: "Surtido", sizePieces: { "Único": 100 } }] },
+  91: { totalPieces: 12, rows: [{ color: "Negro", sizePieces: { "Único": 12 } }] },
+  92: { totalPieces: 12, rows: [{ color: "Negro", sizePieces: { "Único": 12 } }] },
+  93: { totalPieces: 12, rows: [{ color: "Negro", sizePieces: { "Único": 12 } }] },
+  94: { totalPieces: 12, rows: [{ color: "Negro", sizePieces: { "Único": 12 } }] },
+  95: { totalPieces: 12, rows: [{ color: "Negro", sizePieces: { "Único": 12 } }] },
+  96: { totalPieces: 12, rows: [{ color: "Negro", sizePieces: { "Único": 12 } }] },
+  97: { totalPieces: 12, rows: [{ color: "Negro", sizePieces: { "Único": 12 } }] },
+  98: { totalPieces: 12, rows: [{ color: "Negro", sizePieces: { "Único": 12 } }] },
+  99: { totalPieces: 6, rows: [{ color: "Negro", sizePieces: { "Único": 6 } }] },
+  100: { totalPieces: 6, rows: [{ color: "Negro", sizePieces: { "Único": 6 } }] },
+  101: { totalPieces: 6, rows: [{ color: "Negro", sizePieces: { "Único": 6 } }] }
+});
+
 winterSourceProducts.forEach(product => {
   packagingByProductId[product.id] = product.packaging;
   delete product.packaging;
@@ -2216,7 +2259,9 @@ function applyCatalogData() {
         )
       }))
     };
-    product.colors = [...new Set(packaging.rows.map(row => row.color))];
+    if (!product.preserveCatalogColors) {
+      product.colors = [...new Set(packaging.rows.map(row => row.color))];
+    }
     product.sizes = getPackagingSizes(product.packaging);
   });
 }
@@ -2267,7 +2312,8 @@ function getCollectionProducts() {
 const GENDER_LABELS = {
   MUJER: "Mujer",
   HOMBRE: "Hombre",
-  NINOS: "Niños"
+  NINOS: "Niños",
+  UNISEX: "Unisex"
 };
 
 function getGenderLabel(category) {
@@ -2377,13 +2423,16 @@ function init() {
 
 function updateGenderFilters() {
   const kidsFilter = genderFilters.querySelector('[data-value="NINOS"]');
-  if (!kidsFilter) return;
+  const unisexFilter = genderFilters.querySelector('[data-value="UNISEX"]');
+  if (!kidsFilter || !unisexFilter) return;
 
   const showKids = isWinterCollection();
+  const showUnisex = activeCollection === "accesorios";
   kidsFilter.style.display = showKids ? '' : 'none';
+  unisexFilter.style.display = showUnisex ? '' : 'none';
 
   // Nunca dejamos activo Niños al volver a una colección que no lo admite.
-  if (!showKids && activeGender === 'NINOS') {
+  if ((!showKids && activeGender === 'NINOS') || (!showUnisex && activeGender === 'UNISEX')) {
     activeGender = 'all';
     genderFilters.querySelectorAll('.pill').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.value === 'all');
