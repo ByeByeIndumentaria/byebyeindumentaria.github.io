@@ -1147,6 +1147,28 @@ const productImagesById = {
     2,
     3,
     4
+  ],
+  "85": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "86": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "87": [
+    1,
+    2,
+    3,
+    4,
+    5
   ]
 };
 
@@ -1188,7 +1210,7 @@ Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumber
   ])].sort((a, b) => a - b);
 });
 
-const IMAGE_ASSET_VERSION = "20260730-4";
+const IMAGE_ASSET_VERSION = "20260731-6";
 
 function versionImageSrc(src) {
   return `${src}?v=${IMAGE_ASSET_VERSION}`;
@@ -1306,7 +1328,10 @@ const colorImageByProductId = {
   79: { "Piedra": 5, "Negro": 6, "Marino": 7, "Rosa": 8 },
   80: { "Negro": 5, "Oliva claro": 6, "Piedra": 7 },
   81: { "Negro": 4, "Marino": 5, "Marrón claro": 6, "Verde militar": 7 },
-  82: { "Negro": 3, "Vino": 4, "Leche": 5, "Gris": 6 }
+  82: { "Negro": 3, "Vino": 4, "Leche": 5, "Gris": 6 },
+  85: { "Blanco": 3, "Gris Claro": 4, "Negro": 5, "Marino": 6, "Azul Marino": 6 },
+  86: { "Gris": 3, "Gris Claro": 3, "Marino": 4, "Negro": 5 },
+  87: { "Negro": 3, "Blanco": 4, "Marino": 5 }
 };
 
 function normalizeColorName(value) {
