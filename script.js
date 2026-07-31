@@ -49,42 +49,42 @@ const OUTERWEAR_SUBCATEGORY_BY_PRODUCT_ID = {
 };
 
 const PRODUCT_DESCRIPTION_BY_ID = {
-  47: "Parka acolchada de largo medio con capucha, cierre frontal y bolsillos laterales. Su largo cubre la cadera y permite usarla sobre prendas gruesas.",
-  48: "Parka matelaseada de corte recto y largo por encima de la rodilla. Tiene capucha, cierre frontal y cobertura amplia para usar sobre varias capas.",
-  49: "Parka bicolor con capucha y borde de pelo, cierre frontal y bolsillos amplios. El largo a la cadera brinda cobertura sin limitar el movimiento.",
-  50: "Campera puffer corta con capucha, matelaseado horizontal y bolsillos laterales. Es liviana y práctica para sumar abrigo sin demasiado volumen.",
-  51: "Rompevientos liviano con capucha, cierre frontal y terminaciones elastizadas. Pensado para proteger del viento y acompañar días frescos o con clima variable.",
-  52: "Tapado corto de paño con capucha, botonadura frontal y bolsillos aplicados. Tiene corte recto y espacio suficiente para llevar un sweater debajo.",
-  53: "Campera de cuero de corte recto, cuello camisero, cierre frontal y bolsillos laterales. Su largo a la cadera facilita el uso diario y la superposición.",
-  54: "Trench largo con solapas, cinturón regulable y bolsillos laterales. Permite ajustar la cintura y funciona como capa exterior para media estación.",
-  55: "Tapado de largo medio con capucha, botonadura frontal y bolsillos amplios. El corte recto permite combinarlo con prendas de mayor grosor.",
-  56: "Tapado largo de corte recto con cuello alto, cierre frontal y bolsillos laterales. Aporta cobertura hasta la rodilla y una estructura limpia.",
-  57: "Campera acolchada en talles 5XL a 7XL, con capucha, cierre frontal y bolsillos laterales. Su calce amplio está pensado para sumar capas con comodidad.",
-  58: "Cazadora liviana de corte corto, cuello camisero en contraste y bolsillos frontales. Ideal para media estación y para usar sobre remeras o tejidos finos.",
-  59: "Campera puffer de largo medio, cuello alto, cierre frontal y bolsillos laterales. El matelaseado distribuye el volumen y cubre por debajo de la cadera.",
-  60: "Parka larga con capucha y borde de pelo, cierre frontal y bolsillos amplios. Su largo brinda mayor cobertura para jornadas frías.",
-  61: "Cazadora corta de tacto gamuzado, con cuello camisero, botonadura y bolsillos frontales. Una capa liviana para media estación y uso cotidiano.",
-  62: "Campera de cuero oversize con hombros amplios, cuello camisero y bolsillos frontales. El calce holgado permite usarla sobre sweaters sin ajustar.",
-  63: "Trench corto de doble botonadura, con solapas y estructura definida. Funciona como abrigo liviano para media estación y looks en capas.",
-  64: "Tapado largo con cuello envolvente, cinturón y bolsillos laterales. Puede usarse abierto o ajustado en la cintura según la cantidad de capas.",
-  65: "Tapado extra largo con cuello amplio, cinturón y bolsillos laterales. Ofrece cobertura por debajo de la rodilla y ajuste regulable en la cintura.",
-  66: "Trench largo con capucha, cinturón y bolsillos frontales. Protege del viento y permite regular el calce en la cintura para media estación.",
-  67: "Campera con capucha, cierre frontal y bolsillos laterales, de largo a la cadera. Una opción práctica para sumar una capa de abrigo cotidiano.",
-  68: "Campera liviana de cuello alto, cierre frontal y corte entallado a la cadera. Adecuada para media estación y días con viento moderado.",
-  69: "Campera puffer liviana en talles 2XL a 4XL, con cuello alto, cierre frontal y bolsillos laterales. Las combinaciones de color incluyen interior contrastante.",
-  70: "Campera puffer corta con capucha, cierre frontal y matelaseado horizontal. Concentra el abrigo en el torso sin sumar largo adicional.",
-  71: "Campera puffer corta de cuello alto, cierre frontal y bolsillos laterales. El corte a la cadera facilita el movimiento y el uso diario.",
-  72: "Campera puffer corta con cuello alto, cierre frontal y volumen compacto. Diseñada para sumar abrigo en el torso sin cubrir por debajo de la cadera.",
-  74: "Chaleco acolchado con cuello camisero en contraste, cierre frontal y bolsillos amplios. Permite abrigar el torso manteniendo libres los brazos.",
-  75: "Chaleco de efecto cuero con cuello de corderito, cierre frontal y bolsillos laterales. Puede usarse sobre camisas, remeras o tejidos livianos.",
-  76: "Chaleco de efecto cuero con cuello de corderito, cierre frontal y corte recto. Aporta abrigo en el torso y deja libertad de movimiento en los brazos.",
-  77: "Campera de cuero entallada, con cuello redondo, cierre frontal y largo a la cadera. Su silueta limpia funciona como capa liviana de media estación.",
-  78: "Campera de cuero para hombre con cuello alto, cierre frontal y corte recto. El largo a la cadera permite combinarla con prendas livianas debajo.",
-  79: "Chaleco acolchado liviano con cuello alto, cierre frontal y bolsillos laterales. Útil para sumar una capa térmica sin restringir los brazos.",
-  80: "Campera puffer entallada con capucha, cierre frontal y bolsillos laterales. Cubre hasta la cadera y protege el torso y la cabeza.",
-  81: "Chaleco matelaseado con cuello alto, cierre frontal y bolsillos laterales. Su corte recto permite usarlo sobre buzos o tejidos.",
-  82: "Chaleco acolchado con capucha, cierre frontal y ajuste inferior. Brinda cobertura en el torso y puede regularse en el bajo.",
-  84: "Campera puffer infantil con capucha, cierre frontal y bolsillos laterales. Disponible del talle 4 al 18 para acompañar el uso diario.",
+  47: "Parka acolchada de largo medio, con capucha, cierre frontal y bolsillos laterales.",
+  48: "Parka matelaseada de corte recto, largo por encima de la rodilla, capucha y cierre frontal.",
+  49: "Parka bicolor de largo a la cadera, con capucha, borde de pelo, cierre frontal y bolsillos amplios.",
+  50: "Campera puffer corta con capucha, matelaseado horizontal, cierre frontal y bolsillos laterales.",
+  51: "Rompevientos liviano con capucha, cierre frontal, puños y cintura elastizados.",
+  52: "Tapado corto de paño, corte recto, capucha, botonadura frontal y bolsillos aplicados.",
+  53: "Campera de cuero de corte recto, largo a la cadera, cuello camisero, cierre frontal y bolsillos laterales.",
+  54: "Trench largo con solapas, cinturón regulable, cierre frontal y bolsillos laterales.",
+  55: "Tapado de largo medio y corte recto, con capucha, botonadura frontal y bolsillos amplios.",
+  56: "Tapado largo de corte recto, con cuello alto, cierre frontal y bolsillos laterales.",
+  57: "Campera acolchada de calce amplio, con capucha, cierre frontal y bolsillos laterales.",
+  58: "Cazadora liviana de corte corto, con cuello camisero en contraste y bolsillos frontales.",
+  59: "Campera puffer de largo medio, con cuello alto, matelaseado horizontal, cierre frontal y bolsillos laterales.",
+  60: "Parka larga con capucha, borde de pelo, cierre frontal y bolsillos amplios.",
+  61: "Cazadora corta de tacto gamuzado, con cuello camisero, botonadura y bolsillos frontales.",
+  62: "Campera de cuero oversize, con hombros amplios, cuello camisero y bolsillos frontales.",
+  63: "Trench corto de estructura definida, con solapas y doble botonadura.",
+  64: "Tapado largo con cuello envolvente, cinturón regulable y bolsillos laterales.",
+  65: "Tapado extra largo con cuello amplio, cinturón regulable y bolsillos laterales.",
+  66: "Trench largo con capucha, cinturón regulable, cierre frontal y bolsillos frontales.",
+  67: "Campera de largo a la cadera, con capucha, cierre frontal y bolsillos laterales.",
+  68: "Campera liviana de corte entallado y largo a la cadera, con cuello alto y cierre frontal.",
+  69: "Campera puffer liviana de calce amplio, con cuello alto, cierre frontal, bolsillos laterales e interior contrastante.",
+  70: "Campera puffer corta con capucha, cierre frontal y matelaseado horizontal.",
+  71: "Campera puffer corta de largo a la cadera, con cuello alto, cierre frontal y bolsillos laterales.",
+  72: "Campera puffer corta, de volumen compacto, con cuello alto y cierre frontal.",
+  74: "Chaleco acolchado con cuello camisero en contraste, cierre frontal y bolsillos amplios.",
+  75: "Chaleco de efecto cuero con cuello de corderito, cierre frontal y bolsillos laterales.",
+  76: "Chaleco de efecto cuero de corte recto, con cuello de corderito y cierre frontal.",
+  77: "Campera de cuero entallada, con cuello redondo, cierre frontal y largo a la cadera.",
+  78: "Campera de cuero para hombre, de corte recto y largo a la cadera, con cuello alto y cierre frontal.",
+  79: "Chaleco acolchado liviano con cuello alto, cierre frontal y bolsillos laterales.",
+  80: "Campera puffer entallada de largo a la cadera, con capucha, cierre frontal y bolsillos laterales.",
+  81: "Chaleco matelaseado de corte recto, con cuello alto, cierre frontal y bolsillos laterales.",
+  82: "Chaleco acolchado con capucha, cierre frontal y ajuste regulable en el bajo.",
+  84: "Campera puffer infantil con capucha, cierre frontal y bolsillos laterales.",
 };
 
 // -- EASY CATALOG CONTROL -------------------------
@@ -100,35 +100,35 @@ const products = [
   // ── MUJER ──
   {
     id: 1, name: "Set Algodón", category: "MUJER", subcategory: "Conjuntos",
-    description: "Set de algodón fresco y confortable. Ideal para el verano.",
+    description: "Set de algodón de dos piezas y calce relajado.",
     colors: ["Blanco", "Melange", "Negro"],
     sizes: ["S", "M", "L", "XL"],
     driveLink: ""
   },
   {
     id: 2, name: "Remera Broderie", category: "MUJER", subcategory: "Remeras",
-    description: "Remera con detalle bordado tipo broderie. Diseño delicado y femenino.",
+    description: "Remera con detalle bordado tipo broderie.",
     colors: ["Blanco", "Celeste", "Negro"],
     sizes: ["S", "M", "L", "XL"],
     driveLink: ""
   },
   {
     id: 3, name: "Remera Puntilla", category: "MUJER", subcategory: "Remeras",
-    description: "Remera con encaje de puntilla, combinación de textura y feminidad.",
+    description: "Remera con terminaciones de encaje de puntilla.",
     colors: ["Blanco", "Celeste", "Amarillo", "Beige", "Negro"],
     sizes: ["S", "M", "L", "XL"],
     driveLink: ""
   },
   {
     id: 4, name: "Chomba Algodón", category: "MUJER", subcategory: "Remeras",
-    description: "Chomba de algodón clásica, fresca y versátil para el verano.",
+    description: "Chomba de algodón de manga corta con cuello camisero.",
     colors: ["Blanco", "Melange", "Negro"],
     sizes: ["S", "M", "L", "XL"],
     driveLink: ""
   },
   {
     id: 5, name: "Chomba Tejida", category: "MUJER", subcategory: "Remeras",
-    description: "Chomba de tejido artesanal con textura natural y elegante.",
+    description: "Chomba tejida de manga corta con textura marcada.",
     colors: ["Crudo", "Beige", "Chocolate", "Negro"],
     sizes: ["S", "M", "L", "XL"],
     driveLink: ""
@@ -142,7 +142,7 @@ const products = [
   },
   {
     id: 7, name: "Vestido Camisero", category: "MUJER", subcategory: "Vestidos",
-    description: "Vestido camisero de corte relajado. Estilo atemporal para el verano.",
+    description: "Vestido camisero de corte relajado con botonadura frontal.",
     colors: ["Crudo", "Militar", "Negro"],
     sizes: ["S", "M", "L"],
     driveLink: ""
@@ -156,28 +156,28 @@ const products = [
   },
   {
     id: 9, name: "Pantalón Lino Conjunto", category: "MUJER", subcategory: "Conjuntos", subcategories: ["Conjuntos", "Pantalones"],
-    description: "Pantalón de lino para combinar con el chaleco del conjunto.",
+    description: "Pantalón de lino de pierna recta, parte del conjunto con chaleco.",
     colors: ["Blanco", "Beige", "Oliva", "Negro"],
     sizes: ["S", "M", "L"],
     driveLink: ""
   },
   {
     id: 10, name: "Chaleco Sastrero", category: "MUJER", subcategory: "Conjuntos", subcategories: ["Conjuntos", "Chalecos"],
-    description: "Chaleco de estilo sastrero. Elegante y estructurado.",
+    description: "Chaleco sastrero de estructura definida.",
     colors: ["Blanco", "Beige", "Oliva", "Chocolate", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
     driveLink: ""
   },
   {
     id: 11, name: "Musculosa Arandelas", category: "MUJER", subcategory: "Remeras",
-    description: "Musculosa con detalle de arandelas. Casual y femenina.",
+    description: "Musculosa con detalle de arandelas metálicas.",
     colors: ["Blanco", "Crudo", "Negro"],
     sizes: ["S", "M", "L", "XL"],
     driveLink: ""
   },
   {
     id: 12, name: "Enterito Cinto", category: "MUJER", subcategory: "Monos",
-    description: "Enterito con cinto ajustable. Prenda única muy versátil.",
+    description: "Enterito de una pieza con cinto ajustable.",
     colors: ["Blanco", "Marrón", "Negro"],
     sizes: ["S", "M", "L", "XL"],
     driveLink: ""
@@ -191,28 +191,28 @@ const products = [
   },
   {
     id: 14, name: "Jogger Lino Conjunto", category: "MUJER", subcategory: "Conjuntos", subcategories: ["Conjuntos", "Pantalones"],
-    description: "Jogger de lino para combinar con la camisa del conjunto.",
+    description: "Jogger de lino, parte del conjunto con camisa.",
     colors: ["Blanco", "Crudo", "Caqui", "Oliva", "Negro"],
     sizes: ["S", "M", "L", "XL"],
     driveLink: ""
   },
   {
     id: 15, name: "Pantalón Sastrero", category: "MUJER", subcategory: "Conjuntos", subcategories: ["Conjuntos", "Pantalones"],
-    description: "Pantalón de corte sastrero. Líneas limpias y modernas.",
+    description: "Pantalón de corte sastrero y pierna recta.",
     colors: ["Beige", "Negro"],
     sizes: ["S", "M", "L", "XL"],
     driveLink: ""
   },
   {
     id: 16, name: "Short Brezo", category: "MUJER", subcategory: "Shorts",
-    description: "Short fresco ideal para los días de calor.",
+    description: "Short liviano de corte recto.",
     colors: ["Blanco", "Beige", "Oliva", "Chocolate", "Negro"],
     sizes: ["S", "M", "L", "XL"],
     driveLink: ""
   },
   {
     id: 17, name: "Enterito Escote V", category: "MUJER", subcategory: "Monos",
-    description: "Enterito con escote en V, estilizado y moderno.",
+    description: "Enterito de una pieza con escote en V.",
     colors: ["Estampa 1", "Beige", "Estampa 2", "Negro"],
     sizes: ["S", "M", "L"],
     driveLink: ""
@@ -226,49 +226,49 @@ const products = [
   },
   {
     id: 19, name: "Vestido Gasa", category: "MUJER", subcategory: "Vestidos",
-    description: "Vestido en gasa liviana. Fluido y romántico para el verano.",
+    description: "Vestido de gasa liviana con caída fluida.",
     colors: ["Estampa 1", "Estampa 2", "Camel", "Negro"],
     sizes: ["S", "M", "L"],
     driveLink: ""
   },
   {
     id: 20, name: "Vestido Gasa Largo", category: "MUJER", subcategory: "Vestidos",
-    description: "Vestido largo en gasa, ideal para eventos o salidas nocturnas.",
+    description: "Vestido largo confeccionado en gasa liviana.",
     colors: ["Varios colores"],
     sizes: ["S", "M", "L"],
     driveLink: ""
   },
   {
     id: 21, name: "Vestido Gasa Corto", category: "MUJER", subcategory: "Vestidos",
-    description: "Vestido corto en gasa para looks veraniegos.",
+    description: "Vestido corto confeccionado en gasa liviana.",
     colors: ["Varios colores"],
     sizes: ["S", "M", "L"],
     driveLink: ""
   },
   {
     id: 22, name: "Vestido Nudo", category: "MUJER", subcategory: "Vestidos",
-    description: "Vestido con detalle de nudo. Ajuste perfecto y estilo definido.",
+    description: "Vestido con detalle de nudo y calce ajustado.",
     colors: ["Blanco", "Rojo", "Chocolate", "Negro"],
     sizes: ["S", "M", "L", "XL"],
     driveLink: ""
   },
   {
     id: 23, name: "Vestido Básico", category: "MUJER", subcategory: "Vestidos",
-    description: "Vestido básico esencial. Corte limpio y atemporal.",
+    description: "Vestido básico de corte recto y líneas simples.",
     colors: ["Blanco", "Negro", "Varios"],
     sizes: ["S", "M", "L", "XL"],
     driveLink: ""
   },
   {
     id: 24, name: "Vestido Camisero Largo", category: "MUJER", subcategory: "Vestidos",
-    description: "Versión larga del vestido camisero. Ideal para el día a día.",
+    description: "Vestido camisero largo con botonadura frontal.",
     colors: ["Varios colores"],
     sizes: ["S", "M", "L"],
     driveLink: ""
   },
   {
     id: 25, name: "Vestido Camisero Corto", category: "MUJER", subcategory: "Vestidos",
-    description: "Versión corta del vestido camisero. Fresco y fácil de combinar.",
+    description: "Vestido camisero corto con botonadura frontal.",
     colors: ["Varios colores"],
     sizes: ["S", "M", "L"],
     driveLink: ""
@@ -282,35 +282,35 @@ const products = [
   },
   {
     id: 27, name: "Musculosa Nudo", category: "MUJER", subcategory: "Remeras",
-    description: "Musculosa con nudo frontal. Casual y femenina para el verano.",
+    description: "Musculosa con detalle de nudo frontal.",
     colors: ["Varios colores"],
     sizes: ["S", "M", "L", "XL"],
     driveLink: ""
   },
   {
     id: 28, name: "Vestido Escote V", category: "MUJER", subcategory: "Vestidos",
-    description: "Vestido con escote en V profundo. Elegante y sensual.",
+    description: "Vestido con escote en V profundo.",
     colors: ["Blanco", "Rojo", "Chocolate", "Negro"],
     sizes: ["S", "M", "L"],
     driveLink: ""
   },
   {
     id: 29, name: "Vestido Túnica", category: "MUJER", subcategory: "Vestidos",
-    description: "Vestido tipo túnica, cómodo y amplio para el calor.",
+    description: "Vestido tipo túnica de calce amplio.",
     colors: ["Estampa 1", "Estampa 2"],
     sizes: ["M"],
     driveLink: ""
   },
   {
     id: 30, name: "Vestido Trenza", category: "MUJER", subcategory: "Vestidos",
-    description: "Vestido con detalle de trenza. Acabado artesanal y único.",
+    description: "Vestido con detalle de trenza aplicada.",
     colors: ["Varios colores"],
     sizes: ["S", "M", "L"],
     driveLink: ""
   },
   {
     id: 31, name: "Set Estampado", category: "MUJER", subcategory: "Conjuntos",
-    description: "Conjunto con estampados de temporada. Diseño fresco y moderno.",
+    description: "Conjunto de dos piezas con estampado integral.",
     colors: ["Varios estampados"],
     sizes: ["S", "M", "L", "XL"],
     driveLink: ""
@@ -319,21 +319,21 @@ const products = [
   // ── HOMBRE ──
   {
     id: 32, name: "Bermuda Lino", category: "HOMBRE", subcategory: "Bermudas",
-    description: "Bermuda de lino premium para el verano. Cómoda y sofisticada.",
+    description: "Bermuda de lino de corte recto.",
     colors: ["Oliva", "Khaki", "Gris Oscuro", "Marrón", "Blanco", "Gris Oliva", "Negro", "Crudo", "Beige"],
     sizes: ["30", "32", "34", "36"],
     driveLink: ""
   },
   {
     id: 33, name: "Camisa Lino", category: "HOMBRE", subcategory: "Camisas",
-    description: "Camisa de lino con caída natural. Ideal para looks casuales o formales.",
+    description: "Camisa de lino de manga larga y caída natural.",
     colors: ["Blanco", "Beige", "Gris", "Gris Verdoso", "Celeste"],
     sizes: ["S", "M", "L", "XL", "XXL"],
     driveLink: ""
   },
   {
     id: 34, name: "Chomba Jersey Lisa Plus", category: "HOMBRE", subcategory: "Chombas",
-    description: "Chomba de jersey lisa en talles grandes. Premium comfort.",
+    description: "Chomba lisa de jersey en talles XL a 4XL.",
     colors: ["Blanco", "Beige", "Melange", "Celeste", "Petróleo", "Marino", "Negro"],
     sizes: ["XL", "XXL", "3XL", "4XL"],
     driveLink: ""
@@ -368,7 +368,7 @@ const products = [
   },
   {
     id: 39, name: "Remera Deportiva", category: "HOMBRE", subcategory: "Deportivo",
-    description: "Remera técnica de manga corta, cuello redondo y calce recto. Una prenda liviana para entrenamiento y actividades de movimiento.",
+    description: "Remera técnica liviana de manga corta, cuello redondo y calce recto.",
     colors: ["Blanco", "Gris", "Marino", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
     driveLink: ""
@@ -396,35 +396,35 @@ const products = [
   },
   {
     id: 43, name: "Camisa", category: "HOMBRE", subcategory: "Camisas",
-    description: "Camisa de hombre de verano. Liviana, clásica y fácil de combinar.",
+    description: "Camisa liviana de hombre con cuello camisero y botonadura frontal.",
     colors: ["Blanco", "Rosa", "Celeste", "Marino", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
     driveLink: ""
   },
   {
     id: 44, name: "Traje de baño surf", category: "HOMBRE", subcategory: "Trajes de baño",
-    description: "Traje de baño surf para hombre. Liviano, fresco y listo para el verano.",
+    description: "Traje de baño surf liviano, con cintura elastizada y largo medio.",
     colors: ["Beige", "Gris", "Petróleo", "Marino", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
     driveLink: ""
   },
   {
     id: 45, name: "Chomba Jersey Lisa", category: "HOMBRE", subcategory: "Chombas",
-    description: "Chomba jersey lisa para hombre. Básica, cómoda y versátil.",
+    description: "Chomba lisa de jersey con cuello camisero y manga corta.",
     colors: ["Blanco", "Beige", "Melange", "Celeste", "Petróleo", "Marino", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
     driveLink: ""
   },
   {
     id: 46, name: "Pantalón Sastrero", category: "MUJER", subcategory: "Conjuntos", subcategories: ["Conjuntos", "Pantalones"],
-    description: "Pantalón sastrero de mujer. Clásico, amplio y fácil de combinar.",
+    description: "Pantalón sastrero de mujer, de pierna amplia y tiro alto.",
     colors: ["Blanco", "Beige", "Oliva", "Chocolate", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
     driveLink: ""
   },
   {
     id: 85, name: "Buzo Deportivo Medio Cierre", category: "HOMBRE", subcategory: "Deportivo",
-    description: "Buzo deportivo de manga larga con cuello alto, medio cierre y detalles reflectivos en los antebrazos. Funciona como capa liviana para entrenamiento y días frescos.",
+    description: "Buzo deportivo de manga larga con cuello alto, medio cierre y detalles reflectivos en los antebrazos.",
     orderNumber: "10950",
     colors: ["Marino", "Gris Claro", "Blanco", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
