@@ -14,10 +14,6 @@ const collections = [
 
 const SPRING_PRODUCT_IDS = [51, 53, 54, 58, 61, 62, 63, 66, 68, 77, 78];
 const SPORTS_PRODUCT_IDS = [39, 85, 86, 87];
-const CONTAIN_IMAGE_PHOTOS_BY_PRODUCT_ID = {
-  86: [3, 4, 5],
-  87: [3, 4, 5]
-};
 
 const OUTERWEAR_SUBCATEGORY_BY_PRODUCT_ID = {
   47: "Camperas",
@@ -1214,7 +1210,7 @@ Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumber
   ])].sort((a, b) => a - b);
 });
 
-const IMAGE_ASSET_VERSION = "20260731-6";
+const IMAGE_ASSET_VERSION = "20260731-7";
 
 function versionImageSrc(src) {
   return `${src}?v=${IMAGE_ASSET_VERSION}`;
@@ -2683,10 +2679,8 @@ function openModal(p) {
     if (!gallerySrcs.length) return;
     galleryIdx = index;
     const targetSrc = gallerySrcs[index];
-    const photoNumber = getProductImagePhotoNumbers(p.id)[index];
-    const shouldContain = (CONTAIN_IMAGE_PHOTOS_BY_PRODUCT_ID[p.id] || []).includes(photoNumber);
-    modalImg.style.objectFit = shouldContain ? 'contain' : 'cover';
-    modalImgWrap.style.background = shouldContain ? '#f4f0e8' : '#d6c8b7';
+    modalImg.style.objectFit = 'cover';
+    modalImgWrap.style.background = '#d6c8b7';
     const isFirstImage = !modalImg.src || modalImg.style.display === 'none';
 
     preloadModalImage(targetSrc, 'high').then(loaded => {
