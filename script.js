@@ -367,8 +367,8 @@ const products = [
     driveLink: ""
   },
   {
-    id: 39, name: "Remera Deportiva", category: "HOMBRE", subcategory: "Remeras",
-    description: "Remera deportiva técnica. Ideal para actividad física y uso casual.",
+    id: 39, name: "Remera Deportiva", category: "HOMBRE", subcategory: "Deportivo",
+    description: "Remera técnica de manga corta, cuello redondo y calce recto. Una prenda liviana para entrenamiento y actividades de movimiento.",
     colors: ["Blanco", "Gris", "Marino", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
     driveLink: ""
@@ -419,6 +419,14 @@ const products = [
     id: 46, name: "Pantalón Sastrero", category: "MUJER", subcategory: "Conjuntos", subcategories: ["Conjuntos", "Pantalones"],
     description: "Pantalón sastrero de mujer. Clásico, amplio y fácil de combinar.",
     colors: ["Blanco", "Beige", "Oliva", "Chocolate", "Negro"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    driveLink: ""
+  },
+  {
+    id: 85, name: "Buzo Deportivo Medio Cierre", category: "HOMBRE", subcategory: "Deportivo",
+    description: "Buzo deportivo de manga larga con cuello alto, medio cierre y detalles reflectivos en los antebrazos. Funciona como capa liviana para entrenamiento y días frescos.",
+    orderNumber: "10950",
+    colors: ["Marino", "Gris Claro", "Blanco", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
     driveLink: ""
   }
@@ -2118,6 +2126,12 @@ const packagingByProductId = {
   68: { totalPieces: 40, rows: [
     { color: "Beige/Oliva", sizePieces: { S: 2, M: 4, L: 4, XL: 4, XXL: 2 }, pieces: 16 },
     { color: "Negro", sizePieces: { S: 3, M: 6, L: 6, XL: 6, XXL: 3 }, pieces: 24 }
+  ] },
+  85: { totalPieces: 60, totalLabel: "60 piezas totales", rows: [
+    { color: "Marino", sizePieces: { S: 1, M: 2, L: 3, XL: 2, XXL: 2 } },
+    { color: "Gris Claro", sizePieces: { S: 1, M: 2, L: 3, XL: 2, XXL: 2 } },
+    { color: "Blanco", sizePieces: { S: 1, M: 2, L: 3, XL: 2, XXL: 2 } },
+    { color: "Negro", sizePieces: { S: 3, M: 6, L: 9, XL: 6, XXL: 6 } }
   ] }
 };
 
