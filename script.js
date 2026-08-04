@@ -1236,7 +1236,7 @@ Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumber
   ])].sort((a, b) => a - b);
 });
 
-const IMAGE_ASSET_VERSION = "20260804-2";
+const IMAGE_ASSET_VERSION = "20260804-3";
 
 function versionImageSrc(src) {
   return `${src}?v=${IMAGE_ASSET_VERSION}`;
@@ -2731,7 +2731,7 @@ function openModal(p) {
     if (!gallerySrcs.length) return;
     galleryIdx = index;
     const targetSrc = gallerySrcs[index];
-    const showFullAccessoryImage = (p.id === 88 && index > 0) || p.id === 99 || p.id === 100;
+    const showFullAccessoryImage = ((p.id === 88 || p.id === 89) && index > 0) || p.id === 99 || p.id === 100;
     modalImg.style.objectFit = showFullAccessoryImage ? 'contain' : 'cover';
     modalImgWrap.style.background = showFullAccessoryImage ? 'var(--bone)' : '#d6c8b7';
     const isFirstImage = !modalImg.src || modalImg.style.display === 'none';
