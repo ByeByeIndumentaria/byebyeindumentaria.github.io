@@ -2731,7 +2731,8 @@ function openModal(p) {
     if (!gallerySrcs.length) return;
     galleryIdx = index;
     const targetSrc = gallerySrcs[index];
-    modalImg.style.objectFit = 'cover';
+    const showFullHatColorImage = p.id === 88 && index > 0;
+    modalImg.style.objectFit = showFullHatColorImage ? 'contain' : 'cover';
     modalImgWrap.style.background = '#d6c8b7';
     const isFirstImage = !modalImg.src || modalImg.style.display === 'none';
 
