@@ -7,7 +7,7 @@
 // -- COLLECTIONS ----------------------------------
 const collections = [
   { id: "verano-2027", name: "Verano 2027", label: "SS 2027", tagline: "Made for summer." },
-  { id: "invierno-2027", name: "Invierno", label: "FW 2027", tagline: "Abrigos y prendas de invierno." },
+  { id: "invierno-2027", name: "Invierno 2027", label: "FW 2027", tagline: "Abrigos y prendas de invierno." },
   { id: "primavera-2027", name: "Primavera", label: "SP 2027", tagline: "Camperas para media estación." },
   { id: "deportivo", name: "Deportivo", label: "SPORT", tagline: "Indumentaria deportiva." },
   { id: "accesorios", name: "Accesorios", label: "ACCESSORIES", tagline: "Gorros, bolsos y mochilas." }
@@ -1738,6 +1738,185 @@ const winterSourceProducts = [
 
 products.push(...winterSourceProducts);
 
+// -- INVIERNO 2027: PRODUCCIÓN BYE BYE 2027 -----------------
+// Cada entrada conserva los datos comerciales del Excel. Los artículos con el
+// mismo nombre que una producción anterior reciben un id nuevo si cambia
+// cualquier color, talle, curva, empaque, cantidad, precio u orden.
+const PRODUCTION_2027_REGULAR_SIZES = ["S", "M", "L", "XL", "XXL"];
+const PRODUCTION_2027_PLUS_SIZES = ["3XL", "4XL", "5XL", "6XL"];
+const PRODUCTION_2027_KIDS_SIZES = ["4", "6", "8", "10", "12", "14", "16"];
+
+function production2027Rows(color, curve, options = {}) {
+  const sizes = options.sizes || PRODUCTION_2027_REGULAR_SIZES;
+  const repeat = options.repeat || 1;
+  return Array.from({ length: repeat }, () => ({
+    color,
+    sizePieces: curve ? Object.fromEntries(sizes.map((size, index) => [size, curve[index]])) : {},
+    ...(options.curveText ? { curveText: options.curveText } : {})
+  }));
+}
+
+function production2027Product(spec) {
+  const rows = spec.rows || [];
+  const calculatedTotal = rows.reduce((total, row) => {
+    return total + Object.values(row.sizePieces || {}).reduce((sum, pieces) => sum + (Number(pieces) || 0), 0);
+  }, 0);
+  return {
+    id: spec.id,
+    name: spec.name,
+    category: spec.category,
+    subcategory: spec.subcategory || "Camperas",
+    description: spec.description || `${spec.name}. Producción Invierno 2027.`,
+    orderNumber: spec.orderNumber || "",
+    collection: "invierno-2027",
+    colors: [...new Set(rows.map(row => row.color))],
+    sizes: spec.sizes || [...new Set(rows.flatMap(row => Object.keys(row.sizePieces || {})))],
+    driveLink: "",
+    fobPrice: spec.fobPrice ?? null,
+    sourcePacking: spec.sourcePacking || "",
+    sourceWorkbook: "PRODUCCIÓN BYE BYE 2027.xlsx",
+    packaging: {
+      totalPieces: spec.totalPieces ?? calculatedTotal,
+      ...(spec.totalLabel ? { totalLabel: spec.totalLabel } : {}),
+      rows
+    }
+  };
+}
+
+const production2027Products = [
+  production2027Product({ id: 102, name: "Kangaroo Men", category: "HOMBRE", subcategory: "Buzos", orderNumber: "3JA7507", fobPrice: 3.90, sourcePacking: "ASSORTED SIZE / ASSORTED COLOR", rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 2, 1]), ...production2027Rows("Marino", [1, 2, 2, 2, 1]), ...production2027Rows("Gris Melange Oscuro", [1, 2, 2, 2, 1])
+  ] }),
+  production2027Product({ id: 103, name: "Kangaroo Ladies", category: "MUJER", subcategory: "Buzos", orderNumber: "3VT8056", fobPrice: 3.70, sourcePacking: "ASSORTED SIZE / ASSORTED COLOR", rows: [
+    ...production2027Rows("Negro", [2, 2, 2, 2, 1]), ...production2027Rows("Chocolate", [2, 2, 2, 2, 1]), ...production2027Rows("Gris Melange Claro", [2, 2, 2, 2, 1])
+  ] }),
+  production2027Product({ id: 104, name: "Kangaroo Kids Unisex", category: "NINOS", subcategory: "Buzos", sourcePacking: "ASSORTED SIZE / ASSORTED COLOR", sizes: PRODUCTION_2027_KIDS_SIZES, totalLabel: "Cantidad no informada", rows: [
+    ...production2027Rows("Negro", null, { sizes: PRODUCTION_2027_KIDS_SIZES, curveText: "Talles 4 a 16 · cantidad no informada" }),
+    ...production2027Rows("Marino", null, { sizes: PRODUCTION_2027_KIDS_SIZES, curveText: "Talles 4 a 16 · cantidad no informada" }),
+    ...production2027Rows("Gris Melange Claro", null, { sizes: PRODUCTION_2027_KIDS_SIZES, curveText: "Talles 4 a 16 · cantidad no informada" })
+  ] }),
+  production2027Product({ id: 105, name: "Fiesco sin Forro", category: "HOMBRE", subcategory: "Buzos", orderNumber: "3VT8067-1", fobPrice: 4.50, sourcePacking: "ASSORTED SIZE / ASSORTED COLOR", rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 2, 1]), ...production2027Rows("Marino", [1, 2, 2, 2, 1]), ...production2027Rows("Gris Melange Oscuro", [1, 2, 2, 2, 1])
+  ] }),
+  production2027Product({ id: 106, name: "Pedara sin Forro", category: "MUJER", subcategory: "Buzos", orderNumber: "3VT8068-1", fobPrice: 4.10, sourcePacking: "ASSORTED SIZE / ASSORTED COLOR", rows: [
+    ...production2027Rows("Negro", [2, 2, 2, 2, 1]), ...production2027Rows("Chocolate", [2, 2, 2, 2, 1]), ...production2027Rows("Gris Melange Claro", [2, 2, 2, 2, 1])
+  ] }),
+  production2027Product({ id: 107, name: "Fiesco Plus sin Forro", category: "UNISEX", subcategory: "Buzos", orderNumber: "3VT8067-1", fobPrice: 5.50, sourcePacking: "ASSORTED SIZE / ASSORTED COLOR", sizes: PRODUCTION_2027_PLUS_SIZES, totalLabel: "Cantidad no informada", rows: [
+    ...production2027Rows("Negro", null, { sizes: PRODUCTION_2027_PLUS_SIZES, curveText: "3XL a 6XL · cantidad no informada" }),
+    ...production2027Rows("Marino", null, { sizes: PRODUCTION_2027_PLUS_SIZES, curveText: "3XL a 6XL · cantidad no informada" }),
+    ...production2027Rows("Gris Melange Oscuro", null, { sizes: PRODUCTION_2027_PLUS_SIZES, curveText: "3XL a 6XL · cantidad no informada" })
+  ] }),
+  production2027Product({ id: 108, name: "Fiesco Pedara Kids Unisex", category: "NINOS", subcategory: "Buzos", fobPrice: 3.90, sourcePacking: "ASSORTED SIZE / ASSORTED COLOR", sizes: PRODUCTION_2027_KIDS_SIZES, totalLabel: "Cantidad no informada", rows: [
+    ...production2027Rows("Negro", null, { sizes: PRODUCTION_2027_KIDS_SIZES, curveText: "Talles 4 a 16 · cantidad no informada" }),
+    ...production2027Rows("Marino", null, { sizes: PRODUCTION_2027_KIDS_SIZES, curveText: "Talles 4 a 16 · cantidad no informada" }),
+    ...production2027Rows("Gris Melange Claro", null, { sizes: PRODUCTION_2027_KIDS_SIZES, curveText: "Talles 4 a 16 · cantidad no informada" })
+  ] }),
+  production2027Product({ id: 109, name: "Ventura Reversible con Piel", category: "UNISEX", fobPrice: 5.50, sourcePacking: "ASSORTED SIZE / ASSORTED COLOR", sizes: ["S", "M", "L", "XL"], totalPieces: 1440, totalLabel: "1.440 piezas · 720 por color", rows: [
+    ...production2027Rows("Negro", [1, 3, 2, 2], { sizes: ["S", "M", "L", "XL"] }), ...production2027Rows("Chocolate", [1, 3, 2, 2], { sizes: ["S", "M", "L", "XL"] })
+  ] }),
+
+  production2027Product({ id: 110, name: "Morino 3VT8222", category: "HOMBRE", fobPrice: 7.80, sourcePacking: "CAJA POR COLOR", rows: [...production2027Rows("Negro", [1, 2, 2, 2, 2])] }),
+  production2027Product({ id: 111, name: "Luca Jacket", category: "HOMBRE", fobPrice: 8.00, sourcePacking: "CAJA POR COLOR + CAJA SURTIDA", rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 2, 1], { repeat: 3 }), ...production2027Rows("Chocolate", [1, 2, 2, 2, 1]), ...production2027Rows("Gris Oscuro", [1, 2, 2, 2, 1])
+  ] }),
+  production2027Product({ id: 112, name: "Luca Vest", category: "HOMBRE", subcategory: "Chalecos", fobPrice: 6.10, sourcePacking: "CAJA SURTIDA", rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Chocolate", [1, 2, 2, 2, 1]), ...production2027Rows("Gris Oscuro", [1, 2, 2, 2, 1])
+  ] }),
+  production2027Product({ id: 113, name: "Cornelio Paño Básico", category: "HOMBRE", subcategory: "Tapados", sourcePacking: "CAJA SURTIDA", rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 2, 1]), ...production2027Rows("Gris Oscuro", [1, 2, 2, 2, 1]), ...production2027Rows("Café", [1, 2, 2, 2, 1])
+  ] }),
+  production2027Product({ id: 114, name: "Bartal PU Básica", category: "HOMBRE", subcategory: "Camperas de cuero", fobPrice: 7.00, sourcePacking: "CAJA SURTIDA", rows: [
+    ...production2027Rows("Negro", [2, 2, 2, 1, 1], { repeat: 2 }), ...production2027Rows("Chocolate", [2, 2, 2, 1, 1])
+  ] }),
+  production2027Product({ id: 115, name: "Pascal Polar con Piel", category: "HOMBRE", fobPrice: 7.30, sourcePacking: "CAJA SURTIDA", rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Gris Oscuro", [1, 2, 2, 2, 1])
+  ] }),
+  production2027Product({ id: 116, name: "Pascal Vest", category: "HOMBRE", subcategory: "Chalecos", fobPrice: 6.50, sourcePacking: "CAJA SURTIDA", rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Gris Oscuro", [1, 2, 2, 2, 1])
+  ] }),
+  production2027Product({ id: 117, name: "Jackie", category: "HOMBRE", fobPrice: 7.00, sourcePacking: "CAJA SURTIDA", totalLabel: "Curva incompleta en origen", rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 2, null]), ...production2027Rows("Caqui", [1, 2, 2, 2, null]), ...production2027Rows("Marino", [1, 2, 2, 2, null]), ...production2027Rows("Gris", [1, 2, 2, 2, null])
+  ] }),
+  production2027Product({ id: 118, name: "Merano", category: "HOMBRE", fobPrice: 11.00, sourcePacking: "CAJA POR COLOR", rows: [...production2027Rows("Negro", [1, 1, 2, 2, 2])] }),
+  production2027Product({ id: 119, name: "Cervaro Jacket", category: "HOMBRE", sourcePacking: "CAJA SURTIDA 32 PCS", totalPieces: 32, rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Oliva", [1, 2, 2, 2, 1]), ...production2027Rows("Gris Oscuro", [1, 2, 2, 2, 1])
+  ] }),
+  production2027Product({ id: 120, name: "Cervaro Vest", category: "HOMBRE", subcategory: "Chalecos", sourcePacking: "CAJA SURTIDA", rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Oliva", [1, 2, 2, 2, 1]), ...production2027Rows("Gris Oscuro", [1, 2, 2, 2, 1])
+  ] }),
+  production2027Product({ id: 121, name: "Milan Taffeta", category: "HOMBRE", orderNumber: "3JA9021", fobPrice: 4.00, sourcePacking: "CAJA POR COLOR", rows: [...production2027Rows("Negro", [1, 2, 2, 2, 2])] }),
+  production2027Product({ id: 122, name: "Milan Taffeta", category: "HOMBRE", orderNumber: "3JA9022", fobPrice: 4.00, sourcePacking: "CAJA SURTIDA", rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 2, 2]), ...production2027Rows("Marino", [1, 2, 2, 2, 2]), ...production2027Rows("Gris Oscuro", [1, 2, 2, 2, 2])
+  ] }),
+  production2027Product({ id: 123, name: "Milan Taffeta Plus Size", category: "HOMBRE", orderNumber: "3JA9023", fobPrice: 4.00, sourcePacking: "CAJA SURTIDA", sizes: PRODUCTION_2027_PLUS_SIZES, rows: [
+    ...production2027Rows("Negro", [1, 1, 1, 1], { sizes: PRODUCTION_2027_PLUS_SIZES, repeat: 2 }), ...production2027Rows("Marino", [1, 1, 1, 1], { sizes: PRODUCTION_2027_PLUS_SIZES })
+  ] }),
+  production2027Product({ id: 124, name: "Taft Rompeviento", category: "HOMBRE", subcategory: "Rompevientos", fobPrice: 6.40, sourcePacking: "CAJA POR COLOR + CAJA SURTIDA", rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Marino", [1, 2, 2, 2, 1])
+  ] }),
+  production2027Product({ id: 125, name: "Felipe Hood con Piel Fina", category: "HOMBRE", fobPrice: 6.20, sourcePacking: "CAJA POR COLOR", rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 2, 1]), ...production2027Rows("Marino", [1, 2, 2, 2, 1]), ...production2027Rows("Chocolate", [1, 2, 2, 2, 1]), ...production2027Rows("Beige", [1, 2, 2, 2, 1])
+  ] }),
+  production2027Product({ id: 126, name: "Felipe Hood con Piel Fina Plus Size", category: "HOMBRE", fobPrice: 6.90, sourcePacking: "CAJA POR COLOR", sizes: PRODUCTION_2027_PLUS_SIZES, rows: [
+    ...production2027Rows("Negro", [1, 1, 1, 1], { sizes: PRODUCTION_2027_PLUS_SIZES, repeat: 2 }), ...production2027Rows("Marino", [1, 1, 1, 1], { sizes: PRODUCTION_2027_PLUS_SIZES })
+  ] }),
+
+  production2027Product({ id: 127, name: "Tonara Hood", category: "MUJER", fobPrice: 7.70, sourcePacking: "SOLID COLOR / CAJA POR COLOR", description: "Tonara Hood con tirador de cierre al tono. Producción Invierno 2027.", rows: [...production2027Rows("Negro", [1, 2, 2, 2, 1])] }),
+  production2027Product({ id: 128, name: "Lettie Vest", category: "MUJER", subcategory: "Chalecos", fobPrice: 6.00, sourcePacking: "SURTIDO", description: "Chaleco sin piel, con cordón al tono y sin metal.", rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Chocolate", [1, 2, 2, 2, 1])
+  ] }),
+  production2027Product({ id: 129, name: "Lettie Jacket", category: "MUJER", fobPrice: 7.40, sourcePacking: "SURTIDO", rows: [
+    ...production2027Rows("Negro", [2, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Chocolate", [2, 2, 2, 2, 1])
+  ] }),
+  production2027Product({ id: 130, name: "Lily Jacket", category: "MUJER", sourcePacking: "SURTIDO", rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 2, 2], { repeat: 2 }), ...production2027Rows("Caqui", [1, 2, 2, 2, 2]), ...production2027Rows("Beige", [1, 2, 2, 2, 2])
+  ] }),
+  production2027Product({ id: 131, name: "Lily Vest", category: "MUJER", subcategory: "Chalecos", sourcePacking: "SURTIDO", rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 2, 2], { repeat: 2 }), ...production2027Rows("Caqui", [1, 2, 2, 2, 2]), ...production2027Rows("Beige", [1, 2, 2, 2, 2])
+  ] }),
+  production2027Product({ id: 132, name: "Messika", category: "MUJER", fobPrice: 7.00, sourcePacking: "SURTIDO", sizes: ["S", "M", "L", "XL"], rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 1], { sizes: ["S", "M", "L", "XL"], repeat: 2 }), ...production2027Rows("Chocolate", [1, 2, 2, 1], { sizes: ["S", "M", "L", "XL"] })
+  ] }),
+  production2027Product({ id: 133, name: "Croviana Plus Size", category: "MUJER", fobPrice: 9.20, sourcePacking: "SURTIDO", sizes: PRODUCTION_2027_PLUS_SIZES, rows: [
+    ...production2027Rows("Negro", [1, 1, 1, 1], { sizes: PRODUCTION_2027_PLUS_SIZES, repeat: 2 }), ...production2027Rows("Chocolate", [1, 1, 1, 1], { sizes: PRODUCTION_2027_PLUS_SIZES }), ...production2027Rows("Militar Oscuro", [1, 1, 1, 1], { sizes: PRODUCTION_2027_PLUS_SIZES })
+  ] }),
+  production2027Product({ id: 134, name: "Cumiana", category: "MUJER", subcategory: "Chalecos", fobPrice: 4.50, sourcePacking: "SURTIDO + CAJA POR COLOR", rows: [
+    ...production2027Rows("Negro", [2, 2, 2, 2, 1], { repeat: 3 }), ...production2027Rows("Chocolate", [2, 2, 2, 2, 1]), ...production2027Rows("Beige", [2, 2, 2, 2, 1])
+  ] }),
+  production2027Product({ id: 135, name: "Cumiana Long", category: "MUJER", subcategory: "Chalecos", sourcePacking: "SURTIDO", description: "Chaleco largo Cumiana. Producción Invierno 2027.", rows: [
+    ...production2027Rows("Negro", [2, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Chocolate", [2, 2, 2, 2, 1])
+  ] }),
+  production2027Product({ id: 136, name: "Isadora Taffeta", category: "MUJER", subcategory: "Chalecos", fobPrice: 3.95, sourcePacking: "SURTIDO + CAJA POR COLOR", rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 1, 1], { repeat: 2 }), ...production2027Rows("Caqui", [1, 2, 2, 1, 1]), ...production2027Rows("Caqui Claro", [1, 2, 2, 1, 1])
+  ] }),
+  production2027Product({ id: 137, name: "Isadora Taffeta Plus Size", category: "MUJER", subcategory: "Chalecos", fobPrice: 4.40, sourcePacking: "SURTIDO", sizes: PRODUCTION_2027_PLUS_SIZES, rows: [
+    ...production2027Rows("Negro", [1, 1, 1, 1], { sizes: PRODUCTION_2027_PLUS_SIZES, repeat: 2 }), ...production2027Rows("Caqui", [1, 1, 1, 1], { sizes: PRODUCTION_2027_PLUS_SIZES })
+  ] }),
+  production2027Product({ id: 138, name: "Sirena Hood", category: "MUJER", fobPrice: 6.30, sourcePacking: "SURTIDO + CAJA POR COLOR", rows: [
+    ...production2027Rows("Negro", [1, 2, 3, 2, 1], { repeat: 3 }), ...production2027Rows("Chocolate", [1, 2, 3, 2, 1]), ...production2027Rows("Beige", [1, 2, 3, 2, 1])
+  ] }),
+  production2027Product({ id: 139, name: "Sirena Hood Plus Size", category: "MUJER", fobPrice: 7.00, sourcePacking: "SURTIDO", sizes: PRODUCTION_2027_PLUS_SIZES, rows: [
+    ...production2027Rows("Negro", [1, 1, 1, 1], { sizes: PRODUCTION_2027_PLUS_SIZES, repeat: 2 }), ...production2027Rows("Chocolate", [1, 1, 1, 1], { sizes: PRODUCTION_2027_PLUS_SIZES })
+  ] }),
+  production2027Product({ id: 140, name: "Marciana", category: "MUJER", fobPrice: 9.40, sourcePacking: "SURTIDO", sizes: ["S", "M", "L", "XL"], rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 1], { sizes: ["S", "M", "L", "XL"] }), ...production2027Rows("Chocolate", [1, 2, 2, 1], { sizes: ["S", "M", "L", "XL"] }), ...production2027Rows("Camel", [1, 2, 2, 1], { sizes: ["S", "M", "L", "XL"] })
+  ] }),
+  production2027Product({ id: 141, name: "Jayleen Parka Reversible", category: "MUJER", sourcePacking: "SURTIDO", rows: [
+    ...production2027Rows("Negro", [2, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Militar", [2, 2, 2, 2, 1]), ...production2027Rows("Beige", [2, 2, 2, 2, 1])
+  ] }),
+  production2027Product({ id: 142, name: "Trench Elena 90 cm", category: "MUJER", subcategory: "Trench", fobPrice: 9.00, sourcePacking: "SURTIDO + CAJA POR COLOR", rows: [
+    ...production2027Rows("Negro", [2, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Chocolate", [2, 2, 2, 2, 1]), ...production2027Rows("Camel", [2, 2, 2, 2, 1]), ...production2027Rows("Piedra", [2, 2, 2, 2, 1])
+  ] }),
+  production2027Product({ id: 143, name: "Lustra", category: "MUJER", fobPrice: 7.30, sourcePacking: "SURTIDO", rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Chocolate", [1, 2, 2, 2, 1])
+  ] }),
+  production2027Product({ id: 144, name: "Mila", category: "MUJER", sourcePacking: "SURTIDO", rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 2, 2]), ...production2027Rows("Caqui", [1, 2, 2, 2, 2]), ...production2027Rows("Chocolate", [1, 2, 2, 2, 2]), ...production2027Rows("Beige", [1, 2, 2, 2, 2])
+  ] })
+];
+
+products.push(...production2027Products);
+
 
 // -- PACKAGING / SIZE CURVES -----------------------
 // Data extracted from the Verano 2027 DAMA and HOMBRE catalogs.
@@ -2239,14 +2418,64 @@ winterSourceProducts.forEach(product => {
   delete product.packaging;
 });
 
+production2027Products.forEach(product => {
+  packagingByProductId[product.id] = product.packaging;
+  delete product.packaging;
+});
+
+const PRODUCTION_2027_SAME_NAME_PRODUCTS = [
+  { existingId: 48, productionId: 118 }, // Merano
+  { existingId: 72, productionId: 132 }, // Messika
+  { existingId: 79, productionId: 136 }, // Isadora Taffeta
+  { existingId: 80, productionId: 138 }  // Sirena Hood
+];
+
+PRODUCTION_2027_SAME_NAME_PRODUCTS.forEach(({ existingId, productionId }) => {
+  const existingProduct = products.find(product => product.id === existingId);
+  const productionProduct = products.find(product => product.id === productionId);
+  if (!existingProduct || !productionProduct) return;
+
+  // La ficha con opciones es la copia nueva de Invierno 2027. El producto
+  // existente se usa solo como fuente y no se modifica.
+  productionProduct.purchaseOptions = [
+    {
+      id: `product-${existingId}-original`,
+      label: "Producción anterior",
+      orderNumber: existingProduct.orderNumber,
+      colors: existingProduct.colors,
+      sizes: existingProduct.sizes,
+      fobPrice: existingProduct.fobPrice ?? null,
+      sourcePacking: existingProduct.sourcePacking || "",
+      packaging: packagingByProductId[existingId]
+    },
+    {
+      id: `product-${productionId}-winter-2027`,
+      label: "Producción Invierno 2027",
+      orderNumber: productionProduct.orderNumber,
+      colors: productionProduct.colors,
+      sizes: productionProduct.sizes,
+      fobPrice: productionProduct.fobPrice,
+      sourcePacking: productionProduct.sourcePacking,
+      packaging: packagingByProductId[productionId]
+    }
+  ];
+  productionProduct.replacesProductIdInWinter2027 = existingId;
+  if (productImagesById[existingId]) {
+    productImagesById[productionId] = [...productImagesById[existingId]];
+  }
+});
+
 function applyCatalogData() {
   products.forEach(product => {
     product.collection = product.collection || "verano-2027";
-    product.collections = SPORTS_PRODUCT_IDS.includes(product.id)
+    const explicitCollections = Array.isArray(product.collections)
+      ? product.collections
+      : null;
+    product.collections = explicitCollections || (SPORTS_PRODUCT_IDS.includes(product.id)
       ? ["deportivo"]
       : SPRING_PRODUCT_IDS.includes(product.id)
         ? ["primavera-2027"]
-        : [product.collection];
+        : [product.collection]);
     product.subcategory = OUTERWEAR_SUBCATEGORY_BY_PRODUCT_ID[product.id] || product.subcategory;
     product.description = PRODUCT_DESCRIPTION_BY_ID[product.id] || product.description;
     product.isHidden = HIDDEN_PRODUCT_IDS.includes(product.id);
@@ -2266,6 +2495,23 @@ function applyCatalogData() {
       product.colors = [...new Set(packaging.rows.map(row => row.color))];
     }
     product.sizes = getPackagingSizes(product.packaging);
+
+    if (Array.isArray(product.purchaseOptions)) {
+      product.purchaseOptions = product.purchaseOptions.map(option => ({
+        ...option,
+        packaging: {
+          ...option.packaging,
+          rows: option.packaging.rows.map(row => ({
+            ...row,
+            sizePieces: Object.fromEntries(
+              Object.entries(row.sizePieces || {}).map(([size, pieces]) => [normalizeCatalogSize(size), pieces])
+            )
+          }))
+        }
+      }));
+      product.colors = [...new Set(product.purchaseOptions.flatMap(option => option.colors))];
+      product.sizes = [...new Set(product.purchaseOptions.flatMap(option => option.sizes.map(normalizeCatalogSize)))];
+    }
   });
 }
 
@@ -2309,7 +2555,14 @@ function getActiveCollection() {
 }
 
 function getCollectionProducts() {
-  return products.filter(product => product.collections.includes(activeCollection) && !product.isHidden);
+  const replacedWinterProductIds = activeCollection === "invierno-2027"
+    ? new Set(products.map(product => product.replacesProductIdInWinter2027).filter(Boolean))
+    : new Set();
+  return products.filter(product => {
+    return product.collections.includes(activeCollection)
+      && !product.isHidden
+      && !replacedWinterProductIds.has(product.id);
+  });
 }
 
 const GENDER_LABELS = {
@@ -2356,12 +2609,16 @@ function renderPackagingTable(product) {
   const wrap = document.getElementById("modal-packaging");
   if (!wrap) return;
 
-  if (!product.packaging) {
+  const purchaseOptions = product.purchaseOptions || [];
+  const selectedOption = purchaseOptions.find(option => option.id === currentPurchaseOptionId) || purchaseOptions[0] || null;
+  const packaging = selectedOption?.packaging || product.packaging;
+
+  if (!packaging) {
     wrap.innerHTML = "";
     return;
   }
 
-  const rows = product.packaging.rows.map(row => `
+  const rows = packaging.rows.map(row => `
     <tr>
       <td>${row.color}</td>
       <td>${formatCurve(row)}</td>
@@ -2369,10 +2626,32 @@ function renderPackagingTable(product) {
     </tr>
   `).join("");
 
+  const optionSelector = purchaseOptions.length > 1 ? `
+    <div class="purchase-options" role="group" aria-label="Opciones de compra">
+      <span class="purchase-options-label">Elegí una opción de compra</span>
+      <div class="purchase-options-buttons">
+        ${purchaseOptions.map(option => `
+          <button type="button" class="purchase-option-btn ${option.id === selectedOption.id ? "active" : ""}" data-purchase-option="${option.id}">
+            ${option.label}
+          </button>
+        `).join("")}
+      </div>
+    </div>
+  ` : "";
+
+  const optionDetails = selectedOption ? `
+    <div class="purchase-option-details">
+      ${selectedOption.sourcePacking ? `<span>Empaque: <strong>${selectedOption.sourcePacking}</strong></span>` : ""}
+      ${selectedOption.fobPrice != null ? `<span>FOB unitario: <strong>US$ ${selectedOption.fobPrice.toFixed(2)}</strong></span>` : ""}
+    </div>
+  ` : "";
+
   wrap.innerHTML = `
+    ${optionSelector}
+    ${optionDetails}
     <div class="packaging-summary">
       <span>Piezas totales</span>
-      <strong>${getTotalPiecesLabel(product)}</strong>
+      <strong>${packaging.totalLabel || `${packaging.totalPieces} piezas`}</strong>
     </div>
     <div class="packaging-table-wrap">
       <table class="packaging-table">
@@ -2387,6 +2666,10 @@ function renderPackagingTable(product) {
       </table>
     </div>
   `;
+
+  wrap.querySelectorAll("[data-purchase-option]").forEach(button => {
+    button.addEventListener("click", () => selectPurchaseOption(product, button.dataset.purchaseOption));
+  });
 }
 
 applyCatalogData();
@@ -2398,6 +2681,7 @@ let activeCollection = 'verano-2027';
 let activeGender = 'all';
 let activeCategory = 'all';
 let currentModalProduct = null;
+let currentPurchaseOptionId = null;
 
 // ── DOM REFS ─────────────────────────────────────
 const productGrid = document.getElementById('product-grid');
@@ -2544,6 +2828,10 @@ function renderProducts() {
 
     card.querySelector('.card-add').addEventListener('click', (e) => {
       e.stopPropagation();
+      if (p.purchaseOptions?.length > 1) {
+        openModal(p);
+        return;
+      }
       toggleCart(p);
     });
 
@@ -2633,9 +2921,42 @@ function preloadModalImage(src, priority = 'auto') {
 }
 
 // ── MODAL ────────────────────────────────────────
+function getSelectedPurchaseOption(product) {
+  return product.purchaseOptions?.find(option => option.id === currentPurchaseOptionId) || product.purchaseOptions?.[0] || null;
+}
+
+function getCartKey(product, optionId = null) {
+  return optionId ? `${product.id}:${optionId}` : String(product.id);
+}
+
+function selectPurchaseOption(product, optionId) {
+  currentPurchaseOptionId = optionId;
+  const option = getSelectedPurchaseOption(product);
+  if (!option) return;
+
+  const modalCode = document.getElementById('modal-code');
+  modalCode.textContent = option.orderNumber ? `Cód. ${option.orderNumber}` : '';
+  modalCode.hidden = !option.orderNumber;
+  document.getElementById('modal-colors').innerHTML = option.colors
+    .map(color => `<button type="button" class="color-chip" disabled>${color}</button>`)
+    .join('');
+  document.getElementById('modal-sizes').innerHTML = option.sizes
+    .map(size => `<span class="size-chip">${normalizeCatalogSize(size)}</span>`)
+    .join('');
+  renderPackagingTable(product);
+
+  const cartKey = getCartKey(product, option.id);
+  const inCart = cart.some(item => item.cartKey === cartKey);
+  const addBtn = document.getElementById('modal-add-btn');
+  addBtn.textContent = inCart ? '✓ Opción en tu selección' : 'Agregar esta opción';
+  addBtn.className = 'btn-add-modal' + (inCart ? ' in-cart' : '') + (product.inStock ? '' : ' disabled');
+}
+
 function openModal(p) {
   currentModalProduct = p;
-  const inCart = cart.some(c => c.id === p.id);
+  currentPurchaseOptionId = p.purchaseOptions?.[0]?.id || null;
+  const selectedOption = getSelectedPurchaseOption(p);
+  const inCart = cart.some(c => c.cartKey === getCartKey(p, selectedOption?.id));
   const modalEl = document.getElementById('product-modal');
 
   document.getElementById('modal-name').textContent = p.name;
@@ -2643,17 +2964,20 @@ function openModal(p) {
   document.getElementById('modal-subcat').textContent = formatProductSubcategory(p);
   document.getElementById('modal-collection').textContent = `${getActiveCollection().name.toUpperCase()} · ${getStockLabel(p).toUpperCase()}`;
   const modalCode = document.getElementById('modal-code');
-  modalCode.textContent = p.orderNumber ? `Cód. ${p.orderNumber}` : '';
-  modalCode.hidden = !p.orderNumber;
+  const displayedOrderNumber = selectedOption?.orderNumber || p.orderNumber;
+  modalCode.textContent = displayedOrderNumber ? `Cód. ${displayedOrderNumber}` : '';
+  modalCode.hidden = !displayedOrderNumber;
   document.getElementById('modal-desc').textContent = p.description;
 
   // Colors
   const colorsEl = document.getElementById('modal-colors');
-  colorsEl.innerHTML = p.colors.map((c, i) => `<button type="button" class="color-chip" data-color-index="${i}">${c}</button>`).join('');
+  const displayedColors = selectedOption?.colors || p.colors;
+  colorsEl.innerHTML = displayedColors.map((c, i) => `<button type="button" class="color-chip" data-color-index="${i}">${c}</button>`).join('');
 
   // Sizes
   const sizesEl = document.getElementById('modal-sizes');
-  sizesEl.innerHTML = p.sizes.map(s => `<span class="size-chip">${s}</span>`).join('');
+  const displayedSizes = selectedOption?.sizes || p.sizes;
+  sizesEl.innerHTML = displayedSizes.map(s => `<span class="size-chip">${normalizeCatalogSize(s)}</span>`).join('');
 
   // Packaging / curve
   renderPackagingTable(p);
@@ -2731,9 +3055,8 @@ function openModal(p) {
     if (!gallerySrcs.length) return;
     galleryIdx = index;
     const targetSrc = gallerySrcs[index];
-    const showFullAccessoryImage = ([88, 89, 90].includes(p.id) && index > 0) || p.id === 99 || p.id === 100;
-    modalImg.style.objectFit = showFullAccessoryImage ? 'contain' : 'cover';
-    modalImgWrap.style.background = showFullAccessoryImage ? 'var(--bone)' : '#d6c8b7';
+    modalImg.style.objectFit = 'cover';
+    modalImgWrap.style.background = '#d6c8b7';
     const isFirstImage = !modalImg.src || modalImg.style.display === 'none';
 
     preloadModalImage(targetSrc, 'high').then(loaded => {
@@ -2802,7 +3125,7 @@ function openModal(p) {
 
   const addBtn = document.getElementById('modal-add-btn');
   addBtn.disabled = !p.inStock;
-  addBtn.textContent = !p.inStock ? 'Fuera de stock' : (inCart ? '✓ En tu selección' : 'Agregar a la selección');
+  addBtn.textContent = !p.inStock ? 'Fuera de stock' : (inCart ? '✓ Opción en tu selección' : (selectedOption ? 'Agregar esta opción' : 'Agregar a la selección'));
   addBtn.className = 'btn-add-modal' + (inCart ? ' in-cart' : '') + (p.inStock ? '' : ' disabled');
 
   modalOverlay.classList.add('active');
@@ -2813,28 +3136,31 @@ function closeModal() {
   modalOverlay.classList.remove('active');
   document.body.style.overflow = '';
   currentModalProduct = null;
+  currentPurchaseOptionId = null;
 }
 
 // ── CART ─────────────────────────────────────────
-function toggleCart(product) {
+function toggleCart(product, optionId = null) {
   if (!product.inStock) {
     showToast(`"${product.name}" está fuera de stock`);
     return;
   }
-  const idx = cart.findIndex(c => c.id === product.id);
+  const selectedOption = optionId ? product.purchaseOptions?.find(option => option.id === optionId) : null;
+  const cartKey = getCartKey(product, selectedOption?.id || null);
+  const idx = cart.findIndex(item => item.cartKey === cartKey);
   if (idx === -1) {
-    cart.push(product);
-    showToast(`"${product.name}" agregada`);
+    cart.push({ ...product, cartKey, selectedPurchaseOption: selectedOption || null });
+    showToast(`"${product.name}"${selectedOption ? ` · ${selectedOption.label}` : ''} agregada`);
   } else {
     cart.splice(idx, 1);
-    showToast(`"${product.name}" quitada`);
+    showToast(`"${product.name}"${selectedOption ? ` · ${selectedOption.label}` : ''} quitada`);
   }
   updateCartUI();
   updateCardStates();
 }
 
-function removeFromCart(id) {
-  cart = cart.filter(c => c.id !== id);
+function removeFromCart(cartKey) {
+  cart = cart.filter(item => item.cartKey !== cartKey);
   updateCartUI();
   updateCardStates();
 }
@@ -2843,6 +3169,16 @@ function clearCart() {
   cart = [];
   updateCartUI();
   updateCardStates();
+}
+
+function getCartProductColors(product) {
+  return product.selectedPurchaseOption?.colors || product.colors;
+}
+
+function getCartProductTotalLabel(product) {
+  const packaging = product.selectedPurchaseOption?.packaging || product.packaging;
+  if (!packaging) return "Sin dato";
+  return packaging.totalLabel || `${packaging.totalPieces} piezas`;
 }
 
 function updateCartUI() {
@@ -2878,8 +3214,9 @@ function updateCartUI() {
         <p class="cart-item-subcat">${formatProductSubcategory(p)}</p>
         <p class="cart-item-name">${p.name}</p>
         <p class="cart-item-gender">${getGenderLabel(p.category)}</p>
+        ${p.selectedPurchaseOption ? `<p class="cart-item-gender">${p.selectedPurchaseOption.label}</p>` : ''}
       </div>
-      <button class="cart-item-remove" data-id="${p.id}" aria-label="Eliminar">
+      <button class="cart-item-remove" data-cart-key="${p.cartKey}" aria-label="Eliminar">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
         </svg>
@@ -2893,16 +3230,17 @@ function updateCartUI() {
         if (placeholder) placeholder.style.display = 'flex';
       });
     }
-    item.querySelector('.cart-item-remove').addEventListener('click', () => removeFromCart(p.id));
+    item.querySelector('.cart-item-remove').addEventListener('click', () => removeFromCart(p.cartKey));
     cartItemsEl.appendChild(item);
   });
 
   // Update modal add button if open
   if (currentModalProduct) {
-    const inCart = cart.some(c => c.id === currentModalProduct.id);
+    const option = getSelectedPurchaseOption(currentModalProduct);
+    const inCart = cart.some(c => c.cartKey === getCartKey(currentModalProduct, option?.id));
     const addBtn = document.getElementById('modal-add-btn');
     addBtn.disabled = !currentModalProduct.inStock;
-    addBtn.textContent = !currentModalProduct.inStock ? 'Fuera de stock' : (inCart ? '✓ En tu selección' : 'Agregar a la selección');
+    addBtn.textContent = !currentModalProduct.inStock ? 'Fuera de stock' : (inCart ? '✓ Opción en tu selección' : (option ? 'Agregar esta opción' : 'Agregar a la selección'));
     addBtn.className = 'btn-add-modal' + (inCart ? ' in-cart' : '') + (currentModalProduct.inStock ? '' : ' disabled');
   }
 }
@@ -2928,9 +3266,10 @@ function sendWhatsApp() {
   const lines = [`*Mi selección — BYE BYE ${collection.name}*`, ''];
   cart.forEach((p, i) => {
     lines.push(`${i + 1}. *${p.name}*`);
+    if (p.selectedPurchaseOption) lines.push(`   Opción: ${p.selectedPurchaseOption.label}`);
     lines.push(`   Categoría: ${formatProductSubcategory(p)} | ${getGenderLabel(p.category)}`);
-    lines.push(`   Colores disponibles: ${p.colors.join(', ')}`);
-    lines.push(`   Piezas por caja: ${getTotalPiecesLabel(p)}`);
+    lines.push(`   Colores disponibles: ${getCartProductColors(p).join(', ')}`);
+    lines.push(`   Piezas por caja: ${getCartProductTotalLabel(p)}`);
     lines.push('');
   });
   lines.push(`Total prendas seleccionadas: ${cart.length}`);
@@ -3022,7 +3361,7 @@ function downloadPDF() {
     doc.setTextColor(150, 100, 50);
     doc.text('Colores: ', margin + 12, y);
     doc.setTextColor(60, 60, 60);
-    const colText = p.colors.join(', ');
+    const colText = getCartProductColors(p).join(', ');
     const colLines = doc.splitTextToSize(colText, pageW - margin * 2 - 30);
     doc.text(colLines, margin + 28, y);
     y += colLines.length * 5 + 2;
@@ -3031,7 +3370,7 @@ function downloadPDF() {
     doc.setTextColor(150, 100, 50);
     doc.text('Piezas por caja: ', margin + 12, y);
     doc.setTextColor(60, 60, 60);
-    doc.text(getTotalPiecesLabel(p), margin + 42, y);
+    doc.text(getCartProductTotalLabel(p), margin + 42, y);
     y += 6;
 
     doc.setDrawColor(235, 235, 235);
@@ -3139,7 +3478,7 @@ function bindEvents() {
     if (e.target === modalOverlay) closeModal();
   });
   document.getElementById('modal-add-btn').addEventListener('click', () => {
-    if (currentModalProduct) toggleCart(currentModalProduct);
+    if (currentModalProduct) toggleCart(currentModalProduct, currentPurchaseOptionId);
   });
 
   // Keyboard
