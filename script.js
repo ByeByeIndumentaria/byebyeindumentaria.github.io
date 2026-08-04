@@ -2731,9 +2731,9 @@ function openModal(p) {
     if (!gallerySrcs.length) return;
     galleryIdx = index;
     const targetSrc = gallerySrcs[index];
-    const showFullHatColorImage = p.id === 88 && index > 0;
-    modalImg.style.objectFit = showFullHatColorImage ? 'contain' : 'cover';
-    modalImgWrap.style.background = showFullHatColorImage ? 'var(--bone)' : '#d6c8b7';
+    const showFullAccessoryImage = (p.id === 88 && index > 0) || p.id === 99 || p.id === 100;
+    modalImg.style.objectFit = showFullAccessoryImage ? 'contain' : 'cover';
+    modalImgWrap.style.background = showFullAccessoryImage ? 'var(--bone)' : '#d6c8b7';
     const isFirstImage = !modalImg.src || modalImg.style.display === 'none';
 
     preloadModalImage(targetSrc, 'high').then(loaded => {
