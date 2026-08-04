@@ -1239,6 +1239,16 @@ Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumber
 
 const IMAGE_ASSET_VERSION = "20260804-5";
 
+const PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID = {
+  118: 48,  // Merano
+  124: 51,  // Taft
+  125: 70,  // Felipe Hood con Piel Fina
+  132: 72,  // Messika
+  136: 79,  // Isadora Taffeta
+  138: 80,  // Sirena Hood
+  142: 66   // Trench Elena
+};
+
 function versionImageSrc(src) {
   return `${src}?v=${IMAGE_ASSET_VERSION}`;
 }
@@ -1268,9 +1278,10 @@ function getProductImagePhotoNumbers(id) {
 }
 
 function getProductImageSources(id) {
-  return getProductImagePhotoNumbers(id).map(photoNumber => {
-    const extension = productImageExtensionByKey[`${id}_${photoNumber}`] || "jpg";
-    return versionImageSrc(`images/prod_${id}_${photoNumber}.${extension}`);
+  const sourceProductId = PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID[id] || id;
+  return getProductImagePhotoNumbers(sourceProductId).map(photoNumber => {
+    const extension = productImageExtensionByKey[`${sourceProductId}_${photoNumber}`] || "jpg";
+    return versionImageSrc(`images/prod_${sourceProductId}_${photoNumber}.${extension}`);
   });
 }
 
@@ -1393,6 +1404,51 @@ function getColorGalleryIndex(product, colorIndex, galleryLength) {
 
   const mappedIndex = getProductImagePhotoNumbers(product.id).indexOf(Number(customPhotoNumber));
   return mappedIndex >= 0 && mappedIndex < galleryLength ? mappedIndex : null;
+}
+
+function getProduction2027Gallery(product, colors) {
+  const mappedSourceProductId = PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID[product.id];
+  const sourceProductId = mappedSourceProductId || product.id;
+  const allPhotoNumbers = getProductImagePhotoNumbers(sourceProductId);
+  const colorMap = colorImageByProductId[sourceProductId] || {};
+  if (!mappedSourceProductId) {
+    return {
+      sourceProductId,
+      photoNumbers: allPhotoNumbers,
+      sources: getProductImageSources(product.id),
+      colorMap
+    };
+  }
+  const assignedPhotoNumbers = new Set(Object.values(colorMap).map(Number));
+  const matchingPhotoNumbers = new Set();
+
+  colors.forEach(color => {
+    const normalizedColor = normalizeColorName(color);
+    const match = Object.entries(colorMap).find(([mappedColor]) => {
+      return normalizeColorName(mappedColor) === normalizedColor;
+    });
+    if (match) matchingPhotoNumbers.add(Number(match[1]));
+  });
+
+  const photoNumbers = allPhotoNumbers.filter(photoNumber => {
+    return !assignedPhotoNumbers.has(Number(photoNumber)) || matchingPhotoNumbers.has(Number(photoNumber));
+  });
+  const sources = photoNumbers.map(photoNumber => {
+    const extension = productImageExtensionByKey[`${sourceProductId}_${photoNumber}`] || "jpg";
+    return versionImageSrc(`images/prod_${sourceProductId}_${photoNumber}.${extension}`);
+  });
+
+  return { sourceProductId, photoNumbers, sources, colorMap };
+}
+
+function getProduction2027ColorGalleryIndex(gallery, color) {
+  const normalizedColor = normalizeColorName(color);
+  const match = Object.entries(gallery.colorMap).find(([mappedColor]) => {
+    return normalizeColorName(mappedColor) === normalizedColor;
+  });
+  if (!match) return null;
+  const index = gallery.photoNumbers.indexOf(Number(match[1]));
+  return index >= 0 ? index : null;
 }
 
 // Para sumar productos nuevos rapido, copias este formato, cambias el id,
@@ -2935,31 +2991,12 @@ function getCartKey(product, optionId = null) {
 }
 
 function selectPurchaseOption(product, optionId) {
-  currentPurchaseOptionId = optionId;
-  const option = getSelectedPurchaseOption(product);
-  if (!option) return;
-
-  const modalCode = document.getElementById('modal-code');
-  modalCode.textContent = option.orderNumber ? `Cód. ${option.orderNumber}` : '';
-  modalCode.hidden = !option.orderNumber;
-  document.getElementById('modal-colors').innerHTML = option.colors
-    .map(color => `<button type="button" class="color-chip" disabled>${color}</button>`)
-    .join('');
-  document.getElementById('modal-sizes').innerHTML = option.sizes
-    .map(size => `<span class="size-chip">${normalizeCatalogSize(size)}</span>`)
-    .join('');
-  renderPackagingTable(product);
-
-  const cartKey = getCartKey(product, option.id);
-  const inCart = cart.some(item => item.cartKey === cartKey);
-  const addBtn = document.getElementById('modal-add-btn');
-  addBtn.textContent = inCart ? '✓ Opción en tu selección' : 'Agregar esta opción';
-  addBtn.className = 'btn-add-modal' + (inCart ? ' in-cart' : '') + (product.inStock ? '' : ' disabled');
+  openModal(product, optionId);
 }
 
-function openModal(p) {
+function openModal(p, initialPurchaseOptionId = null) {
   currentModalProduct = p;
-  currentPurchaseOptionId = p.purchaseOptions?.[0]?.id || null;
+  currentPurchaseOptionId = initialPurchaseOptionId || p.purchaseOptions?.[0]?.id || null;
   const selectedOption = getSelectedPurchaseOption(p);
   const inCart = cart.some(c => c.cartKey === getCartKey(p, selectedOption?.id));
   const modalEl = document.getElementById('product-modal');
@@ -3002,7 +3039,8 @@ function openModal(p) {
   modalImgWrap.querySelectorAll('.modal-gallery-dots, .gallery-arrow, .modal-empty-image').forEach(el => el.remove());
 
   // Build gallery without blocking the modal opening.
-  const gallerySrcs = getProductImageSources(p.id);
+  const gallery = getProduction2027Gallery(p, displayedColors);
+  const gallerySrcs = gallery.sources;
   let galleryIdx = 0;
   let dots = null;
   modalImg.onclick = null;
@@ -3079,7 +3117,7 @@ function openModal(p) {
 
   const colorGalleryIndices = new Set();
   colorsEl.querySelectorAll('.color-chip').forEach((chip, colorIndex) => {
-    const galleryIndex = getColorGalleryIndex(p, colorIndex, gallerySrcs.length);
+    const galleryIndex = getProduction2027ColorGalleryIndex(gallery, displayedColors[colorIndex]);
     chip.dataset.galleryIndex = galleryIndex ?? '';
     chip.disabled = galleryIndex === null;
     if (galleryIndex !== null) colorGalleryIndices.add(galleryIndex);
