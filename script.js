@@ -1250,11 +1250,13 @@ const PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID = {
 };
 
 const PRODUCTION_2027_ADDITIONAL_IMAGES_BY_PRODUCT_ID = {
-  125: [1, 2, 3]
+  125: [1, 2, 3],
+  132: [1]
 };
 
 const PRODUCTION_2027_ADDITIONAL_COLOR_IMAGES_BY_PRODUCT_ID = {
-  125: { "Marino": 1, "Chocolate": 2, "Beige": 3 }
+  125: { "Marino": 1, "Chocolate": 2, "Beige": 3 },
+  132: { "Chocolate": 1 }
 };
 
 function versionImageSrc(src) {
