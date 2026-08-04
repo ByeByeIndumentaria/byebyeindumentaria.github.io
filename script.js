@@ -1249,6 +1249,14 @@ const PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID = {
   142: 66   // Trench Elena
 };
 
+const PRODUCTION_2027_ADDITIONAL_IMAGES_BY_PRODUCT_ID = {
+  125: [1, 2, 3]
+};
+
+const PRODUCTION_2027_ADDITIONAL_COLOR_IMAGES_BY_PRODUCT_ID = {
+  125: { "Marino": 1, "Chocolate": 2, "Beige": 3 }
+};
+
 function versionImageSrc(src) {
   return `${src}?v=${IMAGE_ASSET_VERSION}`;
 }
@@ -1438,11 +1446,51 @@ function getProduction2027Gallery(product, colors) {
     return versionImageSrc(`images/prod_${sourceProductId}_${photoNumber}.${extension}`);
   });
 
-  return { sourceProductId, photoNumbers, sources, colorMap };
+  const colorGalleryIndexByNormalizedColor = {};
+  colors.forEach(color => {
+    const normalizedColor = normalizeColorName(color);
+    const match = Object.entries(colorMap).find(([mappedColor]) => {
+      return normalizeColorName(mappedColor) === normalizedColor;
+    });
+    if (!match) return;
+    const index = photoNumbers.indexOf(Number(match[1]));
+    if (index >= 0) colorGalleryIndexByNormalizedColor[normalizedColor] = index;
+  });
+
+  const allAdditionalPhotoNumbers = PRODUCTION_2027_ADDITIONAL_IMAGES_BY_PRODUCT_ID[product.id] || [];
+  const additionalColorMap = PRODUCTION_2027_ADDITIONAL_COLOR_IMAGES_BY_PRODUCT_ID[product.id] || {};
+  const assignedAdditionalPhotoNumbers = new Set(Object.values(additionalColorMap).map(Number));
+  const matchingAdditionalPhotoNumbers = new Set();
+  colors.forEach(color => {
+    const normalizedColor = normalizeColorName(color);
+    const match = Object.entries(additionalColorMap).find(([mappedColor]) => {
+      return normalizeColorName(mappedColor) === normalizedColor;
+    });
+    if (match) matchingAdditionalPhotoNumbers.add(Number(match[1]));
+  });
+  const additionalPhotoNumbers = allAdditionalPhotoNumbers.filter(photoNumber => {
+    return !assignedAdditionalPhotoNumbers.has(Number(photoNumber)) || matchingAdditionalPhotoNumbers.has(Number(photoNumber));
+  });
+  additionalPhotoNumbers.forEach(photoNumber => {
+    const extension = productImageExtensionByKey[`${product.id}_${photoNumber}`] || "jpg";
+    sources.push(versionImageSrc(`images/prod_${product.id}_${photoNumber}.${extension}`));
+  });
+  Object.entries(additionalColorMap).forEach(([color, photoNumber]) => {
+    if (!colors.some(optionColor => normalizeColorName(optionColor) === normalizeColorName(color))) return;
+    const additionalIndex = additionalPhotoNumbers.indexOf(Number(photoNumber));
+    if (additionalIndex >= 0) {
+      colorGalleryIndexByNormalizedColor[normalizeColorName(color)] = photoNumbers.length + additionalIndex;
+    }
+  });
+
+  return { sourceProductId, photoNumbers, sources, colorMap, colorGalleryIndexByNormalizedColor };
 }
 
 function getProduction2027ColorGalleryIndex(gallery, color) {
   const normalizedColor = normalizeColorName(color);
+  if (gallery.colorGalleryIndexByNormalizedColor?.[normalizedColor] != null) {
+    return gallery.colorGalleryIndexByNormalizedColor[normalizedColor];
+  }
   const match = Object.entries(gallery.colorMap).find(([mappedColor]) => {
     return normalizeColorName(mappedColor) === normalizedColor;
   });
