@@ -2733,7 +2733,7 @@ function openModal(p) {
     const targetSrc = gallerySrcs[index];
     const showFullHatColorImage = p.id === 88 && index > 0;
     modalImg.style.objectFit = showFullHatColorImage ? 'contain' : 'cover';
-    modalImgWrap.style.background = '#d6c8b7';
+    modalImgWrap.style.background = showFullHatColorImage ? 'var(--bone)' : '#d6c8b7';
     const isFirstImage = !modalImg.src || modalImg.style.display === 'none';
 
     preloadModalImage(targetSrc, 'high').then(loaded => {
