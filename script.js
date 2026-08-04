@@ -7,7 +7,8 @@
 // -- COLLECTIONS ----------------------------------
 const collections = [
   { id: "verano-2027", name: "Verano 2027", label: "SS 2027", tagline: "Made for summer." },
-  { id: "invierno-2027", name: "Invierno 2027", label: "FW 2027", tagline: "Abrigos y prendas de invierno." },
+  { id: "invierno-2027", name: "Invierno", label: "FW 2027", tagline: "Abrigos y prendas de invierno." },
+  { id: "produccion-invierno-2027", name: "Invierno 2027", label: "FW 2027", tagline: "Producción Invierno 2027." },
   { id: "primavera-2027", name: "Primavera", label: "SP 2027", tagline: "Camperas para media estación." },
   { id: "deportivo", name: "Deportivo", label: "SPORT", tagline: "Indumentaria deportiva." },
   { id: "accesorios", name: "Accesorios", label: "ACCESSORIES", tagline: "Gorros, bolsos y mochilas." }
@@ -1768,11 +1769,10 @@ function production2027Product(spec) {
     subcategory: spec.subcategory || "Camperas",
     description: spec.description || `${spec.name}. Producción Invierno 2027.`,
     orderNumber: spec.orderNumber || "",
-    collection: "invierno-2027",
+    collection: "produccion-invierno-2027",
     colors: [...new Set(rows.map(row => row.color))],
     sizes: spec.sizes || [...new Set(rows.flatMap(row => Object.keys(row.sizePieces || {})))],
     driveLink: "",
-    fobPrice: spec.fobPrice ?? null,
     sourcePacking: spec.sourcePacking || "",
     sourceWorkbook: "PRODUCCIÓN BYE BYE 2027.xlsx",
     packaging: {
@@ -1784,10 +1784,10 @@ function production2027Product(spec) {
 }
 
 const production2027Products = [
-  production2027Product({ id: 102, name: "Kangaroo Men", category: "HOMBRE", subcategory: "Buzos", orderNumber: "3JA7507", fobPrice: 3.90, sourcePacking: "ASSORTED SIZE / ASSORTED COLOR", rows: [
+  production2027Product({ id: 102, name: "Kangaroo Men", category: "HOMBRE", subcategory: "Buzos", orderNumber: "3JA7507", sourcePacking: "ASSORTED SIZE / ASSORTED COLOR", rows: [
     ...production2027Rows("Negro", [1, 2, 2, 2, 1]), ...production2027Rows("Marino", [1, 2, 2, 2, 1]), ...production2027Rows("Gris Melange Oscuro", [1, 2, 2, 2, 1])
   ] }),
-  production2027Product({ id: 103, name: "Kangaroo Ladies", category: "MUJER", subcategory: "Buzos", orderNumber: "3VT8056", fobPrice: 3.70, sourcePacking: "ASSORTED SIZE / ASSORTED COLOR", rows: [
+  production2027Product({ id: 103, name: "Kangaroo Ladies", category: "MUJER", subcategory: "Buzos", orderNumber: "3VT8056", sourcePacking: "ASSORTED SIZE / ASSORTED COLOR", rows: [
     ...production2027Rows("Negro", [2, 2, 2, 2, 1]), ...production2027Rows("Chocolate", [2, 2, 2, 2, 1]), ...production2027Rows("Gris Melange Claro", [2, 2, 2, 2, 1])
   ] }),
   production2027Product({ id: 104, name: "Kangaroo Kids Unisex", category: "NINOS", subcategory: "Buzos", sourcePacking: "ASSORTED SIZE / ASSORTED COLOR", sizes: PRODUCTION_2027_KIDS_SIZES, totalLabel: "Cantidad no informada", rows: [
@@ -1795,77 +1795,77 @@ const production2027Products = [
     ...production2027Rows("Marino", null, { sizes: PRODUCTION_2027_KIDS_SIZES, curveText: "Talles 4 a 16 · cantidad no informada" }),
     ...production2027Rows("Gris Melange Claro", null, { sizes: PRODUCTION_2027_KIDS_SIZES, curveText: "Talles 4 a 16 · cantidad no informada" })
   ] }),
-  production2027Product({ id: 105, name: "Fiesco sin Forro", category: "HOMBRE", subcategory: "Buzos", orderNumber: "3VT8067-1", fobPrice: 4.50, sourcePacking: "ASSORTED SIZE / ASSORTED COLOR", rows: [
+  production2027Product({ id: 105, name: "Fiesco sin Forro", category: "HOMBRE", subcategory: "Buzos", orderNumber: "3VT8067-1", sourcePacking: "ASSORTED SIZE / ASSORTED COLOR", rows: [
     ...production2027Rows("Negro", [1, 2, 2, 2, 1]), ...production2027Rows("Marino", [1, 2, 2, 2, 1]), ...production2027Rows("Gris Melange Oscuro", [1, 2, 2, 2, 1])
   ] }),
-  production2027Product({ id: 106, name: "Pedara sin Forro", category: "MUJER", subcategory: "Buzos", orderNumber: "3VT8068-1", fobPrice: 4.10, sourcePacking: "ASSORTED SIZE / ASSORTED COLOR", rows: [
+  production2027Product({ id: 106, name: "Pedara sin Forro", category: "MUJER", subcategory: "Buzos", orderNumber: "3VT8068-1", sourcePacking: "ASSORTED SIZE / ASSORTED COLOR", rows: [
     ...production2027Rows("Negro", [2, 2, 2, 2, 1]), ...production2027Rows("Chocolate", [2, 2, 2, 2, 1]), ...production2027Rows("Gris Melange Claro", [2, 2, 2, 2, 1])
   ] }),
-  production2027Product({ id: 107, name: "Fiesco Plus sin Forro", category: "UNISEX", subcategory: "Buzos", orderNumber: "3VT8067-1", fobPrice: 5.50, sourcePacking: "ASSORTED SIZE / ASSORTED COLOR", sizes: PRODUCTION_2027_PLUS_SIZES, totalLabel: "Cantidad no informada", rows: [
+  production2027Product({ id: 107, name: "Fiesco Plus sin Forro", category: "UNISEX", subcategory: "Buzos", orderNumber: "3VT8067-1", sourcePacking: "ASSORTED SIZE / ASSORTED COLOR", sizes: PRODUCTION_2027_PLUS_SIZES, totalLabel: "Cantidad no informada", rows: [
     ...production2027Rows("Negro", null, { sizes: PRODUCTION_2027_PLUS_SIZES, curveText: "3XL a 6XL · cantidad no informada" }),
     ...production2027Rows("Marino", null, { sizes: PRODUCTION_2027_PLUS_SIZES, curveText: "3XL a 6XL · cantidad no informada" }),
     ...production2027Rows("Gris Melange Oscuro", null, { sizes: PRODUCTION_2027_PLUS_SIZES, curveText: "3XL a 6XL · cantidad no informada" })
   ] }),
-  production2027Product({ id: 108, name: "Fiesco Pedara Kids Unisex", category: "NINOS", subcategory: "Buzos", fobPrice: 3.90, sourcePacking: "ASSORTED SIZE / ASSORTED COLOR", sizes: PRODUCTION_2027_KIDS_SIZES, totalLabel: "Cantidad no informada", rows: [
+  production2027Product({ id: 108, name: "Fiesco Pedara Kids Unisex", category: "NINOS", subcategory: "Buzos", sourcePacking: "ASSORTED SIZE / ASSORTED COLOR", sizes: PRODUCTION_2027_KIDS_SIZES, totalLabel: "Cantidad no informada", rows: [
     ...production2027Rows("Negro", null, { sizes: PRODUCTION_2027_KIDS_SIZES, curveText: "Talles 4 a 16 · cantidad no informada" }),
     ...production2027Rows("Marino", null, { sizes: PRODUCTION_2027_KIDS_SIZES, curveText: "Talles 4 a 16 · cantidad no informada" }),
     ...production2027Rows("Gris Melange Claro", null, { sizes: PRODUCTION_2027_KIDS_SIZES, curveText: "Talles 4 a 16 · cantidad no informada" })
   ] }),
-  production2027Product({ id: 109, name: "Ventura Reversible con Piel", category: "UNISEX", fobPrice: 5.50, sourcePacking: "ASSORTED SIZE / ASSORTED COLOR", sizes: ["S", "M", "L", "XL"], totalPieces: 1440, totalLabel: "1.440 piezas · 720 por color", rows: [
+  production2027Product({ id: 109, name: "Ventura Reversible con Piel", category: "UNISEX", sourcePacking: "ASSORTED SIZE / ASSORTED COLOR", sizes: ["S", "M", "L", "XL"], totalPieces: 1440, totalLabel: "1.440 piezas · 720 por color", rows: [
     ...production2027Rows("Negro", [1, 3, 2, 2], { sizes: ["S", "M", "L", "XL"] }), ...production2027Rows("Chocolate", [1, 3, 2, 2], { sizes: ["S", "M", "L", "XL"] })
   ] }),
 
-  production2027Product({ id: 110, name: "Morino 3VT8222", category: "HOMBRE", fobPrice: 7.80, sourcePacking: "CAJA POR COLOR", rows: [...production2027Rows("Negro", [1, 2, 2, 2, 2])] }),
-  production2027Product({ id: 111, name: "Luca Jacket", category: "HOMBRE", fobPrice: 8.00, sourcePacking: "CAJA POR COLOR + CAJA SURTIDA", rows: [
+  production2027Product({ id: 110, name: "Morino 3VT8222", category: "HOMBRE", sourcePacking: "CAJA POR COLOR", rows: [...production2027Rows("Negro", [1, 2, 2, 2, 2])] }),
+  production2027Product({ id: 111, name: "Luca Jacket", category: "HOMBRE", sourcePacking: "CAJA POR COLOR + CAJA SURTIDA", rows: [
     ...production2027Rows("Negro", [1, 2, 2, 2, 1], { repeat: 3 }), ...production2027Rows("Chocolate", [1, 2, 2, 2, 1]), ...production2027Rows("Gris Oscuro", [1, 2, 2, 2, 1])
   ] }),
-  production2027Product({ id: 112, name: "Luca Vest", category: "HOMBRE", subcategory: "Chalecos", fobPrice: 6.10, sourcePacking: "CAJA SURTIDA", rows: [
+  production2027Product({ id: 112, name: "Luca Vest", category: "HOMBRE", subcategory: "Chalecos", sourcePacking: "CAJA SURTIDA", rows: [
     ...production2027Rows("Negro", [1, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Chocolate", [1, 2, 2, 2, 1]), ...production2027Rows("Gris Oscuro", [1, 2, 2, 2, 1])
   ] }),
   production2027Product({ id: 113, name: "Cornelio Paño Básico", category: "HOMBRE", subcategory: "Tapados", sourcePacking: "CAJA SURTIDA", rows: [
     ...production2027Rows("Negro", [1, 2, 2, 2, 1]), ...production2027Rows("Gris Oscuro", [1, 2, 2, 2, 1]), ...production2027Rows("Café", [1, 2, 2, 2, 1])
   ] }),
-  production2027Product({ id: 114, name: "Bartal PU Básica", category: "HOMBRE", subcategory: "Camperas de cuero", fobPrice: 7.00, sourcePacking: "CAJA SURTIDA", rows: [
+  production2027Product({ id: 114, name: "Bartal PU Básica", category: "HOMBRE", subcategory: "Camperas de cuero", sourcePacking: "CAJA SURTIDA", rows: [
     ...production2027Rows("Negro", [2, 2, 2, 1, 1], { repeat: 2 }), ...production2027Rows("Chocolate", [2, 2, 2, 1, 1])
   ] }),
-  production2027Product({ id: 115, name: "Pascal Polar con Piel", category: "HOMBRE", fobPrice: 7.30, sourcePacking: "CAJA SURTIDA", rows: [
+  production2027Product({ id: 115, name: "Pascal Polar con Piel", category: "HOMBRE", sourcePacking: "CAJA SURTIDA", rows: [
     ...production2027Rows("Negro", [1, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Gris Oscuro", [1, 2, 2, 2, 1])
   ] }),
-  production2027Product({ id: 116, name: "Pascal Vest", category: "HOMBRE", subcategory: "Chalecos", fobPrice: 6.50, sourcePacking: "CAJA SURTIDA", rows: [
+  production2027Product({ id: 116, name: "Pascal Vest", category: "HOMBRE", subcategory: "Chalecos", sourcePacking: "CAJA SURTIDA", rows: [
     ...production2027Rows("Negro", [1, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Gris Oscuro", [1, 2, 2, 2, 1])
   ] }),
-  production2027Product({ id: 117, name: "Jackie", category: "HOMBRE", fobPrice: 7.00, sourcePacking: "CAJA SURTIDA", totalLabel: "Curva incompleta en origen", rows: [
+  production2027Product({ id: 117, name: "Jackie", category: "HOMBRE", sourcePacking: "CAJA SURTIDA", totalLabel: "Curva incompleta en origen", rows: [
     ...production2027Rows("Negro", [1, 2, 2, 2, null]), ...production2027Rows("Caqui", [1, 2, 2, 2, null]), ...production2027Rows("Marino", [1, 2, 2, 2, null]), ...production2027Rows("Gris", [1, 2, 2, 2, null])
   ] }),
-  production2027Product({ id: 118, name: "Merano", category: "HOMBRE", fobPrice: 11.00, sourcePacking: "CAJA POR COLOR", rows: [...production2027Rows("Negro", [1, 1, 2, 2, 2])] }),
+  production2027Product({ id: 118, name: "Merano", category: "HOMBRE", sourcePacking: "CAJA POR COLOR", rows: [...production2027Rows("Negro", [1, 1, 2, 2, 2])] }),
   production2027Product({ id: 119, name: "Cervaro Jacket", category: "HOMBRE", sourcePacking: "CAJA SURTIDA 32 PCS", totalPieces: 32, rows: [
     ...production2027Rows("Negro", [1, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Oliva", [1, 2, 2, 2, 1]), ...production2027Rows("Gris Oscuro", [1, 2, 2, 2, 1])
   ] }),
   production2027Product({ id: 120, name: "Cervaro Vest", category: "HOMBRE", subcategory: "Chalecos", sourcePacking: "CAJA SURTIDA", rows: [
     ...production2027Rows("Negro", [1, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Oliva", [1, 2, 2, 2, 1]), ...production2027Rows("Gris Oscuro", [1, 2, 2, 2, 1])
   ] }),
-  production2027Product({ id: 121, name: "Milan Taffeta", category: "HOMBRE", orderNumber: "3JA9021", fobPrice: 4.00, sourcePacking: "CAJA POR COLOR", rows: [...production2027Rows("Negro", [1, 2, 2, 2, 2])] }),
-  production2027Product({ id: 122, name: "Milan Taffeta", category: "HOMBRE", orderNumber: "3JA9022", fobPrice: 4.00, sourcePacking: "CAJA SURTIDA", rows: [
+  production2027Product({ id: 121, name: "Milan Taffeta", category: "HOMBRE", orderNumber: "3JA9021", sourcePacking: "CAJA POR COLOR", rows: [...production2027Rows("Negro", [1, 2, 2, 2, 2])] }),
+  production2027Product({ id: 122, name: "Milan Taffeta", category: "HOMBRE", orderNumber: "3JA9022", sourcePacking: "CAJA SURTIDA", rows: [
     ...production2027Rows("Negro", [1, 2, 2, 2, 2]), ...production2027Rows("Marino", [1, 2, 2, 2, 2]), ...production2027Rows("Gris Oscuro", [1, 2, 2, 2, 2])
   ] }),
-  production2027Product({ id: 123, name: "Milan Taffeta Plus Size", category: "HOMBRE", orderNumber: "3JA9023", fobPrice: 4.00, sourcePacking: "CAJA SURTIDA", sizes: PRODUCTION_2027_PLUS_SIZES, rows: [
+  production2027Product({ id: 123, name: "Milan Taffeta Plus Size", category: "HOMBRE", orderNumber: "3JA9023", sourcePacking: "CAJA SURTIDA", sizes: PRODUCTION_2027_PLUS_SIZES, rows: [
     ...production2027Rows("Negro", [1, 1, 1, 1], { sizes: PRODUCTION_2027_PLUS_SIZES, repeat: 2 }), ...production2027Rows("Marino", [1, 1, 1, 1], { sizes: PRODUCTION_2027_PLUS_SIZES })
   ] }),
-  production2027Product({ id: 124, name: "Taft Rompeviento", category: "HOMBRE", subcategory: "Rompevientos", fobPrice: 6.40, sourcePacking: "CAJA POR COLOR + CAJA SURTIDA", rows: [
+  production2027Product({ id: 124, name: "Taft Rompeviento", category: "HOMBRE", subcategory: "Rompevientos", sourcePacking: "CAJA POR COLOR + CAJA SURTIDA", rows: [
     ...production2027Rows("Negro", [1, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Marino", [1, 2, 2, 2, 1])
   ] }),
-  production2027Product({ id: 125, name: "Felipe Hood con Piel Fina", category: "HOMBRE", fobPrice: 6.20, sourcePacking: "CAJA POR COLOR", rows: [
+  production2027Product({ id: 125, name: "Felipe Hood con Piel Fina", category: "HOMBRE", sourcePacking: "CAJA POR COLOR", rows: [
     ...production2027Rows("Negro", [1, 2, 2, 2, 1]), ...production2027Rows("Marino", [1, 2, 2, 2, 1]), ...production2027Rows("Chocolate", [1, 2, 2, 2, 1]), ...production2027Rows("Beige", [1, 2, 2, 2, 1])
   ] }),
-  production2027Product({ id: 126, name: "Felipe Hood con Piel Fina Plus Size", category: "HOMBRE", fobPrice: 6.90, sourcePacking: "CAJA POR COLOR", sizes: PRODUCTION_2027_PLUS_SIZES, rows: [
+  production2027Product({ id: 126, name: "Felipe Hood con Piel Fina Plus Size", category: "HOMBRE", sourcePacking: "CAJA POR COLOR", sizes: PRODUCTION_2027_PLUS_SIZES, rows: [
     ...production2027Rows("Negro", [1, 1, 1, 1], { sizes: PRODUCTION_2027_PLUS_SIZES, repeat: 2 }), ...production2027Rows("Marino", [1, 1, 1, 1], { sizes: PRODUCTION_2027_PLUS_SIZES })
   ] }),
 
-  production2027Product({ id: 127, name: "Tonara Hood", category: "MUJER", fobPrice: 7.70, sourcePacking: "SOLID COLOR / CAJA POR COLOR", description: "Tonara Hood con tirador de cierre al tono. Producción Invierno 2027.", rows: [...production2027Rows("Negro", [1, 2, 2, 2, 1])] }),
-  production2027Product({ id: 128, name: "Lettie Vest", category: "MUJER", subcategory: "Chalecos", fobPrice: 6.00, sourcePacking: "SURTIDO", description: "Chaleco sin piel, con cordón al tono y sin metal.", rows: [
+  production2027Product({ id: 127, name: "Tonara Hood", category: "MUJER", sourcePacking: "SOLID COLOR / CAJA POR COLOR", description: "Tonara Hood con tirador de cierre al tono. Producción Invierno 2027.", rows: [...production2027Rows("Negro", [1, 2, 2, 2, 1])] }),
+  production2027Product({ id: 128, name: "Lettie Vest", category: "MUJER", subcategory: "Chalecos", sourcePacking: "SURTIDO", description: "Chaleco sin piel, con cordón al tono y sin metal.", rows: [
     ...production2027Rows("Negro", [1, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Chocolate", [1, 2, 2, 2, 1])
   ] }),
-  production2027Product({ id: 129, name: "Lettie Jacket", category: "MUJER", fobPrice: 7.40, sourcePacking: "SURTIDO", rows: [
+  production2027Product({ id: 129, name: "Lettie Jacket", category: "MUJER", sourcePacking: "SURTIDO", rows: [
     ...production2027Rows("Negro", [2, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Chocolate", [2, 2, 2, 2, 1])
   ] }),
   production2027Product({ id: 130, name: "Lily Jacket", category: "MUJER", sourcePacking: "SURTIDO", rows: [
@@ -1874,40 +1874,40 @@ const production2027Products = [
   production2027Product({ id: 131, name: "Lily Vest", category: "MUJER", subcategory: "Chalecos", sourcePacking: "SURTIDO", rows: [
     ...production2027Rows("Negro", [1, 2, 2, 2, 2], { repeat: 2 }), ...production2027Rows("Caqui", [1, 2, 2, 2, 2]), ...production2027Rows("Beige", [1, 2, 2, 2, 2])
   ] }),
-  production2027Product({ id: 132, name: "Messika", category: "MUJER", fobPrice: 7.00, sourcePacking: "SURTIDO", sizes: ["S", "M", "L", "XL"], rows: [
+  production2027Product({ id: 132, name: "Messika", category: "MUJER", sourcePacking: "SURTIDO", sizes: ["S", "M", "L", "XL"], rows: [
     ...production2027Rows("Negro", [1, 2, 2, 1], { sizes: ["S", "M", "L", "XL"], repeat: 2 }), ...production2027Rows("Chocolate", [1, 2, 2, 1], { sizes: ["S", "M", "L", "XL"] })
   ] }),
-  production2027Product({ id: 133, name: "Croviana Plus Size", category: "MUJER", fobPrice: 9.20, sourcePacking: "SURTIDO", sizes: PRODUCTION_2027_PLUS_SIZES, rows: [
+  production2027Product({ id: 133, name: "Croviana Plus Size", category: "MUJER", sourcePacking: "SURTIDO", sizes: PRODUCTION_2027_PLUS_SIZES, rows: [
     ...production2027Rows("Negro", [1, 1, 1, 1], { sizes: PRODUCTION_2027_PLUS_SIZES, repeat: 2 }), ...production2027Rows("Chocolate", [1, 1, 1, 1], { sizes: PRODUCTION_2027_PLUS_SIZES }), ...production2027Rows("Militar Oscuro", [1, 1, 1, 1], { sizes: PRODUCTION_2027_PLUS_SIZES })
   ] }),
-  production2027Product({ id: 134, name: "Cumiana", category: "MUJER", subcategory: "Chalecos", fobPrice: 4.50, sourcePacking: "SURTIDO + CAJA POR COLOR", rows: [
+  production2027Product({ id: 134, name: "Cumiana", category: "MUJER", subcategory: "Chalecos", sourcePacking: "SURTIDO + CAJA POR COLOR", rows: [
     ...production2027Rows("Negro", [2, 2, 2, 2, 1], { repeat: 3 }), ...production2027Rows("Chocolate", [2, 2, 2, 2, 1]), ...production2027Rows("Beige", [2, 2, 2, 2, 1])
   ] }),
   production2027Product({ id: 135, name: "Cumiana Long", category: "MUJER", subcategory: "Chalecos", sourcePacking: "SURTIDO", description: "Chaleco largo Cumiana. Producción Invierno 2027.", rows: [
     ...production2027Rows("Negro", [2, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Chocolate", [2, 2, 2, 2, 1])
   ] }),
-  production2027Product({ id: 136, name: "Isadora Taffeta", category: "MUJER", subcategory: "Chalecos", fobPrice: 3.95, sourcePacking: "SURTIDO + CAJA POR COLOR", rows: [
+  production2027Product({ id: 136, name: "Isadora Taffeta", category: "MUJER", subcategory: "Chalecos", sourcePacking: "SURTIDO + CAJA POR COLOR", rows: [
     ...production2027Rows("Negro", [1, 2, 2, 1, 1], { repeat: 2 }), ...production2027Rows("Caqui", [1, 2, 2, 1, 1]), ...production2027Rows("Caqui Claro", [1, 2, 2, 1, 1])
   ] }),
-  production2027Product({ id: 137, name: "Isadora Taffeta Plus Size", category: "MUJER", subcategory: "Chalecos", fobPrice: 4.40, sourcePacking: "SURTIDO", sizes: PRODUCTION_2027_PLUS_SIZES, rows: [
+  production2027Product({ id: 137, name: "Isadora Taffeta Plus Size", category: "MUJER", subcategory: "Chalecos", sourcePacking: "SURTIDO", sizes: PRODUCTION_2027_PLUS_SIZES, rows: [
     ...production2027Rows("Negro", [1, 1, 1, 1], { sizes: PRODUCTION_2027_PLUS_SIZES, repeat: 2 }), ...production2027Rows("Caqui", [1, 1, 1, 1], { sizes: PRODUCTION_2027_PLUS_SIZES })
   ] }),
-  production2027Product({ id: 138, name: "Sirena Hood", category: "MUJER", fobPrice: 6.30, sourcePacking: "SURTIDO + CAJA POR COLOR", rows: [
+  production2027Product({ id: 138, name: "Sirena Hood", category: "MUJER", sourcePacking: "SURTIDO + CAJA POR COLOR", rows: [
     ...production2027Rows("Negro", [1, 2, 3, 2, 1], { repeat: 3 }), ...production2027Rows("Chocolate", [1, 2, 3, 2, 1]), ...production2027Rows("Beige", [1, 2, 3, 2, 1])
   ] }),
-  production2027Product({ id: 139, name: "Sirena Hood Plus Size", category: "MUJER", fobPrice: 7.00, sourcePacking: "SURTIDO", sizes: PRODUCTION_2027_PLUS_SIZES, rows: [
+  production2027Product({ id: 139, name: "Sirena Hood Plus Size", category: "MUJER", sourcePacking: "SURTIDO", sizes: PRODUCTION_2027_PLUS_SIZES, rows: [
     ...production2027Rows("Negro", [1, 1, 1, 1], { sizes: PRODUCTION_2027_PLUS_SIZES, repeat: 2 }), ...production2027Rows("Chocolate", [1, 1, 1, 1], { sizes: PRODUCTION_2027_PLUS_SIZES })
   ] }),
-  production2027Product({ id: 140, name: "Marciana", category: "MUJER", fobPrice: 9.40, sourcePacking: "SURTIDO", sizes: ["S", "M", "L", "XL"], rows: [
+  production2027Product({ id: 140, name: "Marciana", category: "MUJER", sourcePacking: "SURTIDO", sizes: ["S", "M", "L", "XL"], rows: [
     ...production2027Rows("Negro", [1, 2, 2, 1], { sizes: ["S", "M", "L", "XL"] }), ...production2027Rows("Chocolate", [1, 2, 2, 1], { sizes: ["S", "M", "L", "XL"] }), ...production2027Rows("Camel", [1, 2, 2, 1], { sizes: ["S", "M", "L", "XL"] })
   ] }),
   production2027Product({ id: 141, name: "Jayleen Parka Reversible", category: "MUJER", sourcePacking: "SURTIDO", rows: [
     ...production2027Rows("Negro", [2, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Militar", [2, 2, 2, 2, 1]), ...production2027Rows("Beige", [2, 2, 2, 2, 1])
   ] }),
-  production2027Product({ id: 142, name: "Trench Elena 90 cm", category: "MUJER", subcategory: "Trench", fobPrice: 9.00, sourcePacking: "SURTIDO + CAJA POR COLOR", rows: [
+  production2027Product({ id: 142, name: "Trench Elena 90 cm", category: "MUJER", subcategory: "Trench", sourcePacking: "SURTIDO + CAJA POR COLOR", rows: [
     ...production2027Rows("Negro", [2, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Chocolate", [2, 2, 2, 2, 1]), ...production2027Rows("Camel", [2, 2, 2, 2, 1]), ...production2027Rows("Piedra", [2, 2, 2, 2, 1])
   ] }),
-  production2027Product({ id: 143, name: "Lustra", category: "MUJER", fobPrice: 7.30, sourcePacking: "SURTIDO", rows: [
+  production2027Product({ id: 143, name: "Lustra", category: "MUJER", sourcePacking: "SURTIDO", rows: [
     ...production2027Rows("Negro", [1, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Chocolate", [1, 2, 2, 2, 1])
   ] }),
   production2027Product({ id: 144, name: "Mila", category: "MUJER", sourcePacking: "SURTIDO", rows: [
@@ -2444,7 +2444,6 @@ PRODUCTION_2027_SAME_NAME_PRODUCTS.forEach(({ existingId, productionId }) => {
       orderNumber: existingProduct.orderNumber,
       colors: existingProduct.colors,
       sizes: existingProduct.sizes,
-      fobPrice: existingProduct.fobPrice ?? null,
       sourcePacking: existingProduct.sourcePacking || "",
       packaging: packagingByProductId[existingId]
     },
@@ -2454,12 +2453,11 @@ PRODUCTION_2027_SAME_NAME_PRODUCTS.forEach(({ existingId, productionId }) => {
       orderNumber: productionProduct.orderNumber,
       colors: productionProduct.colors,
       sizes: productionProduct.sizes,
-      fobPrice: productionProduct.fobPrice,
       sourcePacking: productionProduct.sourcePacking,
       packaging: packagingByProductId[productionId]
     }
   ];
-  productionProduct.replacesProductIdInWinter2027 = existingId;
+  productionProduct.replacesProductIdInProductionWinter2027 = existingId;
   if (productImagesById[existingId]) {
     productImagesById[productionId] = [...productImagesById[existingId]];
   }
@@ -2555,8 +2553,8 @@ function getActiveCollection() {
 }
 
 function getCollectionProducts() {
-  const replacedWinterProductIds = activeCollection === "invierno-2027"
-    ? new Set(products.map(product => product.replacesProductIdInWinter2027).filter(Boolean))
+  const replacedWinterProductIds = activeCollection === "produccion-invierno-2027"
+    ? new Set(products.map(product => product.replacesProductIdInProductionWinter2027).filter(Boolean))
     : new Set();
   return products.filter(product => {
     return product.collections.includes(activeCollection)
@@ -2577,7 +2575,7 @@ function getGenderLabel(category) {
 }
 
 function isWinterCollection() {
-  return activeCollection === "invierno-2027";
+  return activeCollection === "invierno-2027" || activeCollection === "produccion-invierno-2027";
 }
 
 function getProductSubcategories(product) {
@@ -2642,7 +2640,6 @@ function renderPackagingTable(product) {
   const optionDetails = selectedOption ? `
     <div class="purchase-option-details">
       ${selectedOption.sourcePacking ? `<span>Empaque: <strong>${selectedOption.sourcePacking}</strong></span>` : ""}
-      ${selectedOption.fobPrice != null ? `<span>FOB unitario: <strong>US$ ${selectedOption.fobPrice.toFixed(2)}</strong></span>` : ""}
     </div>
   ` : "";
 
