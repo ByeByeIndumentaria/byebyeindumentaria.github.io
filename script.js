@@ -1783,6 +1783,21 @@ function production2027Product(spec) {
   };
 }
 
+function production2027PurchaseOption(id, label, sourcePacking, rows, orderNumber = "") {
+  const totalPieces = rows.reduce((total, row) => {
+    return total + Object.values(row.sizePieces || {}).reduce((sum, pieces) => sum + (Number(pieces) || 0), 0);
+  }, 0);
+  return {
+    id,
+    label,
+    orderNumber,
+    sourcePacking,
+    colors: [...new Set(rows.map(row => row.color))],
+    sizes: [...new Set(rows.flatMap(row => Object.keys(row.sizePieces || {})))],
+    packaging: { totalPieces, rows }
+  };
+}
+
 const production2027Products = [
   production2027Product({ id: 102, name: "Kangaroo Men", category: "HOMBRE", subcategory: "Buzos", orderNumber: "3JA7507", sourcePacking: "ASSORTED SIZE / ASSORTED COLOR", rows: [
     ...production2027Rows("Negro", [1, 2, 2, 2, 1]), ...production2027Rows("Marino", [1, 2, 2, 2, 1]), ...production2027Rows("Gris Melange Oscuro", [1, 2, 2, 2, 1])
@@ -1914,6 +1929,46 @@ const production2027Products = [
     ...production2027Rows("Negro", [1, 2, 2, 2, 2]), ...production2027Rows("Caqui", [1, 2, 2, 2, 2]), ...production2027Rows("Chocolate", [1, 2, 2, 2, 2]), ...production2027Rows("Beige", [1, 2, 2, 2, 2])
   ] })
 ];
+
+function setProduction2027PurchaseOptions(productId, optionSpecs) {
+  const product = production2027Products.find(item => item.id === productId);
+  if (!product) return;
+  product.purchaseOptions = optionSpecs.map(spec => production2027PurchaseOption(
+    spec.id,
+    spec.label,
+    spec.sourcePacking,
+    spec.rows,
+    spec.orderNumber || product.orderNumber
+  ));
+}
+
+const lucaJacket2027 = production2027Products.find(product => product.id === 111);
+setProduction2027PurchaseOptions(111, [
+  { id: "luca-jacket-caja-color", label: "Caja por color", sourcePacking: "CAJA POR COLOR", rows: lucaJacket2027.packaging.rows.slice(0, 1) },
+  { id: "luca-jacket-caja-surtida", label: "Caja surtida", sourcePacking: "CAJA SURTIDA", rows: lucaJacket2027.packaging.rows.slice(1) }
+]);
+
+const milanTaffetaColor2027 = production2027Products.find(product => product.id === 121);
+const milanTaffetaAssorted2027 = production2027Products.find(product => product.id === 122);
+milanTaffetaColor2027.purchaseOptions = [
+  production2027PurchaseOption("milan-taffeta-caja-color", "Caja por color", "CAJA POR COLOR", milanTaffetaColor2027.packaging.rows, "3JA9021"),
+  production2027PurchaseOption("milan-taffeta-caja-surtida", "Caja surtida", "CAJA SURTIDA", milanTaffetaAssorted2027.packaging.rows, "3JA9022")
+];
+production2027Products.splice(production2027Products.indexOf(milanTaffetaAssorted2027), 1);
+
+[
+  { id: 124, key: "taft" },
+  { id: 134, key: "cumiana" },
+  { id: 136, key: "isadora-taffeta" },
+  { id: 138, key: "sirena-hood" },
+  { id: 142, key: "trench-elena" }
+].forEach(({ id, key }) => {
+  const product = production2027Products.find(item => item.id === id);
+  setProduction2027PurchaseOptions(id, [
+    { id: `${key}-caja-color`, label: "Caja por color", sourcePacking: "CAJA POR COLOR", rows: product.packaging.rows.slice(0, 1) },
+    { id: `${key}-caja-surtida`, label: "Caja surtida", sourcePacking: "CAJA SURTIDA", rows: product.packaging.rows.slice(1) }
+  ]);
+});
 
 products.push(...production2027Products);
 
@@ -2423,46 +2478,6 @@ production2027Products.forEach(product => {
   delete product.packaging;
 });
 
-const PRODUCTION_2027_SAME_NAME_PRODUCTS = [
-  { existingId: 48, productionId: 118 }, // Merano
-  { existingId: 72, productionId: 132 }, // Messika
-  { existingId: 79, productionId: 136 }, // Isadora Taffeta
-  { existingId: 80, productionId: 138 }  // Sirena Hood
-];
-
-PRODUCTION_2027_SAME_NAME_PRODUCTS.forEach(({ existingId, productionId }) => {
-  const existingProduct = products.find(product => product.id === existingId);
-  const productionProduct = products.find(product => product.id === productionId);
-  if (!existingProduct || !productionProduct) return;
-
-  // La ficha con opciones es la copia nueva de Invierno 2027. El producto
-  // existente se usa solo como fuente y no se modifica.
-  productionProduct.purchaseOptions = [
-    {
-      id: `product-${existingId}-original`,
-      label: "Producción anterior",
-      orderNumber: existingProduct.orderNumber,
-      colors: existingProduct.colors,
-      sizes: existingProduct.sizes,
-      sourcePacking: existingProduct.sourcePacking || "",
-      packaging: packagingByProductId[existingId]
-    },
-    {
-      id: `product-${productionId}-winter-2027`,
-      label: "Producción Invierno 2027",
-      orderNumber: productionProduct.orderNumber,
-      colors: productionProduct.colors,
-      sizes: productionProduct.sizes,
-      sourcePacking: productionProduct.sourcePacking,
-      packaging: packagingByProductId[productionId]
-    }
-  ];
-  productionProduct.replacesProductIdInProductionWinter2027 = existingId;
-  if (productImagesById[existingId]) {
-    productImagesById[productionId] = [...productImagesById[existingId]];
-  }
-});
-
 function applyCatalogData() {
   products.forEach(product => {
     product.collection = product.collection || "verano-2027";
@@ -2553,14 +2568,7 @@ function getActiveCollection() {
 }
 
 function getCollectionProducts() {
-  const replacedWinterProductIds = activeCollection === "produccion-invierno-2027"
-    ? new Set(products.map(product => product.replacesProductIdInProductionWinter2027).filter(Boolean))
-    : new Set();
-  return products.filter(product => {
-    return product.collections.includes(activeCollection)
-      && !product.isHidden
-      && !replacedWinterProductIds.has(product.id);
-  });
+  return products.filter(product => product.collections.includes(activeCollection) && !product.isHidden);
 }
 
 const GENDER_LABELS = {
