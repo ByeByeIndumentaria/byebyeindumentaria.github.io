@@ -1236,7 +1236,7 @@ Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumber
   ])].sort((a, b) => a - b);
 });
 
-const IMAGE_ASSET_VERSION = "20260804-4";
+const IMAGE_ASSET_VERSION = "20260804-5";
 
 function versionImageSrc(src) {
   return `${src}?v=${IMAGE_ASSET_VERSION}`;
