@@ -1243,7 +1243,7 @@ Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumber
   ])].sort((a, b) => a - b);
 });
 
-const IMAGE_ASSET_VERSION = "20260806-1";
+const IMAGE_ASSET_VERSION = "20260806-2";
 
 const PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID = {
   118: 48,  // Merano
@@ -1259,14 +1259,16 @@ const PRODUCTION_2027_ADDITIONAL_IMAGES_BY_PRODUCT_ID = {
   125: [1, 2, 3],
   132: [1],
   136: [1, 2],
-  138: [1, 2]
+  138: [1, 2],
+  142: [1, 2, 3]
 };
 
 const PRODUCTION_2027_ADDITIONAL_COLOR_IMAGES_BY_PRODUCT_ID = {
   125: { "Marino": 1, "Chocolate": 2, "Beige": 3 },
   132: { "Chocolate": 1 },
   136: { "Caqui": 1, "Caqui Claro": 2 },
-  138: { "Chocolate": 1, "Beige": 2 }
+  138: { "Chocolate": 1, "Beige": 2 },
+  142: { "Camel": 1, "Chocolate": 2, "Piedra": 3 }
 };
 
 function versionImageSrc(src) {
@@ -2035,7 +2037,7 @@ const production2027Products = [
   production2027Product({ id: 141, name: "Jayleen Parka Reversible", category: "MUJER", sourcePacking: "SURTIDO", rows: [
     ...production2027Rows("Negro", [2, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Militar", [2, 2, 2, 2, 1]), ...production2027Rows("Beige", [2, 2, 2, 2, 1])
   ] }),
-  production2027Product({ id: 142, name: "Trench Elena 90 cm", category: "MUJER", subcategory: "Trench", sourcePacking: "SURTIDO + CAJA POR COLOR", rows: [
+  production2027Product({ id: 142, name: "Trench Elena", category: "MUJER", subcategory: "Trench", sourcePacking: "SURTIDO + CAJA POR COLOR", rows: [
     ...production2027Rows("Negro", [2, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Chocolate", [2, 2, 2, 2, 1]), ...production2027Rows("Camel", [2, 2, 2, 2, 1]), ...production2027Rows("Piedra", [2, 2, 2, 2, 1])
   ] }),
   production2027Product({ id: 143, name: "Lustra", category: "MUJER", sourcePacking: "SURTIDO", rows: [
