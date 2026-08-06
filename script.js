@@ -466,7 +466,13 @@ const accessoryProducts = [
   { id: 98, name: "Bolso Bandolera con Broche", category: "UNISEX", subcategory: "Bolsos", description: "Bolso bandolera de 42 x 27 cm, con cierre de broche, tres cierres y bolsillo interno.", orderNumber: "9998", colors: ["Negro"], sizes: ["Único"], collection: "accesorios", driveLink: "" },
   { id: 99, name: "Riñonera de Tres Cierres", category: "UNISEX", subcategory: "Riñoneras", description: "Riñonera de 19 x 38 cm, con tres cierres, correa regulable y bolsillo interno.", orderNumber: "10004", colors: ["Negro"], sizes: ["Único"], collection: "accesorios", driveLink: "" },
   { id: 100, name: "Mochila con Hebillas", category: "UNISEX", subcategory: "Mochilas", description: "Mochila con solapa y hebillas, dos cierres, bolsillos laterales, compartimento para notebook y 13 cm de profundidad.", orderNumber: "10010", colors: ["Negro"], sizes: ["Único"], collection: "accesorios", driveLink: "" },
-  { id: 101, name: "Mochila Porta Notebook", category: "UNISEX", subcategory: "Mochilas", description: "Mochila de 49 x 34 x 10 cm, con dos cierres, bolsillo lateral y compartimento para notebook.", orderNumber: "10014", colors: ["Negro"], sizes: ["Único"], collection: "accesorios", driveLink: "" }
+  { id: 101, name: "Mochila Porta Notebook", category: "UNISEX", subcategory: "Mochilas", description: "Mochila de 49 x 34 x 10 cm, con dos cierres, bolsillo lateral y compartimento para notebook.", orderNumber: "10014", colors: ["Negro"], sizes: ["Único"], collection: "accesorios", driveLink: "" },
+  { id: 145, name: "Gorra TE11897", category: "UNISEX", subcategory: "Gorras", description: "", orderNumber: "TE11897", colors: ["Colores surtidos"], sizes: ["Único"], collection: "accesorios", preserveCatalogColors: true, driveLink: "" },
+  { id: 146, name: "Gorra TE11900", category: "UNISEX", subcategory: "Gorras", description: "", orderNumber: "TE11900", colors: ["Colores surtidos"], sizes: ["Único"], collection: "accesorios", preserveCatalogColors: true, driveLink: "" },
+  { id: 147, name: "Gorra TE11901", category: "UNISEX", subcategory: "Gorras", description: "", orderNumber: "TE11901", colors: ["Colores surtidos"], sizes: ["Único"], collection: "accesorios", preserveCatalogColors: true, driveLink: "" },
+  { id: 148, name: "Gorra TE11902", category: "UNISEX", subcategory: "Gorras", description: "", orderNumber: "TE11902", colors: ["Colores surtidos"], sizes: ["Único"], collection: "accesorios", preserveCatalogColors: true, driveLink: "" },
+  { id: 149, name: "Gorra TE11903", category: "UNISEX", subcategory: "Gorras", description: "", orderNumber: "TE11903", colors: ["Colores surtidos"], sizes: ["Único"], collection: "accesorios", preserveCatalogColors: true, driveLink: "" },
+  { id: 150, name: "Gorra TE11904", category: "UNISEX", subcategory: "Gorras", description: "", orderNumber: "TE11904", colors: ["Colores surtidos"], sizes: ["Único"], collection: "accesorios", preserveCatalogColors: true, driveLink: "" }
 ];
 
 products.push(...accessoryProducts);
@@ -2573,7 +2579,13 @@ Object.assign(packagingByProductId, {
   98: { totalPieces: 12, rows: [{ color: "Negro", sizePieces: { "Único": 12 } }] },
   99: { totalPieces: 6, rows: [{ color: "Negro", sizePieces: { "Único": 6 } }] },
   100: { totalPieces: 6, rows: [{ color: "Negro", sizePieces: { "Único": 6 } }] },
-  101: { totalPieces: 6, rows: [{ color: "Negro", sizePieces: { "Único": 6 } }] }
+  101: { totalPieces: 6, rows: [{ color: "Negro", sizePieces: { "Único": 6 } }] },
+  145: { totalPieces: 400, totalLabel: "400 piezas por caja", rows: [{ color: "Colores surtidos", sizePieces: { "Único": 400 } }] },
+  146: { totalPieces: 300, totalLabel: "300 piezas por caja", rows: [{ color: "Colores surtidos", sizePieces: { "Único": 300 } }] },
+  147: { totalPieces: 300, totalLabel: "300 piezas por caja", rows: [{ color: "Colores surtidos", sizePieces: { "Único": 300 } }] },
+  148: { totalPieces: 314, totalLabel: "314 piezas por caja", rows: [{ color: "Colores surtidos", sizePieces: { "Único": 314 } }] },
+  149: { totalPieces: 300, totalLabel: "300 piezas por caja", rows: [{ color: "Colores surtidos", sizePieces: { "Único": 300 } }] },
+  150: { totalPieces: 276, totalLabel: "276 piezas por caja", rows: [{ color: "Colores surtidos", sizePieces: { "Único": 276 } }] }
 });
 
 winterSourceProducts.forEach(product => {
@@ -3061,7 +3073,9 @@ function openModal(p, initialPurchaseOptionId = null) {
   const displayedOrderNumber = selectedOption?.orderNumber || p.orderNumber;
   modalCode.textContent = displayedOrderNumber ? `Cód. ${displayedOrderNumber}` : '';
   modalCode.hidden = !displayedOrderNumber;
-  document.getElementById('modal-desc').textContent = p.description;
+  const modalDescription = document.getElementById('modal-desc');
+  modalDescription.textContent = p.description || '';
+  modalDescription.hidden = !p.description;
 
   // Colors
   const colorsEl = document.getElementById('modal-colors');
