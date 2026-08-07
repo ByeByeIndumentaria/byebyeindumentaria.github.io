@@ -1219,6 +1219,8 @@ Object.assign(productImagesById, {
   "129": [1, 2],
   "130": [1, 2, 3],
   "131": [1, 2, 3],
+  "134": [1, 2, 3],
+  "135": [1, 2],
   "145": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
   "146": [1, 2, 3, 4, 5],
   "147": [1, 2, 3, 4, 5],
@@ -1266,7 +1268,7 @@ Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumber
   ])].sort((a, b) => a - b);
 });
 
-const IMAGE_ASSET_VERSION = "20260807-26";
+const IMAGE_ASSET_VERSION = "20260807-30";
 
 const PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID = {
   118: 48,  // Merano
@@ -1281,7 +1283,7 @@ const PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID = {
 const PRODUCTION_2027_ADDITIONAL_IMAGES_BY_PRODUCT_ID = {
   125: [1, 2, 3],
   132: [1],
-  136: [1, 2],
+  136: [1, 2, 3, 4],
   138: [1, 2],
   142: [1, 2, 3]
 };
@@ -1289,7 +1291,7 @@ const PRODUCTION_2027_ADDITIONAL_IMAGES_BY_PRODUCT_ID = {
 const PRODUCTION_2027_ADDITIONAL_COLOR_IMAGES_BY_PRODUCT_ID = {
   125: { "Marino": 1, "Chocolate": 2, "Beige": 3 },
   132: { "Chocolate": 1 },
-  136: { "Caqui": 1, "Caqui Claro": 2 },
+  136: { "Caqui": 1, "Caqui Claro": 2, "Negro": 3, "Militar": 4 },
   138: { "Chocolate": 1, "Beige": 2 },
   142: { "Camel": 1, "Chocolate": 2, "Piedra": 3 }
 };
@@ -1434,6 +1436,8 @@ const colorImageByProductId = {
   129: { "Chocolate": 1, "Negro": 2 },
   130: { "Negro": 1, "Caqui": 2, "Beige": 3 },
   131: { "Negro": 1, "Caqui": 2, "Beige": 3 },
+  134: { "Negro": 1, "Chocolate": 2, "Beige": 3 },
+  135: { "Negro": 1, "Chocolate": 2 },
   152: { "Negro": 1, "Marino": 2, "Gris Oscuro": 3 }
 };
 
