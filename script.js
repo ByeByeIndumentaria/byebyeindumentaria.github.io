@@ -1202,7 +1202,16 @@ const productImagesById = {
 Object.assign(productImagesById, {
   "88": [1, 2, 3, 4, 5, 6], "89": [1, 2, 3, 4, 5, 6, 7, 8], "90": [1, 2, 3, 4, 5, 6],
   "91": [1], "92": [1], "93": [1], "94": [1], "95": [1], "96": [1],
-  "97": [1], "98": [1], "99": [1], "100": [1], "101": [1]
+  "97": [1], "98": [1], "99": [1], "100": [1], "101": [1],
+  "110": [1],
+  "111": [1, 2, 3],
+  "112": [1, 2, 3],
+  "145": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+  "146": [1, 2, 3, 4, 5],
+  "147": [1, 2, 3, 4, 5],
+  "148": [1, 2, 3, 4, 5, 6],
+  "149": [1, 2],
+  "150": [1]
 });
 
 const winterImageAdditionsByProductId = {
@@ -1243,7 +1252,7 @@ Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumber
   ])].sort((a, b) => a - b);
 });
 
-const IMAGE_ASSET_VERSION = "20260806-2";
+const IMAGE_ASSET_VERSION = "20260806-11";
 
 const PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID = {
   118: 48,  // Merano
@@ -1394,7 +1403,10 @@ const colorImageByProductId = {
   87: { "Negro": 3, "Blanco": 4, "Marino": 5 },
   88: { "Gris Claro": 2, "Azul": 3, "Marrón": 4, "Chocolate": 5, "Negro": 6 },
   89: { "Crema": 2, "Beige": 3, "Chocolate": 4, "Celeste": 5, "Azul Marino": 6, "Gris Oscuro": 7, "Negro": 8 },
-  90: { "Gris Claro": 2, "Beige": 3, "Chocolate": 4, "Azul Marino": 5, "Negro": 6 }
+  90: { "Gris Claro": 2, "Beige": 3, "Chocolate": 4, "Azul Marino": 5, "Negro": 6 },
+  110: { "Negro": 1 },
+  111: { "Negro": 1, "Chocolate": 2, "Gris Oscuro": 3 },
+  112: { "Gris Oscuro": 1, "Chocolate": 2, "Negro": 3 }
 };
 
 function normalizeColorName(value) {
@@ -1885,19 +1897,35 @@ function production2027Product(spec) {
     name: spec.name,
     category: spec.category,
     subcategory: spec.subcategory || "Camperas",
-    description: spec.description || `${spec.name}. Producción Invierno 2027.`,
+    description: "",
     orderNumber: spec.orderNumber || "",
     collection: "produccion-invierno-2027",
     colors: [...new Set(rows.map(row => row.color))],
     sizes: spec.sizes || [...new Set(rows.flatMap(row => Object.keys(row.sizePieces || {})))],
     driveLink: "",
     sourcePacking: spec.sourcePacking || "",
-    sourceWorkbook: "PRODUCCIÓN BYE BYE 2027.xlsx",
+    sourceWorkbook: spec.sourceWorkbook || "MP088 BYE BYE",
     packaging: {
       totalPieces: spec.totalPieces ?? calculatedTotal,
       ...(spec.totalLabel ? { totalLabel: spec.totalLabel } : {}),
       rows
     }
+  };
+}
+
+function production2027StockProduct(spec) {
+  return {
+    id: spec.id,
+    name: spec.name,
+    category: spec.category,
+    subcategory: spec.subcategory || "Camperas",
+    description: "",
+    orderNumber: spec.orderNumber,
+    collection: "produccion-invierno-2027",
+    colors: [],
+    sizes: [],
+    driveLink: "",
+    sourceWorkbook: spec.sourceWorkbook
   };
 }
 
@@ -1916,7 +1944,7 @@ function production2027PurchaseOption(id, label, sourcePacking, rows, orderNumbe
   };
 }
 
-const production2027Products = [
+const legacyProduction2027Products = [
   production2027Product({ id: 102, name: "Kangaroo Men", category: "HOMBRE", subcategory: "Buzos", orderNumber: "3JA7507", sourcePacking: "ASSORTED SIZE / ASSORTED COLOR", rows: [
     ...production2027Rows("Negro", [1, 2, 2, 2, 1]), ...production2027Rows("Marino", [1, 2, 2, 2, 1]), ...production2027Rows("Gris Melange Oscuro", [1, 2, 2, 2, 1])
   ] }),
@@ -2048,6 +2076,120 @@ const production2027Products = [
   ] })
 ];
 
+// Ingreso MP088 definitivo. Solo incluye artículos BYE BYE con precio y
+// cantidad informados en los cuatro listados finales. QTY no se usa.
+const production2027Products = [
+  production2027Product({ id: 110, name: "Morino 3VT8222", category: "HOMBRE", orderNumber: "226-290", sourcePacking: "CAJA POR COLOR", rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 2, 2]), ...production2027Rows("Marino", [1, 2, 2, 2, 2])
+  ] }),
+  production2027Product({ id: 111, name: "Luca Jacket", category: "HOMBRE", orderNumber: "226-337", sourcePacking: "CAJA POR COLOR + CAJA SURTIDA", rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Chocolate", [1, 2, 2, 2, 1]), ...production2027Rows("Gris Oscuro", [1, 2, 2, 2, 1])
+  ] }),
+  production2027Product({ id: 112, name: "Luca Vest", category: "HOMBRE", subcategory: "Chalecos", orderNumber: "226-335", sourcePacking: "CAJA SURTIDA", rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Chocolate", [1, 2, 2, 2, 1]), ...production2027Rows("Gris Oscuro", [1, 2, 2, 2, 1])
+  ] }),
+  production2027Product({ id: 114, name: "Bartal Pongee", category: "HOMBRE", orderNumber: "126-436", sourcePacking: "CAJA SURTIDA", rows: [
+    ...production2027Rows("Negro", [2, 2, 2, 1, 1], { repeat: 2 }), ...production2027Rows("Chocolate", [2, 2, 2, 1, 1])
+  ] }),
+  production2027Product({ id: 115, name: "Pascal", category: "HOMBRE", orderNumber: "226-310", sourcePacking: "CAJA SURTIDA", rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Gris Oscuro", [1, 2, 2, 2, 1])
+  ] }),
+  production2027Product({ id: 116, name: "Pascal Vest", category: "HOMBRE", subcategory: "Chalecos", orderNumber: "226-312", sourcePacking: "CAJA SURTIDA", rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Gris Oscuro", [1, 2, 2, 2, 1])
+  ] }),
+  production2027Product({ id: 117, name: "Jackie", category: "HOMBRE", orderNumber: "226-331", sourcePacking: "CAJA SURTIDA", rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 2, 1]), ...production2027Rows("Caqui", [1, 2, 2, 2, 1]), ...production2027Rows("Marino", [1, 2, 2, 2, 1]), ...production2027Rows("Gris", [1, 2, 2, 2, 1])
+  ] }),
+  production2027Product({ id: 118, name: "Merano", category: "HOMBRE", orderNumber: "226-308", sourcePacking: "CAJA POR COLOR", rows: [...production2027Rows("Negro", [1, 1, 2, 2, 2])] }),
+  production2027Product({ id: 124, name: "Taft Rompeviento", category: "HOMBRE", subcategory: "Rompevientos", orderNumber: "126-484", sourcePacking: "CAJA POR COLOR + CAJA SURTIDA", rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Marino", [1, 2, 2, 2, 1])
+  ] }),
+  production2027Product({ id: 121, name: "Milan Taffeta", category: "HOMBRE", orderNumber: "226-292", sourcePacking: "CAJA POR COLOR + CAJA SURTIDA", rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 2, 2], { repeat: 2 }), ...production2027Rows("Marino", [1, 2, 2, 2, 2]), ...production2027Rows("Gris Oscuro", [1, 2, 2, 2, 2])
+  ] }),
+  production2027Product({ id: 123, name: "Milan Taffeta Plus Size", category: "HOMBRE", orderNumber: "226-294", sourcePacking: "CAJA SURTIDA", sizes: PRODUCTION_2027_PLUS_SIZES, rows: [
+    ...production2027Rows("Negro", [1, 1, 1, 1], { sizes: PRODUCTION_2027_PLUS_SIZES, repeat: 2 }), ...production2027Rows("Marino", [1, 1, 1, 1], { sizes: PRODUCTION_2027_PLUS_SIZES })
+  ] }),
+  production2027Product({ id: 125, name: "Felipe Hood con Piel Fina", category: "HOMBRE", orderNumber: "226-303", sourcePacking: "CAJA POR COLOR", rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 2, 1]), ...production2027Rows("Marino", [1, 2, 2, 2, 1]), ...production2027Rows("Chocolate", [1, 2, 2, 2, 1]), ...production2027Rows("Beige", [1, 2, 2, 2, 1])
+  ] }),
+  production2027Product({ id: 126, name: "Felipe Hood con Piel Fina Plus Size", category: "HOMBRE", orderNumber: "226-304", sourcePacking: "CAJA SURTIDA", sizes: PRODUCTION_2027_PLUS_SIZES, rows: [
+    ...production2027Rows("Negro", [1, 1, 1, 1], { sizes: PRODUCTION_2027_PLUS_SIZES, repeat: 2 }), ...production2027Rows("Marino", [1, 1, 1, 1], { sizes: PRODUCTION_2027_PLUS_SIZES })
+  ] }),
+  production2027Product({ id: 151, name: "Felipe Det Hood", category: "HOMBRE", orderNumber: "226-333", sourcePacking: "CAJA POR COLOR + CAJA SURTIDA", rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Gris Oscuro", [1, 2, 2, 2, 1]), ...production2027Rows("Marino", [1, 2, 2, 2, 1])
+  ] }),
+  production2027Product({ id: 120, name: "Cervaro Hood Vest", category: "HOMBRE", subcategory: "Chalecos", orderNumber: "226-305", sourcePacking: "CAJA SURTIDA", rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Oliva", [1, 2, 2, 2, 1]), ...production2027Rows("Gris Oscuro", [1, 2, 2, 2, 1])
+  ] }),
+  production2027Product({ id: 119, name: "Cervaro Hood Jacket", category: "HOMBRE", orderNumber: "226-306", sourcePacking: "CAJA SURTIDA", rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Oliva", [1, 2, 2, 2, 1]), ...production2027Rows("Gris Oscuro", [1, 2, 2, 2, 1])
+  ] }),
+  production2027Product({ id: 152, name: "Milan Fixed Hood", category: "HOMBRE", orderNumber: "226-261", sourcePacking: "CAJA POR COLOR + CAJA SURTIDA", rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 2, 2], { repeat: 2 }), ...production2027Rows("Marino", [1, 2, 2, 2, 2]), ...production2027Rows("Gris Oscuro", [1, 2, 2, 2, 2])
+  ] }),
+
+  production2027Product({ id: 127, name: "Tonara Hood", category: "MUJER", orderNumber: "126-441", sourcePacking: "CAJA POR COLOR", rows: [...production2027Rows("Negro", [1, 2, 2, 2, 1])] }),
+  production2027Product({ id: 128, name: "Lettie Vest", category: "MUJER", subcategory: "Chalecos", orderNumber: "126-458", sourcePacking: "CAJA SURTIDA", rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Chocolate", [1, 2, 2, 2, 1])
+  ] }),
+  production2027Product({ id: 129, name: "Lettie Jacket", category: "MUJER", orderNumber: "126-460", sourcePacking: "CAJA SURTIDA", rows: [
+    ...production2027Rows("Negro", [2, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Chocolate", [2, 2, 2, 2, 1])
+  ] }),
+  production2027Product({ id: 130, name: "Lily Jacket", category: "MUJER", orderNumber: "226-265", sourcePacking: "CAJA SURTIDA", rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 2, 2], { repeat: 2 }), ...production2027Rows("Caqui", [1, 2, 2, 2, 2]), ...production2027Rows("Beige", [1, 2, 2, 2, 2])
+  ] }),
+  production2027Product({ id: 131, name: "Lily Vest", category: "MUJER", subcategory: "Chalecos", orderNumber: "226-268", sourcePacking: "CAJA SURTIDA", rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 2, 2], { repeat: 2 }), ...production2027Rows("Caqui", [1, 2, 2, 2, 2]), ...production2027Rows("Beige", [1, 2, 2, 2, 2])
+  ] }),
+  production2027Product({ id: 132, name: "Messika", category: "MUJER", orderNumber: "126-456", sourcePacking: "CAJA SURTIDA", sizes: ["S", "M", "L", "XL"], rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 1], { sizes: ["S", "M", "L", "XL"], repeat: 2 }), ...production2027Rows("Chocolate", [1, 2, 2, 1], { sizes: ["S", "M", "L", "XL"] })
+  ] }),
+  production2027Product({ id: 133, name: "Croviana Plus Size", category: "MUJER", orderNumber: "126-479", sourcePacking: "CAJA SURTIDA", sizes: PRODUCTION_2027_PLUS_SIZES, rows: [
+    ...production2027Rows("Negro", null, { sizes: PRODUCTION_2027_PLUS_SIZES, repeat: 2, curveText: "3XL a 6XL · 1/1/1" }), ...production2027Rows("Chocolate", null, { sizes: PRODUCTION_2027_PLUS_SIZES, curveText: "3XL a 6XL · 1/1/1" }), ...production2027Rows("Militar Oscuro", null, { sizes: PRODUCTION_2027_PLUS_SIZES, curveText: "3XL a 6XL · 1/1/1" })
+  ] }),
+  production2027Product({ id: 134, name: "Cumiana", category: "MUJER", subcategory: "Chalecos", orderNumber: "126-452", sourcePacking: "CAJA POR COLOR + CAJA SURTIDA", rows: [
+    ...production2027Rows("Negro", [2, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Chocolate", [2, 2, 2, 2, 1]), ...production2027Rows("Beige", [2, 2, 2, 2, 1])
+  ] }),
+  production2027Product({ id: 135, name: "Cumiana Long", category: "MUJER", subcategory: "Chalecos", orderNumber: "126-454", sourcePacking: "CAJA SURTIDA", rows: [
+    ...production2027Rows("Negro", [2, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Chocolate", [2, 2, 2, 2, 1])
+  ] }),
+  production2027Product({ id: 136, name: "Isadora Taffeta", category: "MUJER", subcategory: "Chalecos", orderNumber: "126-443", sourcePacking: "CAJA POR COLOR + CAJA SURTIDA", rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 1, 1], { repeat: 2 }), ...production2027Rows("Caqui", [1, 2, 2, 1, 1]), ...production2027Rows("Caqui Claro", [1, 2, 2, 1, 1]), ...production2027Rows("Militar", [1, 2, 2, 1, 1])
+  ] }),
+  production2027Product({ id: 137, name: "Isadora Taffeta Plus Size", category: "MUJER", subcategory: "Chalecos", orderNumber: "126-445", sourcePacking: "CAJA SURTIDA", sizes: PRODUCTION_2027_PLUS_SIZES, rows: [
+    ...production2027Rows("Negro", [1, 1, 1, 1], { sizes: PRODUCTION_2027_PLUS_SIZES, repeat: 2 }), ...production2027Rows("Caqui", [1, 1, 1, 1], { sizes: PRODUCTION_2027_PLUS_SIZES })
+  ] }),
+  production2027Product({ id: 138, name: "Sirena Hood", category: "MUJER", orderNumber: "126-446", sourcePacking: "CAJA POR COLOR + CAJA SURTIDA", rows: [
+    ...production2027Rows("Negro", [1, 2, 3, 2, 1], { repeat: 2 }), ...production2027Rows("Chocolate", [1, 2, 3, 2, 1]), ...production2027Rows("Beige", [1, 2, 3, 2, 1])
+  ] }),
+  production2027Product({ id: 139, name: "Sirena Hood Plus Size", category: "MUJER", orderNumber: "126-448", sourcePacking: "CAJA SURTIDA", sizes: PRODUCTION_2027_PLUS_SIZES, rows: [
+    ...production2027Rows("Negro", [1, 1, 1, 1], { sizes: PRODUCTION_2027_PLUS_SIZES, repeat: 2 }), ...production2027Rows("Chocolate", [1, 1, 1, 1], { sizes: PRODUCTION_2027_PLUS_SIZES })
+  ] }),
+  production2027Product({ id: 140, name: "Marciana", category: "MUJER", orderNumber: "126-437", sourcePacking: "CAJA SURTIDA", sizes: ["S", "M", "L", "XL"], rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 1], { sizes: ["S", "M", "L", "XL"] }), ...production2027Rows("Camel", [1, 2, 2, 1], { sizes: ["S", "M", "L", "XL"] }), ...production2027Rows("Chocolate", [1, 2, 2, 1], { sizes: ["S", "M", "L", "XL"] })
+  ] }),
+  production2027Product({ id: 144, name: "Mila", category: "MUJER", orderNumber: "126-488", sourcePacking: "CAJA POR COLOR + CAJA SURTIDA", sizes: ["S", "M", "L", "XL"], rows: [
+    ...production2027Rows("Negro", [2, 2, 2, 1], { sizes: ["S", "M", "L", "XL"], repeat: 2 }), ...production2027Rows("Caqui", [2, 2, 2, 1], { sizes: ["S", "M", "L", "XL"] }), ...production2027Rows("Chocolate", [2, 2, 2, 1], { sizes: ["S", "M", "L", "XL"] }), ...production2027Rows("Beige", [2, 2, 2, 1], { sizes: ["S", "M", "L", "XL"] })
+  ] }),
+  production2027Product({ id: 142, name: "Trench Elena", category: "MUJER", subcategory: "Trench", orderNumber: "126-473", sourcePacking: "CAJA POR COLOR + CAJA SURTIDA", rows: [
+    ...production2027Rows("Negro", [2, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Chocolate", [2, 2, 2, 2, 1]), ...production2027Rows("Camel", [2, 2, 2, 2, 1]), ...production2027Rows("Piedra", [2, 2, 2, 2, 1])
+  ] }),
+  production2027Product({ id: 143, name: "Lustra", category: "MUJER", orderNumber: "126-467", sourcePacking: "CAJA SURTIDA", rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Chocolate", [1, 2, 2, 2, 1])
+  ] }),
+  production2027Product({ id: 153, name: "Lira PU Zara", category: "MUJER", subcategory: "Camperas de cuero", orderNumber: "126-421", sourcePacking: "CAJA SURTIDA", sizes: ["S", "M", "L", "XL"], rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 1], { sizes: ["S", "M", "L", "XL"], repeat: 2 }), ...production2027Rows("Chocolate", [1, 2, 2, 1], { sizes: ["S", "M", "L", "XL"] })
+  ] }),
+
+  ...[
+    [154, "Comiso Hood", "126-311"], [155, "Ketan", "126-016"], [156, "Curtis", "125-600"], [157, "Dobby", "125-587"], [158, "Parker", "125-420"], [159, "Malvito", "126-050"], [160, "Carl-Aldeno", "125-293"], [161, "Floyd", "126-313"], [162, "Stephen", "225-597"], [163, "Doyle", "225-506"], [164, "Curno Pongee", "225-500"], [165, "Odinga", "126-308"], [166, "Aidone", "225-181"], [167, "Carpino Pongee", "225-505"], [168, "Gesico", "225-061"], [169, "Jamal", "124-919"], [170, "Mikey", "225-512"], [171, "Ubon", "125-319"]
+  ].map(([id, name, orderNumber]) => production2027StockProduct({ id, name, orderNumber, category: "HOMBRE", sourceWorkbook: "Stock Men MP088.pdf" })),
+  ...[
+    [172, "Aimmen", "125-627"], [173, "Licata", "225-052"], [174, "Sabina Taffeta", "125-607"], [175, "Rennell", "126-312"], [176, "Hephzibah", "126-309"], [177, "Jules", "125-680"], [178, "Greta", "125-598"], [179, "Randi T", "125-596"], [180, "Blyss", "225-553"], [181, "Maicyn", "126-306"], [182, "Simone Pongee", "125-594"], [183, "Peri", "125-599"], [184, "Gina", "125-367"], [185, "Magasa", "125-274"]
+  ].map(([id, name, orderNumber]) => production2027StockProduct({ id, name, orderNumber, category: "MUJER", sourceWorkbook: "Stock Ladies MP088.pdf" }))
+];
+
 function setProduction2027PurchaseOptions(productId, optionSpecs) {
   const product = production2027Products.find(item => item.id === productId);
   if (!product) return;
@@ -2060,33 +2202,43 @@ function setProduction2027PurchaseOptions(productId, optionSpecs) {
   ));
 }
 
-const lucaJacket2027 = production2027Products.find(product => product.id === 111);
-setProduction2027PurchaseOptions(111, [
-  { id: "luca-jacket-caja-color", label: "Caja por color", sourcePacking: "CAJA POR COLOR", rows: lucaJacket2027.packaging.rows.slice(0, 1) },
-  { id: "luca-jacket-caja-surtida", label: "Caja surtida", sourcePacking: "CAJA SURTIDA", rows: lucaJacket2027.packaging.rows.slice(1) }
-]);
-
-const milanTaffetaColor2027 = production2027Products.find(product => product.id === 121);
-const milanTaffetaAssorted2027 = production2027Products.find(product => product.id === 122);
-milanTaffetaColor2027.purchaseOptions = [
-  production2027PurchaseOption("milan-taffeta-caja-color", "Caja por color", "CAJA POR COLOR", milanTaffetaColor2027.packaging.rows, "3JA9021"),
-  production2027PurchaseOption("milan-taffeta-caja-surtida", "Caja surtida", "CAJA SURTIDA", milanTaffetaAssorted2027.packaging.rows, "3JA9022")
-];
-production2027Products.splice(production2027Products.indexOf(milanTaffetaAssorted2027), 1);
-
-[
-  { id: 124, key: "taft" },
-  { id: 134, key: "cumiana" },
-  { id: 136, key: "isadora-taffeta" },
-  { id: 138, key: "sirena-hood" },
-  { id: 142, key: "trench-elena" }
-].forEach(({ id, key }) => {
-  const product = production2027Products.find(item => item.id === id);
-  setProduction2027PurchaseOptions(id, [
-    { id: `${key}-caja-color`, label: "Caja por color", sourcePacking: "CAJA POR COLOR", rows: product.packaging.rows.slice(0, 1) },
-    { id: `${key}-caja-surtida`, label: "Caja surtida", sourcePacking: "CAJA SURTIDA", rows: product.packaging.rows.slice(1) }
+function configureProduction2027PurchaseOptions(productId, key, colorRows, assortedRows) {
+  setProduction2027PurchaseOptions(productId, [
+    { id: `${key}-caja-color`, label: "Caja por color", sourcePacking: "CAJA POR COLOR", rows: colorRows },
+    { id: `${key}-caja-surtida`, label: "Caja surtida", sourcePacking: "CAJA SURTIDA", rows: assortedRows }
   ]);
-});
+}
+
+configureProduction2027PurchaseOptions(111, "luca-jacket",
+  production2027Rows("Negro", [1, 2, 2, 2, 1]),
+  [...production2027Rows("Negro", [1, 2, 2, 2, 1]), ...production2027Rows("Chocolate", [1, 2, 2, 2, 1]), ...production2027Rows("Gris Oscuro", [1, 2, 2, 2, 1])]);
+configureProduction2027PurchaseOptions(124, "taft",
+  production2027Rows("Negro", [1, 2, 2, 2, 1]),
+  [...production2027Rows("Negro", [1, 2, 2, 2, 1]), ...production2027Rows("Marino", [1, 2, 2, 2, 1])]);
+configureProduction2027PurchaseOptions(121, "milan-taffeta",
+  production2027Rows("Negro", [1, 2, 2, 2, 2]),
+  [...production2027Rows("Negro", [1, 2, 2, 2, 2]), ...production2027Rows("Marino", [1, 2, 2, 2, 2]), ...production2027Rows("Gris Oscuro", [1, 2, 2, 2, 2])]);
+configureProduction2027PurchaseOptions(151, "felipe-det-hood",
+  production2027Rows("Negro", [1, 2, 2, 2, 1]),
+  [...production2027Rows("Negro", [1, 2, 2, 2, 1]), ...production2027Rows("Gris Oscuro", [1, 2, 2, 2, 1]), ...production2027Rows("Marino", [1, 2, 2, 2, 1])]);
+configureProduction2027PurchaseOptions(152, "milan-fixed-hood",
+  production2027Rows("Negro", [1, 2, 2, 2, 2]),
+  [...production2027Rows("Negro", [1, 2, 2, 2, 2]), ...production2027Rows("Marino", [1, 2, 2, 2, 2]), ...production2027Rows("Gris Oscuro", [1, 2, 2, 2, 2])]);
+configureProduction2027PurchaseOptions(134, "cumiana",
+  production2027Rows("Negro", [2, 2, 2, 2, 1]),
+  [...production2027Rows("Negro", [2, 2, 2, 2, 1]), ...production2027Rows("Chocolate", [2, 2, 2, 2, 1]), ...production2027Rows("Beige", [2, 2, 2, 2, 1])]);
+configureProduction2027PurchaseOptions(136, "isadora-taffeta",
+  production2027Rows("Negro", [1, 2, 2, 1, 1]),
+  [...production2027Rows("Negro", [1, 2, 2, 1, 1]), ...production2027Rows("Caqui", [1, 2, 2, 1, 1]), ...production2027Rows("Caqui Claro", [1, 2, 2, 1, 1]), ...production2027Rows("Militar", [1, 2, 2, 1, 1])]);
+configureProduction2027PurchaseOptions(138, "sirena-hood",
+  production2027Rows("Negro", [1, 2, 3, 2, 1]),
+  [...production2027Rows("Negro", [1, 2, 3, 2, 1]), ...production2027Rows("Chocolate", [1, 2, 3, 2, 1]), ...production2027Rows("Beige", [1, 2, 3, 2, 1])]);
+configureProduction2027PurchaseOptions(144, "mila",
+  production2027Rows("Negro", [2, 2, 2, 1], { sizes: ["S", "M", "L", "XL"] }),
+  [...production2027Rows("Negro", [2, 2, 2, 1], { sizes: ["S", "M", "L", "XL"] }), ...production2027Rows("Caqui", [2, 2, 2, 1], { sizes: ["S", "M", "L", "XL"] }), ...production2027Rows("Chocolate", [2, 2, 2, 1], { sizes: ["S", "M", "L", "XL"] }), ...production2027Rows("Beige", [2, 2, 2, 1], { sizes: ["S", "M", "L", "XL"] })]);
+configureProduction2027PurchaseOptions(142, "trench-elena",
+  production2027Rows("Negro", [2, 2, 2, 2, 1]),
+  [...production2027Rows("Negro", [2, 2, 2, 2, 1]), ...production2027Rows("Chocolate", [2, 2, 2, 2, 1]), ...production2027Rows("Camel", [2, 2, 2, 2, 1]), ...production2027Rows("Piedra", [2, 2, 2, 2, 1])]);
 
 products.push(...production2027Products);
 
@@ -2676,6 +2828,7 @@ function normalizeCatalogSize(size) {
 }
 
 function getTotalPiecesLabel(product) {
+  if (product.collection === "produccion-invierno-2027") return "Curva por talle";
   if (!product.packaging) return "Sin dato";
   return product.packaging.totalLabel || `${product.packaging.totalPieces} piezas`;
 }
@@ -2742,6 +2895,7 @@ function renderPackagingTable(product) {
   const purchaseOptions = product.purchaseOptions || [];
   const selectedOption = purchaseOptions.find(option => option.id === currentPurchaseOptionId) || purchaseOptions[0] || null;
   const packaging = selectedOption?.packaging || product.packaging;
+  const hideTotals = product.collection === "produccion-invierno-2027";
 
   if (!packaging) {
     wrap.innerHTML = "";
@@ -2752,7 +2906,7 @@ function renderPackagingTable(product) {
     <tr>
       <td>${row.color}</td>
       <td>${formatCurve(row)}</td>
-      <td>${row.pieces || (row.sizePieces ? Object.values(row.sizePieces).reduce((sum, value) => sum + Number(value || 0), 0) : "-")}</td>
+      ${hideTotals ? "" : `<td>${row.pieces || (row.sizePieces ? Object.values(row.sizePieces).reduce((sum, value) => sum + Number(value || 0), 0) : "-")}</td>`}
     </tr>
   `).join("");
 
@@ -2778,17 +2932,17 @@ function renderPackagingTable(product) {
   wrap.innerHTML = `
     ${optionSelector}
     ${optionDetails}
-    <div class="packaging-summary">
+    ${hideTotals ? "" : `<div class="packaging-summary">
       <span>Piezas totales</span>
       <strong>${packaging.totalLabel || `${packaging.totalPieces} piezas`}</strong>
-    </div>
+    </div>`}
     <div class="packaging-table-wrap">
       <table class="packaging-table">
         <thead>
           <tr>
             <th>Color</th>
             <th>Curva de talles</th>
-            <th>Piezas</th>
+            ${hideTotals ? "" : "<th>Piezas</th>"}
           </tr>
         </thead>
         <tbody>${rows}</tbody>
@@ -3289,6 +3443,7 @@ function getCartProductColors(product) {
 }
 
 function getCartProductTotalLabel(product) {
+  if (product.collection === "produccion-invierno-2027") return "Curva por talle";
   const packaging = product.selectedPurchaseOption?.packaging || product.packaging;
   if (!packaging) return "Sin dato";
   return packaging.totalLabel || `${packaging.totalPieces} piezas`;
