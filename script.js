@@ -467,12 +467,12 @@ const accessoryProducts = [
   { id: 99, name: "Riñonera de Tres Cierres", category: "UNISEX", subcategory: "Riñoneras", description: "Riñonera de 19 x 38 cm, con tres cierres, correa regulable y bolsillo interno.", orderNumber: "10004", colors: ["Negro"], sizes: ["Único"], collection: "accesorios", driveLink: "" },
   { id: 100, name: "Mochila con Hebillas", category: "UNISEX", subcategory: "Mochilas", description: "Mochila con solapa y hebillas, dos cierres, bolsillos laterales, compartimento para notebook y 13 cm de profundidad.", orderNumber: "10010", colors: ["Negro"], sizes: ["Único"], collection: "accesorios", driveLink: "" },
   { id: 101, name: "Mochila Porta Notebook", category: "UNISEX", subcategory: "Mochilas", description: "Mochila de 49 x 34 x 10 cm, con dos cierres, bolsillo lateral y compartimento para notebook.", orderNumber: "10014", colors: ["Negro"], sizes: ["Único"], collection: "accesorios", driveLink: "" },
-  { id: 145, name: "Gorra TE11897", category: "UNISEX", subcategory: "Gorras", description: "", orderNumber: "TE11897", colors: ["Colores surtidos"], sizes: ["Único"], collection: "accesorios", preserveCatalogColors: true, driveLink: "" },
-  { id: 146, name: "Gorra TE11900", category: "UNISEX", subcategory: "Gorras", description: "", orderNumber: "TE11900", colors: ["Colores surtidos"], sizes: ["Único"], collection: "accesorios", preserveCatalogColors: true, driveLink: "" },
-  { id: 147, name: "Gorra TE11901", category: "UNISEX", subcategory: "Gorras", description: "", orderNumber: "TE11901", colors: ["Colores surtidos"], sizes: ["Único"], collection: "accesorios", preserveCatalogColors: true, driveLink: "" },
-  { id: 148, name: "Gorra TE11902", category: "UNISEX", subcategory: "Gorras", description: "", orderNumber: "TE11902", colors: ["Colores surtidos"], sizes: ["Único"], collection: "accesorios", preserveCatalogColors: true, driveLink: "" },
-  { id: 149, name: "Gorra TE11903", category: "UNISEX", subcategory: "Gorras", description: "", orderNumber: "TE11903", colors: ["Colores surtidos"], sizes: ["Único"], collection: "accesorios", preserveCatalogColors: true, driveLink: "" },
-  { id: 150, name: "Gorra TE11904", category: "UNISEX", subcategory: "Gorras", description: "", orderNumber: "TE11904", colors: ["Colores surtidos"], sizes: ["Único"], collection: "accesorios", preserveCatalogColors: true, driveLink: "" }
+  { id: 145, name: "Gorra Lavada", category: "UNISEX", subcategory: "Gorras", description: "", orderNumber: "TE11897", colors: ["Colores surtidos"], sizes: ["Único"], collection: "accesorios", preserveCatalogColors: true, driveLink: "" },
+  { id: 146, name: "Gorra Cuadrille", category: "UNISEX", subcategory: "Gorras", description: "", orderNumber: "TE11900", colors: ["Colores surtidos"], sizes: ["Único"], collection: "accesorios", preserveCatalogColors: true, driveLink: "" },
+  { id: 147, name: "Gorra Rallas", category: "UNISEX", subcategory: "Gorras", description: "", orderNumber: "TE11901", colors: ["Colores surtidos"], sizes: ["Único"], collection: "accesorios", preserveCatalogColors: true, driveLink: "" },
+  { id: 148, name: "Gorra Basica", category: "UNISEX", subcategory: "Gorras", description: "", orderNumber: "TE11902", colors: ["Colores surtidos"], sizes: ["Único"], collection: "accesorios", preserveCatalogColors: true, driveLink: "" },
+  { id: 149, name: "Gorra Print", category: "UNISEX", subcategory: "Gorras", description: "", orderNumber: "TE11903", colors: ["Colores surtidos"], sizes: ["Único"], collection: "accesorios", preserveCatalogColors: true, driveLink: "" },
+  { id: 150, name: "Gorra Corderito", category: "UNISEX", subcategory: "Gorras", description: "", orderNumber: "TE11904", colors: ["Colores surtidos"], sizes: ["Único"], collection: "accesorios", preserveCatalogColors: true, driveLink: "" }
 ];
 
 products.push(...accessoryProducts);
@@ -1203,15 +1203,29 @@ Object.assign(productImagesById, {
   "88": [1, 2, 3, 4, 5, 6], "89": [1, 2, 3, 4, 5, 6, 7, 8], "90": [1, 2, 3, 4, 5, 6],
   "91": [1], "92": [1], "93": [1], "94": [1], "95": [1], "96": [1],
   "97": [1], "98": [1], "99": [1], "100": [1], "101": [1],
-  "110": [1],
+  "110": [1, 2],
   "111": [1, 2, 3],
   "112": [1, 2, 3],
+  "114": [1, 2],
+  "115": [1, 2],
+  "116": [1, 2],
+  "117": [1, 2, 3, 4],
+  "119": [1, 2, 3],
+  "120": [1, 2, 3],
+  "121": [1, 2, 3],
+  "123": [1, 2],
+  "127": [1],
+  "128": [1, 2],
+  "129": [1, 2],
+  "130": [1, 2, 3],
+  "131": [1, 2, 3],
   "145": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
   "146": [1, 2, 3, 4, 5],
   "147": [1, 2, 3, 4, 5],
   "148": [1, 2, 3, 4, 5, 6],
   "149": [1, 2],
-  "150": [1]
+  "150": [1],
+  "152": [1, 2, 3]
 });
 
 const winterImageAdditionsByProductId = {
@@ -1252,7 +1266,7 @@ Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumber
   ])].sort((a, b) => a - b);
 });
 
-const IMAGE_ASSET_VERSION = "20260806-11";
+const IMAGE_ASSET_VERSION = "20260807-26";
 
 const PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID = {
   118: 48,  // Merano
@@ -1404,9 +1418,23 @@ const colorImageByProductId = {
   88: { "Gris Claro": 2, "Azul": 3, "Marrón": 4, "Chocolate": 5, "Negro": 6 },
   89: { "Crema": 2, "Beige": 3, "Chocolate": 4, "Celeste": 5, "Azul Marino": 6, "Gris Oscuro": 7, "Negro": 8 },
   90: { "Gris Claro": 2, "Beige": 3, "Chocolate": 4, "Azul Marino": 5, "Negro": 6 },
-  110: { "Negro": 1 },
+  110: { "Negro": 1, "Marino": 2, "Azul": 2 },
   111: { "Negro": 1, "Chocolate": 2, "Gris Oscuro": 3 },
-  112: { "Gris Oscuro": 1, "Chocolate": 2, "Negro": 3 }
+  112: { "Gris Oscuro": 1, "Chocolate": 2, "Negro": 3 },
+  114: { "Negro": 1, "Chocolate": 2 },
+  115: { "Negro": 1, "Gris Oscuro": 2 },
+  116: { "Gris Oscuro": 1, "Negro": 2 },
+  117: { "Gris": 1, "Negro": 2, "Caqui": 3, "Marino": 4 },
+  119: { "Negro": 1, "Oliva": 2, "Gris Oscuro": 3 },
+  120: { "Gris Oscuro": 1, "Negro": 2, "Oliva": 3 },
+  121: { "Negro": 1, "Marino": 2, "Gris Oscuro": 3 },
+  123: { "Negro": 1, "Marino": 2 },
+  127: { "Negro": 1 },
+  128: { "Chocolate": 1, "Negro": 2 },
+  129: { "Chocolate": 1, "Negro": 2 },
+  130: { "Negro": 1, "Caqui": 2, "Beige": 3 },
+  131: { "Negro": 1, "Caqui": 2, "Beige": 3 },
+  152: { "Negro": 1, "Marino": 2, "Gris Oscuro": 3 }
 };
 
 function normalizeColorName(value) {
@@ -1441,11 +1469,12 @@ function getColorGalleryIndex(product, colorIndex, galleryLength) {
 }
 
 function getProduction2027Gallery(product, colors) {
+  const onlyColorLinkedPhotos = product.collection === "produccion-invierno-2027";
   const mappedSourceProductId = PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID[product.id];
   const sourceProductId = mappedSourceProductId || product.id;
   const allPhotoNumbers = getProductImagePhotoNumbers(sourceProductId);
   const colorMap = colorImageByProductId[sourceProductId] || {};
-  if (!mappedSourceProductId) {
+  if (!mappedSourceProductId && !onlyColorLinkedPhotos) {
     return {
       sourceProductId,
       photoNumbers: allPhotoNumbers,
@@ -1465,6 +1494,7 @@ function getProduction2027Gallery(product, colors) {
   });
 
   const photoNumbers = allPhotoNumbers.filter(photoNumber => {
+    if (onlyColorLinkedPhotos) return matchingPhotoNumbers.has(Number(photoNumber));
     return !assignedPhotoNumbers.has(Number(photoNumber)) || matchingPhotoNumbers.has(Number(photoNumber));
   });
   const sources = photoNumbers.map(photoNumber => {
@@ -1495,6 +1525,7 @@ function getProduction2027Gallery(product, colors) {
     if (match) matchingAdditionalPhotoNumbers.add(Number(match[1]));
   });
   const additionalPhotoNumbers = allAdditionalPhotoNumbers.filter(photoNumber => {
+    if (onlyColorLinkedPhotos) return matchingAdditionalPhotoNumbers.has(Number(photoNumber));
     return !assignedAdditionalPhotoNumbers.has(Number(photoNumber)) || matchingAdditionalPhotoNumbers.has(Number(photoNumber));
   });
   additionalPhotoNumbers.forEach(photoNumber => {
@@ -1510,6 +1541,13 @@ function getProduction2027Gallery(product, colors) {
   });
 
   return { sourceProductId, photoNumbers, sources, colorMap, colorGalleryIndexByNormalizedColor };
+}
+
+function getDisplayProductImageSources(product) {
+  if (product?.collection === "produccion-invierno-2027") {
+    return getProduction2027Gallery(product, product.colors || []).sources;
+  }
+  return getProductImageSources(product?.id);
 }
 
 function getProduction2027ColorGalleryIndex(gallery, color) {
@@ -3174,7 +3212,8 @@ function queueProductImage(id, imgEl, placeholderEl, observeEl) {
 }
 
 function loadProductImage(id, imgEl, placeholderEl) {
-  const [src] = getProductImageSources(id);
+  const product = products.find(item => item.id === id);
+  const [src] = getDisplayProductImageSources(product);
   if (!src) return;
   const tester = new Image();
   tester.onload = () => {
@@ -3466,7 +3505,7 @@ function updateCartUI() {
   cartItemsEl.innerHTML = '';
   cart.forEach(p => {
     const item = document.createElement('div');
-    const cartImageSrc = getProductImageSources(p.id)[0] || '';
+    const cartImageSrc = getDisplayProductImageSources(p)[0] || '';
     const placeholderDisplay = cartImageSrc ? 'none' : 'flex';
     item.className = 'cart-item';
     item.innerHTML = `
