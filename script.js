@@ -96,6 +96,13 @@ const PRODUCT_DESCRIPTION_BY_ID = {
 // const OUT_OF_STOCK_PRODUCT_IDS = [12, 43];
 const OUT_OF_STOCK_PRODUCT_IDS = [3, 6, 8, 9, 12, 13, 14, 16, 17, 20, 24, 25, 27, 28, 33, 46];
 
+// Stock agotado por variante. Los talles que no figuran acá continúan disponibles.
+const OUT_OF_STOCK_VARIANTS = {
+  40: {
+    Negro: ["S", "M", "L", "XL", "3XL"]
+  }
+};
+
 // Para sacar un producto de la página sin borrarlo, agregá su número:
 // const HIDDEN_PRODUCT_IDS = [7, 18];
 const HIDDEN_PRODUCT_IDS = [31, 57, 67];
@@ -3286,7 +3293,16 @@ function openModal(p, initialPurchaseOptionId = null) {
   // Sizes
   const sizesEl = document.getElementById('modal-sizes');
   const displayedSizes = selectedOption?.sizes || p.sizes;
-  sizesEl.innerHTML = displayedSizes.map(s => `<span class="size-chip">${normalizeCatalogSize(s)}</span>`).join('');
+  function renderSizeAvailability(color) {
+    const unavailableSizes = new Set(OUT_OF_STOCK_VARIANTS[p.id]?.[color] || []);
+    sizesEl.innerHTML = displayedSizes.map(size => {
+      const normalizedSize = normalizeCatalogSize(size);
+      const isUnavailable = unavailableSizes.has(normalizedSize);
+      const stockLabel = isUnavailable ? ' · Agotado' : '';
+      return `<span class="size-chip${isUnavailable ? ' out-of-stock' : ''}"${isUnavailable ? ` title="${color} ${normalizedSize}: agotado" aria-label="${color} ${normalizedSize}: agotado"` : ''}>${normalizedSize}${stockLabel}</span>`;
+    }).join('');
+  }
+  renderSizeAvailability(displayedColors[0]);
 
   // Packaging / curve
   renderPackagingTable(p);
@@ -3389,6 +3405,7 @@ function openModal(p, initialPurchaseOptionId = null) {
     chip.disabled = galleryIndex === null;
     if (galleryIndex !== null) colorGalleryIndices.add(galleryIndex);
     chip.addEventListener('click', () => {
+      renderSizeAvailability(displayedColors[colorIndex]);
       if (galleryIndex !== null) showGalleryImage(galleryIndex);
     });
   });
