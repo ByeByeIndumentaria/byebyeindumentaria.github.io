@@ -2573,10 +2573,10 @@ const packagingByProductId = {
   },
   40: {
     totalPieces: 180,
-    totalLabel: "90 piezas por talle por color",
+    totalLabel: "90 piezas por talle disponible y por color",
     rows: [
       { color: "Blanco", curveText: "S al 6XL", pieces: "90 por talle" },
-      { color: "Negro", curveText: "S al 6XL", pieces: "90 por talle" },
+      { color: "Negro · agotados S, M, L, XL y 3XL", curveText: "Disponibles: XXL, 4XL, 5XL y 6XL", pieces: "90 por talle disponible" },
     ],
   },
   41: {
