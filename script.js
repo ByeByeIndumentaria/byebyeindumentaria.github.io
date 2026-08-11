@@ -1235,6 +1235,7 @@ Object.assign(productImagesById, {
   "149": [1, 2],
   "150": [1],
   "152": [1, 2, 3],
+  "153": [1, 2],
   "154": [1],
   "155": [1],
   "156": [1]
@@ -1278,7 +1279,7 @@ Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumber
   ])].sort((a, b) => a - b);
 });
 
-const IMAGE_ASSET_VERSION = "20260811-03";
+const IMAGE_ASSET_VERSION = "20260811-08";
 
 const PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID = {
   118: 48,  // Merano
@@ -1300,7 +1301,8 @@ const PRODUCTION_2027_ADDITIONAL_IMAGES_BY_PRODUCT_ID = {
   140: [1, 2, 3],
   142: [1, 2, 3],
   143: [1, 2],
-  144: [1, 2, 3]
+  144: [1, 2, 3],
+  153: [1, 2]
 };
 
 const PRODUCTION_2027_ADDITIONAL_COLOR_IMAGES_BY_PRODUCT_ID = {
@@ -1314,7 +1316,8 @@ const PRODUCTION_2027_ADDITIONAL_COLOR_IMAGES_BY_PRODUCT_ID = {
   140: { "Camel": 1, "Negro": 2, "Chocolate": 3 },
   142: { "Camel": 1, "Chocolate": 2, "Piedra": 3 },
   143: { "Negro": 1, "Chocolate": 2 },
-  144: { "Caqui": 1, "Negro": 2, "Chocolate": 3 }
+  144: { "Caqui": 1, "Negro": 2, "Chocolate": 3 },
+  153: { "Negro": 1, "Chocolate": 2 }
 };
 
 function versionImageSrc(src) {
@@ -1459,7 +1462,8 @@ const colorImageByProductId = {
   131: { "Negro": 1, "Caqui": 2, "Beige": 3 },
   134: { "Negro": 1, "Chocolate": 2, "Beige": 3 },
   135: { "Negro": 1, "Chocolate": 2 },
-  152: { "Negro": 1, "Marino": 2, "Gris Oscuro": 3 }
+  152: { "Negro": 1, "Marino": 2, "Gris Oscuro": 3 },
+  153: { "Negro": 1, "Chocolate": 2 }
 };
 
 function normalizeColorName(value) {
