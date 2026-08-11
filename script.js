@@ -1176,6 +1176,54 @@ const productImagesById = {
     5,
     6
   ],
+  "173": [
+    1,
+    2,
+    3
+  ],
+  "174": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "175": [
+    1,
+    2,
+    3
+  ],
+  "176": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "177": [
+    1,
+    2,
+    3
+  ],
+  "178": [
+    1,
+    2,
+    3
+  ],
+  "179": [
+    1,
+    2,
+    3
+  ],
+  "180": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "181": [
+    1,
+    2,
+    3
+  ],
   "84": [
     1,
     2,
@@ -1253,7 +1301,8 @@ Object.assign(productImagesById, {
   "168": [1],
   "169": [1],
   "170": [1],
-  "171": [1]
+  "171": [1],
+  "172": [1, 2, 3, 4]
 });
 
 const winterImageAdditionsByProductId = {
@@ -1294,7 +1343,7 @@ Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumber
   ])].sort((a, b) => a - b);
 });
 
-const IMAGE_ASSET_VERSION = "20260811-20";
+const IMAGE_ASSET_VERSION = "20260811-21";
 
 const PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID = {
   118: 48,  // Merano
@@ -1332,7 +1381,8 @@ const PRODUCTION_2027_ADDITIONAL_COLOR_IMAGES_BY_PRODUCT_ID = {
   142: { "Camel": 1, "Chocolate": 2, "Piedra": 3 },
   143: { "Negro": 1, "Chocolate": 2 },
   144: { "Caqui": 1, "Negro": 2, "Chocolate": 3 },
-  153: { "Negro": 1, "Chocolate": 2 }
+  153: { "Negro": 1, "Chocolate": 2 },
+  172: { "Negro": 1, "Oliva": 2, "Chocolate": 3, "Beige": 4 }
 };
 
 function versionImageSrc(src) {
@@ -1478,7 +1528,16 @@ const colorImageByProductId = {
   134: { "Negro": 1, "Chocolate": 2, "Beige": 3 },
   135: { "Negro": 1, "Chocolate": 2 },
   152: { "Negro": 1, "Marino": 2, "Gris Oscuro": 3 },
-  153: { "Negro": 1, "Chocolate": 2 }
+  153: { "Negro": 1, "Chocolate": 2 },
+  173: { "Camel": 1, "Chocolate": 2, "Negro": 3 },
+  174: { "Negro": 1, "Oliva": 2, "Chocolate": 3, "Caqui": 4 },
+  175: { "Camel": 1, "Negro": 2, "Chocolate": 3 },
+  176: { "Beige": 1, "Camel": 2, "Melange": 3, "Negro": 4 },
+  177: { "Chocolate": 1, "Negro": 2, "Camel": 3 },
+  178: { "Chocolate": 1, "Camel": 2, "Negro": 3 },
+  179: { "Negro": 1, "Chocolate": 2, "Camel": 3 },
+  180: { "Chocolate": 1, "Negro": 2, "Beige": 3, "Camel": 4 },
+  181: { "Negro": 1, "Piedra": 2, "Chocolate": 3 }
 };
 
 function normalizeColorName(value) {
@@ -2274,6 +2333,150 @@ const production2027Products = [
     [172, "Aimmen", "125-627"], [173, "Licata", "225-052"], [174, "Sabina Taffeta", "125-607"], [175, "Rennell", "126-312"], [176, "Hephzibah", "126-309"], [177, "Jules", "125-680"], [178, "Greta", "125-598"], [179, "Randi T", "125-596"], [180, "Blyss", "225-553"], [181, "Maicyn", "126-306"], [182, "Simone Pongee", "125-594"], [183, "Peri", "125-599"], [184, "Gina", "125-367"], [185, "Magasa", "125-274"]
   ].map(([id, name, orderNumber]) => production2027StockProduct({ id, name, orderNumber, category: "MUJER", sourceWorkbook: "Stock Ladies MP088.pdf" }))
 ];
+
+const aimmenProduct = production2027Products.find(product => product.id === 172);
+if (aimmenProduct) aimmenProduct.colors = ["Negro", "Oliva", "Chocolate", "Beige"];
+
+const licataProduct = production2027Products.find(product => product.id === 173);
+if (licataProduct) {
+  licataProduct.colors = ["Camel", "Chocolate", "Negro"];
+  licataProduct.images = [
+    "images/prod_173_1.jpg",
+    "images/prod_173_2.jpg",
+    "images/prod_173_3.jpg"
+  ];
+  licataProduct.colorImages = {
+    "Camel": "images/prod_173_1.jpg",
+    "Chocolate": "images/prod_173_2.jpg",
+    "Negro": "images/prod_173_3.jpg"
+  };
+}
+
+const sabinaTaffetaProduct = production2027Products.find(product => product.id === 174);
+if (sabinaTaffetaProduct) {
+  sabinaTaffetaProduct.colors = ["Negro", "Oliva", "Chocolate", "Caqui"];
+  sabinaTaffetaProduct.images = [
+    "images/prod_174_1.jpg",
+    "images/prod_174_2.jpg",
+    "images/prod_174_3.jpg",
+    "images/prod_174_4.jpg"
+  ];
+  sabinaTaffetaProduct.colorImages = {
+    "Negro": "images/prod_174_1.jpg",
+    "Oliva": "images/prod_174_2.jpg",
+    "Chocolate": "images/prod_174_3.jpg",
+    "Caqui": "images/prod_174_4.jpg"
+  };
+}
+
+const rennellProduct = production2027Products.find(product => product.id === 175);
+if (rennellProduct) {
+  rennellProduct.colors = ["Negro", "Camel", "Chocolate"];
+  rennellProduct.images = [
+    "images/prod_175_1.jpg",
+    "images/prod_175_2.jpg",
+    "images/prod_175_3.jpg"
+  ];
+  rennellProduct.colorImages = {
+    "Negro": "images/prod_175_2.jpg",
+    "Camel": "images/prod_175_1.jpg",
+    "Chocolate": "images/prod_175_3.jpg"
+  };
+}
+
+const hephzibahProduct = production2027Products.find(product => product.id === 176);
+if (hephzibahProduct) {
+  hephzibahProduct.colors = ["Negro", "Beige", "Camel", "Melange"];
+  hephzibahProduct.images = [
+    "images/prod_176_1.jpg",
+    "images/prod_176_2.jpg",
+    "images/prod_176_3.jpg",
+    "images/prod_176_4.jpg"
+  ];
+  hephzibahProduct.colorImages = {
+    "Negro": "images/prod_176_4.jpg",
+    "Beige": "images/prod_176_1.jpg",
+    "Camel": "images/prod_176_2.jpg",
+    "Melange": "images/prod_176_3.jpg"
+  };
+}
+
+const julesProduct = production2027Products.find(product => product.id === 177);
+if (julesProduct) {
+  julesProduct.colors = ["Negro", "Chocolate", "Camel"];
+  julesProduct.images = [
+    "images/prod_177_1.jpg",
+    "images/prod_177_2.jpg",
+    "images/prod_177_3.jpg"
+  ];
+  julesProduct.colorImages = {
+    "Negro": "images/prod_177_2.jpg",
+    "Chocolate": "images/prod_177_1.jpg",
+    "Camel": "images/prod_177_3.jpg"
+  };
+}
+
+const gretaProduct = production2027Products.find(product => product.id === 178);
+if (gretaProduct) {
+  gretaProduct.colors = ["Negro", "Chocolate", "Camel"];
+  gretaProduct.images = [
+    "images/prod_178_1.jpg",
+    "images/prod_178_2.jpg",
+    "images/prod_178_3.jpg"
+  ];
+  gretaProduct.colorImages = {
+    "Negro": "images/prod_178_3.jpg",
+    "Chocolate": "images/prod_178_1.jpg",
+    "Camel": "images/prod_178_2.jpg"
+  };
+}
+
+const randiTProduct = production2027Products.find(product => product.id === 179);
+if (randiTProduct) {
+  randiTProduct.colors = ["Negro", "Chocolate", "Camel"];
+  randiTProduct.images = [
+    "images/prod_179_1.jpg",
+    "images/prod_179_2.jpg",
+    "images/prod_179_3.jpg"
+  ];
+  randiTProduct.colorImages = {
+    "Negro": "images/prod_179_1.jpg",
+    "Chocolate": "images/prod_179_2.jpg",
+    "Camel": "images/prod_179_3.jpg"
+  };
+}
+
+const blyssProduct = production2027Products.find(product => product.id === 180);
+if (blyssProduct) {
+  blyssProduct.colors = ["Negro", "Chocolate", "Camel", "Beige"];
+  blyssProduct.images = [
+    "images/prod_180_1.jpg",
+    "images/prod_180_2.jpg",
+    "images/prod_180_3.jpg",
+    "images/prod_180_4.jpg"
+  ];
+  blyssProduct.colorImages = {
+    "Negro": "images/prod_180_2.jpg",
+    "Chocolate": "images/prod_180_1.jpg",
+    "Camel": "images/prod_180_4.jpg",
+    "Beige": "images/prod_180_3.jpg"
+  };
+}
+
+const maicynProduct = production2027Products.find(product => product.id === 181);
+if (maicynProduct) {
+  maicynProduct.colors = ["Piedra", "Negro", "Chocolate"];
+  maicynProduct.images = [
+    "images/prod_181_1.jpg",
+    "images/prod_181_2.jpg",
+    "images/prod_181_3.jpg"
+  ];
+  maicynProduct.colorImages = {
+    "Piedra": "images/prod_181_2.jpg",
+    "Negro": "images/prod_181_1.jpg",
+    "Chocolate": "images/prod_181_3.jpg"
+  };
+}
 
 function setProduction2027PurchaseOptions(productId, optionSpecs) {
   const product = production2027Products.find(item => item.id === productId);
