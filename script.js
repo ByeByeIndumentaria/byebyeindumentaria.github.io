@@ -2495,6 +2495,45 @@ if (simoneProduct) {
   };
 }
 
+const periProduct = production2027Products.find(product => product.id === 183);
+if (periProduct) {
+  periProduct.colors = ["Chocolate", "Crudo", "Negro"];
+  periProduct.images = [
+    "images/prod_183_1.png",
+    "images/prod_183_2.png",
+    "images/prod_183_3.png"
+  ];
+  periProduct.colorImages = {
+    "Chocolate": "images/prod_183_1.png",
+    "Crudo": "images/prod_183_2.png",
+    "Negro": "images/prod_183_3.png"
+  };
+}
+
+const ginaProduct = production2027Products.find(product => product.id === 184);
+if (ginaProduct) {
+  ginaProduct.colors = ["Crudo"];
+  ginaProduct.images = ["images/prod_184_1.png"];
+  ginaProduct.colorImages = {
+    "Crudo": "images/prod_184_1.png"
+  };
+}
+
+const magasaProduct = production2027Products.find(product => product.id === 185);
+if (magasaProduct) {
+  magasaProduct.colors = ["Negro", "Chocolate", "Champagne"];
+  magasaProduct.images = [
+    "images/prod_185_1.png",
+    "images/prod_185_2.png",
+    "images/prod_185_3.png"
+  ];
+  magasaProduct.colorImages = {
+    "Negro": "images/prod_185_1.png",
+    "Chocolate": "images/prod_185_2.png",
+    "Champagne": "images/prod_185_3.png"
+  };
+}
+
 function setProduction2027PurchaseOptions(productId, optionSpecs) {
   const product = production2027Products.find(item => item.id === productId);
   if (!product) return;
