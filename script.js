@@ -1234,7 +1234,10 @@ Object.assign(productImagesById, {
   "148": [1, 2, 3, 4, 5, 6],
   "149": [1, 2],
   "150": [1],
-  "152": [1, 2, 3]
+  "152": [1, 2, 3],
+  "154": [1],
+  "155": [1],
+  "156": [1]
 });
 
 const winterImageAdditionsByProductId = {
@@ -1275,14 +1278,13 @@ Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumber
   ])].sort((a, b) => a - b);
 });
 
-const IMAGE_ASSET_VERSION = "20260810-01";
+const IMAGE_ASSET_VERSION = "20260811-03";
 
 const PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID = {
   118: 48,  // Merano
   124: 51,  // Taft
   125: 70,  // Felipe Hood con Piel Fina
   132: 72,  // Messika
-  136: 79,  // Isadora Taffeta
   138: 80,  // Sirena Hood
   142: 66   // Trench Elena
 };
@@ -1290,17 +1292,29 @@ const PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID = {
 const PRODUCTION_2027_ADDITIONAL_IMAGES_BY_PRODUCT_ID = {
   125: [1, 2, 3],
   132: [1],
+  133: [1, 2, 3],
   136: [1, 2, 3, 4],
+  137: [1, 2],
   138: [1, 2],
-  142: [1, 2, 3]
+  139: [1, 2],
+  140: [1, 2, 3],
+  142: [1, 2, 3],
+  143: [1, 2],
+  144: [1, 2, 3]
 };
 
 const PRODUCTION_2027_ADDITIONAL_COLOR_IMAGES_BY_PRODUCT_ID = {
   125: { "Marino": 1, "Chocolate": 2, "Beige": 3 },
   132: { "Chocolate": 1 },
+  133: { "Negro": 1, "Militar Oscuro": 2, "Chocolate": 3 },
   136: { "Caqui": 1, "Caqui Claro": 2, "Negro": 3, "Militar": 4 },
+  137: { "Negro": 1, "Caqui": 2 },
   138: { "Chocolate": 1, "Beige": 2 },
-  142: { "Camel": 1, "Chocolate": 2, "Piedra": 3 }
+  139: { "Chocolate": 1, "Negro": 2 },
+  140: { "Camel": 1, "Negro": 2, "Chocolate": 3 },
+  142: { "Camel": 1, "Chocolate": 2, "Piedra": 3 },
+  143: { "Negro": 1, "Chocolate": 2 },
+  144: { "Caqui": 1, "Negro": 2, "Chocolate": 3 }
 };
 
 function versionImageSrc(src) {
@@ -1480,7 +1494,7 @@ function getColorGalleryIndex(product, colorIndex, galleryLength) {
 }
 
 function getProduction2027Gallery(product, colors) {
-  const onlyColorLinkedPhotos = product.collection === "produccion-invierno-2027";
+  const onlyColorLinkedPhotos = product.collection === "produccion-invierno-2027" && colors.length > 0;
   const mappedSourceProductId = PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID[product.id];
   const sourceProductId = mappedSourceProductId || product.id;
   const allPhotoNumbers = getProductImagePhotoNumbers(sourceProductId);
@@ -2229,7 +2243,10 @@ const production2027Products = [
   ] }),
   production2027Product({ id: 153, name: "Lira PU Zara", category: "MUJER", subcategory: "Camperas de cuero", orderNumber: "126-421", sourcePacking: "CAJA SURTIDA", sizes: ["S", "M", "L", "XL"], rows: [
     ...production2027Rows("Negro", [1, 2, 2, 1], { sizes: ["S", "M", "L", "XL"], repeat: 2 }), ...production2027Rows("Chocolate", [1, 2, 2, 1], { sizes: ["S", "M", "L", "XL"] })
-  ] }),
+  ], images: ["images/prod_153_1.jpg", "images/prod_153_2.jpg"], colorImages: {
+    "Negro": "images/prod_153_1.jpg",
+    "Chocolate": "images/prod_153_2.jpg"
+  } }),
 
   ...[
     [154, "Comiso Hood", "126-311"], [155, "Ketan", "126-016"], [156, "Curtis", "125-600"], [157, "Dobby", "125-587"], [158, "Parker", "125-420"], [159, "Malvito", "126-050"], [160, "Carl-Aldeno", "125-293"], [161, "Floyd", "126-313"], [162, "Stephen", "225-597"], [163, "Doyle", "225-506"], [164, "Curno Pongee", "225-500"], [165, "Odinga", "126-308"], [166, "Aidone", "225-181"], [167, "Carpino Pongee", "225-505"], [168, "Gesico", "225-061"], [169, "Jamal", "124-919"], [170, "Mikey", "225-512"], [171, "Ubon", "125-319"]
