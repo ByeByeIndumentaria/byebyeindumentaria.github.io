@@ -1386,7 +1386,7 @@ const PRODUCTION_2027_ADDITIONAL_COLOR_IMAGES_BY_PRODUCT_ID = {
   143: { "Negro": 1, "Chocolate": 2 },
   144: { "Caqui": 1, "Negro": 2, "Chocolate": 3 },
   153: { "Negro": 1, "Chocolate": 2 },
-  172: { "Negro": 1, "Oliva": 2, "Chocolate": 3, "Beige": 4 }
+  172: { "Negro": 1, "Oliva": 2, "Chocolate": 3, "Piedra": 4 }
 };
 
 function versionImageSrc(src) {
@@ -1544,18 +1544,18 @@ const colorImageByProductId = {
   135: { "Negro": 1, "Chocolate": 2 },
   152: { "Negro": 1, "Marino": 2, "Gris Oscuro": 3 },
   153: { "Negro": 1, "Chocolate": 2 },
-  172: { "Negro": 1, "Oliva": 2, "Chocolate": 3, "Beige": 4 },
+  172: { "Negro": 1, "Oliva": 2, "Chocolate": 3, "Piedra": 4 },
   173: { "Camel": 1, "Chocolate": 2, "Negro": 3 },
-  174: { "Negro": 1, "Oliva": 2, "Chocolate": 3, "Caqui": 4 },
-  175: { "Camel": 1, "Negro": 2, "Chocolate": 3 },
+  174: { "Negro": 1, "Oliva": 2, "Café": 3, "Caqui": 4 },
+  175: { "Camel": 1, "Negro": 2, "Marrón": 3 },
   176: { "Beige": 1, "Camel": 2, "Melange": 3, "Negro": 4 },
-  177: { "Chocolate": 1, "Negro": 2, "Camel": 3 },
+  177: { "Marrón": 1, "Negro": 2, "Camel": 3 },
   178: { "Chocolate": 1, "Camel": 2, "Negro": 3 },
-  179: { "Negro": 1, "Chocolate": 2, "Camel": 3 },
+  179: { "Negro": 1, "Marrón": 2, "Camel": 3 },
   180: { "Chocolate": 1, "Negro": 2, "Beige": 3, "Camel": 4 },
-  181: { "Negro": 1, "Piedra": 2, "Chocolate": 3 },
-  182: { "Negro": 1, "Camel": 2, "Chocolate": 3, "Bronce": 4 },
-  183: { "Chocolate": 1, "Crudo": 2, "Negro": 3 },
+  181: { "Negro": 1, "Piedra": 2, "Marrón": 3 },
+  182: { "Negro": 1, "Camel": 2, "Marrón": 3, "Bronce": 4 },
+  183: { "Camel": 1, "Marfil": 2, "Negro": 3 },
   184: { "Crudo": 1 },
   185: { "Negro": 1, "Chocolate": 2, "Champagne": 3 }
 };
@@ -2354,17 +2354,17 @@ const production2027Products = [
     [172, "Aimmen", "125-627"], [173, "Licata", "225-052", "Cazadoras"], [174, "Sabina", "125-607"], [175, "Rennell", "126-312", "Cazadoras"], [176, "Hephzibah", "126-309", "Cazadoras"], [177, "Jules", "125-680", "Cazadoras"], [178, "Greta", "125-598", "Camperas de cuero"], [179, "Randit", "125-596", "Camperas de cuero"], [180, "Blyss", "225-553", "Cazadoras"], [181, "Maicyn", "126-306", "Cazadoras"], [182, "Simone", "125-594", "Cazadoras"], [183, "Peri", "125-599"], [184, "Gina", "125-367"], [185, "Magasa", "125-274"]
   ].map(([id, name, orderNumber, subcategory]) => production2027StockProduct({ id, name, orderNumber, category: "MUJER", subcategory, sourceWorkbook: "Stock Ladies MP088.pdf" })),
   ...[
-    [186, "Vetralia", "124-890", "Camperas", ["Camel", "Crudo"], PRODUCTION_2027_LADIES_STOCK_SIZES],
-    [187, "Cassola Fur", "125-448", "Camperas", ["Camel"], PRODUCTION_2027_LADIES_STOCK_SIZES],
-    [188, "Rayna", "126-310", "Camperas", ["Beige", "Militar"], PRODUCTION_2027_LADIES_STOCK_SIZES],
-    [189, "Holly", "126-134", "Cazadoras", ["Chocolate"], PRODUCTION_2027_LADIES_STOCK_SIZES],
-    [190, "Jabrielle", "126-307", "Camperas", ["Crudo"], PRODUCTION_2027_LADIES_STOCK_SIZES],
-    [191, "Keniya", "126-330", "Camperas", ["Negro"], PRODUCTION_2027_LADIES_STOCK_SIZES],
-    [192, "Lina Plus", "125-429", "Camperas", ["Crudo", "Gris", "Negro"], PRODUCTION_2027_PLUS_SIZES],
-    [193, "Aveleen", "226-024", "Cazadoras", ["Negro"], PRODUCTION_2027_LADIES_STOCK_SIZES],
-    [194, "Aliciana", "125-656", "Camperas", ["Camel", "Negro"], PRODUCTION_2027_LADIES_STOCK_SIZES],
-    [195, "Lesina", "125-164", "Camperas", ["Rosa"], PRODUCTION_2027_LADIES_STOCK_SIZES],
-    [196, "Nola", "225-260", "Camperas", ["Crudo"], PRODUCTION_2027_LADIES_STOCK_SIZES]
+    [186, "Vetralia", "124-890", "Camperas", ["Negro", "Chocolate", "Camel", "Caqui"], PRODUCTION_2027_LADIES_STOCK_SIZES],
+    [187, "Cassola Fur", "125-448", "Camperas", ["Negro", "Caqui", "Arena", "Oliva"], PRODUCTION_2027_LADIES_STOCK_SIZES],
+    [188, "Rayna", "126-310", "Camperas", ["Negro", "Arena", "Bordó", "Oliva"], PRODUCTION_2027_LADIES_STOCK_SIZES],
+    [189, "Holly", "126-134", "Cazadoras", ["Negro", "Marrón", "Chocolate"], PRODUCTION_2027_LADIES_STOCK_SIZES],
+    [190, "Jabrielle", "126-307", "Camperas", [], PRODUCTION_2027_LADIES_STOCK_SIZES],
+    [191, "Keniya", "126-330", "Camperas", ["Negro", "Rosa Pálido", "Marrón Claro", "Beige"], PRODUCTION_2027_LADIES_STOCK_SIZES],
+    [192, "Lina Plus", "125-429", "Camperas", ["Negro", "Chocolate"], PRODUCTION_2027_PLUS_SIZES],
+    [193, "Aveleen", "226-024", "Cazadoras", ["Negro", "Caqui", "Marrón", "Camel"], PRODUCTION_2027_LADIES_STOCK_SIZES],
+    [194, "Aliciana", "125-656", "Camperas", ["Negro", "Militar", "Caqui", "Café"], PRODUCTION_2027_LADIES_STOCK_SIZES],
+    [195, "Lesina", "125-164", "Camperas", ["Negro", "Arena", "Oliva", "Marino"], PRODUCTION_2027_LADIES_STOCK_SIZES],
+    [196, "Nola", "225-260", "Camperas", ["Arena", "Avena"], PRODUCTION_2027_LADIES_STOCK_SIZES]
   ].map(([id, name, orderNumber, subcategory, colors, sizes]) => production2027StockProduct({
     id,
     name,
@@ -2378,7 +2378,7 @@ const production2027Products = [
 ];
 
 const aimmenProduct = production2027Products.find(product => product.id === 172);
-if (aimmenProduct) aimmenProduct.colors = ["Negro", "Oliva", "Chocolate", "Beige"];
+if (aimmenProduct) aimmenProduct.colors = ["Negro", "Oliva", "Chocolate", "Piedra"];
 
 const licataProduct = production2027Products.find(product => product.id === 173);
 if (licataProduct) {
@@ -2397,7 +2397,7 @@ if (licataProduct) {
 
 const sabinaTaffetaProduct = production2027Products.find(product => product.id === 174);
 if (sabinaTaffetaProduct) {
-  sabinaTaffetaProduct.colors = ["Negro", "Oliva", "Chocolate", "Caqui"];
+  sabinaTaffetaProduct.colors = ["Negro", "Oliva", "Café", "Caqui"];
   sabinaTaffetaProduct.images = [
     "images/prod_174_1.jpg",
     "images/prod_174_2.jpg",
@@ -2407,14 +2407,14 @@ if (sabinaTaffetaProduct) {
   sabinaTaffetaProduct.colorImages = {
     "Negro": "images/prod_174_1.jpg",
     "Oliva": "images/prod_174_2.jpg",
-    "Chocolate": "images/prod_174_3.jpg",
+    "Café": "images/prod_174_3.jpg",
     "Caqui": "images/prod_174_4.jpg"
   };
 }
 
 const rennellProduct = production2027Products.find(product => product.id === 175);
 if (rennellProduct) {
-  rennellProduct.colors = ["Negro", "Camel", "Chocolate"];
+  rennellProduct.colors = ["Negro", "Camel", "Marrón"];
   rennellProduct.images = [
     "images/prod_175_1.jpg",
     "images/prod_175_2.jpg",
@@ -2423,7 +2423,7 @@ if (rennellProduct) {
   rennellProduct.colorImages = {
     "Negro": "images/prod_175_2.jpg",
     "Camel": "images/prod_175_1.jpg",
-    "Chocolate": "images/prod_175_3.jpg"
+    "Marrón": "images/prod_175_3.jpg"
   };
 }
 
@@ -2446,7 +2446,7 @@ if (hephzibahProduct) {
 
 const julesProduct = production2027Products.find(product => product.id === 177);
 if (julesProduct) {
-  julesProduct.colors = ["Negro", "Chocolate", "Camel"];
+  julesProduct.colors = ["Negro", "Marrón", "Camel"];
   julesProduct.images = [
     "images/prod_177_1.jpg",
     "images/prod_177_2.jpg",
@@ -2454,7 +2454,7 @@ if (julesProduct) {
   ];
   julesProduct.colorImages = {
     "Negro": "images/prod_177_2.jpg",
-    "Chocolate": "images/prod_177_1.jpg",
+    "Marrón": "images/prod_177_1.jpg",
     "Camel": "images/prod_177_3.jpg"
   };
 }
@@ -2476,7 +2476,7 @@ if (gretaProduct) {
 
 const randiTProduct = production2027Products.find(product => product.id === 179);
 if (randiTProduct) {
-  randiTProduct.colors = ["Negro", "Chocolate", "Camel"];
+  randiTProduct.colors = ["Negro", "Marrón", "Camel"];
   randiTProduct.images = [
     "images/prod_179_1.jpg",
     "images/prod_179_2.jpg",
@@ -2484,7 +2484,7 @@ if (randiTProduct) {
   ];
   randiTProduct.colorImages = {
     "Negro": "images/prod_179_1.jpg",
-    "Chocolate": "images/prod_179_2.jpg",
+    "Marrón": "images/prod_179_2.jpg",
     "Camel": "images/prod_179_3.jpg"
   };
 }
@@ -2508,7 +2508,7 @@ if (blyssProduct) {
 
 const maicynProduct = production2027Products.find(product => product.id === 181);
 if (maicynProduct) {
-  maicynProduct.colors = ["Piedra", "Negro", "Chocolate"];
+  maicynProduct.colors = ["Piedra", "Negro", "Marrón"];
   maicynProduct.images = [
     "images/prod_181_1.jpg",
     "images/prod_181_2.jpg",
@@ -2517,13 +2517,13 @@ if (maicynProduct) {
   maicynProduct.colorImages = {
     "Piedra": "images/prod_181_2.jpg",
     "Negro": "images/prod_181_1.jpg",
-    "Chocolate": "images/prod_181_3.jpg"
+    "Marrón": "images/prod_181_3.jpg"
   };
 }
 
 const simoneProduct = production2027Products.find(product => product.id === 182);
 if (simoneProduct) {
-  simoneProduct.colors = ["Chocolate", "Negro", "Camel", "Bronce"];
+  simoneProduct.colors = ["Marrón", "Negro", "Camel", "Bronce"];
   simoneProduct.images = [
     "images/prod_182_3.png",
     "images/prod_182_1.png",
@@ -2531,7 +2531,7 @@ if (simoneProduct) {
     "images/prod_182_4.png"
   ];
   simoneProduct.colorImages = {
-    "Chocolate": "images/prod_182_3.png",
+    "Marrón": "images/prod_182_3.png",
     "Negro": "images/prod_182_1.png",
     "Camel": "images/prod_182_2.png",
     "Bronce": "images/prod_182_4.png"
@@ -2540,15 +2540,15 @@ if (simoneProduct) {
 
 const periProduct = production2027Products.find(product => product.id === 183);
 if (periProduct) {
-  periProduct.colors = ["Chocolate", "Crudo", "Negro"];
+  periProduct.colors = ["Camel", "Marfil", "Negro"];
   periProduct.images = [
     "images/prod_183_1.png",
     "images/prod_183_2.png",
     "images/prod_183_3.png"
   ];
   periProduct.colorImages = {
-    "Chocolate": "images/prod_183_1.png",
-    "Crudo": "images/prod_183_2.png",
+    "Camel": "images/prod_183_1.png",
+    "Marfil": "images/prod_183_2.png",
     "Negro": "images/prod_183_3.png"
   };
 }
