@@ -1313,7 +1313,9 @@ Object.assign(productImagesById, {
   "189": [1, 2, 3],
   "190": [1, 2, 3],
   "191": [1, 2, 3, 4],
-  "192": [1, 2]
+  "192": [1, 2],
+  "193": [1, 2, 3, 4],
+  "194": [1, 2, 3, 4]
 });
 
 const winterImageAdditionsByProductId = {
@@ -1571,7 +1573,9 @@ const colorImageByProductId = {
   189: { "Negro": 1, "Marrón": 2, "Chocolate": 3 },
   190: { "Negro": 1, "Crudo": 2, "Camel": 3 },
   191: { "Negro": 1, "Rosa Pálido": 2, "Marrón Claro": 3, "Beige": 4 },
-  192: { "Negro": 1, "Chocolate": 2 }
+  192: { "Negro": 1, "Chocolate": 2 },
+  193: { "Negro": 1, "Caqui": 2, "Marrón": 3, "Camel": 4 },
+  194: { "Negro": 1, "Militar": 2, "Caqui": 3, "Café": 4 }
 };
 
 function normalizeColorName(value) {
