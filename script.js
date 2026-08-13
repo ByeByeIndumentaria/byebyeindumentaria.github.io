@@ -2083,8 +2083,8 @@ function production2027StockProduct(spec) {
     description: "",
     orderNumber: spec.orderNumber,
     collection: "produccion-invierno-2027",
-    colors: [],
-    sizes: [],
+    colors: spec.colors || [],
+    sizes: spec.sizes || [],
     driveLink: "",
     sourceWorkbook: spec.sourceWorkbook
   };
@@ -2351,7 +2351,29 @@ const production2027Products = [
   ].map(([id, name, orderNumber, subcategory]) => production2027StockProduct({ id, name, orderNumber, category: "HOMBRE", subcategory, sourceWorkbook: "Stock Men MP088.pdf" })),
   ...[
     [172, "Aimmen", "125-627"], [173, "Licata", "225-052", "Cazadoras"], [174, "Sabina", "125-607"], [175, "Rennell", "126-312", "Cazadoras"], [176, "Hephzibah", "126-309", "Cazadoras"], [177, "Jules", "125-680", "Cazadoras"], [178, "Greta", "125-598", "Camperas de cuero"], [179, "Randit", "125-596", "Camperas de cuero"], [180, "Blyss", "225-553", "Cazadoras"], [181, "Maicyn", "126-306", "Cazadoras"], [182, "Simone", "125-594", "Cazadoras"], [183, "Peri", "125-599"], [184, "Gina", "125-367"], [185, "Magasa", "125-274"]
-  ].map(([id, name, orderNumber, subcategory]) => production2027StockProduct({ id, name, orderNumber, category: "MUJER", subcategory, sourceWorkbook: "Stock Ladies MP088.pdf" }))
+  ].map(([id, name, orderNumber, subcategory]) => production2027StockProduct({ id, name, orderNumber, category: "MUJER", subcategory, sourceWorkbook: "Stock Ladies MP088.pdf" })),
+  ...[
+    [186, "Vetralia", "124-890", "Camperas", ["Camel", "Crudo"], PRODUCTION_2027_REGULAR_SIZES],
+    [187, "Cassola Fur", "125-448", "Camperas", ["Camel"], PRODUCTION_2027_REGULAR_SIZES],
+    [188, "Rayna", "126-310", "Camperas", ["Beige", "Militar"], PRODUCTION_2027_REGULAR_SIZES],
+    [189, "Holly", "126-134", "Cazadoras", ["Chocolate"], PRODUCTION_2027_REGULAR_SIZES],
+    [190, "Jabrielle", "126-307", "Camperas", ["Crudo"], PRODUCTION_2027_REGULAR_SIZES],
+    [191, "Keniya", "126-330", "Camperas", ["Negro"], PRODUCTION_2027_REGULAR_SIZES],
+    [192, "Lina Plus", "125-429", "Camperas", ["Crudo", "Gris", "Negro"], PRODUCTION_2027_PLUS_SIZES],
+    [193, "Aveleen", "226-024", "Cazadoras", ["Negro"], PRODUCTION_2027_REGULAR_SIZES],
+    [194, "Aliciana", "125-656", "Camperas", ["Camel", "Negro"], PRODUCTION_2027_REGULAR_SIZES],
+    [195, "Lesina", "125-164", "Camperas", ["Rosa"], PRODUCTION_2027_REGULAR_SIZES],
+    [196, "Nola", "225-260", "Camperas", ["Crudo"], PRODUCTION_2027_REGULAR_SIZES]
+  ].map(([id, name, orderNumber, subcategory, colors, sizes]) => production2027StockProduct({
+    id,
+    name,
+    orderNumber,
+    category: "MUJER",
+    subcategory,
+    colors,
+    sizes,
+    sourceWorkbook: "Stock Ladies MP088 2.pdf"
+  }))
 ];
 
 const aimmenProduct = production2027Products.find(product => product.id === 172);
