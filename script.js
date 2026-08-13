@@ -111,6 +111,7 @@ const products = [
   // ── MUJER ──
   {
     id: 1, name: "Set Algodón", category: "MUJER", subcategory: "Conjuntos",
+    orderNumber: "T01",
     description: "Set de algodón de dos piezas y calce relajado.",
     colors: ["Blanco", "Melange", "Negro"],
     sizes: ["S", "M", "L", "XL"],
@@ -118,6 +119,7 @@ const products = [
   },
   {
     id: 2, name: "Remera Broderie", category: "MUJER", subcategory: "Remeras",
+    orderNumber: "T02",
     description: "Remera con detalle bordado tipo broderie.",
     colors: ["Blanco", "Celeste", "Negro"],
     sizes: ["S", "M", "L", "XL"],
@@ -132,6 +134,7 @@ const products = [
   },
   {
     id: 4, name: "Chomba Algodón", category: "MUJER", subcategory: "Remeras",
+    orderNumber: "T04",
     description: "Chomba de algodón de manga corta con cuello camisero.",
     colors: ["Blanco", "Melange", "Negro"],
     sizes: ["S", "M", "L", "XL"],
@@ -139,6 +142,7 @@ const products = [
   },
   {
     id: 5, name: "Chomba Tejida", category: "MUJER", subcategory: "Remeras",
+    orderNumber: "T05",
     description: "Chomba tejida de manga corta con textura marcada.",
     colors: ["Crudo", "Beige", "Chocolate", "Negro"],
     sizes: ["S", "M", "L", "XL"],
@@ -153,6 +157,7 @@ const products = [
   },
   {
     id: 7, name: "Vestido Camisero", category: "MUJER", subcategory: "Vestidos",
+    orderNumber: "BZD0401",
     description: "Vestido camisero de corte relajado con botonadura frontal.",
     colors: ["Crudo", "Militar", "Negro"],
     sizes: ["S", "M", "L"],
@@ -174,6 +179,7 @@ const products = [
   },
   {
     id: 10, name: "Chaleco Sastrero", category: "MUJER", subcategory: "Conjuntos", subcategories: ["Conjuntos", "Chalecos"],
+    orderNumber: "S5280087",
     description: "Chaleco sastrero de estructura definida.",
     colors: ["Blanco", "Beige", "Oliva", "Chocolate", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
@@ -181,6 +187,7 @@ const products = [
   },
   {
     id: 11, name: "Musculosa Arandelas", category: "MUJER", subcategory: "Remeras",
+    orderNumber: "S5280075",
     description: "Musculosa con detalle de arandelas metálicas.",
     colors: ["Blanco", "Crudo", "Negro"],
     sizes: ["S", "M", "L", "XL"],
@@ -230,6 +237,7 @@ const products = [
   },
   {
     id: 18, name: "Pantalón Broderie", category: "MUJER", subcategory: "Pantalones",
+    orderNumber: "T88605",
     description: "Pantalón con detalle bordado tipo broderie.",
     colors: ["Blanco", "Celeste", "Negro"],
     sizes: ["S", "M", "L", "XL"],
@@ -237,6 +245,7 @@ const products = [
   },
   {
     id: 19, name: "Vestido Gasa", category: "MUJER", subcategory: "Vestidos",
+    orderNumber: "SL6004",
     description: "Vestido de gasa liviana con caída fluida.",
     colors: ["Estampa 1", "Estampa 2", "Camel", "Negro"],
     sizes: ["S", "M", "L"],
@@ -244,6 +253,7 @@ const products = [
   },
   {
     id: 20, name: "Vestido Gasa Largo", category: "MUJER", subcategory: "Vestidos",
+    orderNumber: "TD1413",
     description: "Vestido largo confeccionado en gasa liviana.",
     colors: ["Varios colores"],
     sizes: ["S", "M", "L"],
@@ -251,6 +261,7 @@ const products = [
   },
   {
     id: 21, name: "Vestido Gasa Corto", category: "MUJER", subcategory: "Vestidos",
+    orderNumber: "TD1413",
     description: "Vestido corto confeccionado en gasa liviana.",
     colors: ["Varios colores"],
     sizes: ["S", "M", "L"],
@@ -258,6 +269,7 @@ const products = [
   },
   {
     id: 22, name: "Vestido Nudo", category: "MUJER", subcategory: "Vestidos",
+    orderNumber: "SL6010",
     description: "Vestido con detalle de nudo y calce ajustado.",
     colors: ["Blanco", "Rojo", "Chocolate", "Negro"],
     sizes: ["S", "M", "L", "XL"],
@@ -265,6 +277,7 @@ const products = [
   },
   {
     id: 23, name: "Vestido Básico", category: "MUJER", subcategory: "Vestidos",
+    orderNumber: "Z8099",
     description: "Vestido básico de corte recto y líneas simples.",
     colors: ["Blanco", "Negro", "Varios"],
     sizes: ["S", "M", "L", "XL"],
@@ -272,6 +285,7 @@ const products = [
   },
   {
     id: 24, name: "Vestido Camisero Largo", category: "MUJER", subcategory: "Vestidos",
+    orderNumber: "Z8069",
     description: "Vestido camisero largo con botonadura frontal.",
     colors: ["Varios colores"],
     sizes: ["S", "M", "L"],
@@ -279,6 +293,7 @@ const products = [
   },
   {
     id: 25, name: "Vestido Camisero Corto", category: "MUJER", subcategory: "Vestidos",
+    orderNumber: "Z8069",
     description: "Vestido camisero corto con botonadura frontal.",
     colors: ["Varios colores"],
     sizes: ["S", "M", "L"],
@@ -286,6 +301,7 @@ const products = [
   },
   {
     id: 26, name: "Set Lino Estampado", category: "MUJER", subcategory: "Conjuntos",
+    orderNumber: "Z8166",
     description: "Conjunto de lino con estampados originales de la temporada.",
     colors: ["Estampa 1", "Estampa 2", "Camel", "Negro"],
     sizes: ["S", "M", "L", "XL"],
@@ -300,6 +316,7 @@ const products = [
   },
   {
     id: 28, name: "Vestido Escote V", category: "MUJER", subcategory: "Vestidos",
+    orderNumber: "TD1008-R",
     description: "Vestido con escote en V profundo.",
     colors: ["Blanco", "Rojo", "Chocolate", "Negro"],
     sizes: ["S", "M", "L"],
@@ -307,6 +324,7 @@ const products = [
   },
   {
     id: 29, name: "Vestido Túnica", category: "MUJER", subcategory: "Vestidos",
+    orderNumber: "SL682-D",
     description: "Vestido tipo túnica de calce amplio.",
     colors: ["Estampa 1", "Estampa 2"],
     sizes: ["M"],
@@ -314,6 +332,7 @@ const products = [
   },
   {
     id: 30, name: "Vestido Trenza", category: "MUJER", subcategory: "Vestidos",
+    orderNumber: "M26Z",
     description: "Vestido con detalle de trenza aplicada.",
     colors: ["Varios colores"],
     sizes: ["S", "M", "L"],
@@ -330,6 +349,7 @@ const products = [
   // ── HOMBRE ──
   {
     id: 32, name: "Bermuda Lino", category: "HOMBRE", subcategory: "Bermudas",
+    orderNumber: "TE61092",
     description: "Bermuda de lino de corte recto.",
     colors: ["Oliva", "Khaki", "Gris Oscuro", "Marrón", "Blanco", "Gris Oliva", "Negro", "Crudo", "Beige"],
     sizes: ["30", "32", "34", "36"],
@@ -337,6 +357,7 @@ const products = [
   },
   {
     id: 33, name: "Camisa Lino", category: "HOMBRE", subcategory: "Camisas",
+    orderNumber: "TE61091",
     description: "Camisa de lino de manga larga y caída natural.",
     colors: ["Blanco", "Beige", "Gris", "Gris Verdoso", "Celeste"],
     sizes: ["S", "M", "L", "XL", "XXL"],
@@ -344,6 +365,7 @@ const products = [
   },
   {
     id: 34, name: "Chomba Jersey Lisa Plus", category: "HOMBRE", subcategory: "Chombas",
+    orderNumber: "TE11814-BB PLUS",
     description: "Chomba lisa de jersey en talles XL a 4XL.",
     colors: ["Blanco", "Beige", "Melange", "Celeste", "Petróleo", "Marino", "Negro"],
     sizes: ["XL", "XXL", "3XL", "4XL"],
@@ -351,6 +373,7 @@ const products = [
   },
   {
     id: 35, name: "Chomba Piqué Lisa", category: "HOMBRE", subcategory: "Chombas",
+    orderNumber: "TE11810-BB",
     description: "Chomba de piqué lisa clásica. Colores neutros y vibrantes.",
     colors: ["Blanco", "Crudo", "Beige", "Melange", "Celeste", "Marino", "Oliva", "Petróleo", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
@@ -358,6 +381,7 @@ const products = [
   },
   {
     id: 36, name: "Chomba Piqué Lisa Plus", category: "HOMBRE", subcategory: "Chombas",
+    orderNumber: "TE11810-BB PLUS",
     description: "Chomba de piqué lisa en talles grandes. Misma calidad, mayor amplitud.",
     colors: ["Blanco", "Melange", "Petróleo", "Marino", "Negro"],
     sizes: ["XL", "XXL", "3XL", "4XL"],
@@ -365,6 +389,7 @@ const products = [
   },
   {
     id: 37, name: "Chomba Piqué Penguin", category: "HOMBRE", subcategory: "Chombas",
+    orderNumber: "TE11812-BB",
     description: "Chomba piqué con detalle tipo penguin. Diseño clásico y deportivo.",
     colors: ["Blanco", "Beige", "Celeste", "Melange", "Petróleo", "Marino", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
@@ -372,6 +397,7 @@ const products = [
   },
   {
     id: 38, name: "Chomba Piqué Vivo", category: "HOMBRE", subcategory: "Chombas",
+    orderNumber: "TE11811-BB",
     description: "Chomba piqué con vivos en contraste. Diseño deportivo elegante.",
     colors: ["Blanco vivo marino", "Beige vivo negro", "Melange vivo blanco", "Marino vivo blanco", "Negro vivo blanco"],
     sizes: ["S", "M", "L", "XL", "XXL"],
@@ -379,6 +405,7 @@ const products = [
   },
   {
     id: 39, name: "Remera Deportiva", category: "HOMBRE", subcategory: "Remeras",
+    orderNumber: "TE11038",
     description: "Remera técnica liviana de manga corta, cuello redondo y calce recto.",
     colors: ["Blanco", "Gris", "Marino", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
@@ -386,6 +413,7 @@ const products = [
   },
   {
     id: 40, name: "Remera Algodón", category: "HOMBRE", subcategory: "Remeras",
+    orderNumber: "TT06",
     description: "Remera de algodón lisa. Del S al 6XL para todos los talles.",
     colors: ["Blanco", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL", "3XL", "4XL", "5XL", "6XL"],
@@ -393,6 +421,7 @@ const products = [
   },
   {
     id: 41, name: "Pantalón Lino", category: "HOMBRE", subcategory: "Pantalones",
+    orderNumber: "TE61093",
     description: "Pantalón de lino para hombre. Liviano, transpirable y elegante.",
     colors: ["Beige", "Oliva", "Gris Topo", "Gris", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
@@ -400,6 +429,7 @@ const products = [
   },
   {
     id: 42, name: "Traje de Baño", category: "HOMBRE", subcategory: "Trajes de baño",
+    orderNumber: "TE11915-BB",
     description: "Traje de baño liso y surf. Colores actuales de la temporada.",
     colors: ["Beige", "Gris", "Petroleo", "Marino", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
@@ -407,6 +437,7 @@ const products = [
   },
   {
     id: 43, name: "Camisa", category: "HOMBRE", subcategory: "Camisas",
+    orderNumber: "CM0026",
     description: "Camisa liviana de hombre con cuello camisero y botonadura frontal.",
     colors: ["Blanco", "Rosa", "Celeste", "Marino", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
@@ -414,6 +445,7 @@ const products = [
   },
   {
     id: 44, name: "Traje de baño surf", category: "HOMBRE", subcategory: "Trajes de baño",
+    orderNumber: "TE11918-BB",
     description: "Traje de baño surf liviano, con cintura elastizada y largo medio.",
     colors: ["Beige", "Gris", "Petróleo", "Marino", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
