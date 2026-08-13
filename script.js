@@ -1309,7 +1309,8 @@ Object.assign(productImagesById, {
   "185": [1, 2, 3],
   "186": [1, 2, 3, 4],
   "188": [1, 2, 3, 4],
-  "189": [1, 2, 3]
+  "189": [1, 2, 3],
+  "190": [1, 2, 3]
 });
 
 const winterImageAdditionsByProductId = {
@@ -1350,7 +1351,7 @@ Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumber
   ])].sort((a, b) => a - b);
 });
 
-const IMAGE_ASSET_VERSION = "20260813-27";
+const IMAGE_ASSET_VERSION = "20260813-28";
 
 const PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID = {
   118: 48,  // Merano
@@ -1563,7 +1564,8 @@ const colorImageByProductId = {
   185: { "Negro": 1, "Chocolate": 2, "Champagne": 3 },
   186: { "Negro": 1, "Camel": 2, "Chocolate": 3, "Caqui": 4 },
   188: { "Negro": 1, "Arena": 2, "Bordó": 3, "Oliva": 4 },
-  189: { "Negro": 1, "Marrón": 2, "Chocolate": 3 }
+  189: { "Negro": 1, "Marrón": 2, "Chocolate": 3 },
+  190: { "Negro": 1, "Crudo": 2, "Camel": 3 }
 };
 
 function normalizeColorName(value) {
@@ -2364,7 +2366,7 @@ const production2027Products = [
     [187, "Cassola Fur", "125-448", "Camperas", ["Negro", "Caqui", "Arena", "Oliva"], PRODUCTION_2027_LADIES_STOCK_SIZES],
     [188, "Rayna", "126-310", "Camperas", ["Negro", "Arena", "Bordó", "Oliva"], PRODUCTION_2027_LADIES_STOCK_SIZES],
     [189, "Holly", "126-134", "Cazadoras", ["Negro", "Marrón", "Chocolate"], PRODUCTION_2027_LADIES_STOCK_SIZES],
-    [190, "Jabrielle", "126-307", "Camperas", [], PRODUCTION_2027_LADIES_STOCK_SIZES],
+    [190, "Jabrielle", "126-307", "Camperas", ["Negro", "Crudo", "Camel"], PRODUCTION_2027_LADIES_STOCK_SIZES],
     [191, "Keniya", "126-330", "Camperas", ["Negro", "Rosa Pálido", "Marrón Claro", "Beige"], PRODUCTION_2027_LADIES_STOCK_SIZES],
     [192, "Lina Plus", "125-429", "Camperas", ["Negro", "Chocolate"], PRODUCTION_2027_PLUS_SIZES],
     [193, "Aveleen", "226-024", "Cazadoras", ["Negro", "Caqui", "Marrón", "Camel"], PRODUCTION_2027_LADIES_STOCK_SIZES],
