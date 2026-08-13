@@ -1302,7 +1302,11 @@ Object.assign(productImagesById, {
   "169": [1],
   "170": [1],
   "171": [1],
-  "172": [1, 2, 3, 4]
+  "172": [1, 2, 3, 4],
+  "182": [1, 2, 3, 4],
+  "183": [1, 2, 3],
+  "184": [1],
+  "185": [1, 2, 3]
 });
 
 const winterImageAdditionsByProductId = {
@@ -1343,7 +1347,7 @@ Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumber
   ])].sort((a, b) => a - b);
 });
 
-const IMAGE_ASSET_VERSION = "20260811-22";
+const IMAGE_ASSET_VERSION = "20260813-23";
 
 const PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID = {
   118: 48,  // Merano
@@ -1406,7 +1410,18 @@ const productImageExtensionByKey = {
   "38_6": "jpeg",
   "38_7": "jpeg",
   "38_8": "jpeg",
-  "38_9": "jpeg"
+  "38_9": "jpeg",
+  "182_1": "png",
+  "182_2": "png",
+  "182_3": "png",
+  "182_4": "png",
+  "183_1": "png",
+  "183_2": "png",
+  "183_3": "png",
+  "184_1": "png",
+  "185_1": "png",
+  "185_2": "png",
+  "185_3": "png"
 };
 
 function getProductImagePhotoNumbers(id) {
@@ -1529,6 +1544,7 @@ const colorImageByProductId = {
   135: { "Negro": 1, "Chocolate": 2 },
   152: { "Negro": 1, "Marino": 2, "Gris Oscuro": 3 },
   153: { "Negro": 1, "Chocolate": 2 },
+  172: { "Negro": 1, "Oliva": 2, "Chocolate": 3, "Beige": 4 },
   173: { "Camel": 1, "Chocolate": 2, "Negro": 3 },
   174: { "Negro": 1, "Oliva": 2, "Chocolate": 3, "Caqui": 4 },
   175: { "Camel": 1, "Negro": 2, "Chocolate": 3 },
@@ -1537,7 +1553,11 @@ const colorImageByProductId = {
   178: { "Chocolate": 1, "Camel": 2, "Negro": 3 },
   179: { "Negro": 1, "Chocolate": 2, "Camel": 3 },
   180: { "Chocolate": 1, "Negro": 2, "Beige": 3, "Camel": 4 },
-  181: { "Negro": 1, "Piedra": 2, "Chocolate": 3 }
+  181: { "Negro": 1, "Piedra": 2, "Chocolate": 3 },
+  182: { "Negro": 1, "Camel": 2, "Chocolate": 3, "Bronce": 4 },
+  183: { "Chocolate": 1, "Crudo": 2, "Negro": 3 },
+  184: { "Crudo": 1 },
+  185: { "Negro": 1, "Chocolate": 2, "Champagne": 3 }
 };
 
 function normalizeColorName(value) {
