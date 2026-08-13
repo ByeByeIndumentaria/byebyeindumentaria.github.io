@@ -1308,6 +1308,7 @@ Object.assign(productImagesById, {
   "184": [1],
   "185": [1, 2, 3],
   "186": [1, 2, 3, 4],
+  "187": [1, 2, 3, 4],
   "188": [1, 2, 3, 4],
   "189": [1, 2, 3],
   "190": [1, 2, 3],
@@ -1352,7 +1353,7 @@ Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumber
   ])].sort((a, b) => a - b);
 });
 
-const IMAGE_ASSET_VERSION = "20260813-29";
+const IMAGE_ASSET_VERSION = "20260813-30";
 
 const PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID = {
   118: 48,  // Merano
@@ -1564,6 +1565,7 @@ const colorImageByProductId = {
   184: { "Crudo": 1 },
   185: { "Negro": 1, "Chocolate": 2, "Champagne": 3 },
   186: { "Negro": 1, "Camel": 2, "Chocolate": 3, "Caqui": 4 },
+  187: { "Negro": 1, "Caqui": 2, "Arena": 3, "Oliva": 4 },
   188: { "Negro": 1, "Arena": 2, "Bordó": 3, "Oliva": 4 },
   189: { "Negro": 1, "Marrón": 2, "Chocolate": 3 },
   190: { "Negro": 1, "Crudo": 2, "Camel": 3 },
