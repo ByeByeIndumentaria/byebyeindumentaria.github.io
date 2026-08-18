@@ -15,7 +15,7 @@ const collections = [
 ];
 
 const SPRING_PRODUCT_IDS = [51, 53, 54, 58, 61, 62, 63, 66, 68, 77, 78];
-const SPORTS_PRODUCT_IDS = [39, 85, 86, 87];
+const SPORTS_PRODUCT_IDS = [39, 51, 85, 86, 87];
 
 const OUTERWEAR_SUBCATEGORY_BY_PRODUCT_ID = {
   47: "Camperas",
@@ -3230,11 +3230,13 @@ function applyCatalogData() {
     const explicitCollections = Array.isArray(product.collections)
       ? product.collections
       : null;
-    product.collections = explicitCollections || (SPORTS_PRODUCT_IDS.includes(product.id)
-      ? ["deportivo"]
-      : SPRING_PRODUCT_IDS.includes(product.id)
-        ? ["primavera-2027"]
-        : [product.collection]);
+    product.collections = explicitCollections || [...new Set([
+      ...(SPRING_PRODUCT_IDS.includes(product.id) ? ["primavera-2027"] : []),
+      ...(SPORTS_PRODUCT_IDS.includes(product.id) ? ["deportivo"] : []),
+      ...(!SPRING_PRODUCT_IDS.includes(product.id) && !SPORTS_PRODUCT_IDS.includes(product.id)
+        ? [product.collection]
+        : [])
+    ])];
     product.subcategory = OUTERWEAR_SUBCATEGORY_BY_PRODUCT_ID[product.id] || product.subcategory;
     product.description = PRODUCT_DESCRIPTION_BY_ID[product.id] || product.description;
     product.isHidden = HIDDEN_PRODUCT_IDS.includes(product.id);
