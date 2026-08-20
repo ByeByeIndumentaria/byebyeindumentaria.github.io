@@ -112,7 +112,7 @@ const OUT_OF_STOCK_VARIANTS = {
 
 // Para sacar un producto de la página sin borrarlo, agregá su número:
 // const HIDDEN_PRODUCT_IDS = [7, 18];
-const HIDDEN_PRODUCT_IDS = [31, 57, 67];
+const HIDDEN_PRODUCT_IDS = [31, 33, 57, 67];
 
 const products = [
   // ── MUJER ──
