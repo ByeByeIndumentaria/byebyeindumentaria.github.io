@@ -3883,14 +3883,19 @@ function openModal(p, initialPurchaseOptionId = null) {
 
   let swipeStartX = 0;
   let swipeStartY = 0;
+  let touchSwipeStarted = false;
   modalImgWrap.dataset.swipeEnabled = gallerySrcs.length > 1 ? 'true' : 'false';
   modalImgWrap.onpointerdown = (event) => {
     if (modalImgWrap.classList.contains('is-zoomed') || !event.isPrimary || event.target.closest('button')) return;
     didSwipe = false;
     swipeStartX = event.clientX;
     swipeStartY = event.clientY;
+    if (event.pointerType !== 'touch' && modalImgWrap.setPointerCapture) {
+      modalImgWrap.setPointerCapture(event.pointerId);
+    }
   };
   modalImgWrap.onpointerup = (event) => {
+    if (event.pointerType === 'touch') return;
     if (modalImgWrap.classList.contains('is-zoomed') || gallerySrcs.length < 2 || !event.isPrimary || event.target.closest('button')) return;
     const deltaX = event.clientX - swipeStartX;
     const deltaY = event.clientY - swipeStartY;
@@ -3899,6 +3904,31 @@ function openModal(p, initialPurchaseOptionId = null) {
     showGalleryImage(deltaX < 0
       ? (galleryIdx + 1) % gallerySrcs.length
       : (galleryIdx - 1 + gallerySrcs.length) % gallerySrcs.length);
+  };
+  modalImgWrap.ontouchstart = (event) => {
+    if (modalImgWrap.classList.contains('is-zoomed') || gallerySrcs.length < 2 || event.target.closest('button')) return;
+    const touch = event.touches[0];
+    if (!touch) return;
+    didSwipe = false;
+    touchSwipeStarted = true;
+    swipeStartX = touch.clientX;
+    swipeStartY = touch.clientY;
+  };
+  modalImgWrap.ontouchend = (event) => {
+    if (!touchSwipeStarted || modalImgWrap.classList.contains('is-zoomed') || event.target.closest('button')) return;
+    touchSwipeStarted = false;
+    const touch = event.changedTouches[0];
+    if (!touch) return;
+    const deltaX = touch.clientX - swipeStartX;
+    const deltaY = touch.clientY - swipeStartY;
+    if (Math.abs(deltaX) < 45 || Math.abs(deltaX) <= Math.abs(deltaY)) return;
+    didSwipe = true;
+    showGalleryImage(deltaX < 0
+      ? (galleryIdx + 1) % gallerySrcs.length
+      : (galleryIdx - 1 + gallerySrcs.length) % gallerySrcs.length);
+  };
+  modalImgWrap.ontouchcancel = () => {
+    touchSwipeStarted = false;
   };
 
   const colorGalleryIndices = new Set();
