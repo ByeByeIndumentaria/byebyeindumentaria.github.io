@@ -6,6 +6,7 @@
 // ── PRODUCT DATA ────────────────────────────────
 // -- COLLECTIONS ----------------------------------
 const collections = [
+  { id: "todos", name: "Todos", label: "ALL", tagline: "Todas las colecciones." },
   { id: "verano-2027", name: "Verano 2027", label: "SS 2027", tagline: "Made for summer." },
   { id: "invierno-2027", name: "Invierno", label: "FW 2027", tagline: "Abrigos y prendas de invierno." },
   { id: "produccion-invierno-2027", name: "Invierno 2027", label: "FW 2027", tagline: "Producción Invierno 2027." },
@@ -94,12 +95,18 @@ const PRODUCT_DESCRIPTION_BY_ID = {
 // -- EASY CATALOG CONTROL -------------------------
 // Para poner un producto fuera de stock, agregá su número:
 // const OUT_OF_STOCK_PRODUCT_IDS = [12, 43];
-const OUT_OF_STOCK_PRODUCT_IDS = [3, 6, 8, 9, 12, 13, 14, 16, 17, 20, 24, 25, 27, 28, 33, 46];
+const OUT_OF_STOCK_PRODUCT_IDS = [3, 6, 8, 9, 12, 13, 14, 15, 16, 17, 20, 24, 25, 27, 28, 33, 46, 50, 70, 86, 101];
 
 // Stock agotado por variante. Los talles que no figuran acá continúan disponibles.
 const OUT_OF_STOCK_VARIANTS = {
   40: {
     Negro: ["S", "M", "L", "XL", "3XL"]
+  },
+  51: {
+    Negro: ["S", "M", "L", "XL", "XXL"]
+  },
+  124: {
+    Negro: ["S", "M", "L", "XL", "XXL"]
   }
 };
 
@@ -244,7 +251,7 @@ const products = [
     driveLink: ""
   },
   {
-    id: 19, name: "Vestido Gasa", category: "MUJER", subcategory: "Vestidos",
+    id: 19, name: "Vestido Volados", category: "MUJER", subcategory: "Vestidos",
     orderNumber: "SL6004",
     description: "Vestido de gasa liviana con caída fluida.",
     colors: ["Estampa 1", "Estampa 2", "Camel", "Negro"],
@@ -3317,7 +3324,9 @@ function getActiveCollection() {
 }
 
 function getCollectionProducts() {
-  return products.filter(product => product.collections.includes(activeCollection) && !product.isHidden);
+  return products.filter(product => (
+    activeCollection === "todos" || product.collections.includes(activeCollection)
+  ) && !product.isHidden);
 }
 
 const GENDER_LABELS = {
@@ -3432,7 +3441,7 @@ applyCatalogData();
 
 // ── STATE ────────────────────────────────────────
 let cart = [];
-let activeCollection = 'verano-2027';
+let activeCollection = 'todos';
 let activeGender = 'all';
 let activeCategory = 'all';
 let productSearchQuery = '';
@@ -3475,8 +3484,8 @@ function updateGenderFilters() {
   const unisexFilter = genderFilters.querySelector('[data-value="UNISEX"]');
   if (!kidsFilter || !unisexFilter) return;
 
-  const showKids = isWinterCollection();
-  const showUnisex = activeCollection === "accesorios";
+  const showKids = activeCollection === "todos" || isWinterCollection();
+  const showUnisex = activeCollection === "todos" || activeCollection === "accesorios";
   kidsFilter.style.display = showKids ? '' : 'none';
   unisexFilter.style.display = showUnisex ? '' : 'none';
 
@@ -3666,15 +3675,40 @@ function queueProductImage(id, imgEl, placeholderEl, observeEl) {
 
 function loadProductImage(id, imgEl, placeholderEl) {
   const product = products.find(item => item.id === id);
-  const [src] = getDisplayProductImageSources(product);
-  if (!src) return;
-  const tester = new Image();
-  tester.onload = () => {
-    imgEl.src = src;
-    imgEl.style.display = 'block';
-    if (placeholderEl) placeholderEl.style.display = 'none';
+  const sources = getDisplayProductImageSources(product);
+  loadFirstAvailableImage(sources, imgEl, placeholderEl);
+}
+
+// Prueba todas las fotos del producto en orden. De esta manera, si se borra
+// prod_ID_1 pero quedan prod_ID_2, prod_ID_3, etc., el producto sigue teniendo
+// una imagen visible en las tarjetas y en la selección.
+function loadFirstAvailableImage(sources, imgEl, placeholderEl) {
+  let sourceIndex = 0;
+
+  const showPlaceholder = () => {
+    imgEl.removeAttribute('src');
+    imgEl.style.display = 'none';
+    if (placeholderEl) placeholderEl.style.display = 'flex';
   };
-  tester.src = src;
+
+  const tryNextSource = () => {
+    if (sourceIndex >= sources.length) {
+      showPlaceholder();
+      return;
+    }
+
+    const src = sources[sourceIndex++];
+    const tester = new Image();
+    tester.onload = () => {
+      imgEl.src = src;
+      imgEl.style.display = 'block';
+      if (placeholderEl) placeholderEl.style.display = 'none';
+    };
+    tester.onerror = tryNextSource;
+    tester.src = src;
+  };
+
+  tryNextSource();
 }
 
 const modalImageCache = new Map();
@@ -4063,8 +4097,9 @@ function updateCartUI() {
   cartItemsEl.innerHTML = '';
   cart.forEach(p => {
     const item = document.createElement('div');
-    const cartImageSrc = getDisplayProductImageSources(p)[0] || '';
-    const placeholderDisplay = cartImageSrc ? 'none' : 'flex';
+    const cartImageSources = getDisplayProductImageSources(p);
+    const cartImageSrc = cartImageSources[0] || '';
+    const placeholderDisplay = cartImageSources.length ? 'none' : 'flex';
     item.className = 'cart-item';
     item.innerHTML = `
       <div class="cart-item-img">
@@ -4089,11 +4124,8 @@ function updateCartUI() {
     `;
     const cartImg = item.querySelector('.cart-item-img img');
     if (cartImg) {
-      cartImg.addEventListener('error', () => {
-        cartImg.style.display = 'none';
-        const placeholder = item.querySelector('.cart-item-img-placeholder');
-        if (placeholder) placeholder.style.display = 'flex';
-      });
+      const placeholder = item.querySelector('.cart-item-img-placeholder');
+      loadFirstAvailableImage(cartImageSources, cartImg, placeholder);
     }
     item.querySelector('.cart-item-remove').addEventListener('click', () => removeFromCart(p.cartKey));
     cartItemsEl.appendChild(item);
