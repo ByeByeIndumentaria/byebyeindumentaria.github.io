@@ -835,14 +835,11 @@ const productImagesById = {
   "32": [
     1,
     2,
-    3,
-    4,
     5,
     6,
     7,
     8,
     9,
-    10,
     11,
     12,
     13,
@@ -1399,7 +1396,7 @@ Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumber
   ])].sort((a, b) => a - b);
 });
 
-const IMAGE_ASSET_VERSION = "20260820-49";
+const IMAGE_ASSET_VERSION = "20260820-50";
 
 const PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID = {
   118: 48,  // Merano
