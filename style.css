@@ -749,6 +749,29 @@ a { text-decoration: none; color: inherit; }
   transition: opacity var(--transition);
   margin-top: 8px;
 }
+
+.btn-product-pdf {
+  width: fit-content;
+  min-height: 34px;
+  margin: 4px 0 6px auto;
+  padding: 6px 2px;
+  border-bottom: 1px solid rgba(157, 79, 56, 0.28);
+  background: transparent;
+  color: var(--clay);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .035em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  cursor: pointer;
+  transition: color .2s ease, border-color .2s ease, opacity .2s ease;
+}
+.btn-product-pdf svg { width: 15px; height: 15px; }
+.btn-product-pdf:hover { color: var(--black); border-color: rgba(31, 26, 21, .48); }
+.btn-product-pdf:disabled { cursor: wait; opacity: .55; }
 .btn-add-modal:hover { opacity: 0.82; }
 .btn-add-modal.in-cart { background: var(--olive); }
 .btn-add-modal.disabled,

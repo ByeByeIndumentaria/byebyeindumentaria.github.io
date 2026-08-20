@@ -6,10 +6,10 @@
 // ── PRODUCT DATA ────────────────────────────────
 // -- COLLECTIONS ----------------------------------
 const collections = [
-  { id: "todos", name: "Todos", label: "ALL", tagline: "Todas las colecciones." },
   { id: "verano-2027", name: "Verano 2027", label: "SS 2027", tagline: "Made for summer." },
   { id: "invierno-2027", name: "Invierno", label: "FW 2027", tagline: "Abrigos y prendas de invierno." },
   { id: "produccion-invierno-2027", name: "Invierno 2027", label: "FW 2027", tagline: "Producción Invierno 2027." },
+  { id: "sweaters-2027", name: "Sweaters 2027", label: "SWEATERS 2027", tagline: "Sweaters de hombre 2027." },
   { id: "primavera-2027", name: "Primavera", label: "SP 2027", tagline: "Camperas para media estación." },
   { id: "deportivo", name: "Deportivo", label: "SPORT", tagline: "Indumentaria deportiva." },
   { id: "accesorios", name: "Accesorios", label: "ACCESSORIES", tagline: "Gorros, bolsos y mochilas." }
@@ -95,7 +95,7 @@ const PRODUCT_DESCRIPTION_BY_ID = {
 // -- EASY CATALOG CONTROL -------------------------
 // Para poner un producto fuera de stock, agregá su número:
 // const OUT_OF_STOCK_PRODUCT_IDS = [12, 43];
-const OUT_OF_STOCK_PRODUCT_IDS = [3, 6, 8, 9, 12, 13, 14, 15, 16, 17, 20, 24, 25, 27, 28, 33, 46, 50, 70, 86, 101];
+const OUT_OF_STOCK_PRODUCT_IDS = [3, 6, 8, 9, 12, 13, 14, 15, 16, 17, 20, 24, 25, 27, 28, 33, 46, 50, 59, 70, 86, 101];
 
 // Stock agotado por variante. Los talles que no figuran acá continúan disponibles.
 const OUT_OF_STOCK_VARIANTS = {
@@ -2193,6 +2193,56 @@ function production2027PurchaseOption(id, label, sourcePacking, rows, orderNumbe
   };
 }
 
+// -- SWEATERS 2027 ----------------------------------------------------------
+// Datos tomados exclusivamente de Order, Colors, Curve y Box. Cada curva suma
+// 12 prendas; las cajas surtidas incluyen una curva por color y las cajas por
+// color repiten la curva hasta completar las 24 piezas indicadas en origen.
+function sweater2027Product(id, code, colors, boxType, repeatsPerColor = 1) {
+  const rows = colors.flatMap(color => production2027Rows(
+    color,
+    [1, 3, 3, 3, 2],
+    { repeat: repeatsPerColor }
+  ));
+  const totalPieces = boxType === "CAJA 24 POR COLOR" ? 24 : 48;
+  return {
+    id,
+    name: code,
+    preserveProductName: true,
+    category: "HOMBRE",
+    subcategory: "Sweaters",
+    description: "",
+    orderNumber: code,
+    collection: "sweaters-2027",
+    colors,
+    sizes: PRODUCTION_2027_REGULAR_SIZES,
+    driveLink: "",
+    sourcePacking: boxType,
+    sourceWorkbook: "ORDER SWEATERS 2027",
+    packaging: {
+      totalPieces,
+      totalLabel: `${totalPieces} piezas por caja`,
+      rows
+    }
+  };
+}
+
+const sweater2027Products = [
+  sweater2027Product(197, "NB 21-51 pack A", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA"),
+  sweater2027Product(198, "NB 21-51 pack B", ["Negro", "Celeste", "Chocolate", "Militar"], "CAJA 48 SURTIDA"),
+  sweater2027Product(199, "NB 21-50 pack A", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA"),
+  sweater2027Product(200, "NB 21-50 pack B", ["Negro", "Celeste", "Chocolate", "Militar"], "CAJA 48 SURTIDA"),
+  sweater2027Product(201, "NB 24-02", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA"),
+  sweater2027Product(202, "NB 24-52", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA"),
+  sweater2027Product(203, "NB 21-56 pack A", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA"),
+  sweater2027Product(204, "NB 21-56 pack B", ["Negro"], "CAJA 24 POR COLOR", 2),
+  sweater2027Product(205, "NB 21-58", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA"),
+  sweater2027Product(206, "NB 21-58 V pack A", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA"),
+  sweater2027Product(207, "NB 21-58 V pack B", ["Negro"], "CAJA 24 POR COLOR", 2),
+  sweater2027Product(208, "NB 21-59", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA")
+];
+
+products.push(...sweater2027Products);
+
 const legacyProduction2027Products = [
   production2027Product({ id: 102, name: "Kangaroo Men", category: "HOMBRE", subcategory: "Buzos", orderNumber: "3JA7507", sourcePacking: "ASSORTED SIZE / ASSORTED COLOR", rows: [
     ...production2027Rows("Negro", [1, 2, 2, 2, 1]), ...production2027Rows("Marino", [1, 2, 2, 2, 1]), ...production2027Rows("Gris Melange Oscuro", [1, 2, 2, 2, 1])
@@ -3230,7 +3280,7 @@ production2027Products.forEach(product => {
 
 function applyCatalogData() {
   products.forEach(product => {
-    product.name = product.name
+    product.name = product.name && !product.preserveProductName
       ? product.name.charAt(0).toLocaleUpperCase("es-AR") + product.name.slice(1).toLocaleLowerCase("es-AR")
       : product.name;
     product.collection = product.collection || "verano-2027";
@@ -3404,9 +3454,10 @@ function renderPackagingTable(product) {
     </div>
   ` : "";
 
-  const optionDetails = selectedOption ? `
+  const displayedPacking = selectedOption?.sourcePacking || product.sourcePacking || "";
+  const optionDetails = displayedPacking ? `
     <div class="purchase-option-details">
-      ${selectedOption.sourcePacking ? `<span>Empaque: <strong>${selectedOption.sourcePacking}</strong></span>` : ""}
+      <span>Empaque: <strong>${displayedPacking}</strong></span>
     </div>
   ` : "";
 
@@ -3441,7 +3492,7 @@ applyCatalogData();
 
 // ── STATE ────────────────────────────────────────
 let cart = [];
-let activeCollection = 'todos';
+let activeCollection = 'verano-2027';
 let activeGender = 'all';
 let activeCategory = 'all';
 let productSearchQuery = '';
@@ -4300,6 +4351,245 @@ function downloadPDF() {
   showToast('PDF descargado');
 }
 
+function loadPdfImage(src) {
+  return new Promise(resolve => {
+    const image = new Image();
+    image.onload = () => {
+      try {
+        const maxSide = 1800;
+        const scale = Math.min(1, maxSide / Math.max(image.naturalWidth, image.naturalHeight));
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+        canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+        const context = canvas.getContext('2d');
+        context.fillStyle = '#fffaf1';
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        context.drawImage(image, 0, 0, canvas.width, canvas.height);
+        resolve({
+          dataUrl: canvas.toDataURL('image/jpeg', .88),
+          width: canvas.width,
+          height: canvas.height
+        });
+      } catch (error) {
+        resolve(null);
+      }
+    };
+    image.onerror = () => resolve(null);
+    image.src = src;
+  });
+}
+
+function getPdfPhotoLabel(product, gallery, imageIndex, colors) {
+  const linkedColors = colors.filter(color => {
+    return getProduction2027ColorGalleryIndex(gallery, color) === imageIndex;
+  });
+  return linkedColors.join(' / ');
+}
+
+function safePdfFilename(value) {
+  return String(value || 'Producto')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-zA-Z0-9_-]+/g, '_')
+    .replace(/^_+|_+$/g, '');
+}
+
+async function downloadProductPDF(product, optionId = null) {
+  if (!product) return;
+  const button = document.getElementById('modal-pdf-btn');
+  const originalButtonHtml = button?.innerHTML;
+  if (button) {
+    button.disabled = true;
+    button.textContent = 'Preparando ficha...';
+  }
+
+  try {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'mm', format: 'a4', compress: true });
+    const selectedOption = optionId
+      ? product.purchaseOptions?.find(option => option.id === optionId)
+      : product.purchaseOptions?.[0] || null;
+    const colors = selectedOption?.colors || product.colors || [];
+    const sizes = selectedOption?.sizes || product.sizes || [];
+    const packaging = selectedOption?.packaging || product.packaging || null;
+    const packingLabel = selectedOption?.sourcePacking || product.sourcePacking || '';
+    const orderNumber = selectedOption?.orderNumber || product.orderNumber || '';
+    const gallery = getProduction2027Gallery(product, colors);
+    const loadedImages = (await Promise.all(gallery.sources.map(loadPdfImage)))
+      .map((image, index) => image ? {
+        ...image,
+        label: getPdfPhotoLabel(product, gallery, index, colors)
+      } : null)
+      .filter(Boolean);
+
+    const pageW = 210;
+    const pageH = 297;
+    const margin = 16;
+    const beige = [246, 239, 228];
+    const ink = [31, 26, 21];
+    const terracotta = [157, 79, 56];
+    const muted = [108, 96, 82];
+
+    function paintPageHeader(kicker) {
+      doc.setFillColor(...beige);
+      doc.rect(0, 0, pageW, pageH, 'F');
+      doc.setTextColor(...ink);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(17);
+      doc.text('BYE BYE', margin, 17);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8);
+      doc.setTextColor(...terracotta);
+      doc.text(kicker.toUpperCase(), pageW - margin, 16, { align: 'right' });
+      doc.setDrawColor(199, 181, 160);
+      doc.line(margin, 23, pageW - margin, 23);
+    }
+
+    function addFooter() {
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(7.5);
+      doc.setTextColor(...muted);
+      doc.text('BYE BYE · Ficha comercial mayorista', margin, 289);
+      doc.text(`Página ${doc.internal.getCurrentPageInfo().pageNumber}`, pageW - margin, 289, { align: 'right' });
+    }
+
+    function drawContainedImage(image, x, y, width, height) {
+      const ratio = Math.min(width / image.width, height / image.height);
+      const drawW = image.width * ratio;
+      const drawH = image.height * ratio;
+      doc.addImage(image.dataUrl, 'JPEG', x + (width - drawW) / 2, y + (height - drawH) / 2, drawW, drawH, undefined, 'FAST');
+    }
+
+    if (loadedImages.length) {
+      for (let pageStart = 0; pageStart < loadedImages.length; pageStart += 6) {
+        if (pageStart > 0) doc.addPage();
+        paintPageHeader(pageStart === 0 ? `${product.name} · Imágenes` : `${product.name} · Imágenes (continuación)`);
+        const pageImages = loadedImages.slice(pageStart, pageStart + 6);
+        const gap = 6;
+        const cellW = (pageW - margin * 2 - gap) / 2;
+        const cellH = 78;
+        pageImages.forEach((image, index) => {
+          const col = index % 2;
+          const row = Math.floor(index / 2);
+          const x = margin + col * (cellW + gap);
+          const y = 30 + row * (cellH + 7);
+          doc.setFillColor(255, 250, 241);
+          doc.roundedRect(x, y, cellW, cellH, 2, 2, 'F');
+          drawContainedImage(image, x + 2, y + 2, cellW - 4, cellH - 11);
+          doc.setFont('helvetica', image.label ? 'bold' : 'normal');
+          doc.setFontSize(7.5);
+          doc.setTextColor(...(image.label ? terracotta : muted));
+          doc.text(image.label || `Foto ${pageStart + index + 1}`, x + cellW / 2, y + cellH - 3.5, { align: 'center', maxWidth: cellW - 5 });
+        });
+      }
+      doc.addPage();
+    }
+
+    paintPageHeader(`${getActiveCollection().name} · Ficha de producto`);
+    let y = 34;
+    doc.setTextColor(...ink);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(24);
+    const titleLines = doc.splitTextToSize(product.name, pageW - margin * 2);
+    doc.text(titleLines, margin, y);
+    y += titleLines.length * 9 + 2;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(...muted);
+    doc.text(`${getGenderLabel(product.category)} · ${formatProductSubcategory(product)}`, margin, y);
+    doc.setTextColor(...(product.inStock ? [76, 105, 75] : terracotta));
+    doc.text(getStockLabel(product), pageW - margin, y, { align: 'right' });
+    y += 10;
+
+    function drawInfoBlock(label, value) {
+      if (!value) return;
+      const valueLines = doc.splitTextToSize(String(value), pageW - margin * 2 - 40);
+      const blockH = Math.max(12, valueLines.length * 4.5 + 6);
+      doc.setFillColor(255, 250, 241);
+      doc.roundedRect(margin, y, pageW - margin * 2, blockH, 1.5, 1.5, 'F');
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(7.5);
+      doc.setTextColor(...terracotta);
+      doc.text(label.toUpperCase(), margin + 5, y + 7.5);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
+      doc.setTextColor(...ink);
+      doc.text(valueLines, margin + 40, y + 7.5);
+      y += blockH + 3;
+    }
+
+    drawInfoBlock('Código', orderNumber);
+    drawInfoBlock('Colores', colors.join(', '));
+    drawInfoBlock('Talles', sizes.map(normalizeCatalogSize).join(', '));
+    drawInfoBlock('Empaque', packingLabel);
+    drawInfoBlock('Cantidad', packaging ? (packaging.totalLabel || `${packaging.totalPieces} piezas`) : 'Sin dato');
+    if (product.description) drawInfoBlock('Detalle', product.description);
+
+    if (packaging?.rows?.length) {
+      y += 3;
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(11);
+      doc.setTextColor(...ink);
+      doc.text('CURVA Y CANTIDADES', margin, y + 5);
+      y += 11;
+
+      function drawTableHeader() {
+        doc.setFillColor(...ink);
+        doc.rect(margin, y, pageW - margin * 2, 9, 'F');
+        doc.setTextColor(255, 250, 241);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(7.5);
+        doc.text('COLOR', margin + 4, y + 6);
+        doc.text('CURVA POR TALLE', margin + 55, y + 6);
+        doc.text('PIEZAS', pageW - margin - 4, y + 6, { align: 'right' });
+        y += 9;
+      }
+
+      drawTableHeader();
+      packaging.rows.forEach((row, index) => {
+        const curve = formatCurve(row);
+        const curveLines = doc.splitTextToSize(curve, 92);
+        const rowH = Math.max(10, curveLines.length * 4 + 4);
+        if (y + rowH > 280) {
+          doc.addPage();
+          paintPageHeader(`${product.name} · Curva (continuación)`);
+          y = 32;
+          drawTableHeader();
+        }
+        if (index % 2 === 0) {
+          doc.setFillColor(255, 250, 241);
+          doc.rect(margin, y, pageW - margin * 2, rowH, 'F');
+        }
+        const pieces = row.pieces || Object.values(row.sizePieces || {}).reduce((sum, value) => sum + Number(value || 0), 0);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+        doc.setTextColor(...ink);
+        doc.text(row.color || '-', margin + 4, y + 6);
+        doc.text(curveLines, margin + 55, y + 6);
+        doc.text(String(pieces || '-'), pageW - margin - 4, y + 6, { align: 'right' });
+        y += rowH;
+      });
+    }
+
+    const totalPages = doc.internal.getNumberOfPages();
+    for (let page = 1; page <= totalPages; page += 1) {
+      doc.setPage(page);
+      addFooter();
+    }
+
+    doc.save(`ByeBye_${safePdfFilename(orderNumber || product.name)}.pdf`);
+    showToast('Ficha PDF descargada');
+  } catch (error) {
+    console.error('No se pudo generar la ficha PDF', error);
+    showToast('No se pudo generar el PDF');
+  } finally {
+    if (button) {
+      button.disabled = false;
+      button.innerHTML = originalButtonHtml;
+    }
+  }
+}
+
 // ── TOAST ─────────────────────────────────────────
 let toastTimer;
 function showToast(msg) {
@@ -4449,6 +4739,9 @@ function bindEvents() {
   });
   document.getElementById('modal-add-btn').addEventListener('click', () => {
     if (currentModalProduct) toggleCart(currentModalProduct, currentPurchaseOptionId);
+  });
+  document.getElementById('modal-pdf-btn').addEventListener('click', () => {
+    if (currentModalProduct) downloadProductPDF(currentModalProduct, currentPurchaseOptionId);
   });
 
   // Keyboard
