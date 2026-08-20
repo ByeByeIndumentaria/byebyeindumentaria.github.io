@@ -3283,7 +3283,7 @@ function getPackagingSizes(packaging) {
       if (!sizes.includes(size)) sizes.push(size);
     });
   });
-  return sizes.length ? sizes : ["Ver curva"];
+  return sizes;
 }
 
 function normalizeCatalogSize(size) {
