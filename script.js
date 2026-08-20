@@ -3456,6 +3456,7 @@ const productSearchClear = document.getElementById('product-search-clear');
 const filtersSection = document.getElementById('catalogo');
 const filtersPanel = document.getElementById('filters-panel');
 const filtersToggle = document.getElementById('filters-toggle');
+const filtersScrollSentinel = document.getElementById('filters-scroll-sentinel');
 const modalOverlay = document.getElementById('modal-overlay');
 const productModal = document.getElementById('product-modal');
 const toast = document.getElementById('toast');
@@ -4273,6 +4274,18 @@ function bindEvents() {
       manuallyExpanded = !willCollapse;
       setFiltersCollapsed(willCollapse);
     });
+
+    if (filtersScrollSentinel && 'IntersectionObserver' in window) {
+      const headerHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) || 0;
+      const stickyObserver = new IntersectionObserver(entries => {
+        const sentinel = entries[0];
+        const passedStickyPoint = !sentinel.isIntersecting && sentinel.boundingClientRect.top <= headerHeight;
+        if (mobileQuery.matches && !manuallyExpanded && passedStickyPoint) {
+          setFiltersCollapsed(true);
+        }
+      }, { rootMargin: `-${headerHeight}px 0px 0px 0px`, threshold: 0 });
+      stickyObserver.observe(filtersScrollSentinel);
+    }
 
     window.addEventListener('scroll', () => {
       if (scrollFrame !== null) return;
