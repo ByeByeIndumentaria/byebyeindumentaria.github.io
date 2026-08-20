@@ -3453,6 +3453,9 @@ const genderFilters = document.getElementById('gender-filters');
 const resultsCountEl = document.getElementById('results-count');
 const productSearchInput = document.getElementById('product-search');
 const productSearchClear = document.getElementById('product-search-clear');
+const filtersSection = document.getElementById('catalogo');
+const filtersPanel = document.getElementById('filters-panel');
+const filtersToggle = document.getElementById('filters-toggle');
 const modalOverlay = document.getElementById('modal-overlay');
 const productModal = document.getElementById('product-modal');
 const toast = document.getElementById('toast');
@@ -4245,6 +4248,53 @@ function showToast(msg) {
 
 // ── EVENTS ───────────────────────────────────────
 function bindEvents() {
+  // Mobile filters: keep the search bar stable and collapse the filter panel on downward scroll.
+  if (filtersSection && filtersPanel && filtersToggle) {
+    const mobileQuery = window.matchMedia('(max-width: 768px)');
+    let lastScrollY = window.scrollY;
+    let downwardTravel = 0;
+    let manuallyExpanded = false;
+    let scrollFrame = null;
+
+    const syncFiltersPanelHeight = () => {
+      filtersSection.style.setProperty('--filters-panel-height', `${filtersPanel.scrollHeight}px`);
+    };
+
+    const setFiltersCollapsed = collapsed => {
+      if (!mobileQuery.matches) collapsed = false;
+      syncFiltersPanelHeight();
+      filtersSection.classList.toggle('filters-collapsed', collapsed);
+      filtersToggle.setAttribute('aria-expanded', String(!collapsed));
+      filtersToggle.setAttribute('aria-label', collapsed ? 'Mostrar filtros' : 'Ocultar filtros');
+    };
+
+    filtersToggle.addEventListener('click', () => {
+      const willCollapse = !filtersSection.classList.contains('filters-collapsed');
+      manuallyExpanded = !willCollapse;
+      setFiltersCollapsed(willCollapse);
+    });
+
+    window.addEventListener('scroll', () => {
+      if (scrollFrame !== null) return;
+      scrollFrame = requestAnimationFrame(() => {
+        const currentScrollY = Math.max(window.scrollY, 0);
+        const scrollDelta = currentScrollY - lastScrollY;
+        if (scrollDelta < 0) manuallyExpanded = false;
+        downwardTravel = scrollDelta > 0 ? downwardTravel + scrollDelta : 0;
+        if (mobileQuery.matches && !manuallyExpanded && downwardTravel > 12 && currentScrollY > 80) {
+          setFiltersCollapsed(true);
+          downwardTravel = 0;
+        }
+        lastScrollY = currentScrollY;
+        scrollFrame = null;
+      });
+    }, { passive: true });
+
+    window.addEventListener('resize', syncFiltersPanelHeight, { passive: true });
+    mobileQuery.addEventListener?.('change', () => setFiltersCollapsed(false));
+    syncFiltersPanelHeight();
+  }
+
   // Product search
   productSearchInput?.addEventListener('input', () => {
     productSearchQuery = normalizeColorName(productSearchInput.value);
