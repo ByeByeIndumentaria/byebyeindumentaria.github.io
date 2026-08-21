@@ -4724,6 +4724,27 @@ function keepFocusInside(container, event) {
 
 // ── EVENTS ───────────────────────────────────────
 function bindEvents() {
+  // The summer hero always opens its matching collection, regardless of the
+  // filters persisted from a previous visit.
+  document.getElementById('hero-collection-cta')?.addEventListener('click', () => {
+    activeCollection = 'verano-2027';
+    activeGender = 'all';
+    activeCategory = 'all';
+    productSearchQuery = '';
+    if (productSearchInput) productSearchInput.value = '';
+    if (productSearchClear) productSearchClear.hidden = true;
+    document.querySelectorAll('#collection-filters .pill').forEach(button => {
+      button.classList.toggle('active', button.dataset.value === activeCollection);
+    });
+    genderFilters.querySelectorAll('.pill').forEach(button => {
+      button.classList.toggle('active', button.dataset.value === 'all');
+    });
+    updateGenderFilters();
+    categoryFilters.innerHTML = '';
+    buildCategoryFilters();
+    renderProducts();
+  });
+
   // Mobile filters: keep the search bar stable and collapse the filter panel on downward scroll.
   if (filtersSection && filtersPanel && filtersToggle) {
     const mobileQuery = window.matchMedia('(max-width: 768px)');
