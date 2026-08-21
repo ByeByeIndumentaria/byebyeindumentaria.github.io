@@ -50,6 +50,13 @@ body {
 img { display: block; max-width: 100%; }
 button { cursor: pointer; border: none; background: none; font-family: inherit; }
 a { text-decoration: none; color: inherit; }
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid rgba(162,79,54,0.42);
+  outline-offset: 3px;
+}
 
 /* ── HEADER ──────────────────────────── */
 #site-header {
@@ -116,8 +123,9 @@ a { text-decoration: none; color: inherit; }
   position: relative;
   overflow: hidden;
   background-image:
-    linear-gradient(90deg, rgba(29,23,17,0.08) 0%, rgba(78,58,40,0.16) 44%, rgba(40,31,24,0.72) 100%),
-    url("images/banner-verano-2027.jpg");
+    radial-gradient(circle at 18% 18%, rgba(255,250,241,0.78), transparent 34%),
+    radial-gradient(circle at 72% 38%, rgba(162,79,54,0.34), transparent 32%),
+    linear-gradient(125deg, #c8b9a5 0%, #aa9279 48%, #4b382a 100%);
   background-size: cover;
   background-position: center center;
 }
@@ -159,6 +167,22 @@ a { text-decoration: none; color: inherit; }
   text-shadow: 0 12px 34px rgba(0,0,0,0.30);
 }
 .hero-title em { font-style: normal; color: #ffffff; font-weight: 400; }
+.hero-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 28px;
+  min-height: 44px;
+  padding: 10px 20px;
+  border: 1px solid rgba(255,255,255,.72);
+  border-radius: 999px;
+  color: #fff;
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  transition: background var(--transition), color var(--transition);
+}
+.hero-cta:hover { background: #fffaf1; color: var(--black); }
 .hero-sub {
   font-size: 14px;
   letter-spacing: 0.08em;
@@ -238,6 +262,7 @@ a { text-decoration: none; color: inherit; }
   transition: transform var(--transition), filter var(--transition);
 }
 .product-card:hover { transform: translateY(-4px); }
+.product-card:focus-visible .card-img-wrap { box-shadow: 0 0 0 3px rgba(162,79,54,.48), var(--shadow); }
 
 .card-img-wrap {
   aspect-ratio: 3/4;
@@ -555,6 +580,7 @@ a { text-decoration: none; color: inherit; }
   object-fit: cover;
   object-position: center center;
 }
+.modal-image-wrap.no-image { aspect-ratio: auto !important; }
 .modal-empty-image {
   width: 100%;
   height: 100%;
@@ -814,6 +840,9 @@ a { text-decoration: none; color: inherit; }
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
+.site-footer { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.site-footer .footer-brand { font-family: var(--font-display); font-size: 18px; letter-spacing: .3em; color: #fffaf1; }
+.site-footer a { padding-bottom: 2px; border-bottom: 1px solid rgba(223,230,197,.48); }
 
 /* ── RESPONSIVE ───────────────────────── */
 @media (max-width: 768px) {
@@ -823,9 +852,11 @@ a { text-decoration: none; color: inherit; }
   .header-brand { grid-column: 1; }
   .header-right { grid-column: 2; }
 
-  .hero { min-height: 430px; padding: 58px 20px 52px; background-position: 43% center; }
-  .hero-content { min-height: 300px; align-items: flex-end; text-align: right; }
-  .hero-title { font-size: 44px; letter-spacing: 0.06em; }
+  .hero { min-height: 310px; padding: 38px 20px 34px; }
+  .hero-content { min-height: 238px; align-items: flex-end; text-align: right; }
+  .hero-title { font-size: clamp(36px, 11.2vw, 44px); letter-spacing: 0.045em; }
+  .hero-eyebrow { margin-bottom: 10px; }
+  .hero-cta { margin-top: 18px; min-height: 40px; }
 
   .filters-section {
     padding: 12px 20px;
@@ -880,9 +911,10 @@ a { text-decoration: none; color: inherit; }
   }
   .modal-image-wrap {
     width: 100%;
-    max-height: 62vh;
+    max-height: 52vh;
     min-height: 0;
   }
+  .modal-image-wrap.no-image { min-height: 170px; max-height: 170px; }
   .modal-close { top: 12px; right: 12px; }
   .modal-info { padding: 24px 20px; }
   .modal-title { font-size: 26px; }
@@ -890,7 +922,11 @@ a { text-decoration: none; color: inherit; }
 }
 
 @media (max-width: 400px) {
-  .catalog-grid { grid-template-columns: 1fr; }
+  .catalog-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 10px; padding-inline: 12px; }
+  .card-name { font-size: 14px; }
+  .card-code { font-size: 8px; }
+  .card-img-wrap { margin-bottom: 10px; }
+  .card-badge-gender, .card-badge-stock { font-size: 8px; padding: 3px 7px; }
 }
 
 /* ── GALLERY DOTS ─────────────────────────────── */

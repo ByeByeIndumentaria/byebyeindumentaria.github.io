@@ -95,7 +95,7 @@ const PRODUCT_DESCRIPTION_BY_ID = {
 // -- EASY CATALOG CONTROL -------------------------
 // Para poner un producto fuera de stock, agregá su número:
 // const OUT_OF_STOCK_PRODUCT_IDS = [12, 43];
-const OUT_OF_STOCK_PRODUCT_IDS = [3, 6, 8, 9, 12, 13, 14, 15, 16, 17, 20, 24, 25, 27, 28, 33, 46, 50, 59, 70, 86, 101];
+const OUT_OF_STOCK_PRODUCT_IDS = [3, 6, 8, 9, 12, 13, 14, 15, 16, 17, 20, 24, 25, 27, 28, 33, 46, 50, 51, 59, 70, 86, 101];
 
 // Stock agotado por variante. Los talles que no figuran acá continúan disponibles.
 const OUT_OF_STOCK_VARIANTS = {
@@ -103,6 +103,9 @@ const OUT_OF_STOCK_VARIANTS = {
     Negro: ["S", "M", "L", "XL", "3XL"]
   },
   51: {
+    Negro: ["S", "M", "L", "XL", "XXL"]
+  },
+  66: {
     Negro: ["S", "M", "L", "XL", "XXL"]
   },
   124: {
@@ -2445,8 +2448,10 @@ const production2027Products = [
   production2027Product({ id: 131, name: "Chaleco Lynn", category: "MUJER", subcategory: "Chalecos", orderNumber: "226-268", sourcePacking: "CAJA SURTIDA", rows: [
     ...production2027Rows("Negro", [1, 2, 2, 2, 2], { repeat: 2 }), ...production2027Rows("Caqui", [1, 2, 2, 2, 2]), ...production2027Rows("Beige", [1, 2, 2, 2, 2])
   ] }),
-  production2027Product({ id: 132, name: "Messika", category: "MUJER", orderNumber: "126-456", sourcePacking: "CAJA SURTIDA", sizes: ["S", "M", "L", "XL"], rows: [
-    ...production2027Rows("Negro", [1, 2, 2, 1], { sizes: ["S", "M", "L", "XL"], repeat: 2 }), ...production2027Rows("Chocolate", [1, 2, 2, 1], { sizes: ["S", "M", "L", "XL"] })
+  production2027Product({ id: 132, name: "Viena", category: "MUJER", orderNumber: "126-456", sourcePacking: "CAJA SURTIDA", sizes: ["S", "M", "L", "XL"], totalPieces: 24, rows: [
+    ...production2027Rows("Negro", [2, 4, 4, 2], { sizes: ["S", "M", "L", "XL"] }),
+    ...production2027Rows("Caqui", [1, 2, 2, 1], { sizes: ["S", "M", "L", "XL"] }),
+    ...production2027Rows("Militar", [1, 2, 2, 1], { sizes: ["S", "M", "L", "XL"] })
   ] }),
   production2027Product({ id: 133, name: "Croviana Plus Size", category: "MUJER", orderNumber: "126-479", sourcePacking: "CAJA SURTIDA", sizes: PRODUCTION_2027_PLUS_SIZES, rows: [
     ...production2027Rows("Negro", null, { sizes: PRODUCTION_2027_PLUS_SIZES, repeat: 2, curveText: "3XL a 6XL · 1/1/1" }), ...production2027Rows("Chocolate", null, { sizes: PRODUCTION_2027_PLUS_SIZES, curveText: "3XL a 6XL · 1/1/1" }), ...production2027Rows("Militar Oscuro", null, { sizes: PRODUCTION_2027_PLUS_SIZES, curveText: "3XL a 6XL · 1/1/1" })
@@ -3502,6 +3507,57 @@ let activeCategory = 'all';
 let productSearchQuery = '';
 let currentModalProduct = null;
 let currentPurchaseOptionId = null;
+let lastFocusedElement = null;
+const CART_STORAGE_KEY = 'byebye-cart-v1';
+const CATALOG_STORAGE_KEY = 'byebye-catalog-state-v1';
+
+function loadPersistedState() {
+  try {
+    const savedCatalog = JSON.parse(localStorage.getItem(CATALOG_STORAGE_KEY) || 'null');
+    if (savedCatalog) {
+      activeCollection = savedCatalog.collection || activeCollection;
+      activeGender = savedCatalog.gender || activeGender;
+      activeCategory = savedCatalog.category || activeCategory;
+      productSearchQuery = savedCatalog.search || '';
+    }
+
+    const savedCart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]');
+    cart = savedCart.map(saved => {
+      const product = products.find(item => item.id === saved.id);
+      if (!product || !product.inStock) return null;
+      const selectedPurchaseOption = saved.optionId
+        ? product.purchaseOptions?.find(option => option.id === saved.optionId) || null
+        : null;
+      return {
+        ...product,
+        cartKey: getCartKey(product, selectedPurchaseOption?.id || null),
+        selectedPurchaseOption
+      };
+    }).filter(Boolean);
+  } catch (error) {
+    cart = [];
+  }
+}
+
+function persistCart() {
+  try {
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart.map(item => ({
+      id: item.id,
+      optionId: item.selectedPurchaseOption?.id || null
+    }))));
+  } catch (error) {}
+}
+
+function persistCatalogState() {
+  try {
+    localStorage.setItem(CATALOG_STORAGE_KEY, JSON.stringify({
+      collection: activeCollection,
+      gender: activeGender,
+      category: activeCategory,
+      search: productSearchQuery
+    }));
+  } catch (error) {}
+}
 
 // ── DOM REFS ─────────────────────────────────────
 const productGrid = document.getElementById('product-grid');
@@ -3527,10 +3583,16 @@ const toast = document.getElementById('toast');
 
 // ── INIT ─────────────────────────────────────────
 function init() {
+  loadPersistedState();
   buildCollectionFilters();
   updateGenderFilters();
   buildCategoryFilters();
+  if (productSearchInput) {
+    productSearchInput.value = productSearchQuery;
+    productSearchClear.hidden = !productSearchQuery;
+  }
   renderProducts();
+  updateCartUI();
   bindEvents();
 }
 
@@ -3610,6 +3672,7 @@ function getFilteredProducts() {
 }
 
 function renderProducts() {
+  persistCatalogState();
   const filtered = getFilteredProducts();
   resetProductImageObserver();
   productGrid.innerHTML = '';
@@ -3633,6 +3696,9 @@ function renderProducts() {
     const card = document.createElement('div');
     card.className = 'product-card' + (p.inStock ? '' : ' out-of-stock');
     card.dataset.id = p.id;
+    card.tabIndex = 0;
+    card.setAttribute('role', 'button');
+    card.setAttribute('aria-label', `Ver ${p.name}${p.inStock ? '' : ', sin stock'}`);
 
     card.innerHTML = `
       <div class="card-img-wrap">
@@ -3661,6 +3727,11 @@ function renderProducts() {
 
     card.addEventListener('click', (e) => {
       if (e.target.closest('.card-add')) return;
+      openModal(p);
+    });
+    card.addEventListener('keydown', event => {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      event.preventDefault();
       openModal(p);
     });
 
@@ -3798,6 +3869,7 @@ function selectPurchaseOption(product, optionId) {
 }
 
 function openModal(p, initialPurchaseOptionId = null) {
+  lastFocusedElement = document.activeElement;
   currentModalProduct = p;
   currentPurchaseOptionId = initialPurchaseOptionId || p.purchaseOptions?.[0]?.id || null;
   const selectedOption = getSelectedPurchaseOption(p);
@@ -3841,6 +3913,7 @@ function openModal(p, initialPurchaseOptionId = null) {
   // Load modal image from local folder
   const modalImg = document.getElementById('modal-img');
   const modalImgWrap = document.querySelector('.modal-image-wrap');
+  modalImgWrap.classList.remove('no-image');
   modalImg.style.display = 'none';
   modalImg.alt = p.name;
   modalImg.style.objectFit = 'cover';
@@ -3901,6 +3974,7 @@ function openModal(p, initialPurchaseOptionId = null) {
   };
 
   if (!gallerySrcs.length) {
+    modalImgWrap.classList.add('no-image');
     const emptyImage = document.createElement('div');
     emptyImage.className = 'modal-empty-image';
     emptyImage.innerHTML = `
@@ -3948,7 +4022,18 @@ function openModal(p, initialPurchaseOptionId = null) {
     modalEl.style.setProperty('--modal-w', `${Math.round(modalW)}px`);
   }
 
-  function showGalleryImage(index) {
+  function showGalleryFallback() {
+    modalImg.removeAttribute('src');
+    modalImg.style.display = 'none';
+    modalImgWrap.classList.add('no-image');
+    modalImgWrap.querySelectorAll('.modal-empty-image').forEach(el => el.remove());
+    const emptyImage = document.createElement('div');
+    emptyImage.className = 'modal-empty-image';
+    emptyImage.innerHTML = `<span class="modal-empty-kicker">Foto no disponible</span><strong>${p.name}</strong>`;
+    modalImgWrap.appendChild(emptyImage);
+  }
+
+  function showGalleryImage(index, attempts = 0) {
     if (!gallerySrcs.length) return;
     setModalZoom(false);
     galleryIdx = index;
@@ -3958,7 +4043,17 @@ function openModal(p, initialPurchaseOptionId = null) {
     const isFirstImage = !modalImg.src || modalImg.style.display === 'none';
 
     preloadModalImage(targetSrc, 'high').then(loaded => {
-      if (!loaded || galleryIdx !== index || currentModalProduct !== p) return;
+      if (galleryIdx !== index || currentModalProduct !== p) return;
+      if (!loaded) {
+        if (attempts + 1 < gallerySrcs.length) {
+          showGalleryImage((index + 1) % gallerySrcs.length, attempts + 1);
+        } else {
+          showGalleryFallback();
+        }
+        return;
+      }
+      modalImgWrap.classList.remove('no-image');
+      modalImgWrap.querySelectorAll('.modal-empty-image').forEach(el => el.remove());
       modalImg.src = targetSrc;
       fitModalToImage();
       modalImg.style.display = 'block';
@@ -4039,7 +4134,9 @@ function openModal(p, initialPurchaseOptionId = null) {
     dots.className = 'modal-gallery-dots';
     gallerySrcs.forEach((_, i) => {
       const d = document.createElement('button');
+      d.type = 'button';
       d.className = 'gallery-dot' + (i === 0 ? ' active' : '');
+      d.setAttribute('aria-label', `Ver foto ${i + 1} de ${gallerySrcs.length}`);
       d.addEventListener('click', (e) => {
         e.stopPropagation();
         showGalleryImage(i);
@@ -4078,11 +4175,15 @@ function openModal(p, initialPurchaseOptionId = null) {
   addBtn.className = 'btn-add-modal' + (inCart ? ' in-cart' : '') + (p.inStock ? '' : ' disabled');
 
   modalOverlay.classList.add('active');
+  modalOverlay.setAttribute('aria-hidden', 'false');
   document.body.style.overflow = 'hidden';
+  requestAnimationFrame(() => productModal.focus());
 }
 
 function closeModal() {
+  if (!modalOverlay.classList.contains('active')) return;
   modalOverlay.classList.remove('active');
+  modalOverlay.setAttribute('aria-hidden', 'true');
   document.body.style.overflow = '';
   const modalImgWrap = document.querySelector('.modal-image-wrap');
   const zoomToggle = document.getElementById('modal-zoom-toggle');
@@ -4090,6 +4191,7 @@ function closeModal() {
   if (zoomToggle) zoomToggle.setAttribute('aria-pressed', 'false');
   currentModalProduct = null;
   currentPurchaseOptionId = null;
+  lastFocusedElement?.focus?.();
 }
 
 // ── CART ─────────────────────────────────────────
@@ -4136,6 +4238,7 @@ function getCartProductTotalLabel(product) {
 }
 
 function updateCartUI() {
+  persistCart();
   const count = cart.length;
 
   // Count badge
@@ -4603,6 +4706,22 @@ function showToast(msg) {
   toastTimer = setTimeout(() => toast.classList.remove('show'), 2200);
 }
 
+function keepFocusInside(container, event) {
+  const focusable = [...container.querySelectorAll(
+    'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+  )].filter(element => element.offsetParent !== null);
+  if (!focusable.length) return;
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first.focus();
+  }
+}
+
 // ── EVENTS ───────────────────────────────────────
 function bindEvents() {
   // Mobile filters: keep the search bar stable and collapse the filter panel on downward scroll.
@@ -4661,7 +4780,7 @@ function bindEvents() {
 
     window.addEventListener('resize', syncFiltersPanelHeight, { passive: true });
     mobileQuery.addEventListener?.('change', () => setFiltersCollapsed(false));
-    syncFiltersPanelHeight();
+    setFiltersCollapsed(mobileQuery.matches);
   }
 
   // Product search
@@ -4680,14 +4799,20 @@ function bindEvents() {
 
   // Cart open/close
   document.getElementById('cart-toggle').addEventListener('click', () => {
+    lastFocusedElement = document.activeElement;
     cartSidebar.classList.add('open');
+    cartSidebar.setAttribute('aria-hidden', 'false');
     cartOverlay.classList.add('active');
     document.body.style.overflow = 'hidden';
+    requestAnimationFrame(() => document.getElementById('close-cart').focus());
   });
   const closeCart = () => {
+    if (!cartSidebar.classList.contains('open')) return;
     cartSidebar.classList.remove('open');
+    cartSidebar.setAttribute('aria-hidden', 'true');
     cartOverlay.classList.remove('active');
     document.body.style.overflow = '';
+    lastFocusedElement?.focus?.();
   };
   document.getElementById('close-cart').addEventListener('click', closeCart);
   cartOverlay.addEventListener('click', closeCart);
@@ -4750,6 +4875,11 @@ function bindEvents() {
 
   // Keyboard
   document.addEventListener('keydown', e => {
+    if (e.key === 'Tab' && modalOverlay.classList.contains('active')) {
+      keepFocusInside(productModal, e);
+    } else if (e.key === 'Tab' && cartSidebar.classList.contains('open')) {
+      keepFocusInside(cartSidebar, e);
+    }
     if (e.key === 'Escape') {
       closeModal();
       closeCart();
