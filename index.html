@@ -14,7 +14,7 @@
   <link rel="icon" type="image/png" href="/favicon.png" />
   <link rel="shortcut icon" href="/favicon.ico" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-  <link rel="stylesheet" href="style.css?v=20260821-6" />
+  <link rel="stylesheet" href="style.css?v=20260821-7" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -77,11 +77,43 @@
   </header>
 
   <!-- HERO -->
-  <section class="hero">
-    <div class="hero-content">
-      <p class="hero-eyebrow">Catálogo mayorista · BYE BYE</p>
-      <h2 class="hero-title">Summer<br><em>collection</em><br>2027</h2>
-      <a class="hero-cta" id="hero-collection-cta" href="#catalogo" data-collection="verano-2027">Ver colección</a>
+  <section class="hero" id="hero-carousel" aria-roledescription="carrusel" aria-label="Colecciones destacadas">
+    <div class="hero-track">
+      <article class="hero-slide active align-right" data-collection="verano-2027" style="--hero-image:url('images/banner-verano-2027.jpg')" aria-hidden="false">
+        <div class="hero-content">
+          <p class="hero-eyebrow">Catálogo mayorista · BYE BYE</p>
+          <h2 class="hero-title">Summer<br><em>collection</em><br>2027</h2>
+          <a class="hero-cta" href="#catalogo" data-collection="verano-2027">Ver colección</a>
+        </div>
+      </article>
+      <article class="hero-slide align-right" data-collection="produccion-invierno-2027" style="--hero-image:url('images/banner-invierno-2027.jpg')" aria-hidden="true">
+        <div class="hero-content">
+          <p class="hero-eyebrow">BYE BYE</p>
+          <h2 class="hero-title">Winter<br><em>collection</em><br>2027</h2>
+          <a class="hero-cta" href="#catalogo" data-collection="produccion-invierno-2027" tabindex="-1">Ver colección</a>
+        </div>
+      </article>
+      <article class="hero-slide align-left" data-collection="invierno-2027" style="--hero-image:url('images/banner-invierno.jpg')" aria-hidden="true">
+        <div class="hero-content">
+          <h2 class="hero-title hero-title-compact">Drop de invierno</h2>
+          <p class="hero-subtitle">Siempre en Bye Bye</p>
+          <a class="hero-cta" href="#catalogo" data-collection="invierno-2027" tabindex="-1">Ver colección</a>
+        </div>
+      </article>
+      <article class="hero-slide align-left" data-collection="accesorios" style="--hero-image:url('images/banner-accesorios.jpg')" aria-hidden="true">
+        <div class="hero-content">
+          <h2 class="hero-title hero-title-compact">Accesorios para<br>todos los días</h2>
+          <a class="hero-cta" href="#catalogo" data-collection="accesorios" tabindex="-1">Ver colección</a>
+        </div>
+      </article>
+    </div>
+    <button class="hero-arrow hero-arrow-prev" type="button" aria-label="Banner anterior"></button>
+    <button class="hero-arrow hero-arrow-next" type="button" aria-label="Banner siguiente"></button>
+    <div class="hero-dots" role="group" aria-label="Elegir banner">
+      <button class="hero-dot active" type="button" aria-label="Ver banner Verano 2027" aria-current="true"></button>
+      <button class="hero-dot" type="button" aria-label="Ver banner Invierno 2027"></button>
+      <button class="hero-dot" type="button" aria-label="Ver banner Invierno"></button>
+      <button class="hero-dot" type="button" aria-label="Ver banner Accesorios"></button>
     </div>
   </section>
 
@@ -221,6 +253,6 @@
     <a href="#catalogo">Volver al catálogo</a>
   </footer>
 
-  <script src="script.js?v=20260821-06"></script>
+  <script src="script.js?v=20260821-07"></script>
 </body>
 </html>
