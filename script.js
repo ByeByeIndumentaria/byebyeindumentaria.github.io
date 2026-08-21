@@ -4752,6 +4752,7 @@ function initHeroCarousel() {
   let activeIndex = 0;
   let pointerStartX = 0;
   let pointerStartY = 0;
+  let autoplayTimer = null;
 
   const showSlide = index => {
     activeIndex = (index + slides.length) % slides.length;
@@ -4766,6 +4767,13 @@ function initHeroCarousel() {
     dots.forEach((dot, dotIndex) => dot.classList.toggle('active', dotIndex === activeIndex));
   };
 
+  const restartAutoplay = () => {
+    window.clearInterval(autoplayTimer);
+    autoplayTimer = window.setInterval(() => {
+      if (!document.hidden) showSlide(activeIndex + 1);
+    }, 5000);
+  };
+
   carousel.addEventListener('pointerdown', event => {
     if (!event.isPrimary || event.target.closest('a, button')) return;
     pointerStartX = event.clientX;
@@ -4777,9 +4785,11 @@ function initHeroCarousel() {
     const deltaY = event.clientY - pointerStartY;
     if (Math.abs(deltaX) < 45 || Math.abs(deltaX) <= Math.abs(deltaY)) return;
     showSlide(activeIndex + (deltaX > 0 ? 1 : -1));
+    restartAutoplay();
   });
 
   showSlide(0);
+  restartAutoplay();
 }
 
 // ── EVENTS ───────────────────────────────────────
