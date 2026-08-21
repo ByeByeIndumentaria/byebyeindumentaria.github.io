@@ -4772,7 +4772,7 @@ function initHeroCarousel() {
     window.clearInterval(autoplayTimer);
     autoplayTimer = window.setInterval(() => {
       if (!document.hidden) showSlide(activeIndex + 1);
-    }, 5000);
+    }, 7000);
   };
 
   carousel.addEventListener('pointerdown', event => {
