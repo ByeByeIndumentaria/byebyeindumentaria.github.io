@@ -150,7 +150,7 @@ input:focus-visible,
   background: rgba(24,18,14,.28);
   backdrop-filter: blur(5px);
 }
-.accessories-banner .hero-cta { top: 64%; left: 85%; }
+.accessories-banner .hero-cta { top: 73%; left: 85%; width: min(23vw, 345px); }
 .winter-banner .hero-cta { top: 72%; left: 25%; }
 .hero::after {
   content: "";
@@ -888,23 +888,29 @@ input:focus-visible,
   .header-brand { grid-column: 1; }
   .header-right { grid-column: 2; }
 
-  .hero, .hero-track, .hero-slide { min-height: 310px; }
-  .hero-slide { padding: 38px 20px 34px; }
+  .hero {
+    min-height: 0;
+    transition: aspect-ratio .35s ease;
+  }
+  .hero[data-active-collection="accesorios"] { aspect-ratio: 1472 / 982; }
+  .hero[data-active-collection="invierno-2027"] { aspect-ratio: 1646 / 862; }
+  .hero[data-active-collection="verano-2027"] { aspect-ratio: 2200 / 1238; }
+  .hero-track, .hero-slide { height: 100%; min-height: 0; }
+  .hero-slide { padding: 38px 20px 34px; background-size: 100% 100%; background-position: center; }
   .hero-content { min-height: 238px; align-items: flex-end; text-align: right; }
   .hero-title { font-size: clamp(36px, 11.2vw, 44px); letter-spacing: 0.045em; }
   .hero-eyebrow { margin-bottom: 10px; }
   .hero-cta { margin-top: 18px; min-height: 40px; }
-  .accessories-banner { background-position: 68% center; }
-  .winter-banner {
-    background-color: #1d1915;
-    background-position: center top;
-    background-repeat: no-repeat;
-    background-size: contain;
-  }
   .summer-banner { background-position: 43% center; }
-  .accessories-banner .hero-cta { top: 78%; left: 72%; }
-  .winter-banner .hero-cta { top: 54%; left: 25%; }
-  .hero-dots { bottom: 17px; }
+  .baked-banner .hero-cta {
+    width: 150px;
+    min-height: 38px;
+    padding: 8px 14px;
+    font-size: 10px;
+  }
+  .accessories-banner .hero-cta { top: 70%; left: 82%; width: 110px; }
+  .winter-banner .hero-cta { top: 70%; left: 25%; }
+  .hero-dots { bottom: 10px; }
 
   .filters-section {
     padding: 12px 20px;

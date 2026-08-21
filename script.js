@@ -4756,6 +4756,7 @@ function initHeroCarousel() {
 
   const showSlide = index => {
     activeIndex = (index + slides.length) % slides.length;
+    carousel.dataset.activeCollection = slides[activeIndex].dataset.collection;
     slides.forEach((slide, slideIndex) => {
       const active = slideIndex === activeIndex;
       slide.classList.toggle('active', active);
