@@ -4722,114 +4722,27 @@ function keepFocusInside(container, event) {
   }
 }
 
-function activateCatalogCollection(collectionId) {
-  if (!collections.some(collection => collection.id === collectionId)) return;
-  activeCollection = collectionId;
-  activeGender = 'all';
-  activeCategory = 'all';
-  productSearchQuery = '';
-  if (productSearchInput) productSearchInput.value = '';
-  if (productSearchClear) productSearchClear.hidden = true;
-  document.querySelectorAll('#collection-filters .pill').forEach(button => {
-    button.classList.toggle('active', button.dataset.value === activeCollection);
-  });
-  genderFilters.querySelectorAll('.pill').forEach(button => {
-    button.classList.toggle('active', button.dataset.value === 'all');
-  });
-  updateGenderFilters();
-  categoryFilters.innerHTML = '';
-  buildCategoryFilters();
-  renderProducts();
-}
-
-function initHeroCarousel() {
-  const carousel = document.getElementById('hero-carousel');
-  if (!carousel) return;
-  const slides = [...carousel.querySelectorAll('.hero-slide')];
-  const dots = [...carousel.querySelectorAll('.hero-dot')];
-  const previousButton = carousel.querySelector('.hero-arrow-prev');
-  const nextButton = carousel.querySelector('.hero-arrow-next');
-  if (slides.length < 2) return;
-
-  let activeIndex = 0;
-  let autoplayTimer = null;
-  let pointerStartX = 0;
-  let pointerStartY = 0;
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  const showSlide = index => {
-    activeIndex = (index + slides.length) % slides.length;
-    slides.forEach((slide, slideIndex) => {
-      const active = slideIndex === activeIndex;
-      slide.classList.toggle('active', active);
-      slide.setAttribute('aria-hidden', String(!active));
-      slide.querySelectorAll('a, button').forEach(control => {
-        control.tabIndex = active ? 0 : -1;
-      });
-    });
-    dots.forEach((dot, dotIndex) => {
-      const active = dotIndex === activeIndex;
-      dot.classList.toggle('active', active);
-      if (active) dot.setAttribute('aria-current', 'true');
-      else dot.removeAttribute('aria-current');
-    });
-  };
-
-  const stopAutoplay = () => {
-    if (autoplayTimer !== null) window.clearInterval(autoplayTimer);
-    autoplayTimer = null;
-  };
-  const startAutoplay = () => {
-    stopAutoplay();
-    if (reduceMotion || document.hidden) return;
-    autoplayTimer = window.setInterval(() => showSlide(activeIndex + 1), 6500);
-  };
-  const navigate = direction => {
-    showSlide(activeIndex + direction);
-    startAutoplay();
-  };
-
-  previousButton?.addEventListener('click', () => navigate(-1));
-  nextButton?.addEventListener('click', () => navigate(1));
-  dots.forEach((dot, index) => dot.addEventListener('click', () => {
-    showSlide(index);
-    startAutoplay();
-  }));
-  carousel.addEventListener('pointerdown', event => {
-    if (!event.isPrimary || event.target.closest('a, button')) return;
-    pointerStartX = event.clientX;
-    pointerStartY = event.clientY;
-    stopAutoplay();
-  });
-  carousel.addEventListener('pointerup', event => {
-    if (!event.isPrimary || event.target.closest('a, button')) return;
-    const deltaX = event.clientX - pointerStartX;
-    const deltaY = event.clientY - pointerStartY;
-    if (Math.abs(deltaX) >= 45 && Math.abs(deltaX) > Math.abs(deltaY)) {
-      showSlide(activeIndex + (deltaX < 0 ? 1 : -1));
-    }
-    startAutoplay();
-  });
-  carousel.addEventListener('mouseenter', stopAutoplay);
-  carousel.addEventListener('mouseleave', startAutoplay);
-  carousel.addEventListener('focusin', stopAutoplay);
-  carousel.addEventListener('focusout', event => {
-    if (!carousel.contains(event.relatedTarget)) startAutoplay();
-  });
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden) stopAutoplay();
-    else startAutoplay();
-  });
-
-  showSlide(0);
-  startAutoplay();
-}
-
 // ── EVENTS ───────────────────────────────────────
 function bindEvents() {
-  initHeroCarousel();
-  document.querySelectorAll('.hero-cta[data-collection]').forEach(link => {
-    link.addEventListener('click', () => activateCatalogCollection(link.dataset.collection));
+  // The summer hero always opens its matching collection, regardless of the
+  // filters persisted from a previous visit.
+  document.getElementById('hero-collection-cta')?.addEventListener('click', () => {
+    activeCollection = 'verano-2027';
+    activeGender = 'all';
+    activeCategory = 'all';
+    productSearchQuery = '';
+    if (productSearchInput) productSearchInput.value = '';
+    if (productSearchClear) productSearchClear.hidden = true;
+    document.querySelectorAll('#collection-filters .pill').forEach(button => {
+      button.classList.toggle('active', button.dataset.value === activeCollection);
+    });
+    genderFilters.querySelectorAll('.pill').forEach(button => {
+      button.classList.toggle('active', button.dataset.value === 'all');
+    });
+    updateGenderFilters();
+    categoryFilters.innerHTML = '';
+    buildCategoryFilters();
+    renderProducts();
   });
 
   // Mobile filters: keep the search bar stable and collapse the filter panel on downward scroll.

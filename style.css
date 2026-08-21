@@ -119,29 +119,15 @@ input:focus-visible,
 .hero {
   min-height: 500px;
   color: #fffaf1;
+  padding: 92px 24px 76px;
   position: relative;
   overflow: hidden;
-  background: #4b382a;
-  touch-action: pan-y;
-}
-.hero-track { position: relative; min-height: 500px; }
-.hero-slide {
-  position: absolute;
-  inset: 0;
-  min-height: 500px;
-  padding: 92px 70px 76px;
-  background-image: linear-gradient(90deg, rgba(29,23,17,.08), rgba(78,58,40,.16) 44%, rgba(40,31,24,.74)), var(--hero-image);
+  background-image:
+    linear-gradient(90deg, rgba(29,23,17,0.08) 0%, rgba(78,58,40,0.16) 44%, rgba(40,31,24,0.72) 100%),
+    url("images/banner-verano-2027.jpg");
   background-size: cover;
   background-position: center center;
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition: opacity .7s ease, visibility .7s ease;
 }
-.hero-slide.align-left {
-  background-image: linear-gradient(90deg, rgba(25,20,16,.72), rgba(45,34,25,.22) 48%, rgba(25,20,16,.06)), var(--hero-image);
-}
-.hero-slide.active { opacity: 1; visibility: visible; pointer-events: auto; z-index: 1; }
 .hero::after {
   content: "";
   position: absolute;
@@ -154,22 +140,13 @@ input:focus-visible,
   max-width: 1400px;
   margin: 0 auto;
   position: relative;
-  z-index: 2;
+  z-index: 1;
   min-height: 330px;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   justify-content: center;
   text-align: right;
-}
-.hero-slide.align-left .hero-content { align-items: flex-start; text-align: left; }
-.hero-title-compact { max-width: 720px; font-size: clamp(46px, 6.4vw, 82px); line-height: 1.06; }
-.hero-subtitle {
-  margin-top: 16px;
-  color: rgba(255,255,255,.9);
-  font-size: clamp(18px, 2vw, 28px);
-  font-weight: 300;
-  letter-spacing: .08em;
 }
 .hero-eyebrow {
   font-size: 12px;
@@ -205,41 +182,6 @@ input:focus-visible,
   transition: background var(--transition), color var(--transition);
 }
 .hero-cta:hover { background: #fffaf1; color: var(--black); }
-.hero-arrow {
-  position: absolute;
-  z-index: 4;
-  top: 50%;
-  width: 46px;
-  height: 58px;
-  transform: translateY(-50%);
-  border-radius: 999px;
-  background: rgba(255,250,241,.74);
-  color: var(--black);
-  box-shadow: 0 8px 24px rgba(0,0,0,.14);
-}
-.hero-arrow::before {
-  content: "";
-  position: absolute;
-  top: 50%; left: 50%;
-  width: 12px; height: 12px;
-  border-top: 2px solid currentColor;
-  border-left: 2px solid currentColor;
-}
-.hero-arrow-prev { left: 16px; }
-.hero-arrow-next { right: 16px; }
-.hero-arrow-prev::before { transform: translate(-35%,-50%) rotate(-45deg); }
-.hero-arrow-next::before { transform: translate(-65%,-50%) rotate(135deg); }
-.hero-dots {
-  position: absolute;
-  z-index: 4;
-  left: 50%;
-  bottom: 30px;
-  display: flex;
-  gap: 9px;
-  transform: translateX(-50%);
-}
-.hero-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,.48); transition: transform .2s, background .2s; }
-.hero-dot.active { background: #fff; transform: scale(1.35); }
 .hero-sub {
   font-size: 14px;
   letter-spacing: 0.08em;
@@ -909,22 +851,11 @@ input:focus-visible,
   .header-brand { grid-column: 1; }
   .header-right { grid-column: 2; }
 
-  .hero, .hero-track, .hero-slide { min-height: 310px; }
-  .hero-slide { padding: 38px 46px 34px; }
+  .hero { min-height: 310px; padding: 38px 20px 34px; }
   .hero-content { min-height: 238px; align-items: flex-end; text-align: right; }
   .hero-title { font-size: clamp(36px, 11.2vw, 44px); letter-spacing: 0.045em; }
-  .hero-title-compact { max-width: 270px; font-size: clamp(32px, 9.5vw, 42px); }
-  .hero-subtitle { margin-top: 10px; font-size: 16px; }
   .hero-eyebrow { margin-bottom: 10px; }
   .hero-cta { margin-top: 18px; min-height: 40px; }
-  .hero-slide:nth-child(1) { background-position: 43% center; }
-  .hero-slide:nth-child(2) { background-position: 58% center; }
-  .hero-slide:nth-child(3) { background-position: 58% center; }
-  .hero-slide:nth-child(4) { background-position: 60% center; }
-  .hero-arrow { width: 34px; height: 46px; }
-  .hero-arrow-prev { left: 6px; }
-  .hero-arrow-next { right: 6px; }
-  .hero-dots { bottom: 18px; }
 
   .filters-section {
     padding: 12px 20px;
@@ -960,7 +891,7 @@ input:focus-visible,
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .filters-inner, .results-info, .filters-section, .hero-slide { transition-duration: .01ms; }
+    .filters-inner, .results-info, .filters-section { transition-duration: .01ms; }
   }
 
   .catalog-grid {
