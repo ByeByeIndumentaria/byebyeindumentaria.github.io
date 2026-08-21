@@ -1344,7 +1344,8 @@ Object.assign(productImagesById, {
   "193": [1, 2, 3, 4],
   "194": [1, 2, 3, 4],
   "195": [1, 2, 3, 4],
-  "196": [1, 2]
+  "196": [1, 2],
+  "197": [1, 2, 3, 4]
 });
 
 const winterImageAdditionsByProductId = {
@@ -1385,7 +1386,7 @@ Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumber
   ])].sort((a, b) => a - b);
 });
 
-const IMAGE_ASSET_VERSION = "20260820-60";
+const IMAGE_ASSET_VERSION = "20260821-01";
 
 const PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID = {
   118: 48,  // Merano
@@ -1608,7 +1609,8 @@ const colorImageByProductId = {
   193: { "Negro": 1, "Caqui": 2, "Marrón": 3, "Camel": 4 },
   194: { "Negro": 1, "Militar": 2, "Caqui": 3, "Café": 4 },
   195: { "Negro": 1, "Marino": 2, "Arena": 3, "Oliva": 4 },
-  196: { "Avena": 1, "Arena": 2 }
+  196: { "Avena": 1, "Arena": 2 },
+  197: { "Chocolate": 1 }
 };
 
 function normalizeColorName(value) {
@@ -1936,6 +1938,22 @@ const extraProducts = [
     colors: ["Oliva", "Beige", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
     orderNumber: "125-548", collection: "invierno-2027",
+    driveLink: ""
+  },
+  {
+    id: 197, name: "Ebele", category: "MUJER", subcategory: "Abrigos",
+    description: "Campera larga de invierno para mujer, con diseño sastrero y acabado efecto cuero.",
+    colors: ["Negro", "Chocolate"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    orderNumber: "225-203", collection: "invierno-2027",
+    packaging: {
+      totalPieces: 48,
+      totalLabel: "24 piezas por color",
+      rows: [
+        { color: "Negro", sizePieces: { S: 3, M: 6, L: 6, XL: 6, XXL: 3 }, pieces: "24 piezas por color" },
+        { color: "Chocolate", sizePieces: { S: 3, M: 6, L: 6, XL: 6, XXL: 3 }, pieces: "24 piezas por color" }
+      ]
+    },
     driveLink: ""
   }
 ];
