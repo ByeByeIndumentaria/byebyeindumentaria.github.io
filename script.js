@@ -4722,27 +4722,71 @@ function keepFocusInside(container, event) {
   }
 }
 
+function activateCatalogCollection(collectionId) {
+  if (!collections.some(collection => collection.id === collectionId)) return;
+  activeCollection = collectionId;
+  activeGender = 'all';
+  activeCategory = 'all';
+  productSearchQuery = '';
+  if (productSearchInput) productSearchInput.value = '';
+  if (productSearchClear) productSearchClear.hidden = true;
+  document.querySelectorAll('#collection-filters .pill').forEach(button => {
+    button.classList.toggle('active', button.dataset.value === activeCollection);
+  });
+  genderFilters.querySelectorAll('.pill').forEach(button => {
+    button.classList.toggle('active', button.dataset.value === 'all');
+  });
+  updateGenderFilters();
+  categoryFilters.innerHTML = '';
+  buildCategoryFilters();
+  renderProducts();
+}
+
+function initHeroCarousel() {
+  const carousel = document.getElementById('hero-carousel');
+  if (!carousel) return;
+  const slides = [...carousel.querySelectorAll('.hero-slide')];
+  const dots = [...carousel.querySelectorAll('.hero-dot')];
+  if (slides.length < 2) return;
+
+  let activeIndex = 0;
+  let pointerStartX = 0;
+  let pointerStartY = 0;
+
+  const showSlide = index => {
+    activeIndex = (index + slides.length) % slides.length;
+    slides.forEach((slide, slideIndex) => {
+      const active = slideIndex === activeIndex;
+      slide.classList.toggle('active', active);
+      slide.setAttribute('aria-hidden', String(!active));
+      slide.querySelectorAll('a, button').forEach(control => {
+        control.tabIndex = active ? 0 : -1;
+      });
+    });
+    dots.forEach((dot, dotIndex) => dot.classList.toggle('active', dotIndex === activeIndex));
+  };
+
+  carousel.addEventListener('pointerdown', event => {
+    if (!event.isPrimary || event.target.closest('a, button')) return;
+    pointerStartX = event.clientX;
+    pointerStartY = event.clientY;
+  });
+  carousel.addEventListener('pointerup', event => {
+    if (!event.isPrimary || event.target.closest('a, button')) return;
+    const deltaX = event.clientX - pointerStartX;
+    const deltaY = event.clientY - pointerStartY;
+    if (Math.abs(deltaX) < 45 || Math.abs(deltaX) <= Math.abs(deltaY)) return;
+    showSlide(activeIndex + (deltaX > 0 ? 1 : -1));
+  });
+
+  showSlide(0);
+}
+
 // ── EVENTS ───────────────────────────────────────
 function bindEvents() {
-  // The summer hero always opens its matching collection, regardless of the
-  // filters persisted from a previous visit.
-  document.getElementById('hero-collection-cta')?.addEventListener('click', () => {
-    activeCollection = 'verano-2027';
-    activeGender = 'all';
-    activeCategory = 'all';
-    productSearchQuery = '';
-    if (productSearchInput) productSearchInput.value = '';
-    if (productSearchClear) productSearchClear.hidden = true;
-    document.querySelectorAll('#collection-filters .pill').forEach(button => {
-      button.classList.toggle('active', button.dataset.value === activeCollection);
-    });
-    genderFilters.querySelectorAll('.pill').forEach(button => {
-      button.classList.toggle('active', button.dataset.value === 'all');
-    });
-    updateGenderFilters();
-    categoryFilters.innerHTML = '';
-    buildCategoryFilters();
-    renderProducts();
+  initHeroCarousel();
+  document.querySelectorAll('.hero-cta[data-collection]').forEach(link => {
+    link.addEventListener('click', () => activateCatalogCollection(link.dataset.collection));
   });
 
   // Mobile filters: keep the search bar stable and collapse the filter panel on downward scroll.

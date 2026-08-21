@@ -119,15 +119,39 @@ input:focus-visible,
 .hero {
   min-height: 500px;
   color: #fffaf1;
-  padding: 92px 24px 76px;
   position: relative;
   overflow: hidden;
-  background-image:
-    linear-gradient(90deg, rgba(29,23,17,0.08) 0%, rgba(78,58,40,0.16) 44%, rgba(40,31,24,0.72) 100%),
-    url("images/banner-verano-2027.jpg");
+  background: #302219;
+  touch-action: pan-y;
+}
+.hero-track { position: relative; min-height: 500px; }
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  min-height: 500px;
+  padding: 92px 24px 76px;
+  background-image: var(--hero-image);
   background-size: cover;
   background-position: center center;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .5s ease, visibility .5s ease;
 }
+.hero-slide.summer-banner {
+  background-image: linear-gradient(90deg, rgba(29,23,17,.08), rgba(78,58,40,.16) 44%, rgba(40,31,24,.72)), var(--hero-image);
+}
+.hero-slide.active { opacity: 1; visibility: visible; pointer-events: auto; z-index: 1; }
+.baked-banner .hero-cta {
+  position: absolute;
+  z-index: 3;
+  margin: 0;
+  transform: translateX(-50%);
+  background: rgba(24,18,14,.28);
+  backdrop-filter: blur(5px);
+}
+.accessories-banner .hero-cta { top: 64%; left: 85%; }
+.winter-banner .hero-cta { top: 72%; left: 25%; }
 .hero::after {
   content: "";
   position: absolute;
@@ -140,7 +164,7 @@ input:focus-visible,
   max-width: 1400px;
   margin: 0 auto;
   position: relative;
-  z-index: 1;
+  z-index: 2;
   min-height: 330px;
   display: flex;
   flex-direction: column;
@@ -179,9 +203,22 @@ input:focus-visible,
   font-size: 11px;
   letter-spacing: .14em;
   text-transform: uppercase;
+  white-space: nowrap;
   transition: background var(--transition), color var(--transition);
 }
 .hero-cta:hover { background: #fffaf1; color: var(--black); }
+.hero-dots {
+  position: absolute;
+  z-index: 4;
+  left: 50%;
+  bottom: 28px;
+  display: flex;
+  gap: 9px;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.hero-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,.48); transition: transform .2s, background .2s; }
+.hero-dot.active { background: #fff; transform: scale(1.35); }
 .hero-sub {
   font-size: 14px;
   letter-spacing: 0.08em;
@@ -851,11 +888,23 @@ input:focus-visible,
   .header-brand { grid-column: 1; }
   .header-right { grid-column: 2; }
 
-  .hero { min-height: 310px; padding: 38px 20px 34px; }
+  .hero, .hero-track, .hero-slide { min-height: 310px; }
+  .hero-slide { padding: 38px 20px 34px; }
   .hero-content { min-height: 238px; align-items: flex-end; text-align: right; }
   .hero-title { font-size: clamp(36px, 11.2vw, 44px); letter-spacing: 0.045em; }
   .hero-eyebrow { margin-bottom: 10px; }
   .hero-cta { margin-top: 18px; min-height: 40px; }
+  .accessories-banner { background-position: 68% center; }
+  .winter-banner {
+    background-color: #1d1915;
+    background-position: center top;
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+  .summer-banner { background-position: 43% center; }
+  .accessories-banner .hero-cta { top: 78%; left: 72%; }
+  .winter-banner .hero-cta { top: 54%; left: 25%; }
+  .hero-dots { bottom: 17px; }
 
   .filters-section {
     padding: 12px 20px;
@@ -891,7 +940,7 @@ input:focus-visible,
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .filters-inner, .results-info, .filters-section { transition-duration: .01ms; }
+    .filters-inner, .results-info, .filters-section, .hero-slide { transition-duration: .01ms; }
   }
 
   .catalog-grid {
