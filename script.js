@@ -3240,9 +3240,9 @@ const packagingByProductId = {
     { color: "Melange", sizePieces: { S: 1, M: 2, L: 2, XL: 1 } },
     { color: "Caqui", sizePieces: { S: 1, M: 2, L: 2, XL: 1 } }
   ] },
-  66: { totalPieces: 40, rows: [
-    { color: "Negro", sizePieces: { S: 2, M: 4, L: 6, XL: 6, XXL: 2 } },
-    { color: "Iced Coffee", sizePieces: { S: 2, M: 4, L: 6, XL: 6, XXL: 2 } }
+  66: { totalPieces: 20, totalLabel: "20 piezas por color", rows: [
+    { color: "Negro", sizePieces: { S: 2, M: 4, L: 6, XL: 6, XXL: 2 }, pieces: "20 piezas por color" },
+    { color: "Iced Coffee", sizePieces: { S: 2, M: 4, L: 6, XL: 6, XXL: 2 }, pieces: "20 piezas por color" }
   ] },
   67: { totalPieces: 40, rows: [
     { color: "Beige/Oliva", sizePieces: { S: 2, M: 4, L: 4, XL: 4, XXL: 2 }, pieces: 16 },
