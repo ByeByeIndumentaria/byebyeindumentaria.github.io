@@ -519,8 +519,8 @@ const accessoryProducts = [
   { id: 145, name: "Gorra Lavada", category: "UNISEX", subcategory: "Gorras", description: "", orderNumber: "TE11897", colors: ["Bordó", "Beige", "Verde", "Azul Marino", "Azul", "Celeste", "Negro", "Gris", "Marrón"], sizes: ["Único"], collection: "accesorios", preserveCatalogColors: true, driveLink: "" },
   { id: 146, name: "Gorra Cuadrille", category: "UNISEX", subcategory: "Gorras", description: "", orderNumber: "TE11900", colors: ["Rosa", "Celeste", "Azul", "Marrón", "Rosa Claro"], sizes: ["Único"], collection: "accesorios", preserveCatalogColors: true, driveLink: "" },
   { id: 147, name: "Gorra Rallas", category: "UNISEX", subcategory: "Gorras", description: "", orderNumber: "TE11901", colors: ["Rosa", "Celeste", "Azul", "Gris", "Beige"], sizes: ["Único"], collection: "accesorios", preserveCatalogColors: true, driveLink: "" },
-  { id: 148, name: "Gorra Basica", category: "UNISEX", subcategory: "Gorras", description: "", orderNumber: "TE11902", colors: ["Blanco", "Negro", "Beige", "Gris", "Rosa", "Crudo"], sizes: ["Único"], collection: "accesorios", preserveCatalogColors: true, driveLink: "" },
-  { id: 149, name: "Gorra Print", category: "UNISEX", subcategory: "Gorras", description: "", orderNumber: "TE11903", colors: ["Animal Print", "Flores"], sizes: ["Único"], collection: "accesorios", preserveCatalogColors: true, driveLink: "" },
+  { id: 148, name: "Gorra Plush", category: "UNISEX", subcategory: "Gorras", description: "", orderNumber: "TE11902", colors: ["Blanco", "Negro", "Beige", "Gris", "Rosa", "Crudo"], sizes: ["Único"], collection: "accesorios", preserveCatalogColors: true, driveLink: "" },
+  { id: 149, name: "Gorra Print", category: "UNISEX", subcategory: "Gorras", description: "", orderNumber: "TE11903", colors: ["Leopardo", "Chita"], sizes: ["Único"], collection: "accesorios", preserveCatalogColors: true, driveLink: "" },
   { id: 150, name: "Gorra Corderito", category: "UNISEX", subcategory: "Gorras", description: "", orderNumber: "TE11904", colors: ["Crudo"], sizes: ["Único"], collection: "accesorios", preserveCatalogColors: true, driveLink: "" }
 ];
 
@@ -1570,7 +1570,7 @@ const colorImageByProductId = {
   146: { "Rosa": 1, "Celeste": 2, "Azul": 3, "Marrón": 4, "Rosa Claro": 5 },
   147: { "Rosa": 1, "Celeste": 2, "Azul": 3, "Gris": 4, "Beige": 5 },
   148: { "Blanco": 1, "Negro": 2, "Beige": 3, "Gris": 4, "Rosa": 5, "Crudo": 6 },
-  149: { "Animal Print": 1, "Flores": 2 },
+  149: { "Leopardo": 1, "Chita": 2 },
   150: { "Crudo": 1 },
   110: { "Negro": 1, "Marino": 2, "Azul": 2 },
   111: { "Negro": 1, "Gris Oscuro": 2, "Chocolate": 3 },
