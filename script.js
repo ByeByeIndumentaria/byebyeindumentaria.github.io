@@ -1348,7 +1348,8 @@ Object.assign(productImagesById, {
   "194": [1, 2, 3, 4],
   "195": [1, 2, 3, 4],
   "196": [1, 2],
-  "209": [1, 2, 3, 4, 5, 6]
+  "209": [1, 2, 3, 4, 5, 6],
+  "210": [1, 2, 3]
 });
 
 const winterImageAdditionsByProductId = {
@@ -1619,7 +1620,8 @@ const colorImageByProductId = {
   194: { "Negro": 1, "Militar": 2, "Caqui": 3, "Café": 4 },
   195: { "Negro": 1, "Marino": 2, "Arena": 3, "Oliva": 4 },
   196: { "Avena": 1, "Arena": 2 },
-  209: { "Chocolate": 5, "Negro": 6 }
+  209: { "Chocolate": 5, "Negro": 6 },
+  210: { "Melange": 1, "Negro": 2, "Beige": 3 }
 };
 
 function normalizeColorName(value) {
@@ -1963,6 +1965,14 @@ const extraProducts = [
         { color: "Chocolate", sizePieces: { S: 3, M: 6, L: 6, XL: 6, XXL: 3 }, pieces: "24 piezas por color" }
       ]
     },
+    driveLink: ""
+  },
+  {
+    id: 210, name: "Davina", category: "MUJER", subcategory: "Abrigos",
+    description: "Tapado sastrero de invierno para mujer, con solapas, tres botones y bolsillos laterales.",
+    colors: ["Melange", "Beige", "Negro"],
+    sizes: ["M", "L", "XL", "XXL"],
+    orderNumber: "224-512", collection: "invierno-2027",
     driveLink: ""
   }
 ];
@@ -3280,7 +3290,12 @@ Object.assign(packagingByProductId, {
   147: { totalPieces: 300, totalLabel: "300 piezas por caja", rows: [{ color: "Colores surtidos", sizePieces: { "Único": 300 } }] },
   148: { totalPieces: 314, totalLabel: "314 piezas por caja", rows: [{ color: "Colores surtidos", sizePieces: { "Único": 314 } }] },
   149: { totalPieces: 300, totalLabel: "300 piezas por caja", rows: [{ color: "Colores surtidos", sizePieces: { "Único": 300 } }] },
-  150: { totalPieces: 276, totalLabel: "276 piezas por caja", rows: [{ color: "Colores surtidos", sizePieces: { "Único": 276 } }] }
+  150: { totalPieces: 276, totalLabel: "276 piezas por caja", rows: [{ color: "Colores surtidos", sizePieces: { "Único": 276 } }] },
+  210: { totalPieces: 21, totalLabel: "7 piezas por color · 21 piezas totales", rows: [
+    { color: "Melange", sizePieces: { M: 1, L: 2, XL: 2, XXL: 2 }, pieces: "7 piezas por color" },
+    { color: "Beige", sizePieces: { M: 1, L: 2, XL: 2, XXL: 2 }, pieces: "7 piezas por color" },
+    { color: "Negro", sizePieces: { M: 1, L: 2, XL: 2, XXL: 2 }, pieces: "7 piezas por color" }
+  ] }
 });
 
 winterSourceProducts.forEach(product => {
