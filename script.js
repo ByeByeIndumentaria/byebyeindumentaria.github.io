@@ -1348,6 +1348,7 @@ Object.assign(productImagesById, {
   "194": [1, 2, 3, 4],
   "195": [1, 2, 3, 4],
   "196": [1, 2],
+  "197": [1, 2, 3, 4],
   "209": [1, 2, 3, 4, 5, 6],
   "210": [1, 2, 3]
 });
@@ -1390,7 +1391,7 @@ Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumber
   ])].sort((a, b) => a - b);
 });
 
-const IMAGE_ASSET_VERSION = "20260825-01";
+const IMAGE_ASSET_VERSION = "20260825-02";
 
 const PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID = {
   118: 48,  // Merano
@@ -1620,6 +1621,7 @@ const colorImageByProductId = {
   194: { "Negro": 1, "Militar": 2, "Caqui": 3, "Café": 4 },
   195: { "Negro": 1, "Marino": 2, "Arena": 3, "Oliva": 4 },
   196: { "Avena": 1, "Arena": 2 },
+  197: { "Negro": 1, "Azul Marino": 2, "Gris": 3, "Beige": 4 },
   209: { "Chocolate": 5, "Negro": 6 },
   210: { "Melange": 1, "Negro": 2, "Beige": 3 }
 };
@@ -2250,17 +2252,17 @@ function sweater2027Product(id, code, name, colors, boxType, repeatsPerColor = 1
 }
 
 const sweater2027Products = [
-  sweater2027Product(197, "NB 21-51 pack A", "Cuello redondo", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA"),
-  sweater2027Product(198, "NB 21-51 pack B", "Cuello redondo", ["Negro", "Celeste", "Chocolate", "Militar"], "CAJA 48 SURTIDA"),
-  sweater2027Product(199, "NB 21-50 pack A", "Escote V", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA"),
-  sweater2027Product(200, "NB 21-50 pack B", "Escote V", ["Negro", "Celeste", "Chocolate", "Militar"], "CAJA 48 SURTIDA"),
+  sweater2027Product(197, "NB 21-51", "Cuello redondo", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA"),
+  sweater2027Product(198, "NB 21-51 BIG", "Cuello redondo plus", ["Negro", "Celeste", "Chocolate", "Militar"], "CAJA 48 SURTIDA"),
+  sweater2027Product(199, "NB 21-50", "Escote V", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA"),
+  sweater2027Product(200, "NB 21-50 BIG", "Escote V plus", ["Negro", "Celeste", "Chocolate", "Militar"], "CAJA 48 SURTIDA"),
   sweater2027Product(201, "NB 24-02", "Cuello redondo pto inglés", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA"),
   sweater2027Product(202, "NB 24-52", "Campera pto inglés", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA"),
-  sweater2027Product(203, "NB 21-56 pack A", "Medio cierre", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA"),
-  sweater2027Product(204, "NB 21-56 pack B", "Medio cierre", ["Negro"], "CAJA 24 POR COLOR", 2),
+  sweater2027Product(203, "NB 21-56", "Medio cierre", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA"),
+  sweater2027Product(204, "NB 21-56 BIG", "Medio cierre plus", ["Negro"], "CAJA 24 POR COLOR", 2),
   sweater2027Product(205, "NB 21-58", "Campera con bolsillo", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA"),
-  sweater2027Product(206, "NB 21-58 V pack A", "Campera sin bolsillo", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA"),
-  sweater2027Product(207, "NB 21-58 V pack B", "Campera sin bolsillo", ["Negro"], "CAJA 24 POR COLOR", 2),
+  sweater2027Product(206, "NB 21-58 V", "Campera sin bolsillo", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA"),
+  sweater2027Product(207, "NB 21-58 BIG", "Campera sin bolsillo plus", ["Negro"], "CAJA 24 POR COLOR", 2),
   sweater2027Product(208, "NB 21-59", "Trenzado", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA")
 ];
 
