@@ -9,7 +9,7 @@ const collections = [
   { id: "verano-2027", name: "Verano 2027", label: "SS 2027", tagline: "Made for summer." },
   { id: "invierno-2027", name: "Invierno", label: "FW 2027", tagline: "Abrigos y prendas de invierno." },
   { id: "produccion-invierno-2027", name: "Invierno 2027", label: "FW 2027", tagline: "Producción Invierno 2027." },
-  { id: "sweaters-2027", name: "Sweaters 2027", label: "SWEATERS 2027", tagline: "Sweaters de hombre 2027." },
+  { id: "sweaters-2027", name: "Sweaters 2027", label: "SWEATERS 2027", tagline: "Sweaters de hombre 2027.", hidden: true },
   { id: "primavera-2027", name: "Primavera", label: "SP 2027", tagline: "Camperas para media estación." },
   { id: "deportivo", name: "Deportivo", label: "SPORT", tagline: "Indumentaria deportiva." },
   { id: "accesorios", name: "Accesorios", label: "ACCESSORIES", tagline: "Gorros, bolsos y mochilas." }
@@ -3421,7 +3421,7 @@ function getStockLabel(product) {
 function buildCollectionFilters() {
   const collectionFilters = document.getElementById("collection-filters");
   if (!collectionFilters) return;
-  collectionFilters.innerHTML = collections.map(collection => `
+  collectionFilters.innerHTML = collections.filter(collection => !collection.hidden).map(collection => `
     <button class="pill ${collection.id === activeCollection ? "active" : ""}" data-filter="collection" data-value="${collection.id}">
       ${collection.name}
     </button>
