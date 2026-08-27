@@ -1354,6 +1354,7 @@ Object.assign(productImagesById, {
   "200": [1, 2, 3, 4],
   "201": [1, 2, 3, 4],
   "202": [1, 2, 3, 4],
+  "203": [1, 2, 3, 4],
   "205": [1, 2, 3, 4],
   "206": [1, 2, 3, 4],
   "208": [1, 2, 3, 4],
@@ -1399,7 +1400,7 @@ Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumber
   ])].sort((a, b) => a - b);
 });
 
-const IMAGE_ASSET_VERSION = "20260827-05";
+const IMAGE_ASSET_VERSION = "20260827-06";
 
 const PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID = {
   118: 48,  // Merano
@@ -1635,6 +1636,7 @@ const colorImageByProductId = {
   200: { "Celeste": 1, "Negro": 2, "Chocolate": 3, "Militar": 4 },
   201: { "Negro": 1, "Gris": 2, "Azul Marino": 3, "Beige": 4 },
   202: { "Azul Marino": 1, "Negro": 2, "Gris": 3, "Beige": 4 },
+  203: { "Negro": 1, "Azul Marino": 2, "Gris": 3, "Beige": 4 },
   205: { "Beige": 1, "Negro": 2, "Azul Marino": 3, "Gris": 4 },
   206: { "Negro": 1, "Azul Marino": 2, "Gris": 3, "Beige": 4 },
   208: { "Negro": 1, "Azul Marino": 2, "Gris": 3, "Beige": 4 },
@@ -2314,7 +2316,7 @@ const sweater2027Products = [
   sweater2027Product(202, "NB 24-52", "Campera pto inglés", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA"),
   sweater2027ProductWithPacks(203, "NB 21-56", "Medio cierre", [
     { id: "nb-21-56-pack-a", label: "Pack A", colors: ["Negro", "Azul Marino", "Gris", "Beige"], boxType: "CAJA 48 SURTIDA", imageProductId: 203 },
-    { id: "nb-21-56-pack-b", label: "Pack B", colors: ["Negro"], boxType: "CAJA 24 POR COLOR", repeatsPerColor: 2, imageProductId: 204 }
+    { id: "nb-21-56-pack-b", label: "Pack B", colors: ["Negro"], boxType: "CAJA 24 POR COLOR", repeatsPerColor: 2, imageProductId: 203 }
   ]),
   sweater2027Product(205, "NB 21-58", "Campera con bolsillo", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA"),
   sweater2027ProductWithPacks(206, "NB 21-58 V", "Campera sin bolsillo", [
