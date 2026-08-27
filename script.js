@@ -1399,7 +1399,7 @@ Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumber
   ])].sort((a, b) => a - b);
 });
 
-const IMAGE_ASSET_VERSION = "20260827-01";
+const IMAGE_ASSET_VERSION = "20260827-02";
 
 const PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID = {
   118: 48,  // Merano
@@ -1672,17 +1672,18 @@ function getColorGalleryIndex(product, colorIndex, galleryLength) {
   return mappedIndex >= 0 && mappedIndex < galleryLength ? mappedIndex : null;
 }
 
-function getProduction2027Gallery(product, colors) {
+function getProduction2027Gallery(product, colors, option = null) {
   const onlyColorLinkedPhotos = product.collection === "produccion-invierno-2027" && colors.length > 0;
-  const mappedSourceProductId = PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID[product.id];
-  const sourceProductId = mappedSourceProductId || product.id;
+  const optionImageProductId = option?.imageProductId || product.id;
+  const mappedSourceProductId = PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID[optionImageProductId];
+  const sourceProductId = mappedSourceProductId || optionImageProductId;
   const allPhotoNumbers = getProductImagePhotoNumbers(sourceProductId);
   const colorMap = colorImageByProductId[sourceProductId] || {};
   if (!mappedSourceProductId && !onlyColorLinkedPhotos) {
     return {
       sourceProductId,
       photoNumbers: allPhotoNumbers,
-      sources: getProductImageSources(product.id),
+      sources: getProductImageSources(sourceProductId),
       colorMap
     };
   }
@@ -1748,6 +1749,10 @@ function getProduction2027Gallery(product, colors) {
 }
 
 function getDisplayProductImageSources(product) {
+  const selectedOption = product?.selectedPurchaseOption || null;
+  if (selectedOption) {
+    return getProduction2027Gallery(product, selectedOption.colors || [], selectedOption).sources;
+  }
   if (product?.collection === "produccion-invierno-2027") {
     return getProduction2027Gallery(product, product.colors || []).sources;
   }
@@ -2218,7 +2223,7 @@ function production2027StockProduct(spec) {
   };
 }
 
-function production2027PurchaseOption(id, label, sourcePacking, rows, orderNumber = "") {
+function production2027PurchaseOption(id, label, sourcePacking, rows, orderNumber = "", imageProductId = null) {
   const totalPieces = rows.reduce((total, row) => {
     return total + Object.values(row.sizePieces || {}).reduce((sum, pieces) => sum + (Number(pieces) || 0), 0);
   }, 0);
@@ -2227,6 +2232,7 @@ function production2027PurchaseOption(id, label, sourcePacking, rows, orderNumbe
     label,
     orderNumber,
     sourcePacking,
+    ...(imageProductId ? { imageProductId } : {}),
     colors: [...new Set(rows.map(row => row.color))],
     sizes: [...new Set(rows.flatMap(row => Object.keys(row.sizePieces || {})))],
     packaging: { totalPieces, rows }
@@ -2266,18 +2272,54 @@ function sweater2027Product(id, code, name, colors, boxType, repeatsPerColor = 1
   };
 }
 
+function sweater2027PackOption(id, label, code, colors, boxType, repeatsPerColor = 1, imageProductId = null) {
+  const rows = colors.flatMap(color => production2027Rows(
+    color,
+    [1, 3, 3, 3, 2],
+    { repeat: repeatsPerColor }
+  ));
+  const option = production2027PurchaseOption(id, label, boxType, rows, code, imageProductId);
+  option.packaging.totalLabel = `${option.packaging.totalPieces} piezas por caja`;
+  return option;
+}
+
+function sweater2027ProductWithPacks(id, code, name, optionSpecs) {
+  const purchaseOptions = optionSpecs.map(spec => sweater2027PackOption(
+    spec.id,
+    spec.label,
+    spec.code || code,
+    spec.colors,
+    spec.boxType,
+    spec.repeatsPerColor || 1,
+    spec.imageProductId
+  ));
+  const product = sweater2027Product(id, code, name, purchaseOptions[0].colors, purchaseOptions[0].sourcePacking);
+  product.purchaseOptions = purchaseOptions;
+  product.sourcePacking = "";
+  product.packaging = purchaseOptions[0].packaging;
+  return product;
+}
+
 const sweater2027Products = [
-  sweater2027Product(197, "NB 21-51", "Cuello redondo", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA"),
-  sweater2027Product(198, "NB 21-51 BIG", "Cuello redondo plus", ["Negro", "Celeste", "Chocolate", "Militar"], "CAJA 48 SURTIDA"),
-  sweater2027Product(199, "NB 21-50", "Escote V", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA"),
-  sweater2027Product(200, "NB 21-50 BIG", "Escote V plus", ["Negro", "Celeste", "Chocolate", "Militar"], "CAJA 48 SURTIDA"),
+  sweater2027ProductWithPacks(197, "NB 21-51", "Cuello redondo", [
+    { id: "nb-21-51-pack-a", label: "Pack A", colors: ["Negro", "Azul Marino", "Gris", "Beige"], boxType: "CAJA 48 SURTIDA", imageProductId: 197 },
+    { id: "nb-21-51-pack-b", label: "Pack B", colors: ["Negro", "Celeste", "Chocolate", "Militar"], boxType: "CAJA 48 SURTIDA", imageProductId: 198 }
+  ]),
+  sweater2027ProductWithPacks(199, "NB 21-50", "Escote V", [
+    { id: "nb-21-50-pack-a", label: "Pack A", colors: ["Negro", "Azul Marino", "Gris", "Beige"], boxType: "CAJA 48 SURTIDA", imageProductId: 199 },
+    { id: "nb-21-50-pack-b", label: "Pack B", colors: ["Negro", "Celeste", "Chocolate", "Militar"], boxType: "CAJA 48 SURTIDA", imageProductId: 200 }
+  ]),
   sweater2027Product(201, "NB 24-02", "Cuello redondo pto inglés", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA"),
   sweater2027Product(202, "NB 24-52", "Campera pto inglés", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA"),
-  sweater2027Product(203, "NB 21-56", "Medio cierre", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA"),
-  sweater2027Product(204, "NB 21-56 BIG", "Medio cierre plus", ["Negro"], "CAJA 24 POR COLOR", 2),
+  sweater2027ProductWithPacks(203, "NB 21-56", "Medio cierre", [
+    { id: "nb-21-56-pack-a", label: "Pack A", colors: ["Negro", "Azul Marino", "Gris", "Beige"], boxType: "CAJA 48 SURTIDA", imageProductId: 203 },
+    { id: "nb-21-56-pack-b", label: "Pack B", colors: ["Negro"], boxType: "CAJA 24 POR COLOR", repeatsPerColor: 2, imageProductId: 204 }
+  ]),
   sweater2027Product(205, "NB 21-58", "Campera con bolsillo", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA"),
-  sweater2027Product(206, "NB 21-58 V", "Campera sin bolsillo", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA"),
-  sweater2027Product(207, "NB 21-58 BIG", "Campera sin bolsillo plus", ["Negro"], "CAJA 24 POR COLOR", 2),
+  sweater2027ProductWithPacks(206, "NB 21-58 V", "Campera sin bolsillo", [
+    { id: "nb-21-58-v-pack-a", label: "Pack A", colors: ["Negro", "Azul Marino", "Gris", "Beige"], boxType: "CAJA 48 SURTIDA", imageProductId: 206 },
+    { id: "nb-21-58-v-pack-b", label: "Pack B", colors: ["Negro"], boxType: "CAJA 24 POR COLOR", repeatsPerColor: 2, imageProductId: 207 }
+  ]),
   sweater2027Product(208, "NB 21-59", "Trenzado", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA")
 ];
 
@@ -3320,6 +3362,11 @@ winterSourceProducts.forEach(product => {
   delete product.packaging;
 });
 
+sweater2027Products.forEach(product => {
+  packagingByProductId[product.id] = product.packaging;
+  delete product.packaging;
+});
+
 production2027Products.forEach(product => {
   packagingByProductId[product.id] = product.packaging;
   delete product.packaging;
@@ -3964,7 +4011,7 @@ function openModal(p, initialPurchaseOptionId = null) {
   modalImgWrap.querySelectorAll('.modal-gallery-dots, .gallery-arrow, .modal-empty-image').forEach(el => el.remove());
 
   // Build gallery without blocking the modal opening.
-  const gallery = getProduction2027Gallery(p, displayedColors);
+  const gallery = getProduction2027Gallery(p, displayedColors, selectedOption);
   const gallerySrcs = gallery.sources;
   let galleryIdx = 0;
   let dots = null;
@@ -4559,7 +4606,7 @@ async function downloadProductPDF(product, optionId = null) {
     const packaging = selectedOption?.packaging || product.packaging || null;
     const packingLabel = selectedOption?.sourcePacking || product.sourcePacking || '';
     const orderNumber = selectedOption?.orderNumber || product.orderNumber || '';
-    const gallery = getProduction2027Gallery(product, colors);
+    const gallery = getProduction2027Gallery(product, colors, selectedOption);
     const loadedImages = (await Promise.all(gallery.sources.map(loadPdfImage)))
       .map((image, index) => image ? {
         ...image,
