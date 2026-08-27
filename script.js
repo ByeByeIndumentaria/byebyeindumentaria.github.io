@@ -1399,7 +1399,7 @@ Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumber
   ])].sort((a, b) => a - b);
 });
 
-const IMAGE_ASSET_VERSION = "20260827-03";
+const IMAGE_ASSET_VERSION = "20260827-04";
 
 const PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID = {
   118: 48,  // Merano
@@ -1674,7 +1674,7 @@ function getColorGalleryIndex(product, colorIndex, galleryLength) {
 }
 
 function getProduction2027Gallery(product, colors, option = null) {
-  const onlyColorLinkedPhotos = product.collection === "produccion-invierno-2027" && colors.length > 0;
+  const onlyColorLinkedPhotos = (product.collection === "produccion-invierno-2027" || option?.imageProductId) && colors.length > 0;
   const optionImageProductId = option?.imageProductId || product.id;
   const mappedSourceProductId = PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID[optionImageProductId];
   const sourceProductId = mappedSourceProductId || optionImageProductId;
@@ -2319,7 +2319,7 @@ const sweater2027Products = [
   sweater2027Product(205, "NB 21-58", "Campera con bolsillo", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA"),
   sweater2027ProductWithPacks(206, "NB 21-58 V", "Campera sin bolsillo", [
     { id: "nb-21-58-v-pack-a", label: "Pack A", colors: ["Negro", "Azul Marino", "Gris", "Beige"], boxType: "CAJA 48 SURTIDA", imageProductId: 206 },
-    { id: "nb-21-58-v-pack-b", label: "Pack B", colors: ["Negro"], boxType: "CAJA 24 POR COLOR", repeatsPerColor: 2, imageProductId: 207 }
+    { id: "nb-21-58-v-pack-b", label: "Pack B", colors: ["Negro"], boxType: "CAJA 24 POR COLOR", repeatsPerColor: 2, imageProductId: 206 }
   ]),
   sweater2027Product(208, "NB 21-59", "Trenzado", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA")
 ];
