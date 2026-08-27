@@ -9,7 +9,7 @@ const collections = [
   { id: "verano-2027", name: "Verano 2027", label: "SS 2027", tagline: "Made for summer." },
   { id: "invierno-2027", name: "Invierno", label: "FW 2027", tagline: "Abrigos y prendas de invierno." },
   { id: "produccion-invierno-2027", name: "Invierno 2027", label: "FW 2027", tagline: "Producción Invierno 2027." },
-  { id: "sweaters-2027", name: "Sweaters 2027", label: "SWEATERS 2027", tagline: "Sweaters de hombre 2027.", hidden: true },
+  { id: "sweaters-2027", name: "Sweaters 2027", label: "SWEATERS 2027", tagline: "Sweaters de hombre 2027." },
   { id: "primavera-2027", name: "Primavera", label: "SP 2027", tagline: "Camperas para media estación." },
   { id: "deportivo", name: "Deportivo", label: "SPORT", tagline: "Indumentaria deportiva." },
   { id: "accesorios", name: "Accesorios", label: "ACCESSORIES", tagline: "Gorros, bolsos y mochilas." }
@@ -1355,6 +1355,7 @@ Object.assign(productImagesById, {
   "201": [1, 2, 3, 4],
   "202": [1, 2, 3, 4],
   "205": [1, 2, 3, 4],
+  "206": [1, 2, 3, 4],
   "208": [1, 2, 3, 4],
   "209": [1, 2, 3, 4, 5, 6],
   "210": [1, 2, 3]
@@ -1398,7 +1399,7 @@ Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumber
   ])].sort((a, b) => a - b);
 });
 
-const IMAGE_ASSET_VERSION = "20260825-09";
+const IMAGE_ASSET_VERSION = "20260827-01";
 
 const PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID = {
   118: 48,  // Merano
