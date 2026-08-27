@@ -96,7 +96,7 @@ const PRODUCT_DESCRIPTION_BY_ID = {
 // -- EASY CATALOG CONTROL -------------------------
 // Para poner un producto fuera de stock, agregá su número:
 // const OUT_OF_STOCK_PRODUCT_IDS = [12, 43];
-const OUT_OF_STOCK_PRODUCT_IDS = [3, 6, 8, 9, 12, 13, 14, 15, 16, 17, 20, 24, 25, 27, 28, 33, 46, 50, 51, 59, 70, 85, 86, 101];
+const OUT_OF_STOCK_PRODUCT_IDS = [3, 6, 8, 9, 12, 13, 14, 15, 16, 17, 20, 24, 25, 27, 28, 30, 33, 46, 50, 51, 59, 70, 85, 86, 101];
 
 // Stock agotado por variante. Los talles que no figuran acá continúan disponibles.
 const OUT_OF_STOCK_VARIANTS = {
@@ -464,6 +464,7 @@ const products = [
   },
   {
     id: 45, name: "Chomba Jersey Lisa", category: "HOMBRE", subcategory: "Chombas",
+    orderNumber: "TE11814-BB",
     description: "Chomba lisa de jersey con cuello camisero y manga corta.",
     colors: ["Blanco", "Beige", "Melange", "Celeste", "Petróleo", "Marino", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
@@ -1401,7 +1402,7 @@ Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumber
   ])].sort((a, b) => a - b);
 });
 
-const IMAGE_ASSET_VERSION = "20260827-08";
+const IMAGE_ASSET_VERSION = "20260827-09";
 
 const PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID = {
   118: 48,  // Merano
@@ -1994,7 +1995,7 @@ const extraProducts = [
     driveLink: ""
   },
   {
-    id: 210, name: "Davina", category: "MUJER", subcategory: "Abrigos",
+    id: 210, name: "VERONA", category: "MUJER", subcategory: "Abrigos",
     description: "Tapado sastrero de invierno para mujer, con solapas, tres botones y bolsillos laterales.",
     colors: ["Melange", "Beige", "Negro"],
     sizes: ["M", "L", "XL", "XXL"],
@@ -2452,7 +2453,7 @@ const legacyProduction2027Products = [
   production2027Product({ id: 116, name: "Pascal Vest", category: "HOMBRE", subcategory: "Chalecos", sourcePacking: "CAJA SURTIDA", rows: [
     ...production2027Rows("Negro", [1, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Gris Oscuro", [1, 2, 2, 2, 1])
   ] }),
-  production2027Product({ id: 117, name: "Jackie", category: "HOMBRE", sourcePacking: "CAJA SURTIDA", totalLabel: "Curva incompleta en origen", rows: [
+  production2027Product({ id: 117, name: "JASON", category: "HOMBRE", sourcePacking: "CAJA SURTIDA", totalLabel: "Curva incompleta en origen", rows: [
     ...production2027Rows("Negro", [1, 2, 2, 2, null]), ...production2027Rows("Caqui", [1, 2, 2, 2, null]), ...production2027Rows("Marino", [1, 2, 2, 2, null]), ...production2027Rows("Gris", [1, 2, 2, 2, null])
   ] }),
   production2027Product({ id: 118, name: "Merano", category: "HOMBRE", sourcePacking: "CAJA POR COLOR", rows: [...production2027Rows("Negro", [1, 1, 2, 2, 2])] }),
@@ -2554,7 +2555,7 @@ const production2027Products = [
   production2027Product({ id: 116, name: "Chaleco Pascal", category: "HOMBRE", subcategory: "Chalecos", orderNumber: "226-312", sourcePacking: "CAJA SURTIDA", rows: [
     ...production2027Rows("Negro", [1, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Gris Oscuro", [1, 2, 2, 2, 1])
   ] }),
-  production2027Product({ id: 117, name: "Jackie", category: "HOMBRE", orderNumber: "226-331", sourcePacking: "CAJA SURTIDA", rows: [
+  production2027Product({ id: 117, name: "JASON", category: "HOMBRE", orderNumber: "226-331", sourcePacking: "CAJA SURTIDA", rows: [
     ...production2027Rows("Negro", [1, 2, 2, 2, 1]), ...production2027Rows("Caqui", [1, 2, 2, 2, 1]), ...production2027Rows("Marino", [1, 2, 2, 2, 1]), ...production2027Rows("Gris", [1, 2, 2, 2, 1])
   ] }),
   production2027Product({ id: 118, name: "Merano", category: "HOMBRE", orderNumber: "226-308", sourcePacking: "CAJA POR COLOR", rows: [...production2027Rows("Negro", [1, 1, 2, 2, 2])] }),
@@ -3134,12 +3135,12 @@ const packagingByProductId = {
     totalPieces: 72,
     totalLabel: "72 piezas totales",
     rows: [
-      { color: "Blanco", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 }, pieces: "12 piezas por color" },
-      { color: "Melange", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 }, pieces: "12 piezas por color" },
-      { color: "Petróleo", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 }, pieces: "12 piezas por color" },
-      { color: "Marino", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 }, pieces: "12 piezas por color" },
-      { color: "Negro", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 }, pieces: "12 piezas por color" },
-      { color: "Negro", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 }, pieces: "12 piezas por color" },
+      { color: "Blanco", sizePieces: { "3XL": 3, "4XL": 3, "5XL": 3, "6XL": 3 }, pieces: "12 piezas por color" },
+      { color: "Melange", sizePieces: { "3XL": 3, "4XL": 3, "5XL": 3, "6XL": 3 }, pieces: "12 piezas por color" },
+      { color: "Petróleo", sizePieces: { "3XL": 3, "4XL": 3, "5XL": 3, "6XL": 3 }, pieces: "12 piezas por color" },
+      { color: "Marino", sizePieces: { "3XL": 3, "4XL": 3, "5XL": 3, "6XL": 3 }, pieces: "12 piezas por color" },
+      { color: "Negro", sizePieces: { "3XL": 3, "4XL": 3, "5XL": 3, "6XL": 3 }, pieces: "12 piezas por color" },
+      { color: "Negro", sizePieces: { "3XL": 3, "4XL": 3, "5XL": 3, "6XL": 3 }, pieces: "12 piezas por color" },
     ],
   },
   35: {
@@ -3162,12 +3163,12 @@ const packagingByProductId = {
     totalPieces: 72,
     totalLabel: "72 piezas totales",
     rows: [
-      { color: "Blanco", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 }, pieces: "12 piezas por color" },
-      { color: "Melange", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 }, pieces: "12 piezas por color" },
-      { color: "Petróleo", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 }, pieces: "12 piezas por color" },
-      { color: "Marino", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 }, pieces: "12 piezas por color" },
-      { color: "Negro", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 }, pieces: "12 piezas por color" },
-      { color: "Negro", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 }, pieces: "12 piezas por color" },
+      { color: "Blanco", sizePieces: { "3XL": 3, "4XL": 3, "5XL": 3, "6XL": 3 }, pieces: "12 piezas por color" },
+      { color: "Melange", sizePieces: { "3XL": 3, "4XL": 3, "5XL": 3, "6XL": 3 }, pieces: "12 piezas por color" },
+      { color: "Petróleo", sizePieces: { "3XL": 3, "4XL": 3, "5XL": 3, "6XL": 3 }, pieces: "12 piezas por color" },
+      { color: "Marino", sizePieces: { "3XL": 3, "4XL": 3, "5XL": 3, "6XL": 3 }, pieces: "12 piezas por color" },
+      { color: "Negro", sizePieces: { "3XL": 3, "4XL": 3, "5XL": 3, "6XL": 3 }, pieces: "12 piezas por color" },
+      { color: "Negro", sizePieces: { "3XL": 3, "4XL": 3, "5XL": 3, "6XL": 3 }, pieces: "12 piezas por color" },
     ],
   },
   37: {
@@ -4962,6 +4963,7 @@ function initHeroCarousel() {
 // ── EVENTS ───────────────────────────────────────
 function bindEvents() {
   initHeroCarousel();
+  let collapseMobileFilters = () => {};
   document.querySelectorAll('.hero-cta[data-collection]').forEach(link => {
     link.addEventListener('click', () => activateCatalogCollection(link.dataset.collection));
   });
@@ -4986,6 +4988,11 @@ function bindEvents() {
       filtersToggle.setAttribute('aria-label', collapsed ? 'Mostrar filtros' : 'Ocultar filtros');
     };
 
+    collapseMobileFilters = () => {
+      manuallyExpanded = false;
+      setFiltersCollapsed(true);
+    };
+
     filtersToggle.addEventListener('click', () => {
       const willCollapse = !filtersSection.classList.contains('filters-collapsed');
       manuallyExpanded = !willCollapse;
@@ -4997,7 +5004,7 @@ function bindEvents() {
       const stickyObserver = new IntersectionObserver(entries => {
         const sentinel = entries[0];
         const passedStickyPoint = !sentinel.isIntersecting && sentinel.boundingClientRect.top <= headerHeight;
-        if (mobileQuery.matches && !manuallyExpanded && passedStickyPoint) {
+        if (mobileQuery.matches && passedStickyPoint) {
           setFiltersCollapsed(true);
         }
       }, { rootMargin: `-${headerHeight}px 0px 0px 0px`, threshold: 0 });
@@ -5011,8 +5018,9 @@ function bindEvents() {
         const scrollDelta = currentScrollY - lastScrollY;
         if (scrollDelta < 0) manuallyExpanded = false;
         downwardTravel = scrollDelta > 0 ? downwardTravel + scrollDelta : 0;
-        if (mobileQuery.matches && !manuallyExpanded && downwardTravel > 12 && currentScrollY > 80) {
+        if (mobileQuery.matches && downwardTravel > 12 && currentScrollY > 80) {
           setFiltersCollapsed(true);
+          manuallyExpanded = false;
           downwardTravel = 0;
         }
         lastScrollY = currentScrollY;
@@ -5023,6 +5031,13 @@ function bindEvents() {
     window.addEventListener('resize', syncFiltersPanelHeight, { passive: true });
     mobileQuery.addEventListener?.('change', () => setFiltersCollapsed(false));
     setFiltersCollapsed(mobileQuery.matches);
+
+    const dismissMobileHero = () => {
+      if (mobileQuery.matches && window.scrollY > 24) {
+        document.body.classList.add('mobile-hero-dismissed');
+      }
+    };
+    window.addEventListener('scroll', dismissMobileHero, { passive: true });
   }
 
   // Product search
@@ -5074,6 +5089,7 @@ function bindEvents() {
       categoryFilters.innerHTML = '';
       buildCategoryFilters();
       renderProducts();
+      collapseMobileFilters();
     });
   }
 
@@ -5085,6 +5101,7 @@ function bindEvents() {
     genderFilters.querySelectorAll('.pill').forEach(b => b.classList.toggle('active', b === btn));
     updateCategoryFilters();
     renderProducts();
+    collapseMobileFilters();
   });
 
   // Category filters
@@ -5094,6 +5111,7 @@ function bindEvents() {
     activeCategory = btn.dataset.value;
     categoryFilters.querySelectorAll('.pill').forEach(b => b.classList.toggle('active', b === btn));
     renderProducts();
+    collapseMobileFilters();
   });
 
   // Cart actions

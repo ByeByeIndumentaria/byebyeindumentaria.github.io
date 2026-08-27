@@ -14,7 +14,7 @@
   <link rel="icon" type="image/png" href="/favicon.png" />
   <link rel="shortcut icon" href="/favicon.ico" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-  <link rel="stylesheet" href="style.css?v=20260821-10" />
+  <link rel="stylesheet" href="style.css?v=20260827-09" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -79,10 +79,13 @@
   <!-- HERO -->
   <section class="hero" id="hero-carousel" data-active-collection="invierno-2027" aria-roledescription="carrusel" aria-label="Colecciones destacadas">
     <div class="hero-track">
-      <article class="hero-slide baked-banner winter-banner active" data-collection="invierno-2027" style="--hero-image:url('images/banner-invierno-drop.jpg')" aria-hidden="false">
+      <article class="hero-slide baked-banner winter-banner active" data-collection="invierno-2027" style="--hero-image:url('images/banner-invierno-drop.jpg'); --mobile-hero-image:url('images/banner-mobile-invierno-2027.jpg')" aria-hidden="false">
         <a class="hero-cta" href="#catalogo" data-collection="invierno-2027">Ver colección</a>
       </article>
-      <article class="hero-slide summer-banner" data-collection="verano-2027" style="--hero-image:url('images/banner-verano-2027.jpg')" aria-hidden="true">
+      <article class="hero-slide accessories-banner" data-collection="accesorios" style="--hero-image:url('images/banner-accesorios-everyday.jpg'); --mobile-hero-image:url('images/banner-mobile-accesorios-2027.jpg')" aria-hidden="true">
+        <a class="hero-cta" href="#catalogo" data-collection="accesorios" tabindex="-1">Ver colección</a>
+      </article>
+      <article class="hero-slide summer-banner" data-collection="verano-2027" style="--hero-image:url('images/banner-verano-2027.jpg'); --mobile-hero-image:url('images/banner-mobile-verano-2027.jpg')" aria-hidden="true">
         <div class="hero-content">
           <p class="hero-eyebrow">Catálogo mayorista · BYE BYE</p>
           <h2 class="hero-title">Summer<br><em>collection</em><br>2027</h2>
@@ -92,6 +95,7 @@
     </div>
     <div class="hero-dots" role="group" aria-label="Banner actual">
       <span class="hero-dot active"></span>
+      <span class="hero-dot"></span>
       <span class="hero-dot"></span>
     </div>
   </section>
@@ -232,6 +236,6 @@
     <a href="#catalogo">Volver al catálogo</a>
   </footer>
 
-  <script src="script.js?v=20260827-08"></script>
+  <script src="script.js?v=20260827-09"></script>
 </body>
 </html>
