@@ -1399,7 +1399,7 @@ Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumber
   ])].sort((a, b) => a - b);
 });
 
-const IMAGE_ASSET_VERSION = "20260827-02";
+const IMAGE_ASSET_VERSION = "20260827-03";
 
 const PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID = {
   118: 48,  // Merano
@@ -1636,6 +1636,7 @@ const colorImageByProductId = {
   201: { "Negro": 1, "Gris": 2, "Azul Marino": 3, "Beige": 4 },
   202: { "Azul Marino": 1, "Negro": 2, "Gris": 3, "Beige": 4 },
   205: { "Beige": 1, "Negro": 2, "Azul Marino": 3, "Gris": 4 },
+  206: { "Negro": 1, "Azul Marino": 2, "Gris": 3, "Beige": 4 },
   208: { "Negro": 1, "Azul Marino": 2, "Gris": 3, "Beige": 4 },
   209: { "Chocolate": 5, "Negro": 6 },
   210: { "Melange": 1, "Negro": 2, "Beige": 3 }
