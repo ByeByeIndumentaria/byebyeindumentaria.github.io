@@ -2359,42 +2359,42 @@ function hoodie2027Product(spec) {
 }
 
 const hoodie2027Products = [
-  hoodie2027Product({ id: 211, name: "KANGAROO MEN", category: "HOMBRE", orderNumber: "3JA7507", rows: [
+  hoodie2027Product({ id: 211, name: "Kangaroo Hombre", category: "HOMBRE", orderNumber: "3JA7507", rows: [
     ...production2027Rows("Negro", [1, 2, 2, 2, 1]),
     ...production2027Rows("Azul Marino", [1, 2, 2, 2, 1]),
     ...production2027Rows("Melange Oscuro", [1, 2, 2, 2, 1])
   ] }),
-  hoodie2027Product({ id: 212, name: "KANGAROO LADIES", category: "MUJER", orderNumber: "3VT8056", rows: [
+  hoodie2027Product({ id: 212, name: "Kangaroo Mujer", category: "MUJER", orderNumber: "3VT8056", rows: [
     ...production2027Rows("Negro", [2, 2, 2, 2, 1]),
     ...production2027Rows("Chocolate", [2, 2, 2, 2, 1]),
     ...production2027Rows("Melange Claro", [2, 2, 2, 2, 1])
   ] }),
-  hoodie2027Product({ id: 213, name: "KANGAROO KIDS UNISEX", category: "NINOS", sizes: PRODUCTION_2027_KIDS_SIZES, totalLabel: "Cantidad no informada", rows: [
+  hoodie2027Product({ id: 213, name: "Kangaroo Niños", category: "NINOS", sizes: PRODUCTION_2027_KIDS_SIZES, totalLabel: "Cantidad no informada", rows: [
     ...production2027Rows("Negro", null, { sizes: PRODUCTION_2027_KIDS_SIZES, curveText: "4 a 16" }),
     ...production2027Rows("Azul Marino", null, { sizes: PRODUCTION_2027_KIDS_SIZES, curveText: "4 a 16" }),
     ...production2027Rows("Melange Claro", null, { sizes: PRODUCTION_2027_KIDS_SIZES, curveText: "4 a 16" })
   ] }),
-  hoodie2027Product({ id: 214, name: "FIESCO (NO LINING)", category: "HOMBRE", orderNumber: "3VT8067-1", rows: [
+  hoodie2027Product({ id: 214, name: "Fiesco", category: "HOMBRE", orderNumber: "3VT8067-1", rows: [
     ...production2027Rows("Negro", [1, 2, 2, 2, 1]),
     ...production2027Rows("Azul Marino", [1, 2, 2, 2, 1]),
     ...production2027Rows("Melange Oscuro", [1, 2, 2, 2, 1])
   ] }),
-  hoodie2027Product({ id: 215, name: "PEDARA (NO LINING)", category: "MUJER", orderNumber: "3VT8068-1", rows: [
+  hoodie2027Product({ id: 215, name: "Pedara", category: "MUJER", orderNumber: "3VT8068-1", rows: [
     ...production2027Rows("Negro", [2, 2, 2, 2, 1]),
     ...production2027Rows("Chocolate", [2, 2, 2, 2, 1]),
     ...production2027Rows("Melange Claro", [2, 2, 2, 2, 1])
   ] }),
-  hoodie2027Product({ id: 216, name: "FIESCO PLUS (NO LINING)", category: "UNISEX", orderNumber: "3VT8067-1", sizes: PRODUCTION_2027_PLUS_SIZES, totalLabel: "Cantidad no informada", rows: [
+  hoodie2027Product({ id: 216, name: "Fiesco Plus", category: "UNISEX", orderNumber: "3VT8067-1", sizes: PRODUCTION_2027_PLUS_SIZES, totalLabel: "Cantidad no informada", rows: [
     ...production2027Rows("Negro", null, { sizes: PRODUCTION_2027_PLUS_SIZES, curveText: "3XL a 6XL" }),
     ...production2027Rows("Azul Marino", null, { sizes: PRODUCTION_2027_PLUS_SIZES, curveText: "3XL a 6XL" }),
     ...production2027Rows("Melange Oscuro", null, { sizes: PRODUCTION_2027_PLUS_SIZES, curveText: "3XL a 6XL" })
   ] }),
-  hoodie2027Product({ id: 217, name: "FIESCO PEDARA KIDS UNISEX", category: "NINOS", sizes: PRODUCTION_2027_KIDS_SIZES, totalLabel: "Cantidad no informada", rows: [
+  hoodie2027Product({ id: 217, name: "Fiesco Pedara Unisex", category: "NINOS", sizes: PRODUCTION_2027_KIDS_SIZES, totalLabel: "Cantidad no informada", rows: [
     ...production2027Rows("Negro", null, { sizes: PRODUCTION_2027_KIDS_SIZES, curveText: "4 a 16" }),
     ...production2027Rows("Azul Marino", null, { sizes: PRODUCTION_2027_KIDS_SIZES, curveText: "4 a 16" }),
     ...production2027Rows("Melange Claro", null, { sizes: PRODUCTION_2027_KIDS_SIZES, curveText: "4 a 16" })
   ] }),
-  hoodie2027Product({ id: 218, name: "VENTURA REVERSIBLE (CON PIEL)", category: "UNISEX", sizes: ["S", "M", "L", "XL"], totalPieces: 1440, totalLabel: "1.440 piezas · 720 por color", rows: [
+  hoodie2027Product({ id: 218, name: "Ventura Reversible", category: "UNISEX", sizes: ["S", "M", "L", "XL"], totalPieces: 1440, totalLabel: "1.440 piezas · 720 por color", rows: [
     ...production2027Rows("Negro", [1, 3, 2, 2], { sizes: ["S", "M", "L", "XL"] }),
     ...production2027Rows("Chocolate", [1, 3, 2, 2], { sizes: ["S", "M", "L", "XL"] })
   ] })
@@ -3768,8 +3768,9 @@ function updateGenderFilters() {
   const unisexFilter = genderFilters.querySelector('[data-value="UNISEX"]');
   if (!kidsFilter || !unisexFilter) return;
 
-  const showKids = activeCollection === "todos" || isWinterCollection();
-  const showUnisex = activeCollection === "todos" || activeCollection === "accesorios";
+  const isHoodiesCollection = activeCollection === "hoodies-2027";
+  const showKids = activeCollection === "todos" || isWinterCollection() || isHoodiesCollection;
+  const showUnisex = activeCollection === "todos" || activeCollection === "accesorios" || isHoodiesCollection;
   kidsFilter.style.display = showKids ? '' : 'none';
   unisexFilter.style.display = showUnisex ? '' : 'none';
 
