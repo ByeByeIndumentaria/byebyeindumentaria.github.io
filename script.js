@@ -9,7 +9,7 @@ const collections = [
   { id: "verano-2027", name: "Verano 2027", label: "SS 2027", tagline: "Made for summer." },
   { id: "invierno-2027", name: "Invierno", label: "FW 2027", tagline: "Abrigos y prendas de invierno." },
   { id: "produccion-invierno-2027", name: "Invierno 2027", label: "FW 2027", tagline: "Producción Invierno 2027." },
-  { id: "sweaters-2027", name: "Sweaters 2027", label: "SWEATERS 2027", tagline: "Sweaters de hombre 2027." },
+  { id: "sweaters-2027", name: "Sweaters 2027", label: "SWEATERS 2027", tagline: "Sweaters 2027." },
   { id: "hoodies-2027", name: "Hoodies 2027", label: "HOODIES 2027", tagline: "Hoodies 2027." },
   { id: "primavera-2027", name: "Primavera", label: "SP 2027", tagline: "Camperas para media estación." },
   { id: "deportivo", name: "Deportivo", label: "SPORT", tagline: "Indumentaria deportiva." },
@@ -2321,6 +2321,92 @@ function sweater2027ProductWithPacks(id, code, name, optionSpecs) {
   return product;
 }
 
+const SWEATER_2027_WOMEN_SIZES = ["S/M", "M/L"];
+
+function sweater2027WomenRow(entry) {
+  const row = {
+    color: entry.color,
+    sizePieces: entry.curve
+      ? Object.fromEntries(SWEATER_2027_WOMEN_SIZES.map((size, index) => [size, entry.curve[index]]))
+      : {}
+  };
+  if (entry.pieces) row.pieces = entry.pieces;
+  return row;
+}
+
+function sweater2027WomenRows(entries) {
+  return entries.map(entry => sweater2027WomenRow(entry));
+}
+
+function sweater2027WomenBoxLabel(boxPieces) {
+  return `CAJA ${boxPieces} SURTIDA`;
+}
+
+function sweater2027WomenProduct(id, code, name, entries, boxPieces) {
+  const rows = sweater2027WomenRows(entries);
+  const sourcePacking = sweater2027WomenBoxLabel(boxPieces);
+  return {
+    id,
+    name,
+    preserveProductName: true,
+    category: "MUJER",
+    subcategory: "Sweaters",
+    description: "",
+    orderNumber: code,
+    collection: "sweaters-2027",
+    colors: [...new Set(rows.map(row => row.color))],
+    sizes: SWEATER_2027_WOMEN_SIZES,
+    driveLink: "",
+    sourcePacking,
+    sourceWorkbook: "OJT SWEATERS 26-8",
+    packaging: {
+      totalPieces: boxPieces,
+      totalLabel: `${boxPieces} piezas por caja`,
+      rows
+    }
+  };
+}
+
+function sweater2027WomenPackOption(id, label, code, entries, boxPieces) {
+  const rows = sweater2027WomenRows(entries);
+  const sourcePacking = sweater2027WomenBoxLabel(boxPieces);
+  const option = production2027PurchaseOption(id, label, sourcePacking, rows, code);
+  option.sizes = rows.some(row => Object.keys(row.sizePieces || {}).length)
+    ? SWEATER_2027_WOMEN_SIZES
+    : [];
+  option.packaging.totalPieces = boxPieces;
+  option.packaging.totalLabel = `${boxPieces} piezas por caja`;
+  return option;
+}
+
+function sweater2027WomenProductWithPacks(id, code, name, optionSpecs) {
+  const purchaseOptions = optionSpecs.map(spec => sweater2027WomenPackOption(
+    spec.id,
+    spec.label,
+    spec.code || code,
+    spec.entries,
+    spec.boxPieces
+  ));
+  const firstOption = purchaseOptions[0];
+  return {
+    id,
+    name,
+    preserveProductName: true,
+    category: "MUJER",
+    subcategory: "Sweaters",
+    description: "",
+    orderNumber: code,
+    collection: "sweaters-2027",
+    colors: firstOption.colors,
+    sizes: firstOption.sizes,
+    driveLink: "",
+    sourcePacking: "",
+    sourceWorkbook: "OJT SWEATERS 26-8",
+    packaging: firstOption.packaging,
+    purchaseOptions
+  };
+}
+
 const sweater2027Products = [
   sweater2027ProductWithPacks(197, "NB 21-51", "Cuello redondo", [
     { id: "nb-21-51-pack-a", label: "Pack A", colors: ["Negro", "Azul Marino", "Gris", "Beige"], boxType: "CAJA 48 SURTIDA", imageProductId: 197 },
@@ -2341,7 +2427,84 @@ const sweater2027Products = [
     { id: "nb-21-58-v-pack-a", label: "Pack A", colors: ["Negro", "Azul Marino", "Gris", "Beige"], boxType: "CAJA 48 SURTIDA", imageProductId: 206 },
     { id: "nb-21-58-v-pack-b", label: "Pack B", colors: ["Negro"], boxType: "CAJA 24 POR COLOR", repeatsPerColor: 2, imageProductId: 206 }
   ]),
-  sweater2027Product(208, "NB 21-59", "Trenzado", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA")
+  sweater2027Product(208, "NB 21-59", "Trenzado", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA"),
+  sweater2027WomenProduct(219, "NL0071 223020", "Sweater Amelie", [
+    { color: "Negro", curve: [3, 3] },
+    { color: "Chocolate", curve: [3, 3] },
+    { color: "Melange", curve: [3, 3] },
+    { color: "Oatmeal Oscuro", curve: [3, 3] },
+    { color: "Oatmeal", curve: [3, 3] },
+    { color: "Ivory", curve: [3, 3] },
+    { color: "Celeste", curve: [2, 2] },
+    { color: "Rojo", curve: [2, 2] }
+  ], 44),
+  sweater2027WomenProduct(220, "26-873", "Sweater Brisa", [
+    { color: "Negro", curve: [4, 4] },
+    { color: "Melange Oscuro", curve: [2, 2] },
+    { color: "Coffee", curve: [3, 3] },
+    { color: "Oatmeal Oscuro", curve: [3, 3] },
+    { color: "Oatmeal", curve: [3, 3] },
+    { color: "Ivory", curve: [3, 3] }
+  ], 36),
+  sweater2027WomenProduct(221, "266229Y", "Sweater Bianca", [
+    { color: "Negro", curve: [6, 6] },
+    { color: "Chocolate", curve: [6, 6] },
+    { color: "Oatmeal", curve: [5, 5] },
+    { color: "Ivory", curve: [3, 3] }
+  ], 40),
+  sweater2027WomenProduct(222, "PAU 02", "Sweater Vera", [
+    { color: "Negro", curve: [3, 3] },
+    { color: "Chocolate", curve: [3, 3] },
+    { color: "Ivory", curve: [2, 2] }
+  ], 20),
+  sweater2027WomenProduct(223, "266124J", "Sweater Ambar", [
+    { color: "Negro", curve: [4, 4] },
+    { color: "Chocolate", curve: [4, 4] },
+    { color: "Oatmeal", curve: [2, 2] },
+    { color: "Ivory", curve: [2, 2] }
+  ], 24),
+  sweater2027WomenProduct(224, "263036L", "Sweater Roma", [
+    { color: "Negro", curve: [4, 4] },
+    { color: "Chocolate", curve: [3, 3] },
+    { color: "Oatmeal", curve: [2, 2] },
+    { color: "Verde", curve: [1, 1] },
+    { color: "Oatmeal Oscuro", curve: [2, 2] }
+  ], 24),
+  sweater2027WomenProduct(225, "PAU01", "Sweater Siena", [
+    { color: "Negro", curve: [4, 4] },
+    { color: "Chocolate", curve: [2, 2] },
+    { color: "Oatmeal", curve: [2, 2] },
+    { color: "Ivory", curve: [2, 2] }
+  ], 20),
+  sweater2027WomenProduct(226, "263098L", "Sweater Mora", [
+    { color: "Ivory con Marron", curve: [3, 3] },
+    { color: "Azul Marino con Blanco", curve: [4, 4] },
+    { color: "Negro con Blanco", curve: [6, 6] },
+    { color: "Gris con Blanco", curve: [2, 2] }
+  ], 30),
+  sweater2027WomenProductWithPacks(227, "PAU04", "Sweater Nala", [
+    { id: "pau04-pack-a", label: "Pack A", boxPieces: 50, entries: [{ color: "Coffee / Oatmeal / Rosa", pieces: "50 piezas por caja" }] },
+    { id: "pau04-pack-b", label: "Pack B", boxPieces: 50, entries: [{ color: "Chocolate / Oatmeal / Ivory", pieces: "50 piezas por caja" }] },
+    { id: "pau04-pack-c", label: "Pack C", boxPieces: 50, entries: [{ color: "Sample", pieces: "50 piezas por caja" }] },
+    { id: "pau04-pack-d", label: "Pack D", boxPieces: 50, entries: [{ color: "Coffee / Chocolate / Celeste", pieces: "50 piezas por caja" }] }
+  ]),
+  sweater2027WomenProduct(228, "26-5041", "Sweater Luma", [
+    { color: "Negro", curve: [3, 3] },
+    { color: "Chocolate", curve: [3, 3] },
+    { color: "Melange", curve: [2, 2] },
+    { color: "Oatmeal Oscuro", curve: [2, 2] }
+  ], 20),
+  sweater2027WomenProduct(229, "23-499", "Sweater Olivia", [
+    { color: "Negro", curve: [3, 3] },
+    { color: "Chocolate", curve: [3, 3] },
+    { color: "Melange", curve: [2, 2] },
+    { color: "Oatmeal Oscuro", curve: [2, 2] }
+  ], 20),
+  sweater2027WomenProduct(230, "265604", "Sweater Uma", [
+    { color: "Negro", curve: [4, 4] },
+    { color: "Chocolate", curve: [3, 3] },
+    { color: "Oatmeal Oscuro", curve: [3, 3] }
+  ], 20)
 ];
 
 products.push(...sweater2027Products);
