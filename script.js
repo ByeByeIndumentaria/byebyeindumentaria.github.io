@@ -96,15 +96,12 @@ const PRODUCT_DESCRIPTION_BY_ID = {
 // -- EASY CATALOG CONTROL -------------------------
 // Para poner un producto fuera de stock, agregá su número:
 // const OUT_OF_STOCK_PRODUCT_IDS = [12, 43];
-const OUT_OF_STOCK_PRODUCT_IDS = [1, 3, 6, 8, 9, 12, 13, 14, 15, 16, 17, 20, 24, 25, 27, 28, 30, 33, 46, 50, 51, 59, 70, 85, 86, 101];
+const OUT_OF_STOCK_PRODUCT_IDS = [1, 3, 6, 8, 9, 12, 13, 14, 15, 16, 17, 20, 24, 25, 27, 28, 30, 33, 46, 50, 59, 70, 85, 86, 101];
 
 // Stock agotado por variante. Los talles que no figuran acá continúan disponibles.
 const OUT_OF_STOCK_VARIANTS = {
   40: {
     Negro: ["S", "M", "L", "XL", "3XL"]
-  },
-  51: {
-    Negro: ["S", "M", "L", "XL", "XXL"]
   },
   66: {
     Negro: ["S", "M", "L", "XL", "XXL"]
@@ -1378,8 +1375,8 @@ Object.assign(productImagesById, {
   "225": [1, 2, 3, 4],
   "226": [1, 2, 3, 4],
   "227": [1, 2, 3, 4],
-  "228": [1, 2, 3, 4],
-  "229": [1, 2, 3, 4],
+  "228": [3, 1, 2, 4],
+  "229": [2, 1, 3, 4],
   "230": [1, 2, 3]
 });
 
@@ -1421,7 +1418,7 @@ Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumber
   ])].sort((a, b) => a - b);
 });
 
-const IMAGE_ASSET_VERSION = "20260901-11";
+const IMAGE_ASSET_VERSION = "20260901-12";
 
 const PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID = {
   118: 48,  // Merano

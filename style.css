@@ -150,8 +150,14 @@ input:focus-visible,
   background: rgba(24,18,14,.28);
   backdrop-filter: blur(5px);
 }
-.accessories-banner .hero-cta { top: 73%; left: 85%; width: min(23vw, 345px); }
-.winter-banner .hero-cta { top: 72%; left: 25%; }
+.accessories-banner .hero-cta,
+.winter-banner .hero-cta {
+  top: 78%;
+  left: auto;
+  right: clamp(32px, 7vw, 120px);
+  transform: none;
+  width: min(23vw, 345px);
+}
 .hero::after {
   content: "";
   position: absolute;
