@@ -1367,6 +1367,7 @@ Object.assign(productImagesById, {
   "216": [1, 2, 3],
   "217": [1, 2, 3],
   "218": [1, 2],
+  "219": [1, 2, 3, 4, 5, 6, 7, 8],
   "220": [1, 2, 3, 4, 5, 6],
   "221": [1, 2, 3, 4],
   "222": [1, 2, 3],
@@ -1418,7 +1419,7 @@ Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumber
   ])].sort((a, b) => a - b);
 });
 
-const IMAGE_ASSET_VERSION = "20260901-12";
+const IMAGE_ASSET_VERSION = "20260901-13";
 
 const PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID = {
   118: 48,  // Merano
@@ -1665,6 +1666,7 @@ const colorImageByProductId = {
   213: { "Azul Marino": 1, "Negro": 2, "Melange Claro": 3 },
   214: { "Negro": 1, "Azul Marino": 2, "Melange Oscuro": 3 },
   215: { "Melange Claro": 1, "Chocolate": 2, "Negro": 3 },
+  219: { "Negro": 1, "Chocolate": 2, "Melange": 3, "Avena Oscuro": 4, "Avena": 5, "Marfil": 6, "Celeste": 7, "Rojo": 8 },
   220: { "Melange Oscuro": 1, "Café": 2, "Avena Oscuro": 3, "Avena": 4, "Marfil": 5, "Negro": 6 },
   221: { "Negro": 1, "Chocolate": 2, "Avena": 3, "Marfil": 4 },
   222: { "Negro": 1, "Chocolate": 2, "Marfil": 3 },
@@ -2453,9 +2455,9 @@ const sweater2027Products = [
     { color: "Negro", curve: [3, 3] },
     { color: "Chocolate", curve: [3, 3] },
     { color: "Melange", curve: [3, 3] },
-    { color: "Oatmeal Oscuro", curve: [3, 3] },
-    { color: "Oatmeal", curve: [3, 3] },
-    { color: "Ivory", curve: [3, 3] },
+    { color: "Avena Oscuro", curve: [3, 3] },
+    { color: "Avena", curve: [3, 3] },
+    { color: "Marfil", curve: [3, 3] },
     { color: "Celeste", curve: [2, 2] },
     { color: "Rojo", curve: [2, 2] }
   ], 44),
