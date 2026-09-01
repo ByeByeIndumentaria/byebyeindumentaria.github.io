@@ -1369,7 +1369,18 @@ Object.assign(productImagesById, {
   "215": [1, 2, 3],
   "216": [1, 2, 3],
   "217": [1, 2, 3],
-  "218": [1, 2]
+  "218": [1, 2],
+  "220": [1, 2, 3, 4, 5, 6],
+  "221": [1, 2, 3, 4],
+  "222": [1, 2, 3],
+  "223": [1, 2, 3, 4],
+  "224": [1, 2, 3, 4, 5],
+  "225": [1, 2, 3, 4],
+  "226": [1, 2, 3, 4],
+  "227": [1, 2, 3, 4],
+  "228": [1, 2, 3, 4],
+  "229": [1, 2, 3, 4],
+  "230": [1, 2, 3]
 });
 
 const winterImageAdditionsByProductId = {
@@ -1410,7 +1421,7 @@ Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumber
   ])].sort((a, b) => a - b);
 });
 
-const IMAGE_ASSET_VERSION = "20260828-01";
+const IMAGE_ASSET_VERSION = "20260901-11";
 
 const PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID = {
   118: 48,  // Merano
@@ -1657,6 +1668,17 @@ const colorImageByProductId = {
   213: { "Azul Marino": 1, "Negro": 2, "Melange Claro": 3 },
   214: { "Negro": 1, "Azul Marino": 2, "Melange Oscuro": 3 },
   215: { "Melange Claro": 1, "Chocolate": 2, "Negro": 3 },
+  220: { "Melange Oscuro": 1, "Café": 2, "Avena Oscuro": 3, "Avena": 4, "Marfil": 5, "Negro": 6 },
+  221: { "Negro": 1, "Chocolate": 2, "Avena": 3, "Marfil": 4 },
+  222: { "Negro": 1, "Chocolate": 2, "Marfil": 3 },
+  223: { "Chocolate": 1, "Avena": 2, "Marfil": 3, "Negro": 4 },
+  224: { "Negro": 1, "Chocolate": 2, "Avena": 3, "Verde": 4, "Avena Oscuro": 5 },
+  225: { "Chocolate": 1, "Negro": 2, "Avena": 3, "Marfil": 4 },
+  226: { "Marino": 1, "Marfil": 2, "Negro": 3, "Gris": 4 },
+  227: { "Avena / Marfil / Rosa": 1, "Chocolate / Avena / Marfil": 2, "Camel / Avena / Marfil": 3, "Avena / Chocolate / Celeste": 4 },
+  228: { "Gris": 1, "Negro": 2, "Chocolate": 3, "Avena": 4 },
+  229: { "Avena Oscuro": 1, "Chocolate": 2, "Melange": 3, "Negro": 4 },
+  230: { "Chocolate": 1, "Negro": 2, "Avena": 3 },
   216: { "Azul Marino": 1, "Melange Oscuro": 2, "Negro": 3 },
   217: { "Negro": 1, "Melange Claro": 2, "Azul Marino": 3 },
   218: { "Negro": 1, "Chocolate": 2 }
@@ -2367,10 +2389,11 @@ function sweater2027WomenProduct(id, code, name, entries, boxPieces) {
   };
 }
 
-function sweater2027WomenPackOption(id, label, code, entries, boxPieces) {
+function sweater2027WomenPackOption(id, label, code, entries, boxPieces, imageProductId = null) {
   const rows = sweater2027WomenRows(entries);
   const sourcePacking = sweater2027WomenBoxLabel(boxPieces);
   const option = production2027PurchaseOption(id, label, sourcePacking, rows, code);
+  if (imageProductId) option.imageProductId = imageProductId;
   option.sizes = rows.some(row => Object.keys(row.sizePieces || {}).length)
     ? SWEATER_2027_WOMEN_SIZES
     : [];
@@ -2385,7 +2408,8 @@ function sweater2027WomenProductWithPacks(id, code, name, optionSpecs) {
     spec.label,
     spec.code || code,
     spec.entries,
-    spec.boxPieces
+    spec.boxPieces,
+    spec.imageProductId
   ));
   const firstOption = purchaseOptions[0];
   return {
@@ -2439,71 +2463,71 @@ const sweater2027Products = [
     { color: "Rojo", curve: [2, 2] }
   ], 44),
   sweater2027WomenProduct(220, "26-873", "Sweater Brisa", [
-    { color: "Negro", curve: [4, 4] },
     { color: "Melange Oscuro", curve: [2, 2] },
-    { color: "Coffee", curve: [3, 3] },
-    { color: "Oatmeal Oscuro", curve: [3, 3] },
-    { color: "Oatmeal", curve: [3, 3] },
-    { color: "Ivory", curve: [3, 3] }
+    { color: "Café", curve: [3, 3] },
+    { color: "Avena Oscuro", curve: [3, 3] },
+    { color: "Avena", curve: [3, 3] },
+    { color: "Marfil", curve: [3, 3] },
+    { color: "Negro", curve: [4, 4] }
   ], 36),
   sweater2027WomenProduct(221, "266229Y", "Sweater Bianca", [
     { color: "Negro", curve: [6, 6] },
     { color: "Chocolate", curve: [6, 6] },
-    { color: "Oatmeal", curve: [5, 5] },
-    { color: "Ivory", curve: [3, 3] }
+    { color: "Avena", curve: [5, 5] },
+    { color: "Marfil", curve: [3, 3] }
   ], 40),
   sweater2027WomenProduct(222, "PAU 02", "Sweater Vera", [
     { color: "Negro", curve: [3, 3] },
     { color: "Chocolate", curve: [3, 3] },
-    { color: "Ivory", curve: [2, 2] }
+    { color: "Marfil", curve: [2, 2] }
   ], 20),
   sweater2027WomenProduct(223, "266124J", "Sweater Ambar", [
-    { color: "Negro", curve: [4, 4] },
     { color: "Chocolate", curve: [4, 4] },
-    { color: "Oatmeal", curve: [2, 2] },
-    { color: "Ivory", curve: [2, 2] }
+    { color: "Avena", curve: [2, 2] },
+    { color: "Marfil", curve: [2, 2] },
+    { color: "Negro", curve: [4, 4] }
   ], 24),
   sweater2027WomenProduct(224, "263036L", "Sweater Roma", [
     { color: "Negro", curve: [4, 4] },
     { color: "Chocolate", curve: [3, 3] },
-    { color: "Oatmeal", curve: [2, 2] },
+    { color: "Avena", curve: [2, 2] },
     { color: "Verde", curve: [1, 1] },
-    { color: "Oatmeal Oscuro", curve: [2, 2] }
+    { color: "Avena Oscuro", curve: [2, 2] }
   ], 24),
-  sweater2027WomenProduct(225, "PAU01", "Sweater Siena", [
-    { color: "Negro", curve: [4, 4] },
+  sweater2027WomenProduct(225, "PAU01", "Sweater Viena", [
     { color: "Chocolate", curve: [2, 2] },
-    { color: "Oatmeal", curve: [2, 2] },
-    { color: "Ivory", curve: [2, 2] }
+    { color: "Negro", curve: [4, 4] },
+    { color: "Avena", curve: [2, 2] },
+    { color: "Marfil", curve: [2, 2] }
   ], 20),
   sweater2027WomenProduct(226, "263098L", "Sweater Mora", [
-    { color: "Ivory con Marron", curve: [3, 3] },
-    { color: "Azul Marino con Blanco", curve: [4, 4] },
-    { color: "Negro con Blanco", curve: [6, 6] },
-    { color: "Gris con Blanco", curve: [2, 2] }
+    { color: "Marino", curve: [4, 4] },
+    { color: "Marfil", curve: [3, 3] },
+    { color: "Negro", curve: [6, 6] },
+    { color: "Gris", curve: [2, 2] }
   ], 30),
   sweater2027WomenProductWithPacks(227, "PAU04", "Sweater Nala", [
-    { id: "pau04-pack-a", label: "Pack A", boxPieces: 50, entries: [{ color: "Coffee / Oatmeal / Rosa", pieces: "50 piezas por caja" }] },
-    { id: "pau04-pack-b", label: "Pack B", boxPieces: 50, entries: [{ color: "Chocolate / Oatmeal / Ivory", pieces: "50 piezas por caja" }] },
-    { id: "pau04-pack-c", label: "Pack C", boxPieces: 50, entries: [{ color: "Sample", pieces: "50 piezas por caja" }] },
-    { id: "pau04-pack-d", label: "Pack D", boxPieces: 50, entries: [{ color: "Coffee / Chocolate / Celeste", pieces: "50 piezas por caja" }] }
+    { id: "pau04-pack-1", label: "Pack 1", boxPieces: 50, imageProductId: 227, entries: [{ color: "Avena / Marfil / Rosa", pieces: "50 piezas por caja" }] },
+    { id: "pau04-pack-2", label: "Pack 2", boxPieces: 50, imageProductId: 227, entries: [{ color: "Chocolate / Avena / Marfil", pieces: "50 piezas por caja" }] },
+    { id: "pau04-pack-3", label: "Pack 3", boxPieces: 50, imageProductId: 227, entries: [{ color: "Camel / Avena / Marfil", pieces: "50 piezas por caja" }] },
+    { id: "pau04-pack-4", label: "Pack 4", boxPieces: 50, imageProductId: 227, entries: [{ color: "Avena / Chocolate / Celeste", pieces: "50 piezas por caja" }] }
   ]),
   sweater2027WomenProduct(228, "26-5041", "Sweater Luma", [
+    { color: "Gris", curve: [2, 2] },
     { color: "Negro", curve: [3, 3] },
     { color: "Chocolate", curve: [3, 3] },
-    { color: "Melange", curve: [2, 2] },
-    { color: "Oatmeal Oscuro", curve: [2, 2] }
+    { color: "Avena", curve: [2, 2] }
   ], 20),
-  sweater2027WomenProduct(229, "23-499", "Sweater Olivia", [
-    { color: "Negro", curve: [3, 3] },
+  Object.assign(sweater2027WomenProduct(229, "23-499", "Pantalón Luma", [
+    { color: "Avena Oscuro", curve: [2, 2] },
     { color: "Chocolate", curve: [3, 3] },
     { color: "Melange", curve: [2, 2] },
-    { color: "Oatmeal Oscuro", curve: [2, 2] }
-  ], 20),
+    { color: "Negro", curve: [3, 3] }
+  ], 20), { subcategory: "Pantalón de hilo" }),
   sweater2027WomenProduct(230, "265604", "Sweater Uma", [
-    { color: "Negro", curve: [4, 4] },
     { color: "Chocolate", curve: [3, 3] },
-    { color: "Oatmeal Oscuro", curve: [3, 3] }
+    { color: "Negro", curve: [4, 4] },
+    { color: "Avena", curve: [3, 3] }
   ], 20)
 ];
 
