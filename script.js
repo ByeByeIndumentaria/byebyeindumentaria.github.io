@@ -1378,14 +1378,7 @@ Object.assign(productImagesById, {
   "227": [1, 2, 3, 4],
   "228": [3, 1, 2, 4],
   "229": [2, 1, 3, 4],
-  "230": [1, 2, 3],
-  "231": [1],
-  "232": [1],
-  "233": [1],
-  "234": [1],
-  "235": [1],
-  "236": [1],
-  "237": [1]
+  "230": [1, 2, 3]
 });
 
 const winterImageAdditionsByProductId = {
@@ -1426,7 +1419,7 @@ Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumber
   ])].sort((a, b) => a - b);
 });
 
-const IMAGE_ASSET_VERSION = "20260903-2";
+const IMAGE_ASSET_VERSION = "20260903-3";
 
 const PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID = {
   118: 48,  // Merano
@@ -2534,39 +2527,39 @@ const sweater2027Products = [
     { color: "Negro", curve: [4, 4] },
     { color: "Avena", curve: [3, 3] }
   ], 20),
-  sweater2027WomenProduct(231, "", "Sweater cuello redondo con piel", [
+  sweater2027WomenProduct(231, "", "Sweater Aurelia", [
     { color: "Avena Claro", curve: [3, 3] },
     { color: "Negro", curve: [5, 5] },
     { color: "Chocolate", curve: [4, 4] },
     { color: "Marfil", curve: [3, 3] }
   ], 30),
-  sweater2027WomenProduct(232, "6266", "Cardigan", [
+  sweater2027WomenProduct(232, "6266", "Sweater Siena", [
     { color: "Avena Claro", curve: [3, 3] },
     { color: "Negro", curve: [5, 5] },
     { color: "Chocolate Oscuro", curve: [4, 4] },
     { color: "Marfil", curve: [3, 4] }
   ], 30),
-  sweater2027WomenProduct(233, "8711", "Cardigan", [
+  sweater2027WomenProduct(233, "8711", "Sweater Calista", [
     { color: "Avena Claro", curve: [3, 3] },
     { color: "Negro", curve: [3, 3] },
     { color: "Chocolate Oscuro", curve: [3, 3] },
     { color: "Marfil", curve: [3, 3] },
     { color: "Gris", curve: [3, 3] }
   ], 30),
-  sweater2027WomenProduct(234, "929", "Sweater cuello alto", [
+  sweater2027WomenProduct(234, "929", "Sweater Magnolia", [
     { color: "Avena Claro", curve: [3, 3] },
     { color: "Negro", curve: [5, 5] },
     { color: "Chocolate", curve: [4, 4] },
     { color: "Marfil", curve: [3, 4] }
   ], 30),
-  sweater2027WomenProduct(235, "", "Sweater cuello alto", [
+  sweater2027WomenProduct(235, "", "Sweater Allegra", [
     { color: "Avena Claro", curve: [3, 3] },
     { color: "Negro", curve: [4, 4] },
     { color: "Chocolate", curve: [4, 4] },
     { color: "Marfil", curve: [3, 3] },
     { color: "Lima", curve: [1, 1] }
   ], 30),
-  sweater2027WomenProduct(236, "", "Sweater cuello alto morley", [
+  sweater2027WomenProduct(236, "", "Sweater Violeta", [
     { color: "Avena Claro", curve: [3, 3] },
     { color: "Negro", curve: [3, 3] },
     { color: "Chocolate", curve: [3, 3] },
@@ -2574,7 +2567,7 @@ const sweater2027Products = [
     { color: "Pistacho", curve: [2, 2] },
     { color: "Gris", curve: [1, 1] }
   ], 30),
-  sweater2027WomenProduct(237, "", "Sweater cuello alto con botones", [
+  sweater2027WomenProduct(237, "", "Sweater Serena", [
     { color: "Avena Claro", curve: [3, 3] },
     { color: "Negro", curve: [3, 3] },
     { color: "Chocolate Oscuro", curve: [3, 3] },
@@ -2582,7 +2575,7 @@ const sweater2027Products = [
     { color: "Marfil", curve: [3, 3] },
     { color: "Celeste", curve: [1, 1] }
   ], 30),
-  sweater2027WomenProduct(238, "9029", "Sweater escote V", [
+  sweater2027WomenProduct(238, "9029", "Sweater India", [
     { color: "Avena Claro", curve: [4, 4] },
     { color: "Negro", curve: [5, 5] },
     { color: "Chocolate Oscuro", curve: [4, 4] },
