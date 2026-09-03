@@ -896,7 +896,7 @@ input:focus-visible,
 
   .hero {
     min-height: 0;
-    aspect-ratio: 3 / 4;
+    aspect-ratio: 1013 / 1800;
     transition: aspect-ratio .35s ease, max-height .35s ease, opacity .24s ease, margin .35s ease;
   }
   .hero-track, .hero-slide { height: 100%; min-height: 0; }
@@ -904,7 +904,7 @@ input:focus-visible,
     padding: 0;
     background-image: var(--mobile-hero-image, var(--hero-image));
     background-size: cover;
-    background-position: center;
+    background-position: center top;
   }
   .hero-slide.summer-banner {
     background-image: var(--mobile-hero-image, var(--hero-image));
