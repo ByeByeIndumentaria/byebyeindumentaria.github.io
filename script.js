@@ -1715,7 +1715,7 @@ function getColorGalleryIndex(product, colorIndex, galleryLength) {
 }
 
 function getProduction2027Gallery(product, colors, option = null) {
-  const onlyColorLinkedPhotos = (product.collection === "produccion-invierno-2027" || option?.imageProductId) && colors.length > 0;
+  const onlyColorLinkedPhotos = (product.collection === "produccion-invierno-2027" || product.onlyColorLinkedPhotos || option?.imageProductId) && colors.length > 0;
   const optionImageProductId = option?.imageProductId || product.id;
   const mappedSourceProductId = PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID[optionImageProductId];
   const sourceProductId = mappedSourceProductId || optionImageProductId;
@@ -2499,12 +2499,11 @@ const sweater2027Products = [
     { color: "Avena", curve: [2, 2] },
     { color: "Marfil", curve: [2, 2] }
   ], 20),
-  sweater2027WomenProduct(226, "263098L", "Sweater Mora", [
-    { color: "Marino", curve: [4, 4] },
+  Object.assign(sweater2027WomenProduct(226, "263098L", "Sweater Mora", [
     { color: "Marfil", curve: [3, 3] },
     { color: "Negro", curve: [6, 6] },
     { color: "Gris", curve: [2, 2] }
-  ], 30),
+  ], 22), { onlyColorLinkedPhotos: true }),
   sweater2027WomenProductWithPacks(227, "PAU04", "Sweater Nala", [
     { id: "pau04-pack-1", label: "Pack 1", boxPieces: 50, imageProductId: 227, entries: [{ color: "Avena / Marfil / Rosa", pieces: "50 piezas por caja" }] },
     { id: "pau04-pack-2", label: "Pack 2", boxPieces: 50, imageProductId: 227, entries: [{ color: "Chocolate / Avena / Marfil", pieces: "50 piezas por caja" }] },
