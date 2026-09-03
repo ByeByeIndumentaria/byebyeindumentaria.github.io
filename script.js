@@ -2547,9 +2547,8 @@ const sweater2027Products = [
     { color: "Avena Claro", curve: [3, 3] },
     { color: "Negro", curve: [3, 3] },
     { color: "Chocolate Oscuro", curve: [3, 3] },
-    { color: "Marfil", curve: [3, 3] },
-    { color: "Gris", curve: [3, 3] }
-  ], 30),
+    { color: "Marfil", curve: [3, 3] }
+  ], 24),
   sweater2027WomenProduct(234, "929", "Sweater Magnolia", [
     { color: "Avena Claro", curve: [3, 3] },
     { color: "Negro", curve: [5, 5] },
