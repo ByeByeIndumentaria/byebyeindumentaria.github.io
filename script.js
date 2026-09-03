@@ -1383,6 +1383,7 @@ Object.assign(productImagesById, {
   "232": [1, 2, 3, 4],
   "233": [1, 2, 3, 4],
   "234": [1, 2, 3, 4],
+  "235": [1, 2, 3, 4, 5, 6],
   "236": [1, 2, 3, 4, 5, 6],
   "237": [1, 2, 3, 4, 5, 6],
   "238": [1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -1426,7 +1427,7 @@ Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumber
   ])].sort((a, b) => a - b);
 });
 
-const IMAGE_ASSET_VERSION = "20260903-10";
+const IMAGE_ASSET_VERSION = "20260903-11";
 
 const PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID = {
   118: 48,  // Merano
@@ -1689,6 +1690,7 @@ const colorImageByProductId = {
   232: { "Avena Claro": 1, "Negro": 2, "Chocolate Oscuro": 3, "Marfil": 4 },
   233: { "Avena Claro": 1, "Negro": 2, "Chocolate Oscuro": 3, "Marfil": 4 },
   234: { "Avena Claro": 1, "Negro": 2, "Chocolate": 3, "Marfil": 4 },
+  235: { "Crudo": 1, "Avena": 2, "Chocolate": 3, "Negro": 4, "Avena Oscuro": 5, "Celeste": 6 },
   236: { "Avena Claro": 1, "Negro": 2, "Chocolate": 3, "Marfil": 4, "Pistacho": 5, "Gris": 6 },
   237: { "Avena Claro": 1, "Negro": 2, "Chocolate Oscuro": 3, "Avena Oscuro": 4, "Marfil": 5, "Celeste": 6 },
   238: { "Avena Claro": 1, "Negro": 2, "Marfil": 3, "Pistacho": 4, "Gris": 5, "Avena Oscuro": 6, "Chocolate": 7, "Celeste": 8, "Chocolate Oscuro": 9 },
@@ -2566,11 +2568,12 @@ const sweater2027Products = [
     { color: "Marfil", curve: [3, 4] }
   ], 30),
   sweater2027WomenProduct(235, "", "Sweater Allegra", [
-    { color: "Avena Claro", curve: [3, 3] },
-    { color: "Negro", curve: [4, 4] },
+    { color: "Crudo", curve: [3, 3] },
+    { color: "Avena", curve: [3, 3] },
     { color: "Chocolate", curve: [4, 4] },
-    { color: "Marfil", curve: [3, 3] },
-    { color: "Lima", curve: [1, 1] }
+    { color: "Negro", curve: [3, 3] },
+    { color: "Avena Oscuro", curve: [1, 1] },
+    { color: "Celeste", curve: [1, 1] }
   ], 30),
   sweater2027WomenProduct(236, "", "Sweater Violeta", [
     { color: "Avena Claro", curve: [3, 3] },
