@@ -2533,7 +2533,7 @@ const sweater2027Products = [
     { color: "Chocolate", curve: [4, 4] },
     { color: "Marfil", curve: [3, 3] }
   ], 30),
-  sweater2027WomenProduct(232, "6266", "Sweater Siena", [
+  sweater2027WomenProduct(232, "6266", "Sweater Avelina", [
     { color: "Avena Claro", curve: [3, 3] },
     { color: "Negro", curve: [5, 5] },
     { color: "Chocolate Oscuro", curve: [4, 4] },
