@@ -1427,7 +1427,7 @@ Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumber
   ])].sort((a, b) => a - b);
 });
 
-const IMAGE_ASSET_VERSION = "20260903-15";
+const IMAGE_ASSET_VERSION = "20260907-01";
 
 const PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID = {
   118: 48,  // Merano
@@ -5011,31 +5011,6 @@ async function downloadProductPDF(product, optionId = null) {
       doc.addImage(image.dataUrl, 'JPEG', x + (width - drawW) / 2, y + (height - drawH) / 2, drawW, drawH, undefined, 'FAST');
     }
 
-    if (loadedImages.length) {
-      for (let pageStart = 0; pageStart < loadedImages.length; pageStart += 6) {
-        if (pageStart > 0) doc.addPage();
-        paintPageHeader(pageStart === 0 ? `${product.name} · Imágenes` : `${product.name} · Imágenes (continuación)`);
-        const pageImages = loadedImages.slice(pageStart, pageStart + 6);
-        const gap = 6;
-        const cellW = (pageW - margin * 2 - gap) / 2;
-        const cellH = 78;
-        pageImages.forEach((image, index) => {
-          const col = index % 2;
-          const row = Math.floor(index / 2);
-          const x = margin + col * (cellW + gap);
-          const y = 30 + row * (cellH + 7);
-          doc.setFillColor(255, 250, 241);
-          doc.roundedRect(x, y, cellW, cellH, 2, 2, 'F');
-          drawContainedImage(image, x + 2, y + 2, cellW - 4, cellH - 11);
-          doc.setFont('helvetica', image.label ? 'bold' : 'normal');
-          doc.setFontSize(7.5);
-          doc.setTextColor(...(image.label ? terracotta : muted));
-          doc.text(image.label || `Foto ${pageStart + index + 1}`, x + cellW / 2, y + cellH - 3.5, { align: 'center', maxWidth: cellW - 5 });
-        });
-      }
-      doc.addPage();
-    }
-
     paintPageHeader(`${getActiveCollection().name} · Ficha de producto`);
     let y = 34;
     doc.setTextColor(...ink);
@@ -5121,6 +5096,21 @@ async function downloadProductPDF(product, optionId = null) {
         y += rowH;
       });
     }
+
+    loadedImages.forEach((image, index) => {
+      doc.addPage();
+      const photoLabel = image.label || `Foto ${index + 1}`;
+      paintPageHeader(`${product.name} · ${photoLabel}`);
+
+      doc.setFillColor(255, 250, 241);
+      doc.roundedRect(margin, 30, pageW - margin * 2, 248, 2.5, 2.5, 'F');
+      drawContainedImage(image, margin + 4, 34, pageW - margin * 2 - 8, 232);
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10);
+      doc.setTextColor(...terracotta);
+      doc.text(photoLabel, pageW / 2, 273, { align: 'center', maxWidth: pageW - margin * 2 - 10 });
+    });
 
     const totalPages = doc.internal.getNumberOfPages();
     for (let page = 1; page <= totalPages; page += 1) {
