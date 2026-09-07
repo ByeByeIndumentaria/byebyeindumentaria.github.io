@@ -2601,7 +2601,76 @@ const sweater2027Products = [
     { color: "Avena Oscuro", curve: [3, 3] },
     { color: "Chocolate", curve: [4, 4] },
     { color: "Celeste", curve: [3, 3] }
-  ], 60)
+  ], 60),
+  sweater2027WomenProduct(239, "9011", "Sweater Cuello Redondo Básico", [
+    { color: "Marfil", curve: [4, 4] },
+    { color: "Gris", curve: [2, 2] },
+    { color: "Chocolate", curve: [4, 4] },
+    { color: "Latte", curve: [3, 3] },
+    { color: "Negro", curve: [2, 2] },
+    { color: "Rojo", curve: [2, 2] },
+    { color: "Azul Marino", curve: [3, 3] },
+    { color: "Avena", curve: [4, 4] }
+  ], 60),
+  sweater2027WomenProduct(240, "F74-620", "Sweater Cuello Redondo Oversize", [
+    { color: "Marfil", curve: [4, 4] },
+    { color: "Beige", curve: [3, 3] },
+    { color: "Visón", curve: [3, 3] },
+    { color: "Negro", curve: [5, 5] }
+  ], 30),
+  sweater2027WomenProduct(241, "F74-617", "Sweater Cuello Redondo Trenzado", [
+    { color: "Crudo", curve: [3, 3] },
+    { color: "Beige", curve: [2, 2] },
+    { color: "Visón", curve: [2, 2] },
+    { color: "Marrón", curve: [4, 4] },
+    { color: "Negro", curve: [4, 4] }
+  ], 30),
+  sweater2027WomenProduct(242, "", "Sweater Escote V con Botones", [
+    { color: "Marfil", curve: [4, 4] },
+    { color: "Avena", curve: [3, 3] },
+    { color: "Chocolate", curve: [4, 4] },
+    { color: "Negro", curve: [4, 4] }
+  ], 30),
+  sweater2027WomenProduct(243, "", "Sweater Cuello Alto Básico", [
+    { color: "Marfil", curve: [4, 4] },
+    { color: "Avena", curve: [4, 4] },
+    { color: "Tostado", curve: [4, 4] },
+    { color: "Negro", curve: [6, 6] },
+    { color: "Azul Marino", curve: [4, 4] },
+    { color: "Gris Oscuro", curve: [4, 4] },
+    { color: "Celeste", curve: [2, 2] },
+    { color: "Lima", curve: [2, 2] },
+    { color: "Chocolate", curve: [4, 4] }
+  ], 68),
+  sweater2027WomenProduct(244, "MIYAQI", "Sweater Polo", [
+    { color: "Beige Muestra", curve: [3, 3] },
+    { color: "Negro", curve: [3, 3] },
+    { color: "Marfil", curve: [3, 3] },
+    { color: "Chocolate", curve: [3, 3] },
+    { color: "Azul Marino", curve: [3, 3] }
+  ], 30),
+  sweater2027WomenProduct(245, "2620", "Sweater Medio Cierre", [
+    { color: "Marfil", curve: [5, 5] },
+    { color: "Chocolate", curve: [5, 5] },
+    { color: "Negro", curve: [5, 5] }
+  ], 30),
+  sweater2027WomenProduct(246, "7251", "Sweater Cierre Completo", [
+    { color: "Avena con Vivo Chocolate", curve: [5, 5] },
+    { color: "Negro con Vivo Marfil", curve: [5, 5] },
+    { color: "Chocolate con Vivo Marfil", curve: [5, 5] }
+  ], 30),
+  sweater2027WomenProduct(247, "7250", "Sweater Cierre Completo con Capucha", [
+    { color: "Marfil", curve: [4, 4] },
+    { color: "Negro", curve: [4, 4] },
+    { color: "Chocolate", curve: [4, 4] },
+    { color: "Gris", curve: [3, 3] }
+  ], 30),
+  sweater2027WomenProduct(248, "", "Sweater Rayado", [
+    { color: "Chocolate con Amarillo", curve: [4, 4] },
+    { color: "Marfil con Beige y Chocolate", curve: [4, 4] },
+    { color: "Marfil con Beige y Lima", curve: [2, 2] },
+    { color: "Negro y Blanco", curve: [5, 5] }
+  ], 30)
 ];
 
 products.push(...sweater2027Products);
