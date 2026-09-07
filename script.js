@@ -1386,7 +1386,8 @@ Object.assign(productImagesById, {
   "235": [1, 3, 4, 5, 6, 7],
   "236": [1, 2, 3, 4, 5, 6],
   "237": [1, 2, 3, 4, 5, 6],
-  "238": [1, 2, 3, 4, 5, 6, 7, 8, 9]
+  "238": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+  "245": [1, 2, 3]
 });
 
 const winterImageAdditionsByProductId = {
@@ -1427,7 +1428,7 @@ Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumber
   ])].sort((a, b) => a - b);
 });
 
-const IMAGE_ASSET_VERSION = "20260907-01";
+const IMAGE_ASSET_VERSION = "20260907-02";
 
 const PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID = {
   118: 48,  // Merano
@@ -1696,7 +1697,8 @@ const colorImageByProductId = {
   238: { "Avena Claro": 1, "Negro": 2, "Marfil": 3, "Pistacho": 4, "Gris": 5, "Avena Oscuro": 6, "Chocolate": 7, "Celeste": 8, "Chocolate Oscuro": 9 },
   216: { "Azul Marino": 1, "Melange Oscuro": 2, "Negro": 3 },
   217: { "Negro": 1, "Melange Claro": 2, "Azul Marino": 3 },
-  218: { "Negro": 1, "Chocolate": 2 }
+  218: { "Negro": 1, "Chocolate": 2 },
+  245: { "Marfil": 1, "Chocolate": 2, "Negro": 3 }
 };
 
 function normalizeColorName(value) {
