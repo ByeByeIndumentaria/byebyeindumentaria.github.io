@@ -135,6 +135,7 @@ const products = [
   },
   {
     id: 3, name: "Remera Puntilla", category: "MUJER", subcategory: "Remeras",
+    orderNumber: "T03",
     description: "Remera con terminaciones de encaje de puntilla.",
     colors: ["Blanco", "Celeste", "Amarillo", "Beige", "Negro"],
     sizes: ["S", "M", "L", "XL"],
@@ -158,6 +159,7 @@ const products = [
   },
   {
     id: 6, name: "Set Lino", category: "MUJER", subcategory: "Conjuntos",
+    orderNumber: "T06",
     description: "Conjunto en lino premium. Liviano, transpirable y de líneas limpias.",
     colors: ["Blanco", "Lino", "Chocolate", "Negro"],
     sizes: ["S", "M", "L", "XL"],
@@ -173,6 +175,7 @@ const products = [
   },
   {
     id: 8, name: "Chaleco Lino Conjunto", category: "MUJER", subcategory: "Conjuntos", subcategories: ["Conjuntos", "Chalecos"],
+    orderNumber: "D206",
     description: "Chaleco de lino parte del conjunto coordinado. Corte sastrero.",
     colors: ["Blanco", "Beige", "Oliva", "Negro"],
     sizes: ["S", "M", "L"],
@@ -180,6 +183,7 @@ const products = [
   },
   {
     id: 9, name: "Pantalón Lino Conjunto", category: "MUJER", subcategory: "Conjuntos", subcategories: ["Conjuntos", "Pantalones"],
+    orderNumber: "D206P",
     description: "Pantalón de lino de pierna recta, parte del conjunto con chaleco.",
     colors: ["Blanco", "Beige", "Oliva", "Negro"],
     sizes: ["S", "M", "L"],
@@ -203,6 +207,7 @@ const products = [
   },
   {
     id: 12, name: "Enterito Cinto", category: "MUJER", subcategory: "Monos",
+    orderNumber: "BZD0403",
     description: "Enterito de una pieza con cinto ajustable.",
     colors: ["Blanco", "Marrón", "Negro"],
     sizes: ["S", "M", "L", "XL"],
@@ -210,6 +215,7 @@ const products = [
   },
   {
     id: 13, name: "Camisa Lino Conjunto", category: "MUJER", subcategory: "Conjuntos", subcategories: ["Conjuntos", "Camisas"],
+    orderNumber: "S5280050",
     description: "Camisa de lino parte del conjunto con jogger. Corte relajado.",
     colors: ["Blanco", "Crudo", "Khaki", "Oliva", "Negro"],
     sizes: ["S", "M", "L", "XL"],
@@ -217,6 +223,7 @@ const products = [
   },
   {
     id: 14, name: "Jogger Lino Conjunto", category: "MUJER", subcategory: "Conjuntos", subcategories: ["Conjuntos", "Pantalones"],
+    orderNumber: "BZD0413",
     description: "Jogger de lino, parte del conjunto con camisa.",
     colors: ["Blanco", "Crudo", "Caqui", "Oliva", "Negro"],
     sizes: ["S", "M", "L", "XL"],
@@ -224,6 +231,7 @@ const products = [
   },
   {
     id: 15, name: "Pantalón Sastrero", category: "MUJER", subcategory: "Conjuntos", subcategories: ["Conjuntos", "Pantalones"],
+    orderNumber: "BZD0421",
     description: "Pantalón de corte sastrero y pierna recta.",
     colors: ["Beige", "Negro"],
     sizes: ["S", "M", "L", "XL"],
@@ -231,6 +239,7 @@ const products = [
   },
   {
     id: 16, name: "Short Brezo", category: "MUJER", subcategory: "Shorts",
+    orderNumber: "BZD0426",
     description: "Short liviano de corte recto.",
     colors: ["Blanco", "Beige", "Oliva", "Chocolate", "Negro"],
     sizes: ["S", "M", "L", "XL"],
@@ -238,6 +247,7 @@ const products = [
   },
   {
     id: 17, name: "Enterito Escote V", category: "MUJER", subcategory: "Monos",
+    orderNumber: "L620170",
     description: "Enterito de una pieza con escote en V.",
     colors: ["Estampa 1", "Beige", "Estampa 2", "Negro"],
     sizes: ["S", "M", "L"],
@@ -461,7 +471,7 @@ const products = [
   },
   {
     id: 45, name: "Chomba Jersey Lisa", category: "HOMBRE", subcategory: "Chombas",
-    orderNumber: "TE11814-BB",
+    orderNumber: "TE11814BB",
     description: "Chomba lisa de jersey con cuello camisero y manga corta.",
     colors: ["Blanco", "Beige", "Melange", "Celeste", "Petróleo", "Marino", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
@@ -469,6 +479,7 @@ const products = [
   },
   {
     id: 46, name: "Pantalón Sastrero", category: "MUJER", subcategory: "Conjuntos", subcategories: ["Conjuntos", "Pantalones"],
+    orderNumber: "BZD0415",
     description: "Pantalón sastrero de mujer, de pierna amplia y tiro alto.",
     colors: ["Blanco", "Beige", "Oliva", "Chocolate", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
@@ -2734,7 +2745,7 @@ const hoodie2027Products = [
     ...production2027Rows("Chocolate", [2, 2, 2, 2, 1]),
     ...production2027Rows("Melange Claro", [2, 2, 2, 2, 1])
   ] }),
-  hoodie2027Product({ id: 213, name: "Kangaroo Niños", category: "NINOS", sizes: PRODUCTION_2027_KIDS_SIZES, totalLabel: "Cantidad no informada", rows: [
+  hoodie2027Product({ id: 213, name: "Kangaroo Niños", category: "NINOS", orderNumber: "226-223", sizes: PRODUCTION_2027_KIDS_SIZES, totalLabel: "Cantidad no informada", rows: [
     ...production2027Rows("Negro", null, { sizes: PRODUCTION_2027_KIDS_SIZES, curveText: "4 a 16" }),
     ...production2027Rows("Azul Marino", null, { sizes: PRODUCTION_2027_KIDS_SIZES, curveText: "4 a 16" }),
     ...production2027Rows("Melange Claro", null, { sizes: PRODUCTION_2027_KIDS_SIZES, curveText: "4 a 16" })
@@ -2754,12 +2765,12 @@ const hoodie2027Products = [
     ...production2027Rows("Azul Marino", null, { sizes: PRODUCTION_2027_PLUS_SIZES, curveText: "3XL a 6XL" }),
     ...production2027Rows("Melange Oscuro", null, { sizes: PRODUCTION_2027_PLUS_SIZES, curveText: "3XL a 6XL" })
   ] }),
-  hoodie2027Product({ id: 217, name: "Fiesco Pedara Unisex", category: "NINOS", sizes: PRODUCTION_2027_KIDS_SIZES, totalLabel: "Cantidad no informada", rows: [
+  hoodie2027Product({ id: 217, name: "Fiesco Pedara Unisex", category: "NINOS", orderNumber: "226-320", sizes: PRODUCTION_2027_KIDS_SIZES, totalLabel: "Cantidad no informada", rows: [
     ...production2027Rows("Negro", null, { sizes: PRODUCTION_2027_KIDS_SIZES, curveText: "4 a 16" }),
     ...production2027Rows("Azul Marino", null, { sizes: PRODUCTION_2027_KIDS_SIZES, curveText: "4 a 16" }),
     ...production2027Rows("Melange Claro", null, { sizes: PRODUCTION_2027_KIDS_SIZES, curveText: "4 a 16" })
   ] }),
-  hoodie2027Product({ id: 218, name: "Ventura Reversible", category: "UNISEX", sizes: ["S", "M", "L", "XL"], totalPieces: 1440, totalLabel: "1.440 piezas · 720 por color", rows: [
+  hoodie2027Product({ id: 218, name: "Ventura Reversible", category: "UNISEX", orderNumber: "226-326", sizes: ["S", "M", "L", "XL"], totalPieces: 1440, totalLabel: "1.440 piezas · 720 por color", rows: [
     ...production2027Rows("Negro", [1, 3, 2, 2], { sizes: ["S", "M", "L", "XL"] }),
     ...production2027Rows("Chocolate", [1, 3, 2, 2], { sizes: ["S", "M", "L", "XL"] })
   ] })
