@@ -6,14 +6,14 @@
 // ── PRODUCT DATA ────────────────────────────────
 // -- COLLECTIONS ----------------------------------
 const collections = [
-  { id: "verano-2027", name: "Verano 2027", label: "SS 2027", tagline: "Made for summer." },
   { id: "invierno-2027", name: "Invierno", label: "FW 2027", tagline: "Abrigos y prendas de invierno." },
+  { id: "primavera-2027", name: "Primavera", label: "SP 2027", tagline: "Camperas para media estación." },
+  { id: "accesorios", name: "Accesorios", label: "ACCESSORIES", tagline: "Gorros, bolsos y mochilas." },
+  { id: "deportivo", name: "Deportivo", label: "SPORT", tagline: "Indumentaria deportiva." },
+  { id: "verano-2027", name: "Verano 2027", label: "SS 2027", tagline: "Made for summer." },
   { id: "produccion-invierno-2027", name: "Invierno 2027", label: "FW 2027", tagline: "Producción Invierno 2027." },
   { id: "sweaters-2027", name: "Sweaters 2027", label: "SWEATERS 2027", tagline: "Sweaters 2027." },
-  { id: "hoodies-2027", name: "Hoodies 2027", label: "HOODIES 2027", tagline: "Hoodies 2027." },
-  { id: "primavera-2027", name: "Primavera", label: "SP 2027", tagline: "Camperas para media estación." },
-  { id: "deportivo", name: "Deportivo", label: "SPORT", tagline: "Indumentaria deportiva." },
-  { id: "accesorios", name: "Accesorios", label: "ACCESSORIES", tagline: "Gorros, bolsos y mochilas." }
+  { id: "hoodies-2027", name: "Hoodies 2027", label: "HOODIES 2027", tagline: "Hoodies 2027." }
 ];
 
 const SPRING_PRODUCT_IDS = [51, 53, 54, 58, 61, 62, 63, 66, 68, 77, 78];
@@ -3953,7 +3953,7 @@ function getStockLabel(product) {
 function buildCollectionFilters() {
   const collectionFilters = document.getElementById("collection-filters");
   if (!collectionFilters) return;
-  const visibleCollections = [{ id: "todos", name: "Todo" }, ...collections.filter(collection => !collection.hidden)];
+  const visibleCollections = collections.filter(collection => !collection.hidden);
   collectionFilters.innerHTML = visibleCollections.map(collection => `
     <button class="pill ${collection.id === activeCollection ? "active" : ""}" data-filter="collection" data-value="${collection.id}">
       ${collection.name}
@@ -4048,7 +4048,9 @@ function loadPersistedState() {
   try {
     const savedCatalog = JSON.parse(localStorage.getItem(CATALOG_STORAGE_KEY) || 'null');
     if (savedCatalog) {
-      activeCollection = savedCatalog.collection || activeCollection;
+      activeCollection = savedCatalog.collection === 'todos'
+        ? 'invierno-2027'
+        : (savedCatalog.collection || activeCollection);
       activeGender = savedCatalog.gender || activeGender;
       activeCategory = savedCatalog.category || activeCategory;
       productSearchQuery = savedCatalog.search || '';
@@ -5249,7 +5251,7 @@ function keepFocusInside(container, event) {
 }
 
 function activateCatalogCollection(collectionId) {
-  if (collectionId !== 'todos' && !collections.some(collection => collection.id === collectionId)) return;
+  if (!collections.some(collection => collection.id === collectionId)) return;
   activeCollection = collectionId;
   activeGender = 'all';
   activeCategory = 'all';
