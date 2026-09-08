@@ -1387,7 +1387,16 @@ Object.assign(productImagesById, {
   "236": [1, 2, 3, 4, 5, 6],
   "237": [1, 2, 3, 4, 5, 6],
   "238": [1, 2, 3, 4, 5, 6, 7, 8, 9],
-  "245": [1, 2, 3]
+  "239": [1, 2, 3, 4, 5, 6, 7, 8],
+  "240": [1, 2, 3, 4, 5],
+  "241": [1, 2, 3, 4, 5],
+  "242": [1, 2, 3, 4],
+  "243": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+  "244": [1, 2, 3, 4, 5],
+  "245": [1, 2, 3],
+  "246": [1, 2, 3],
+  "247": [1, 2, 3, 4],
+  "248": [1, 2, 3, 4]
 });
 
 const winterImageAdditionsByProductId = {
@@ -1428,7 +1437,7 @@ Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumber
   ])].sort((a, b) => a - b);
 });
 
-const IMAGE_ASSET_VERSION = "20260907-02";
+const IMAGE_ASSET_VERSION = "20260908-05";
 
 const PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID = {
   118: 48,  // Merano
@@ -1695,10 +1704,19 @@ const colorImageByProductId = {
   236: { "Avena Claro": 1, "Negro": 2, "Chocolate": 3, "Marfil": 4, "Pistacho": 5, "Gris": 6 },
   237: { "Crudo": 1, "Avena": 2, "Chocolate": 3, "Negro": 4, "Avena Oscuro": 5, "Celeste": 6 },
   238: { "Avena Claro": 1, "Negro": 2, "Marfil": 3, "Pistacho": 4, "Gris": 5, "Avena Oscuro": 6, "Chocolate": 7, "Celeste": 8, "Chocolate Oscuro": 9 },
+  239: { "Marfil": 1, "Gris": 2, "Chocolate": 3, "Latte": 4, "Negro": 5, "Rojo": 6, "Azul Marino": 7, "Avena": 8 },
+  240: { "Beige": 1, "Visón": 2, "Negro": 4, "Marfil": 5 },
+  241: { "Crudo": 1, "Marrón": 2, "Negro": 3, "Visón": 4, "Beige": 5 },
+  242: { "Marfil": 1, "Chocolate": 2, "Negro": 3, "Gris": 4 },
+  243: { "Marfil": 1, "Avena": 2, "Tostado": 3, "Negro": 4, "Azul Marino": 5, "Gris Oscuro": 6, "Celeste": 7, "Lima": 8, "Chocolate": 9 },
+  244: { "Chocolate": 1, "Azul Marino": 2, "Marfil": 3, "Beige Muestra": 4, "Negro": 5 },
   216: { "Azul Marino": 1, "Melange Oscuro": 2, "Negro": 3 },
   217: { "Negro": 1, "Melange Claro": 2, "Azul Marino": 3 },
   218: { "Negro": 1, "Chocolate": 2 },
-  245: { "Marfil": 1, "Chocolate": 2, "Negro": 3 }
+  245: { "Marfil": 1, "Chocolate": 2, "Negro": 3 },
+  246: { "Chocolate con Vivo Marfil": 1, "Negro con Vivo Marfil": 2, "Avena con Vivo Chocolate": 3 },
+  247: { "Negro": 1, "Marfil": 2, "Chocolate": 3, "Gris": 4 },
+  248: { "Chocolate con Amarillo": 1, "Marfil con Beige y Chocolate": 2, "Marfil con Beige y Lima": 3, "Negro y Blanco": 4 }
 };
 
 function normalizeColorName(value) {
@@ -2604,7 +2622,7 @@ const sweater2027Products = [
     { color: "Chocolate", curve: [4, 4] },
     { color: "Celeste", curve: [3, 3] }
   ], 60),
-  sweater2027WomenProduct(239, "9011", "Sweater Cuello Redondo Básico", [
+  sweater2027WomenProduct(239, "9011", "Sweater Justina", [
     { color: "Marfil", curve: [4, 4] },
     { color: "Gris", curve: [2, 2] },
     { color: "Chocolate", curve: [4, 4] },
@@ -2614,26 +2632,26 @@ const sweater2027Products = [
     { color: "Azul Marino", curve: [3, 3] },
     { color: "Avena", curve: [4, 4] }
   ], 60),
-  sweater2027WomenProduct(240, "F74-620", "Sweater Cuello Redondo Oversize", [
+  sweater2027WomenProduct(240, "F74-620", "Sweater Pola", [
     { color: "Marfil", curve: [4, 4] },
     { color: "Beige", curve: [3, 3] },
     { color: "Visón", curve: [3, 3] },
     { color: "Negro", curve: [5, 5] }
   ], 30),
-  sweater2027WomenProduct(241, "F74-617", "Sweater Cuello Redondo Trenzado", [
+  sweater2027WomenProduct(241, "F74-617", "Sweater Teza", [
     { color: "Crudo", curve: [3, 3] },
     { color: "Beige", curve: [2, 2] },
     { color: "Visón", curve: [2, 2] },
     { color: "Marrón", curve: [4, 4] },
     { color: "Negro", curve: [4, 4] }
   ], 30),
-  sweater2027WomenProduct(242, "", "Sweater Escote V con Botones", [
+  sweater2027WomenProduct(242, "", "Sweater Renata", [
     { color: "Marfil", curve: [4, 4] },
-    { color: "Avena", curve: [3, 3] },
     { color: "Chocolate", curve: [4, 4] },
-    { color: "Negro", curve: [4, 4] }
+    { color: "Negro", curve: [4, 4] },
+    { color: "Gris", curve: [3, 3] }
   ], 30),
-  sweater2027WomenProduct(243, "", "Sweater Cuello Alto Básico", [
+  sweater2027WomenProduct(243, "", "Sweater Aurora", [
     { color: "Marfil", curve: [4, 4] },
     { color: "Avena", curve: [4, 4] },
     { color: "Tostado", curve: [4, 4] },
@@ -2644,30 +2662,30 @@ const sweater2027Products = [
     { color: "Lima", curve: [2, 2] },
     { color: "Chocolate", curve: [4, 4] }
   ], 68),
-  sweater2027WomenProduct(244, "MIYAQI", "Sweater Polo", [
+  sweater2027WomenProduct(244, "MIYAQI", "Sweater Dana", [
     { color: "Beige Muestra", curve: [3, 3] },
     { color: "Negro", curve: [3, 3] },
     { color: "Marfil", curve: [3, 3] },
     { color: "Chocolate", curve: [3, 3] },
     { color: "Azul Marino", curve: [3, 3] }
   ], 30),
-  sweater2027WomenProduct(245, "2620", "Sweater Medio Cierre", [
+  sweater2027WomenProduct(245, "2620", "Sweater Guillermina", [
     { color: "Marfil", curve: [5, 5] },
     { color: "Chocolate", curve: [5, 5] },
     { color: "Negro", curve: [5, 5] }
   ], 30),
-  sweater2027WomenProduct(246, "7251", "Sweater Cierre Completo", [
+  sweater2027WomenProduct(246, "7251", "Sweater Bela", [
     { color: "Avena con Vivo Chocolate", curve: [5, 5] },
     { color: "Negro con Vivo Marfil", curve: [5, 5] },
     { color: "Chocolate con Vivo Marfil", curve: [5, 5] }
   ], 30),
-  sweater2027WomenProduct(247, "7250", "Sweater Cierre Completo con Capucha", [
+  sweater2027WomenProduct(247, "7250", "Sweater Tainy", [
     { color: "Marfil", curve: [4, 4] },
     { color: "Negro", curve: [4, 4] },
     { color: "Chocolate", curve: [4, 4] },
     { color: "Gris", curve: [3, 3] }
   ], 30),
-  sweater2027WomenProduct(248, "", "Sweater Rayado", [
+  sweater2027WomenProduct(248, "", "Sweater Donna", [
     { color: "Chocolate con Amarillo", curve: [4, 4] },
     { color: "Marfil con Beige y Chocolate", curve: [4, 4] },
     { color: "Marfil con Beige y Lima", curve: [2, 2] },
