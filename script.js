@@ -2540,12 +2540,12 @@ const sweater2027Products = [
     { color: "Negro", curve: [6, 6] },
     { color: "Gris", curve: [2, 2] }
   ], 22), { onlyColorLinkedPhotos: true }),
-  sweater2027WomenProductWithPacks(227, "PAU04", "Sweater Nala", [
-    { id: "pau04-pack-1", label: "Pack 1", boxPieces: 50, imageProductId: 227, entries: [{ color: "Avena / Marfil / Rosa", pieces: "50 piezas por caja" }] },
-    { id: "pau04-pack-2", label: "Pack 2", boxPieces: 50, imageProductId: 227, entries: [{ color: "Chocolate / Avena / Marfil", pieces: "50 piezas por caja" }] },
-    { id: "pau04-pack-3", label: "Pack 3", boxPieces: 50, imageProductId: 227, entries: [{ color: "Camel / Avena / Marfil", pieces: "50 piezas por caja" }] },
-    { id: "pau04-pack-4", label: "Pack 4", boxPieces: 50, imageProductId: 227, entries: [{ color: "Avena / Chocolate / Celeste", pieces: "50 piezas por caja" }] }
-  ]),
+  sweater2027WomenProduct(227, "PAU04", "Sweater Nala", [
+    { color: "Avena / Marfil / Rosa" },
+    { color: "Chocolate / Avena / Marfil" },
+    { color: "Camel / Avena / Marfil" },
+    { color: "Avena / Chocolate / Celeste" }
+  ], 50),
   sweater2027WomenProduct(228, "26-5041", "Sweater Luma", [
     { color: "Gris", curve: [2, 2] },
     { color: "Negro", curve: [3, 3] },
