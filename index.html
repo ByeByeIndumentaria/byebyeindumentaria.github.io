@@ -14,7 +14,7 @@
   <link rel="icon" type="image/png" href="/favicon.png" />
   <link rel="shortcut icon" href="/favicon.ico" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-  <link rel="stylesheet" href="style.css?v=20260903-01" />
+  <link rel="stylesheet" href="style.css?v=20260908-02" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -26,7 +26,7 @@
     .purchase-option-btn.active { border-color: #111; background: #111; color: #fff; }
     .purchase-option-details { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 0 0 12px; font-size: 12px; color: #625b53; }
     .catalog-search { max-width: 1400px; margin: 0 auto 18px; display: flex; align-items: center; gap: 10px; }
-    .filters-toggle { display: none; flex: 0 0 44px; width: 44px; height: 44px; align-items: center; justify-content: center; border: 1px solid rgba(168,79,42,.28); border-radius: 50%; background: rgba(255,250,241,.82); color: #564b3e; transition: border-color .2s ease, background .2s ease, transform .2s ease; }
+    .filters-toggle { display: inline-flex; flex: 0 0 44px; width: 44px; height: 44px; align-items: center; justify-content: center; border: 1px solid rgba(168,79,42,.28); border-radius: 50%; background: rgba(255,250,241,.82); color: #564b3e; transition: border-color .2s ease, background .2s ease, transform .2s ease; }
     .filters-toggle:active { transform: scale(.96); }
     .filters-toggle svg { width: 20px; height: 20px; }
     .catalog-search-field { position: relative; max-width: 520px; }
@@ -47,7 +47,6 @@
     @media (max-width: 768px) {
       .catalog-search { margin-bottom: 0; }
       .catalog-search-field { max-width: none; flex: 1 1 auto; min-width: 0; }
-      .filters-toggle { display: inline-flex; }
       .catalog-search-input { min-height: 44px; font-size: 16px; }
       .modal-zoom-toggle { top: auto; right: 12px; bottom: 14px; width: 40px; height: 40px; padding: 0; justify-content: center; }
       .modal-zoom-label { display: none; }
@@ -101,7 +100,7 @@
   <div class="filters-scroll-sentinel" id="filters-scroll-sentinel" aria-hidden="true"></div>
   <section class="filters-section" id="catalogo">
     <div class="catalog-search" role="search">
-      <button class="filters-toggle" id="filters-toggle" type="button" aria-label="Ocultar filtros" aria-controls="filters-panel" aria-expanded="true">
+      <button class="filters-toggle" id="filters-toggle" type="button" aria-label="Abrir menú de filtros" aria-controls="filters-panel" aria-expanded="false">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
           <line x1="4" y1="7" x2="20" y2="7"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="17" x2="20" y2="17"></line>
         </svg>
@@ -114,32 +113,41 @@
         <button class="catalog-search-clear" id="product-search-clear" type="button" aria-label="Limpiar búsqueda" hidden>×</button>
       </div>
     </div>
-    <div class="filters-inner" id="filters-panel">
-      <div class="filter-group">
-        <span class="filter-label">Colección</span>
+    <div class="results-info">
+      <span id="results-count"></span>
+    </div>
+  </section>
+
+  <div class="filters-drawer-overlay" id="filters-drawer-overlay"></div>
+  <aside class="filters-inner filters-drawer" id="filters-panel" role="dialog" aria-modal="true" aria-labelledby="filters-title" aria-hidden="true">
+      <div class="filters-drawer-header">
+        <div>
+          <span class="filters-drawer-kicker">BYE BYE</span>
+          <h2 id="filters-title">Explorar catálogo</h2>
+        </div>
+        <button class="filters-drawer-close" id="filters-close" type="button" aria-label="Cerrar menú de filtros">×</button>
+      </div>
+      <div class="filter-group filter-menu-level">
+        <span class="filter-label">Colecciones</span>
         <div class="filter-pills" id="collection-filters"></div>
       </div>
-      <div class="filter-group">
-        <span class="filter-label">Género</span>
+      <div class="filter-group filter-menu-level">
+        <span class="filter-label">Géneros</span>
         <div class="filter-pills" id="gender-filters">
-          <button class="pill active" data-filter="gender" data-value="all">Todos</button>
+          <button class="pill active" data-filter="gender" data-value="all">Todos/as</button>
           <button class="pill" data-filter="gender" data-value="MUJER">Mujer</button>
           <button class="pill" data-filter="gender" data-value="HOMBRE">Hombre</button>
           <button class="pill" data-filter="gender" data-value="NINOS" style="display:none">Niños</button>
           <button class="pill" data-filter="gender" data-value="UNISEX" style="display:none">Unisex</button>
         </div>
       </div>
-      <div class="filter-group">
-        <span class="filter-label">Categoría</span>
+      <div class="filter-group filter-menu-level">
+        <span class="filter-label">Prendas</span>
         <div class="filter-pills" id="category-filters">
           <!-- Populated by JS -->
         </div>
       </div>
-    </div>
-    <div class="results-info">
-      <span id="results-count"></span>
-    </div>
-  </section>
+  </aside>
 
   <section class="catalog-area">
     <!-- PRODUCT GRID -->
@@ -233,6 +241,6 @@
     <a href="#catalogo">Volver al catálogo</a>
   </footer>
 
-  <script src="script.js?v=20260908-09"></script>
+  <script src="script.js?v=20260908-10"></script>
 </body>
 </html>

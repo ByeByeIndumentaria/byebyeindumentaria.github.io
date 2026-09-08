@@ -3953,7 +3953,8 @@ function getStockLabel(product) {
 function buildCollectionFilters() {
   const collectionFilters = document.getElementById("collection-filters");
   if (!collectionFilters) return;
-  collectionFilters.innerHTML = collections.filter(collection => !collection.hidden).map(collection => `
+  const visibleCollections = [{ id: "todos", name: "Todo" }, ...collections.filter(collection => !collection.hidden)];
+  collectionFilters.innerHTML = visibleCollections.map(collection => `
     <button class="pill ${collection.id === activeCollection ? "active" : ""}" data-filter="collection" data-value="${collection.id}">
       ${collection.name}
     </button>
@@ -4109,6 +4110,8 @@ const filtersSection = document.getElementById('catalogo');
 const filtersPanel = document.getElementById('filters-panel');
 const filtersToggle = document.getElementById('filters-toggle');
 const filtersScrollSentinel = document.getElementById('filters-scroll-sentinel');
+const filtersClose = document.getElementById('filters-close');
+const filtersDrawerOverlay = document.getElementById('filters-drawer-overlay');
 const modalOverlay = document.getElementById('modal-overlay');
 const productModal = document.getElementById('product-modal');
 const toast = document.getElementById('toast');
@@ -4151,16 +4154,16 @@ function updateGenderFilters() {
 // ── CATEGORY FILTERS ────────────────────────────
 function buildCategoryFilters() {
   const allBtn = document.createElement('button');
-  allBtn.className = 'pill active';
+  allBtn.className = `pill ${activeCategory === 'all' ? 'active' : ''}`;
   allBtn.dataset.filter = 'category';
   allBtn.dataset.value = 'all';
-  allBtn.textContent = 'Todas';
+  allBtn.textContent = 'Todas las prendas';
   categoryFilters.appendChild(allBtn);
 
   const cats = [...new Set(getCollectionProducts().flatMap(getProductSubcategories))].sort();
   cats.forEach(cat => {
     const btn = document.createElement('button');
-    btn.className = 'pill';
+    btn.className = `pill ${activeCategory === cat ? 'active' : ''}`;
     btn.dataset.filter = 'category';
     btn.dataset.value = cat;
     btn.textContent = cat;
@@ -5246,7 +5249,7 @@ function keepFocusInside(container, event) {
 }
 
 function activateCatalogCollection(collectionId) {
-  if (!collections.some(collection => collection.id === collectionId)) return;
+  if (collectionId !== 'todos' && !collections.some(collection => collection.id === collectionId)) return;
   activeCollection = collectionId;
   activeGender = 'all';
   activeCategory = 'all';
@@ -5319,82 +5322,43 @@ function initHeroCarousel() {
 // ── EVENTS ───────────────────────────────────────
 function bindEvents() {
   initHeroCarousel();
-  let collapseMobileFilters = () => {};
+  let filterMenuLastFocus = null;
+  const openFiltersDrawer = () => {
+    if (!filtersPanel || !filtersDrawerOverlay || !filtersToggle) return;
+    filterMenuLastFocus = document.activeElement;
+    filtersPanel.classList.add('open');
+    filtersPanel.setAttribute('aria-hidden', 'false');
+    filtersDrawerOverlay.classList.add('active');
+    filtersToggle.setAttribute('aria-expanded', 'true');
+    filtersToggle.setAttribute('aria-label', 'Cerrar menú de filtros');
+    document.body.classList.add('filter-menu-open');
+    requestAnimationFrame(() => filtersClose?.focus());
+  };
+  const closeFiltersDrawer = () => {
+    if (!filtersPanel?.classList.contains('open')) return;
+    filtersPanel.classList.remove('open');
+    filtersPanel.setAttribute('aria-hidden', 'true');
+    filtersDrawerOverlay?.classList.remove('active');
+    filtersToggle?.setAttribute('aria-expanded', 'false');
+    filtersToggle?.setAttribute('aria-label', 'Abrir menú de filtros');
+    document.body.classList.remove('filter-menu-open');
+    filterMenuLastFocus?.focus?.();
+  };
   document.querySelectorAll('.hero-cta[data-collection]').forEach(link => {
     link.addEventListener('click', () => activateCatalogCollection(link.dataset.collection));
   });
 
-  // Mobile filters: keep the search bar stable and collapse the filter panel on downward scroll.
-  if (filtersSection && filtersPanel && filtersToggle) {
-    const mobileQuery = window.matchMedia('(max-width: 768px)');
-    let lastScrollY = window.scrollY;
-    let downwardTravel = 0;
-    let manuallyExpanded = false;
-    let scrollFrame = null;
+  filtersToggle?.addEventListener('click', openFiltersDrawer);
+  filtersClose?.addEventListener('click', closeFiltersDrawer);
+  filtersDrawerOverlay?.addEventListener('click', closeFiltersDrawer);
 
-    const syncFiltersPanelHeight = () => {
-      filtersSection.style.setProperty('--filters-panel-height', `${filtersPanel.scrollHeight}px`);
-    };
-
-    const setFiltersCollapsed = collapsed => {
-      if (!mobileQuery.matches) collapsed = false;
-      syncFiltersPanelHeight();
-      filtersSection.classList.toggle('filters-collapsed', collapsed);
-      filtersToggle.setAttribute('aria-expanded', String(!collapsed));
-      filtersToggle.setAttribute('aria-label', collapsed ? 'Mostrar filtros' : 'Ocultar filtros');
-    };
-
-    collapseMobileFilters = () => {
-      manuallyExpanded = false;
-      setFiltersCollapsed(true);
-    };
-
-    filtersToggle.addEventListener('click', () => {
-      const willCollapse = !filtersSection.classList.contains('filters-collapsed');
-      manuallyExpanded = !willCollapse;
-      setFiltersCollapsed(willCollapse);
-    });
-
-    if (filtersScrollSentinel && 'IntersectionObserver' in window) {
-      const headerHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) || 0;
-      const stickyObserver = new IntersectionObserver(entries => {
-        const sentinel = entries[0];
-        const passedStickyPoint = !sentinel.isIntersecting && sentinel.boundingClientRect.top <= headerHeight;
-        if (mobileQuery.matches && passedStickyPoint) {
-          setFiltersCollapsed(true);
-        }
-      }, { rootMargin: `-${headerHeight}px 0px 0px 0px`, threshold: 0 });
-      stickyObserver.observe(filtersScrollSentinel);
+  const mobileQuery = window.matchMedia('(max-width: 768px)');
+  const dismissMobileHero = () => {
+    if (mobileQuery.matches && window.scrollY > 24) {
+      document.body.classList.add('mobile-hero-dismissed');
     }
-
-    window.addEventListener('scroll', () => {
-      if (scrollFrame !== null) return;
-      scrollFrame = requestAnimationFrame(() => {
-        const currentScrollY = Math.max(window.scrollY, 0);
-        const scrollDelta = currentScrollY - lastScrollY;
-        if (scrollDelta < 0) manuallyExpanded = false;
-        downwardTravel = scrollDelta > 0 ? downwardTravel + scrollDelta : 0;
-        if (mobileQuery.matches && downwardTravel > 12 && currentScrollY > 80) {
-          setFiltersCollapsed(true);
-          manuallyExpanded = false;
-          downwardTravel = 0;
-        }
-        lastScrollY = currentScrollY;
-        scrollFrame = null;
-      });
-    }, { passive: true });
-
-    window.addEventListener('resize', syncFiltersPanelHeight, { passive: true });
-    mobileQuery.addEventListener?.('change', () => setFiltersCollapsed(false));
-    setFiltersCollapsed(mobileQuery.matches);
-
-    const dismissMobileHero = () => {
-      if (mobileQuery.matches && window.scrollY > 24) {
-        document.body.classList.add('mobile-hero-dismissed');
-      }
-    };
-    window.addEventListener('scroll', dismissMobileHero, { passive: true });
-  }
+  };
+  window.addEventListener('scroll', dismissMobileHero, { passive: true });
 
   // Product search
   productSearchInput?.addEventListener('input', () => {
@@ -5445,7 +5409,6 @@ function bindEvents() {
       categoryFilters.innerHTML = '';
       buildCategoryFilters();
       renderProducts();
-      collapseMobileFilters();
     });
   }
 
@@ -5457,7 +5420,6 @@ function bindEvents() {
     genderFilters.querySelectorAll('.pill').forEach(b => b.classList.toggle('active', b === btn));
     updateCategoryFilters();
     renderProducts();
-    collapseMobileFilters();
   });
 
   // Category filters
@@ -5467,7 +5429,7 @@ function bindEvents() {
     activeCategory = btn.dataset.value;
     categoryFilters.querySelectorAll('.pill').forEach(b => b.classList.toggle('active', b === btn));
     renderProducts();
-    collapseMobileFilters();
+    closeFiltersDrawer();
   });
 
   // Cart actions
@@ -5495,10 +5457,13 @@ function bindEvents() {
       keepFocusInside(productModal, e);
     } else if (e.key === 'Tab' && cartSidebar.classList.contains('open')) {
       keepFocusInside(cartSidebar, e);
+    } else if (e.key === 'Tab' && filtersPanel?.classList.contains('open')) {
+      keepFocusInside(filtersPanel, e);
     }
     if (e.key === 'Escape') {
       closeModal();
       closeCart();
+      closeFiltersDrawer();
     }
   });
 }
