@@ -546,16 +546,15 @@ const products = [
   {
     id: 252, name: "HARRY HOOD JACKET BOYS", category: "NINOS", subcategory: "Abrigos",
     description: "Campera puffer infantil liviana con capucha y combinaciones de color.",
-    colors: ["Militar", "Negro", "Army", "Azul Marino", "Azul", "Mostaza", "Piedra", "Rojo"], sizes: ["6", "8", "10", "12", "14", "16"],
-    orderNumber: "224-357", collection: "produccion-invierno-2027", images: ["images/prod_252_1.jpg"],
-    packaging: { totalPieces: 48, totalLabel: "6 piezas por color · 48 piezas totales", rows: [
-      { color: "Militar", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+    colors: ["Verde militar", "Negro", "Azul Marino", "Azul", "Mostaza", "Gris", "Rojo"], sizes: ["6", "8", "10", "12", "14", "16"],
+    orderNumber: "224-357", collection: "produccion-invierno-2027", images: ["images/prod_252_1.jpg", "images/prod_252_2.jpg", "images/prod_252_3.jpg", "images/prod_252_4.jpg"],
+    packaging: { totalPieces: 42, totalLabel: "6 piezas por color · 42 piezas totales", rows: [
+      { color: "Verde militar", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
       { color: "Negro", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
-      { color: "Army", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
       { color: "Azul Marino", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
       { color: "Azul", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
       { color: "Mostaza", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
-      { color: "Piedra", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Gris", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
       { color: "Rojo", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } }
     ] }, driveLink: ""
   },
@@ -573,7 +572,7 @@ const products = [
     id: 254, name: "LUSTRA GIRLS", category: "NINOS", subcategory: "Abrigos",
     description: "Campera puffer larga infantil para niña con capucha.",
     colors: ["Rosa", "Negro", "Gris Claro", "Morado"], sizes: ["6", "8", "10", "12", "14", "16"],
-    orderNumber: "125-379", collection: "produccion-invierno-2027", images: ["images/prod_254_1.jpg"],
+    orderNumber: "125-379", collection: "produccion-invierno-2027", images: ["images/prod_254_1.jpg", "images/prod_254_2.jpg", "images/prod_254_3.jpg", "images/prod_254_4.jpg"],
     packaging: { totalPieces: 24, totalLabel: "6 piezas por color · 24 piezas totales", rows: [
       { color: "Rosa", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
       { color: "Negro", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
@@ -1480,12 +1479,12 @@ Object.assign(productImagesById, {
   "246": [1, 2, 3],
   "247": [1, 2, 3, 4],
   "248": [1, 2, 3, 4],
-  "249": [1],
-  "250": [1],
-  "251": [1],
-  "252": [1],
-  "253": [1],
-  "254": [1]
+  "249": [1, 2, 3],
+  "250": [1, 2, 3],
+  "251": [1, 2, 3, 4],
+  "252": [1, 2, 3, 4],
+  "253": [1, 2],
+  "254": [1, 2, 3, 4]
 });
 
 const winterImageAdditionsByProductId = {
@@ -1526,7 +1525,7 @@ Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumber
   ])].sort((a, b) => a - b);
 });
 
-const IMAGE_ASSET_VERSION = "20260908-05";
+const IMAGE_ASSET_VERSION = "20260910-01";
 
 const PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID = {
   118: 48,  // Merano
@@ -1806,12 +1805,12 @@ const colorImageByProductId = {
   246: { "Chocolate con Vivo Marfil": 1, "Negro con Vivo Marfil": 2, "Avena con Vivo Chocolate": 3 },
   247: { "Negro": 1, "Marfil": 2, "Chocolate": 3, "Gris": 4 },
   248: { "Chocolate con Amarillo": 1, "Marfil con Beige y Chocolate": 2, "Marfil con Beige y Lima": 3, "Negro y Blanco": 4 },
-  249: { "Beige/Negro": 1, "Verde/Negro": 1, "Azul/Negro": 1 },
-  250: { "Negro": 1, "Azul Marino": 1, "Verde Oscuro": 1 },
-  251: { "Negro": 1, "Beige": 1, "Azul Marino": 1, "Verde Oscuro": 1 },
-  252: { "Militar": 1, "Negro": 1, "Army": 1, "Azul Marino": 1, "Azul": 1, "Mostaza": 1, "Piedra": 1, "Rojo": 1 },
-  253: { "Azul Marino": 1, "Negro": 1 },
-  254: { "Rosa": 1, "Negro": 1, "Gris Claro": 1, "Morado": 1 }
+  249: { "Verde/Negro": 1, "Beige/Negro": 2, "Azul/Negro": 3 },
+  250: { "Verde Oscuro": 1, "Negro": 2, "Azul Marino": 3 },
+  251: { "Beige": 1, "Azul Marino": 2, "Verde Oscuro": 3, "Negro": 4 },
+  252: { "Verde militar": 1, "Azul": 1, "Negro": 2, "Mostaza": 2, "Gris": 3, "Azul Marino": 4, "Rojo": 4 },
+  253: { "Azul Marino": 1, "Negro": 2 },
+  254: { "Negro": 1, "Gris Claro": 2, "Morado": 3, "Rosa": 4 }
 };
 
 function normalizeColorName(value) {
