@@ -546,16 +546,13 @@ const products = [
   {
     id: 252, name: "HARRY HOOD JACKET BOYS", category: "NINOS", subcategory: "Abrigos",
     description: "Campera puffer infantil liviana con capucha y combinaciones de color.",
-    colors: ["Verde militar", "Negro", "Azul Marino", "Azul", "Mostaza", "Gris", "Rojo"], sizes: ["6", "8", "10", "12", "14", "16"],
+    colors: ["Verde/Azul", "Negro/Mostaza", "Azul/Rojo", "Verde/Gris"], sizes: ["6", "8", "10", "12", "14", "16"],
     orderNumber: "224-357", collection: "produccion-invierno-2027", images: ["images/prod_252_1.jpg", "images/prod_252_2.jpg", "images/prod_252_3.jpg", "images/prod_252_4.jpg"],
-    packaging: { totalPieces: 42, totalLabel: "6 piezas por color · 42 piezas totales", rows: [
-      { color: "Verde militar", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
-      { color: "Negro", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
-      { color: "Azul Marino", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
-      { color: "Azul", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
-      { color: "Mostaza", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
-      { color: "Gris", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
-      { color: "Rojo", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } }
+    packaging: { totalPieces: 24, totalLabel: "6 piezas por color · 24 piezas totales", rows: [
+      { color: "Verde/Azul", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Negro/Mostaza", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Azul/Rojo", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Verde/Gris", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } }
     ] }, driveLink: ""
   },
   {
@@ -1808,7 +1805,7 @@ const colorImageByProductId = {
   249: { "Verde/Negro": 1, "Beige/Negro": 2, "Azul/Negro": 3 },
   250: { "Verde Oscuro": 1, "Negro": 2, "Azul Marino": 3 },
   251: { "Beige": 1, "Azul Marino": 2, "Gris Oscuro": 3, "Negro": 4 },
-  252: { "Verde militar": 1, "Azul": 1, "Negro": 2, "Mostaza": 2, "Gris": 3, "Azul Marino": 4, "Rojo": 4 },
+  252: { "Verde/Azul": 1, "Negro/Mostaza": 2, "Verde/Gris": 3, "Azul/Rojo": 4 },
   253: { "Azul Marino": 1, "Negro": 2 },
   254: { "Negro": 1, "Gris Claro": 2, "Morado": 3, "Rosa": 4 }
 };
