@@ -534,13 +534,13 @@ const products = [
   {
     id: 251, name: "MILAN HOOD TAFFETA BOYS", category: "NINOS", subcategory: "Abrigos",
     description: "Chaleco puffer infantil de tafeta con capucha.",
-    colors: ["Negro", "Beige", "Azul Marino", "Verde Oscuro"], sizes: ["6", "8", "10", "12", "14", "16"],
+    colors: ["Negro", "Beige", "Azul Marino", "Gris Oscuro"], sizes: ["6", "8", "10", "12", "14", "16"],
     orderNumber: "226-264", collection: "produccion-invierno-2027", images: ["images/prod_251_1.jpg"],
     packaging: { totalPieces: 24, totalLabel: "6 piezas por color · 24 piezas totales", rows: [
       { color: "Negro", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
       { color: "Beige", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
       { color: "Azul Marino", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
-      { color: "Verde Oscuro", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } }
+      { color: "Gris Oscuro", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } }
     ] }, driveLink: ""
   },
   {
@@ -1807,7 +1807,7 @@ const colorImageByProductId = {
   248: { "Chocolate con Amarillo": 1, "Marfil con Beige y Chocolate": 2, "Marfil con Beige y Lima": 3, "Negro y Blanco": 4 },
   249: { "Verde/Negro": 1, "Beige/Negro": 2, "Azul/Negro": 3 },
   250: { "Verde Oscuro": 1, "Negro": 2, "Azul Marino": 3 },
-  251: { "Beige": 1, "Azul Marino": 2, "Verde Oscuro": 3, "Negro": 4 },
+  251: { "Beige": 1, "Azul Marino": 2, "Gris Oscuro": 3, "Negro": 4 },
   252: { "Verde militar": 1, "Azul": 1, "Negro": 2, "Mostaza": 2, "Gris": 3, "Azul Marino": 4, "Rojo": 4 },
   253: { "Azul Marino": 1, "Negro": 2 },
   254: { "Negro": 1, "Gris Claro": 2, "Morado": 3, "Rosa": 4 }
