@@ -2639,7 +2639,7 @@ const sweater2027Products = [
     { color: "Chocolate / Avena / Marfil" },
     { color: "Camel / Avena / Marfil" },
     { color: "Avena / Chocolate / Celeste" }
-  ], 50),
+  ], 30),
   sweater2027WomenProduct(228, "26-5041", "Sweater Luma", [
     { color: "Gris", curve: [2, 2] },
     { color: "Negro", curve: [3, 3] },
