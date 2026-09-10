@@ -508,6 +508,78 @@ const products = [
     colors: ["Negro", "Blanco", "Marino"],
     sizes: ["S", "M", "L", "XL", "XXL"],
     driveLink: ""
+  },
+  {
+    id: 249, name: "RICHARD HOOD BLOCK BOYS", category: "NINOS", subcategory: "Abrigos",
+    description: "Campera puffer infantil con capucha y diseño en bloques de color.",
+    colors: ["Beige/Negro", "Verde/Negro", "Azul/Negro"], sizes: ["6", "8", "10", "12", "14", "16"],
+    orderNumber: "225-228", collection: "produccion-invierno-2027", images: ["images/prod_249_1.jpg"],
+    packaging: { totalPieces: 18, totalLabel: "6 piezas por color · 18 piezas totales", rows: [
+      { color: "Beige/Negro", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Verde/Negro", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Azul/Negro", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } }
+    ] }, driveLink: ""
+  },
+  {
+    id: 250, name: "RICHARD HOOD BOYS", category: "NINOS", subcategory: "Abrigos",
+    description: "Campera puffer infantil lisa con capucha.",
+    colors: ["Negro", "Azul Marino", "Verde Oscuro"], sizes: ["6", "8", "10", "12", "14", "16"],
+    orderNumber: "225-224", collection: "produccion-invierno-2027", images: ["images/prod_250_1.jpg"],
+    packaging: { totalPieces: 18, totalLabel: "6 piezas por color · 18 piezas totales", rows: [
+      { color: "Negro", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Azul Marino", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Verde Oscuro", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } }
+    ] }, driveLink: ""
+  },
+  {
+    id: 251, name: "MILAN HOOD TAFFETA BOYS", category: "NINOS", subcategory: "Abrigos",
+    description: "Chaleco puffer infantil de tafeta con capucha.",
+    colors: ["Negro", "Beige", "Azul Marino", "Verde Oscuro"], sizes: ["6", "8", "10", "12", "14", "16"],
+    orderNumber: "226-264", collection: "produccion-invierno-2027", images: ["images/prod_251_1.jpg"],
+    packaging: { totalPieces: 24, totalLabel: "6 piezas por color · 24 piezas totales", rows: [
+      { color: "Negro", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Beige", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Azul Marino", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Verde Oscuro", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } }
+    ] }, driveLink: ""
+  },
+  {
+    id: 252, name: "HARRY HOOD JACKET BOYS", category: "NINOS", subcategory: "Abrigos",
+    description: "Campera puffer infantil liviana con capucha y combinaciones de color.",
+    colors: ["Militar", "Negro", "Army", "Azul Marino", "Azul", "Mostaza", "Piedra", "Rojo"], sizes: ["6", "8", "10", "12", "14", "16"],
+    orderNumber: "224-357", collection: "produccion-invierno-2027", images: ["images/prod_252_1.jpg"],
+    packaging: { totalPieces: 48, totalLabel: "6 piezas por color · 48 piezas totales", rows: [
+      { color: "Militar", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Negro", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Army", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Azul Marino", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Azul", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Mostaza", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Piedra", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Rojo", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } }
+    ] }, driveLink: ""
+  },
+  {
+    id: 253, name: "CORVEL KIDS UNISEX SCHOOL", category: "NINOS", subcategory: "Abrigos",
+    description: "Campera puffer escolar infantil unisex con capucha.",
+    colors: ["Azul Marino", "Negro"], sizes: ["6", "8", "10", "12", "14", "16"],
+    orderNumber: "226-198", collection: "produccion-invierno-2027", images: ["images/prod_253_1.jpg"],
+    packaging: { totalPieces: 12, totalLabel: "6 piezas por color · 12 piezas totales", rows: [
+      { color: "Azul Marino", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Negro", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } }
+    ] }, driveLink: ""
+  },
+  {
+    id: 254, name: "LUSTRA GIRLS", category: "NINOS", subcategory: "Abrigos",
+    description: "Campera puffer larga infantil para niña con capucha.",
+    colors: ["Rosa", "Negro", "Gris Claro", "Morado"], sizes: ["6", "8", "10", "12", "14", "16"],
+    orderNumber: "125-379", collection: "produccion-invierno-2027", images: ["images/prod_254_1.jpg"],
+    packaging: { totalPieces: 24, totalLabel: "6 piezas por color · 24 piezas totales", rows: [
+      { color: "Rosa", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Negro", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Gris Claro", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Morado", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } }
+    ] }, driveLink: ""
   }
 ];
 
@@ -1407,7 +1479,13 @@ Object.assign(productImagesById, {
   "245": [1, 2, 3],
   "246": [1, 2, 3],
   "247": [1, 2, 3, 4],
-  "248": [1, 2, 3, 4]
+  "248": [1, 2, 3, 4],
+  "249": [1],
+  "250": [1],
+  "251": [1],
+  "252": [1],
+  "253": [1],
+  "254": [1]
 });
 
 const winterImageAdditionsByProductId = {
@@ -1727,7 +1805,13 @@ const colorImageByProductId = {
   245: { "Marfil": 1, "Chocolate": 2, "Negro": 3 },
   246: { "Chocolate con Vivo Marfil": 1, "Negro con Vivo Marfil": 2, "Avena con Vivo Chocolate": 3 },
   247: { "Negro": 1, "Marfil": 2, "Chocolate": 3, "Gris": 4 },
-  248: { "Chocolate con Amarillo": 1, "Marfil con Beige y Chocolate": 2, "Marfil con Beige y Lima": 3, "Negro y Blanco": 4 }
+  248: { "Chocolate con Amarillo": 1, "Marfil con Beige y Chocolate": 2, "Marfil con Beige y Lima": 3, "Negro y Blanco": 4 },
+  249: { "Beige/Negro": 1, "Verde/Negro": 1, "Azul/Negro": 1 },
+  250: { "Negro": 1, "Azul Marino": 1, "Verde Oscuro": 1 },
+  251: { "Negro": 1, "Beige": 1, "Azul Marino": 1, "Verde Oscuro": 1 },
+  252: { "Militar": 1, "Negro": 1, "Army": 1, "Azul Marino": 1, "Azul": 1, "Mostaza": 1, "Piedra": 1, "Rojo": 1 },
+  253: { "Azul Marino": 1, "Negro": 1 },
+  254: { "Rosa": 1, "Negro": 1, "Gris Claro": 1, "Morado": 1 }
 };
 
 function normalizeColorName(value) {
