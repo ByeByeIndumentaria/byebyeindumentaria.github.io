@@ -568,13 +568,13 @@ const products = [
   {
     id: 254, name: "LUSTRA GIRLS", category: "NINOS", subcategory: "Abrigos",
     description: "Campera puffer larga infantil para niña con capucha.",
-    colors: ["Rosa", "Negro", "Gris Claro", "Morado"], sizes: ["6", "8", "10", "12", "14", "16"],
+    colors: ["Rosa", "Negro", "Gris Claro", "Violeta"], sizes: ["6", "8", "10", "12", "14", "16"],
     orderNumber: "125-379", collection: "produccion-invierno-2027", images: ["images/prod_254_1.jpg", "images/prod_254_2.jpg", "images/prod_254_3.jpg", "images/prod_254_4.jpg"],
     packaging: { totalPieces: 24, totalLabel: "6 piezas por color · 24 piezas totales", rows: [
       { color: "Rosa", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
       { color: "Negro", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
       { color: "Gris Claro", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
-      { color: "Morado", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } }
+      { color: "Violeta", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } }
     ] }, driveLink: ""
   }
 ];
@@ -1807,7 +1807,7 @@ const colorImageByProductId = {
   251: { "Beige": 1, "Azul Marino": 2, "Gris Oscuro": 3, "Negro": 4 },
   252: { "Verde/Azul": 1, "Negro/Mostaza": 2, "Verde/Gris": 3, "Azul/Rojo": 4 },
   253: { "Azul Marino": 1, "Negro": 2 },
-  254: { "Negro": 1, "Gris Claro": 2, "Morado": 3, "Rosa": 4 }
+  254: { "Negro": 1, "Gris Claro": 2, "Violeta": 3, "Rosa": 4 }
 };
 
 function normalizeColorName(value) {
