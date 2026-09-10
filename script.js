@@ -96,7 +96,7 @@ const PRODUCT_DESCRIPTION_BY_ID = {
 // -- EASY CATALOG CONTROL -------------------------
 // Para poner un producto fuera de stock, agregá su número:
 // const OUT_OF_STOCK_PRODUCT_IDS = [12, 43];
-const OUT_OF_STOCK_PRODUCT_IDS = [1, 3, 6, 8, 9, 12, 13, 14, 15, 16, 17, 20, 24, 25, 27, 28, 30, 33, 46, 50, 59, 70, 85, 86, 101];
+const OUT_OF_STOCK_PRODUCT_IDS = [1, 3, 6, 8, 9, 12, 13, 14, 15, 16, 17, 20, 24, 25, 27, 28, 30, 33, 46, 50, 59, 85, 86, 101, 163, 172, 174, 188];
 
 // Stock agotado por variante. Los talles que no figuran acá continúan disponibles.
 const OUT_OF_STOCK_VARIANTS = {
@@ -2083,7 +2083,7 @@ const extraProducts = [
     description: "Tapado sastrero de invierno para mujer, con solapas, tres botones y bolsillos laterales.",
     colors: ["Melange", "Beige", "Negro"],
     sizes: ["M", "L", "XL", "XXL"],
-    orderNumber: "224-512", collection: "invierno-2027",
+    orderNumber: "224-512", collection: "produccion-invierno-2027",
     driveLink: ""
   }
 ];
