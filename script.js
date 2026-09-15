@@ -1398,17 +1398,17 @@ Object.assign(productImagesById, {
   "157": [1, 2, 3],
   "158": [1, 2],
   "159": [1, 2, 3],
-  "160": [1],
-  "161": [1],
-  "162": [1],
+  "160": [1, 2],
+  "161": [1, 2, 3],
+  "162": [1, 2, 3],
   "163": [1],
-  "164": [1],
-  "165": [1],
-  "166": [1],
-  "167": [1],
+  "164": [1, 2, 3, 4],
+  "165": [1, 2, 3],
+  "166": [1, 2, 3],
+  "167": [1, 2],
   "168": [1],
-  "169": [1],
-  "170": [1],
+  "169": [1, 2, 3, 4],
+  "170": [1, 2, 3, 4],
   "171": [1],
   "172": [1, 2, 3, 4],
   "182": [1, 2, 3, 4],
@@ -1526,7 +1526,7 @@ Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumber
   ])].sort((a, b) => a - b);
 });
 
-const IMAGE_ASSET_VERSION = "20260910-01";
+const IMAGE_ASSET_VERSION = "20260915-08";
 
 const PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID = {
   118: 48,  // Merano
@@ -1625,6 +1625,16 @@ function getProductImageSources(id) {
 
 // Foto principal por color. El numero corresponde a prod_ID_NUMERO.
 const colorImageByProductId = {
+  160: { "Marrón": 1, "Negro": 2 },
+  161: { "Camel": 1, "Negro": 2, "Chocolate": 3 },
+  162: { "Camel": 1, "Chocolate": 2, "Negro": 3 },
+  164: { "Beige": 1, "Chocolate": 2, "Camel": 3, "Negro": 4 },
+  159: { "Oliva": 1, "Negro": 2, "Gris": 3 },
+  165: { "Gris Oscuro": 1, "Beige": 2, "Negro": 3 },
+  166: { "Negro/Beige": 1, "Azul/Blanco": 2, "Rojo/Azul": 3 },
+  167: { "Negro": 1, "Chocolate": 2 },
+  169: { "Chocolate": 1, "Marrón": 2, "Camel": 3, "Negro": 4 },
+  170: { "Crudo/Marino": 1, "Negro/Marino": 2, "Marino": 3, "Negro": 4 },
   157: { "Negro": 1, "Camel": 2, "Oliva": 3 },
   156: { "Negro": 1, "Gris": 2, "Oliva": 3 },
   155: { "Negro": 1, "Melange claro": 2, "Melange oscuro": 3, "Beige": 4 },
@@ -3198,6 +3208,66 @@ const comisoProduct = production2027Products.find(product => product.id === 154)
 if (comisoProduct) {
   comisoProduct.colors = ["Negro", "Chocolate", "Camel"];
   comisoProduct.preserveCatalogColors = true;
+}
+
+const carlAldenoProduct = production2027Products.find(product => product.id === 160);
+if (carlAldenoProduct) {
+  carlAldenoProduct.colors = ["Marrón", "Negro"];
+  carlAldenoProduct.preserveCatalogColors = true;
+}
+
+const floydProduct = production2027Products.find(product => product.id === 161);
+if (floydProduct) {
+  floydProduct.colors = ["Camel", "Negro", "Chocolate"];
+  floydProduct.preserveCatalogColors = true;
+}
+
+const stephenProduct = production2027Products.find(product => product.id === 162);
+if (stephenProduct) {
+  stephenProduct.colors = ["Camel", "Chocolate", "Negro"];
+  stephenProduct.preserveCatalogColors = true;
+}
+
+const curnoProduct = production2027Products.find(product => product.id === 164);
+if (curnoProduct) {
+  curnoProduct.colors = ["Beige", "Chocolate", "Camel", "Negro"];
+  curnoProduct.preserveCatalogColors = true;
+}
+
+const malvitoProduct = production2027Products.find(product => product.id === 159);
+if (malvitoProduct) {
+  malvitoProduct.colors = ["Oliva", "Negro", "Gris"];
+  malvitoProduct.preserveCatalogColors = true;
+}
+
+const odingaProduct = production2027Products.find(product => product.id === 165);
+if (odingaProduct) {
+  odingaProduct.colors = ["Gris Oscuro", "Beige", "Negro"];
+  odingaProduct.preserveCatalogColors = true;
+}
+
+const aidoneProduct = production2027Products.find(product => product.id === 166);
+if (aidoneProduct) {
+  aidoneProduct.colors = ["Negro/Beige", "Azul/Blanco", "Rojo/Azul"];
+  aidoneProduct.preserveCatalogColors = true;
+}
+
+const carpinoProduct = production2027Products.find(product => product.id === 167);
+if (carpinoProduct) {
+  carpinoProduct.colors = ["Negro", "Chocolate"];
+  carpinoProduct.preserveCatalogColors = true;
+}
+
+const jamalProduct = production2027Products.find(product => product.id === 169);
+if (jamalProduct) {
+  jamalProduct.colors = ["Chocolate", "Marrón", "Camel", "Negro"];
+  jamalProduct.preserveCatalogColors = true;
+}
+
+const mikeyProduct = production2027Products.find(product => product.id === 170);
+if (mikeyProduct) {
+  mikeyProduct.colors = ["Crudo/Marino", "Negro/Marino", "Marino", "Negro"];
+  mikeyProduct.preserveCatalogColors = true;
 }
 
 const aimmenProduct = production2027Products.find(product => product.id === 172);
