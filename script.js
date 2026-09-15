@@ -1392,7 +1392,7 @@ Object.assign(productImagesById, {
   "151": [1, 2, 3],
   "152": [1, 2, 3],
   "153": [1, 2],
-  "154": [1],
+  "154": [1, 2, 3],
   "155": [1],
   "156": [1],
   "157": [1],
@@ -1569,6 +1569,9 @@ function versionImageSrc(src) {
 }
 
 const productImageExtensionByKey = {
+  "154_1": "png",
+  "154_2": "png",
+  "154_3": "png",
   "34_6": "jpeg",
   "34_7": "jpeg",
   "35_4": "jpeg",
@@ -1613,6 +1616,7 @@ function getProductImageSources(id) {
 
 // Foto principal por color. El numero corresponde a prod_ID_NUMERO.
 const colorImageByProductId = {
+  154: { "Negro": 1, "Chocolate": 2, "Camel": 3 },
   1: { "Blanco": 6, "Gris Melange": 7, "Negro": 8 },
   2: { "Blanco": 4, "Celeste": 5, "Negro": 6 },
   3: { "Beige": 6, "Amarillo": 7, "Blanco": 8, "Celeste": 9, "Negro": 10 },
@@ -3130,6 +3134,12 @@ const production2027Products = [
     sourceWorkbook: "Stock Ladies MP088 2.pdf"
   }))
 ];
+
+const comisoProduct = production2027Products.find(product => product.id === 154);
+if (comisoProduct) {
+  comisoProduct.colors = ["Negro", "Chocolate", "Camel"];
+  comisoProduct.preserveCatalogColors = true;
+}
 
 const aimmenProduct = production2027Products.find(product => product.id === 172);
 if (aimmenProduct) aimmenProduct.colors = ["Negro", "Oliva", "Chocolate", "Piedra"];
