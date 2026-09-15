@@ -6,13 +6,14 @@
 // ── PRODUCT DATA ────────────────────────────────
 // -- COLLECTIONS ----------------------------------
 const collections = [
-  { id: "verano-2027", name: "Verano 2027", label: "SS 2027", tagline: "Made for summer." },
   { id: "invierno-2027", name: "Invierno", label: "FW 2027", tagline: "Abrigos y prendas de invierno." },
-  { id: "produccion-invierno-2027", name: "Invierno 2027", label: "FW 2027", tagline: "Producción Invierno 2027." },
-  { id: "sweaters-2027", name: "Sweaters 2027", label: "SWEATERS 2027", tagline: "Sweaters de hombre 2027.", hidden: true },
   { id: "primavera-2027", name: "Primavera", label: "SP 2027", tagline: "Camperas para media estación." },
+  { id: "accesorios", name: "Accesorios", label: "ACCESSORIES", tagline: "Gorros, bolsos y mochilas." },
   { id: "deportivo", name: "Deportivo", label: "SPORT", tagline: "Indumentaria deportiva." },
-  { id: "accesorios", name: "Accesorios", label: "ACCESSORIES", tagline: "Gorros, bolsos y mochilas." }
+  { id: "verano-2027", name: "Verano 2027", label: "SS 2027", tagline: "Made for summer." },
+  { id: "produccion-invierno-2027", name: "Invierno 2027", label: "FW 2027", tagline: "Producción Invierno 2027." },
+  { id: "sweaters-2027", name: "Sweaters 2027", label: "SWEATERS 2027", tagline: "Sweaters 2027." },
+  { id: "hoodies-2027", name: "Hoodies 2027", label: "HOODIES 2027", tagline: "Hoodies 2027." }
 ];
 
 const SPRING_PRODUCT_IDS = [51, 53, 54, 58, 61, 62, 63, 66, 68, 77, 78];
@@ -95,15 +96,12 @@ const PRODUCT_DESCRIPTION_BY_ID = {
 // -- EASY CATALOG CONTROL -------------------------
 // Para poner un producto fuera de stock, agregá su número:
 // const OUT_OF_STOCK_PRODUCT_IDS = [12, 43];
-const OUT_OF_STOCK_PRODUCT_IDS = [3, 6, 8, 9, 12, 13, 14, 15, 16, 17, 20, 24, 25, 27, 28, 33, 45, 46, 50, 51, 59, 70, 85, 86, 101, 136];
+const OUT_OF_STOCK_PRODUCT_IDS = [1, 3, 6, 8, 9, 12, 13, 14, 15, 16, 17, 20, 24, 25, 27, 28, 30, 33, 45, 46, 50, 59, 85, 86, 101, 163, 172, 174, 188];
 
 // Stock agotado por variante. Los talles que no figuran acá continúan disponibles.
 const OUT_OF_STOCK_VARIANTS = {
   40: {
     Negro: ["S", "M", "L", "XL", "3XL"]
-  },
-  51: {
-    Negro: ["S", "M", "L", "XL", "XXL"]
   },
   66: {
     Negro: ["S", "M", "L", "XL", "XXL"]
@@ -137,6 +135,7 @@ const products = [
   },
   {
     id: 3, name: "Remera Puntilla", category: "MUJER", subcategory: "Remeras",
+    orderNumber: "T03",
     description: "Remera con terminaciones de encaje de puntilla.",
     colors: ["Blanco", "Celeste", "Amarillo", "Beige", "Negro"],
     sizes: ["S", "M", "L", "XL"],
@@ -160,6 +159,7 @@ const products = [
   },
   {
     id: 6, name: "Set Lino", category: "MUJER", subcategory: "Conjuntos",
+    orderNumber: "T06",
     description: "Conjunto en lino premium. Liviano, transpirable y de líneas limpias.",
     colors: ["Blanco", "Lino", "Chocolate", "Negro"],
     sizes: ["S", "M", "L", "XL"],
@@ -175,6 +175,7 @@ const products = [
   },
   {
     id: 8, name: "Chaleco Lino Conjunto", category: "MUJER", subcategory: "Conjuntos", subcategories: ["Conjuntos", "Chalecos"],
+    orderNumber: "D206",
     description: "Chaleco de lino parte del conjunto coordinado. Corte sastrero.",
     colors: ["Blanco", "Beige", "Oliva", "Negro"],
     sizes: ["S", "M", "L"],
@@ -182,6 +183,7 @@ const products = [
   },
   {
     id: 9, name: "Pantalón Lino Conjunto", category: "MUJER", subcategory: "Conjuntos", subcategories: ["Conjuntos", "Pantalones"],
+    orderNumber: "D206P",
     description: "Pantalón de lino de pierna recta, parte del conjunto con chaleco.",
     colors: ["Blanco", "Beige", "Oliva", "Negro"],
     sizes: ["S", "M", "L"],
@@ -205,6 +207,7 @@ const products = [
   },
   {
     id: 12, name: "Enterito Cinto", category: "MUJER", subcategory: "Monos",
+    orderNumber: "BZD0403",
     description: "Enterito de una pieza con cinto ajustable.",
     colors: ["Blanco", "Marrón", "Negro"],
     sizes: ["S", "M", "L", "XL"],
@@ -212,6 +215,7 @@ const products = [
   },
   {
     id: 13, name: "Camisa Lino Conjunto", category: "MUJER", subcategory: "Conjuntos", subcategories: ["Conjuntos", "Camisas"],
+    orderNumber: "S5280050",
     description: "Camisa de lino parte del conjunto con jogger. Corte relajado.",
     colors: ["Blanco", "Crudo", "Khaki", "Oliva", "Negro"],
     sizes: ["S", "M", "L", "XL"],
@@ -219,6 +223,7 @@ const products = [
   },
   {
     id: 14, name: "Jogger Lino Conjunto", category: "MUJER", subcategory: "Conjuntos", subcategories: ["Conjuntos", "Pantalones"],
+    orderNumber: "BZD0413",
     description: "Jogger de lino, parte del conjunto con camisa.",
     colors: ["Blanco", "Crudo", "Caqui", "Oliva", "Negro"],
     sizes: ["S", "M", "L", "XL"],
@@ -226,6 +231,7 @@ const products = [
   },
   {
     id: 15, name: "Pantalón Sastrero", category: "MUJER", subcategory: "Conjuntos", subcategories: ["Conjuntos", "Pantalones"],
+    orderNumber: "BZD0421",
     description: "Pantalón de corte sastrero y pierna recta.",
     colors: ["Beige", "Negro"],
     sizes: ["S", "M", "L", "XL"],
@@ -233,6 +239,7 @@ const products = [
   },
   {
     id: 16, name: "Short Brezo", category: "MUJER", subcategory: "Shorts",
+    orderNumber: "BZD0426",
     description: "Short liviano de corte recto.",
     colors: ["Blanco", "Beige", "Oliva", "Chocolate", "Negro"],
     sizes: ["S", "M", "L", "XL"],
@@ -240,6 +247,7 @@ const products = [
   },
   {
     id: 17, name: "Enterito Escote V", category: "MUJER", subcategory: "Monos",
+    orderNumber: "L620170",
     description: "Enterito de una pieza con escote en V.",
     colors: ["Estampa 1", "Beige", "Estampa 2", "Negro"],
     sizes: ["S", "M", "L"],
@@ -463,6 +471,7 @@ const products = [
   },
   {
     id: 45, name: "Chomba Jersey Lisa", category: "HOMBRE", subcategory: "Chombas",
+    orderNumber: "TE11814BB",
     description: "Chomba lisa de jersey con cuello camisero y manga corta.",
     colors: ["Blanco", "Beige", "Melange", "Celeste", "Petróleo", "Marino", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
@@ -470,6 +479,7 @@ const products = [
   },
   {
     id: 46, name: "Pantalón Sastrero", category: "MUJER", subcategory: "Conjuntos", subcategories: ["Conjuntos", "Pantalones"],
+    orderNumber: "BZD0415",
     description: "Pantalón sastrero de mujer, de pierna amplia y tiro alto.",
     colors: ["Blanco", "Beige", "Oliva", "Chocolate", "Negro"],
     sizes: ["S", "M", "L", "XL", "XXL"],
@@ -498,6 +508,74 @@ const products = [
     colors: ["Negro", "Blanco", "Marino"],
     sizes: ["S", "M", "L", "XL", "XXL"],
     driveLink: ""
+  },
+  {
+    id: 249, name: "RICHARD HOOD BLOCK BOYS", category: "NINOS", subcategory: "Abrigos",
+    description: "Campera puffer infantil con capucha y diseño en bloques de color.",
+    colors: ["Beige/Negro", "Verde/Negro", "Azul/Negro"], sizes: ["6", "8", "10", "12", "14", "16"],
+    orderNumber: "225-228", collection: "produccion-invierno-2027", images: ["images/prod_249_1.jpg"],
+    packaging: { totalPieces: 18, totalLabel: "6 piezas por color · 18 piezas totales", rows: [
+      { color: "Beige/Negro", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Verde/Negro", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Azul/Negro", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } }
+    ] }, driveLink: ""
+  },
+  {
+    id: 250, name: "RICHARD HOOD BOYS", category: "NINOS", subcategory: "Abrigos",
+    description: "Campera puffer infantil lisa con capucha.",
+    colors: ["Negro", "Azul Marino", "Verde Oscuro"], sizes: ["6", "8", "10", "12", "14", "16"],
+    orderNumber: "225-224", collection: "produccion-invierno-2027", images: ["images/prod_250_1.jpg"],
+    packaging: { totalPieces: 18, totalLabel: "6 piezas por color · 18 piezas totales", rows: [
+      { color: "Negro", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Azul Marino", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Verde Oscuro", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } }
+    ] }, driveLink: ""
+  },
+  {
+    id: 251, name: "MILAN HOOD TAFFETA BOYS", category: "NINOS", subcategory: "Abrigos",
+    description: "Chaleco puffer infantil de tafeta con capucha.",
+    colors: ["Negro", "Beige", "Azul Marino", "Gris Oscuro"], sizes: ["6", "8", "10", "12", "14", "16"],
+    orderNumber: "226-264", collection: "produccion-invierno-2027", images: ["images/prod_251_1.jpg"],
+    packaging: { totalPieces: 24, totalLabel: "6 piezas por color · 24 piezas totales", rows: [
+      { color: "Negro", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Beige", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Azul Marino", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Gris Oscuro", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } }
+    ] }, driveLink: ""
+  },
+  {
+    id: 252, name: "HARRY HOOD JACKET BOYS", category: "NINOS", subcategory: "Abrigos",
+    description: "Campera puffer infantil liviana con capucha y combinaciones de color.",
+    colors: ["Verde/Azul", "Negro/Mostaza", "Azul/Rojo", "Verde/Gris"], sizes: ["6", "8", "10", "12", "14", "16"],
+    orderNumber: "224-357", collection: "produccion-invierno-2027", images: ["images/prod_252_1.jpg", "images/prod_252_2.jpg", "images/prod_252_3.jpg", "images/prod_252_4.jpg"],
+    packaging: { totalPieces: 24, totalLabel: "6 piezas por color · 24 piezas totales", rows: [
+      { color: "Verde/Azul", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Negro/Mostaza", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Azul/Rojo", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Verde/Gris", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } }
+    ] }, driveLink: ""
+  },
+  {
+    id: 253, name: "CORVEL KIDS UNISEX SCHOOL", category: "NINOS", subcategory: "Abrigos",
+    description: "Campera puffer escolar infantil unisex con capucha.",
+    colors: ["Azul Marino", "Negro"], sizes: ["6", "8", "10", "12", "14", "16"],
+    orderNumber: "226-198", collection: "produccion-invierno-2027", images: ["images/prod_253_1.jpg"],
+    packaging: { totalPieces: 12, totalLabel: "6 piezas por color · 12 piezas totales", rows: [
+      { color: "Azul Marino", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Negro", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } }
+    ] }, driveLink: ""
+  },
+  {
+    id: 254, name: "LUSTRA GIRLS", category: "NINOS", subcategory: "Abrigos",
+    description: "Campera puffer larga infantil para niña con capucha.",
+    colors: ["Rosa", "Negro", "Gris Claro", "Violeta"], sizes: ["6", "8", "10", "12", "14", "16"],
+    orderNumber: "125-379", collection: "produccion-invierno-2027", images: ["images/prod_254_1.jpg", "images/prod_254_2.jpg", "images/prod_254_3.jpg", "images/prod_254_4.jpg"],
+    packaging: { totalPieces: 24, totalLabel: "6 piezas por color · 24 piezas totales", rows: [
+      { color: "Rosa", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Negro", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Gris Claro", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } },
+      { color: "Violeta", sizePieces: { "6": 1, "8": 1, "10": 1, "12": 1, "14": 1, "16": 1 } }
+    ] }, driveLink: ""
   }
 ];
 
@@ -1354,14 +1432,56 @@ Object.assign(productImagesById, {
   "200": [1, 2, 3, 4],
   "201": [1, 2, 3, 4],
   "202": [1, 2, 3, 4],
+  "203": [1, 2, 3, 4],
   "205": [1, 2, 3, 4],
+  "206": [1, 2, 3, 4],
   "208": [1, 2, 3, 4],
-  "255": [1, 2, 3],
-  "256": [1, 2, 3],
-  "257": [1, 2, 3],
-  "258": [1, 2, 3],
   "209": [1, 2, 3, 4, 5, 6],
-  "210": [1, 2, 3]
+  "210": [1, 2, 3],
+  "211": [1, 2, 3],
+  "212": [1, 2, 3],
+  "213": [1, 2, 3],
+  "214": [1, 2, 3],
+  "215": [1, 2, 3],
+  "216": [1, 2, 3],
+  "217": [1, 2, 3],
+  "218": [1, 2],
+  "219": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+  "220": [1, 2, 3, 4, 5, 6],
+  "221": [1, 2, 3, 4],
+  "222": [1, 2, 3],
+  "223": [1, 2, 3, 4],
+  "224": [1, 2, 3, 4, 5],
+  "225": [1, 2, 3, 4],
+  "226": [1, 2, 3, 4],
+  "227": [1, 2, 3, 4],
+  "228": [3, 1, 2, 4],
+  "229": [2, 1, 3, 4],
+  "230": [1, 2, 3],
+  "231": [1, 2, 3, 4],
+  "232": [1, 2, 3, 4],
+  "233": [1, 2, 3, 4],
+  "234": [1, 2, 3, 4],
+  "235": [1, 3, 4, 5, 6, 7],
+  "236": [1, 2, 3, 4, 5, 6],
+  "237": [1, 2, 3, 4, 5, 6],
+  "238": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+  "239": [1, 2, 3, 4, 5, 6, 7, 8],
+  "240": [1, 2, 3, 4, 5],
+  "241": [1, 2, 3, 4, 5],
+  "242": [1, 2, 3, 4],
+  "243": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+  "244": [1, 2, 3, 4, 5],
+  "245": [1, 2, 3],
+  "246": [1, 2, 3],
+  "247": [1, 2, 3, 4],
+  "248": [1, 2, 3, 4],
+  "249": [1, 2, 3],
+  "250": [1, 2, 3],
+  "251": [1, 2, 3, 4],
+  "252": [1, 2, 3, 4],
+  "253": [1, 2],
+  "254": [1, 2, 3, 4]
 });
 
 const winterImageAdditionsByProductId = {
@@ -1402,7 +1522,7 @@ Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumber
   ])].sort((a, b) => a - b);
 });
 
-const IMAGE_ASSET_VERSION = "20260825-09";
+const IMAGE_ASSET_VERSION = "20260910-01";
 
 const PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID = {
   118: 48,  // Merano
@@ -1650,14 +1770,56 @@ const colorImageByProductId = {
   200: { "Celeste": 1, "Negro": 2, "Chocolate": 3, "Militar": 4 },
   201: { "Negro": 1, "Gris": 2, "Azul Marino": 3, "Beige": 4 },
   202: { "Azul Marino": 1, "Negro": 2, "Gris": 3, "Beige": 4 },
+  203: { "Negro": 1, "Azul Marino": 2, "Gris": 3, "Beige": 4 },
   205: { "Beige": 1, "Negro": 2, "Azul Marino": 3, "Gris": 4 },
+  206: { "Negro": 1, "Azul Marino": 2, "Gris": 3, "Beige": 4 },
   208: { "Negro": 1, "Azul Marino": 2, "Gris": 3, "Beige": 4 },
-  255: { "Negro": 1, "Azul Marino": 2, "Gris": 3 },
-  256: { "Negro": 1, "Azul Marino": 2, "Gris": 3 },
-  257: { "Negro": 1, "Azul Marino": 2, "Gris": 3 },
-  258: { "Negro": 1, "Azul Marino": 2, "Gris": 3 },
   209: { "Chocolate": 5, "Negro": 6 },
-  210: { "Melange": 1, "Negro": 2, "Beige": 3 }
+  210: { "Melange": 1, "Negro": 2, "Beige": 3 },
+  211: { "Melange Oscuro": 1, "Negro": 2, "Azul Marino": 3 },
+  212: { "Negro": 1, "Melange Claro": 2, "Chocolate": 3 },
+  213: { "Azul Marino": 1, "Negro": 2, "Melange Claro": 3 },
+  214: { "Negro": 1, "Azul Marino": 2, "Melange Oscuro": 3 },
+  215: { "Melange Claro": 1, "Chocolate": 2, "Negro": 3 },
+  219: { "Negro": 1, "Chocolate": 2, "Melange": 3, "Avena Oscuro": 4, "Avena": 5, "Marfil": 6, "Celeste": 7, "Rojo": 8 },
+  220: { "Melange Oscuro": 1, "Café": 2, "Avena Oscuro": 3, "Avena": 4, "Marfil": 5, "Negro": 6 },
+  221: { "Negro": 1, "Chocolate": 2, "Avena": 3, "Marfil": 4 },
+  222: { "Negro": 1, "Chocolate": 2, "Marfil": 3 },
+  223: { "Chocolate": 1, "Avena": 2, "Marfil": 3, "Negro": 4 },
+  224: { "Negro": 1, "Chocolate": 2, "Avena": 3, "Verde": 4, "Avena Oscuro": 5 },
+  225: { "Chocolate": 1, "Negro": 2, "Avena": 3, "Marfil": 4 },
+  226: { "Marino": 1, "Marfil": 2, "Negro": 3, "Gris": 4 },
+  227: { "Avena / Marfil / Rosa": 1, "Chocolate / Avena / Marfil": 2, "Camel / Avena / Marfil": 3, "Avena / Chocolate / Celeste": 4 },
+  228: { "Gris": 1, "Negro": 2, "Chocolate": 3, "Avena": 4 },
+  229: { "Avena Oscuro": 1, "Chocolate": 2, "Melange": 3, "Negro": 4 },
+  230: { "Chocolate": 1, "Negro": 2, "Avena": 3 },
+  231: { "Avena Claro": 1, "Negro": 2, "Chocolate": 3, "Marfil": 4 },
+  232: { "Avena Claro": 1, "Negro": 2, "Chocolate Oscuro": 3, "Marfil": 4 },
+  233: { "Avena Claro": 1, "Negro": 2, "Chocolate Oscuro": 3, "Marfil": 4 },
+  234: { "Avena Claro": 1, "Negro": 2, "Chocolate": 3, "Marfil": 4 },
+  235: { "Marfil": 1, "Chocolate": 3, "Crudo": 4, "Avena Claro": 5, "Celeste": 6, "Negro": 7 },
+  236: { "Avena Claro": 1, "Negro": 2, "Chocolate": 3, "Marfil": 4, "Pistacho": 5, "Gris": 6 },
+  237: { "Crudo": 1, "Avena": 2, "Chocolate": 3, "Negro": 4, "Avena Oscuro": 5, "Celeste": 6 },
+  238: { "Avena Claro": 1, "Negro": 2, "Marfil": 3, "Pistacho": 4, "Gris": 5, "Avena Oscuro": 6, "Chocolate": 7, "Celeste": 8, "Chocolate Oscuro": 9 },
+  239: { "Marfil": 1, "Gris": 2, "Chocolate": 3, "Latte": 4, "Negro": 5, "Rojo": 6, "Azul Marino": 7, "Avena": 8 },
+  240: { "Beige": 1, "Visón": 2, "Negro": 4, "Marfil": 5 },
+  241: { "Crudo": 1, "Marrón": 2, "Negro": 3, "Visón": 4, "Beige": 5 },
+  242: { "Marfil": 1, "Chocolate": 2, "Negro": 3, "Gris": 4 },
+  243: { "Marfil": 1, "Avena": 2, "Tostado": 3, "Negro": 4, "Azul Marino": 5, "Gris Oscuro": 6, "Celeste": 7, "Lima": 8, "Chocolate": 9 },
+  244: { "Chocolate": 1, "Azul Marino": 2, "Marfil": 3, "Beige Muestra": 4, "Negro": 5 },
+  216: { "Azul Marino": 1, "Melange Oscuro": 2, "Negro": 3 },
+  217: { "Negro": 1, "Melange Claro": 2, "Azul Marino": 3 },
+  218: { "Negro": 1, "Chocolate": 2 },
+  245: { "Marfil": 1, "Chocolate": 2, "Negro": 3 },
+  246: { "Chocolate con Vivo Marfil": 1, "Negro con Vivo Marfil": 2, "Avena con Vivo Chocolate": 3 },
+  247: { "Negro": 1, "Marfil": 2, "Chocolate": 3, "Gris": 4 },
+  248: { "Chocolate con Amarillo": 1, "Marfil con Beige y Chocolate": 2, "Marfil con Beige y Lima": 3, "Negro y Blanco": 4 },
+  249: { "Verde/Negro": 1, "Beige/Negro": 2, "Azul/Negro": 3 },
+  250: { "Verde Oscuro": 1, "Negro": 2, "Azul Marino": 3 },
+  251: { "Beige": 1, "Azul Marino": 2, "Gris Oscuro": 3, "Negro": 4 },
+  252: { "Verde/Azul": 1, "Negro/Mostaza": 2, "Verde/Gris": 3, "Azul/Rojo": 4 },
+  253: { "Azul Marino": 1, "Negro": 2 },
+  254: { "Negro": 1, "Gris Claro": 2, "Violeta": 3, "Rosa": 4 }
 };
 
 function normalizeColorName(value) {
@@ -1691,17 +1853,18 @@ function getColorGalleryIndex(product, colorIndex, galleryLength) {
   return mappedIndex >= 0 && mappedIndex < galleryLength ? mappedIndex : null;
 }
 
-function getProduction2027Gallery(product, colors) {
-  const onlyColorLinkedPhotos = product.collection === "produccion-invierno-2027" && colors.length > 0;
-  const mappedSourceProductId = PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID[product.id];
-  const sourceProductId = mappedSourceProductId || product.id;
+function getProduction2027Gallery(product, colors, option = null) {
+  const onlyColorLinkedPhotos = (product.collection === "produccion-invierno-2027" || product.onlyColorLinkedPhotos || option?.imageProductId) && colors.length > 0;
+  const optionImageProductId = option?.imageProductId || product.id;
+  const mappedSourceProductId = PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID[optionImageProductId];
+  const sourceProductId = mappedSourceProductId || optionImageProductId;
   const allPhotoNumbers = getProductImagePhotoNumbers(sourceProductId);
   const colorMap = colorImageByProductId[sourceProductId] || {};
   if (!mappedSourceProductId && !onlyColorLinkedPhotos) {
     return {
       sourceProductId,
       photoNumbers: allPhotoNumbers,
-      sources: getProductImageSources(product.id),
+      sources: getProductImageSources(sourceProductId),
       colorMap
     };
   }
@@ -1767,6 +1930,10 @@ function getProduction2027Gallery(product, colors) {
 }
 
 function getDisplayProductImageSources(product) {
+  const selectedOption = product?.selectedPurchaseOption || null;
+  if (selectedOption) {
+    return getProduction2027Gallery(product, selectedOption.colors || [], selectedOption).sources;
+  }
   if (product?.collection === "produccion-invierno-2027") {
     return getProduction2027Gallery(product, product.colors || []).sources;
   }
@@ -2004,11 +2171,11 @@ const extraProducts = [
     driveLink: ""
   },
   {
-    id: 210, name: "Davina", category: "MUJER", subcategory: "Abrigos",
+    id: 210, name: "VERONA", category: "MUJER", subcategory: "Abrigos",
     description: "Tapado sastrero de invierno para mujer, con solapas, tres botones y bolsillos laterales.",
     colors: ["Melange", "Beige", "Negro"],
     sizes: ["M", "L", "XL", "XXL"],
-    orderNumber: "224-512", collection: "invierno-2027",
+    orderNumber: "224-512", collection: "produccion-invierno-2027",
     driveLink: ""
   }
 ];
@@ -2237,7 +2404,7 @@ function production2027StockProduct(spec) {
   };
 }
 
-function production2027PurchaseOption(id, label, sourcePacking, rows, orderNumber = "") {
+function production2027PurchaseOption(id, label, sourcePacking, rows, orderNumber = "", imageProductId = null) {
   const totalPieces = rows.reduce((total, row) => {
     return total + Object.values(row.sizePieces || {}).reduce((sum, pieces) => sum + (Number(pieces) || 0), 0);
   }, 0);
@@ -2246,6 +2413,7 @@ function production2027PurchaseOption(id, label, sourcePacking, rows, orderNumbe
     label,
     orderNumber,
     sourcePacking,
+    ...(imageProductId ? { imageProductId } : {}),
     colors: [...new Set(rows.map(row => row.color))],
     sizes: [...new Set(rows.flatMap(row => Object.keys(row.sizePieces || {})))],
     packaging: { totalPieces, rows }
@@ -2285,15 +2453,347 @@ function sweater2027Product(id, code, name, colors, boxType, repeatsPerColor = 1
   };
 }
 
+function sweater2027PackOption(id, label, code, colors, boxType, repeatsPerColor = 1, imageProductId = null) {
+  const rows = colors.flatMap(color => production2027Rows(
+    color,
+    [1, 3, 3, 3, 2],
+    { repeat: repeatsPerColor }
+  ));
+  const option = production2027PurchaseOption(id, label, boxType, rows, code, imageProductId);
+  option.packaging.totalLabel = `${option.packaging.totalPieces} piezas por caja`;
+  return option;
+}
+
+function sweater2027ProductWithPacks(id, code, name, optionSpecs) {
+  const purchaseOptions = optionSpecs.map(spec => sweater2027PackOption(
+    spec.id,
+    spec.label,
+    spec.code || code,
+    spec.colors,
+    spec.boxType,
+    spec.repeatsPerColor || 1,
+    spec.imageProductId
+  ));
+  const product = sweater2027Product(id, code, name, purchaseOptions[0].colors, purchaseOptions[0].sourcePacking);
+  product.purchaseOptions = purchaseOptions;
+  product.sourcePacking = "";
+  product.packaging = purchaseOptions[0].packaging;
+  return product;
+}
+
+const SWEATER_2027_WOMEN_SIZES = ["S/M", "M/L"];
+
+function sweater2027WomenRow(entry) {
+  const row = {
+    color: entry.color,
+    sizePieces: entry.curve
+      ? Object.fromEntries(SWEATER_2027_WOMEN_SIZES.map((size, index) => [size, entry.curve[index]]))
+      : {}
+  };
+  if (entry.pieces) row.pieces = entry.pieces;
+  return row;
+}
+
+function sweater2027WomenRows(entries) {
+  return entries.map(entry => sweater2027WomenRow(entry));
+}
+
+function sweater2027WomenBoxLabel(boxPieces) {
+  return `CAJA ${boxPieces} SURTIDA`;
+}
+
+function sweater2027WomenProduct(id, code, name, entries, boxPieces) {
+  const rows = sweater2027WomenRows(entries);
+  const sourcePacking = sweater2027WomenBoxLabel(boxPieces);
+  return {
+    id,
+    name,
+    preserveProductName: true,
+    category: "MUJER",
+    subcategory: "Sweaters",
+    description: "",
+    orderNumber: code,
+    collection: "sweaters-2027",
+    colors: [...new Set(rows.map(row => row.color))],
+    sizes: SWEATER_2027_WOMEN_SIZES,
+    driveLink: "",
+    sourcePacking,
+    sourceWorkbook: "OJT SWEATERS 26-8",
+    packaging: {
+      totalPieces: boxPieces,
+      totalLabel: `${boxPieces} piezas por caja`,
+      rows
+    }
+  };
+}
+
+function sweater2027WomenPackOption(id, label, code, entries, boxPieces, imageProductId = null) {
+  const rows = sweater2027WomenRows(entries);
+  const sourcePacking = sweater2027WomenBoxLabel(boxPieces);
+  const option = production2027PurchaseOption(id, label, sourcePacking, rows, code);
+  if (imageProductId) option.imageProductId = imageProductId;
+  option.sizes = rows.some(row => Object.keys(row.sizePieces || {}).length)
+    ? SWEATER_2027_WOMEN_SIZES
+    : [];
+  option.packaging.totalPieces = boxPieces;
+  option.packaging.totalLabel = `${boxPieces} piezas por caja`;
+  return option;
+}
+
+function sweater2027WomenProductWithPacks(id, code, name, optionSpecs) {
+  const purchaseOptions = optionSpecs.map(spec => sweater2027WomenPackOption(
+    spec.id,
+    spec.label,
+    spec.code || code,
+    spec.entries,
+    spec.boxPieces,
+    spec.imageProductId
+  ));
+  const firstOption = purchaseOptions[0];
+  return {
+    id,
+    name,
+    preserveProductName: true,
+    category: "MUJER",
+    subcategory: "Sweaters",
+    description: "",
+    orderNumber: code,
+    collection: "sweaters-2027",
+    colors: firstOption.colors,
+    sizes: firstOption.sizes,
+    driveLink: "",
+    sourcePacking: "",
+    sourceWorkbook: "OJT SWEATERS 26-8",
+    packaging: firstOption.packaging,
+    purchaseOptions
+  };
+}
+
 const sweater2027Products = [
-  sweater2027Product(197, "NB 21-51", "Sweater Benicio", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA"),
-  sweater2027Product(199, "NB 21-50", "Sweater Mateo", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA"),
+  sweater2027ProductWithPacks(197, "NB 21-51", "Sweater Benicio", [
+    { id: "nb-21-51-pack-a", label: "Pack A", colors: ["Negro", "Azul Marino", "Gris", "Beige"], boxType: "CAJA 48 SURTIDA", imageProductId: 197 },
+    { id: "nb-21-51-pack-b", label: "Pack B", colors: ["Negro", "Celeste", "Chocolate", "Militar"], boxType: "CAJA 48 SURTIDA", imageProductId: 198 }
+  ]),
+  sweater2027ProductWithPacks(199, "NB 21-50", "Sweater Mateo", [
+    { id: "nb-21-50-pack-a", label: "Pack A", colors: ["Negro", "Azul Marino", "Gris", "Beige"], boxType: "CAJA 48 SURTIDA", imageProductId: 199 },
+    { id: "nb-21-50-pack-b", label: "Pack B", colors: ["Negro", "Celeste", "Chocolate", "Militar"], boxType: "CAJA 48 SURTIDA", imageProductId: 200 }
+  ]),
   sweater2027Product(201, "NB 24-02", "Sweater Gael", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA"),
   sweater2027Product(202, "NB 24-52", "Sweater Lorenzo", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA"),
-  sweater2027Product(203, "NB 21-56", "Sweater Dante", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA"),
+  sweater2027ProductWithPacks(203, "NB 21-56", "Sweater Dante", [
+    { id: "nb-21-56-pack-a", label: "Pack A", colors: ["Negro", "Azul Marino", "Gris", "Beige"], boxType: "CAJA 48 SURTIDA", imageProductId: 203 },
+    { id: "nb-21-56-pack-b", label: "Pack B", colors: ["Negro"], boxType: "CAJA 24 POR COLOR", repeatsPerColor: 2, imageProductId: 203 }
+  ]),
   sweater2027Product(205, "NB 21-58", "Sweater Tomas", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA"),
-  sweater2027Product(206, "NB 21-58 V", "Sweater Bruno", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA"),
-  sweater2027Product(208, "NB 21-59", "Sweater Simon", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA")
+  sweater2027ProductWithPacks(206, "NB 21-58 V", "Sweater Bruno", [
+    { id: "nb-21-58-v-pack-a", label: "Pack A", colors: ["Negro", "Azul Marino", "Gris", "Beige"], boxType: "CAJA 48 SURTIDA", imageProductId: 206 },
+    { id: "nb-21-58-v-pack-b", label: "Pack B", colors: ["Negro"], boxType: "CAJA 24 POR COLOR", repeatsPerColor: 2, imageProductId: 206 }
+  ]),
+  sweater2027Product(208, "NB 21-59", "Sweater Simon", ["Negro", "Azul Marino", "Gris", "Beige"], "CAJA 48 SURTIDA"),
+  sweater2027WomenProduct(219, "NL0071 223020", "Sweater Amelie", [
+    { color: "Negro", curve: [3, 3] },
+    { color: "Chocolate", curve: [3, 3] },
+    { color: "Melange", curve: [3, 3] },
+    { color: "Avena Oscuro", curve: [3, 3] },
+    { color: "Avena", curve: [3, 3] },
+    { color: "Marfil", curve: [3, 3] },
+    { color: "Celeste", curve: [2, 2] },
+    { color: "Rojo", curve: [2, 2] }
+  ], 44),
+  sweater2027WomenProduct(220, "26-873", "Sweater Brisa", [
+    { color: "Melange Oscuro", curve: [2, 2] },
+    { color: "Café", curve: [3, 3] },
+    { color: "Avena Oscuro", curve: [3, 3] },
+    { color: "Avena", curve: [3, 3] },
+    { color: "Marfil", curve: [3, 3] },
+    { color: "Negro", curve: [4, 4] }
+  ], 36),
+  sweater2027WomenProduct(221, "266229Y", "Sweater Bianca", [
+    { color: "Negro", curve: [6, 6] },
+    { color: "Chocolate", curve: [6, 6] },
+    { color: "Avena", curve: [5, 5] },
+    { color: "Marfil", curve: [3, 3] }
+  ], 40),
+  sweater2027WomenProduct(222, "PAU 02", "Sweater Vera", [
+    { color: "Negro", curve: [3, 3] },
+    { color: "Chocolate", curve: [3, 3] },
+    { color: "Marfil", curve: [2, 2] }
+  ], 20),
+  sweater2027WomenProduct(223, "266124J", "Sweater Ambar", [
+    { color: "Chocolate", curve: [4, 4] },
+    { color: "Avena", curve: [2, 2] },
+    { color: "Marfil", curve: [2, 2] },
+    { color: "Negro", curve: [4, 4] }
+  ], 24),
+  sweater2027WomenProduct(224, "263036L", "Sweater Roma", [
+    { color: "Negro", curve: [4, 4] },
+    { color: "Chocolate", curve: [3, 3] },
+    { color: "Avena", curve: [2, 2] },
+    { color: "Verde", curve: [1, 1] },
+    { color: "Avena Oscuro", curve: [2, 2] }
+  ], 24),
+  sweater2027WomenProduct(225, "PAU01", "Sweater Viena", [
+    { color: "Chocolate", curve: [2, 2] },
+    { color: "Negro", curve: [4, 4] },
+    { color: "Avena", curve: [2, 2] },
+    { color: "Marfil", curve: [2, 2] }
+  ], 20),
+  Object.assign(sweater2027WomenProduct(226, "263098L", "Sweater Mora", [
+    { color: "Marfil", curve: [3, 3] },
+    { color: "Negro", curve: [6, 6] },
+    { color: "Gris", curve: [2, 2] }
+  ], 22), { onlyColorLinkedPhotos: true }),
+  sweater2027WomenProduct(227, "PAU04", "Sweater Nala", [
+    { color: "Avena / Marfil / Rosa" },
+    { color: "Chocolate / Avena / Marfil" },
+    { color: "Camel / Avena / Marfil" },
+    { color: "Avena / Chocolate / Celeste" }
+  ], 30),
+  sweater2027WomenProduct(228, "26-5041", "Sweater Luma", [
+    { color: "Gris", curve: [2, 2] },
+    { color: "Negro", curve: [3, 3] },
+    { color: "Chocolate", curve: [3, 3] },
+    { color: "Avena", curve: [2, 2] }
+  ], 20),
+  Object.assign(sweater2027WomenProduct(229, "23-499", "Pantalón Luma", [
+    { color: "Avena Oscuro", curve: [2, 2] },
+    { color: "Chocolate", curve: [3, 3] },
+    { color: "Melange", curve: [2, 2] },
+    { color: "Negro", curve: [3, 3] }
+  ], 20), { subcategory: "Pantalón de hilo" }),
+  sweater2027WomenProduct(230, "265604", "Sweater Uma", [
+    { color: "Chocolate", curve: [3, 3] },
+    { color: "Negro", curve: [4, 4] },
+    { color: "Avena", curve: [3, 3] }
+  ], 20),
+  sweater2027WomenProduct(231, "", "Sweater Aurelia", [
+    { color: "Avena Claro", curve: [3, 3] },
+    { color: "Negro", curve: [5, 5] },
+    { color: "Chocolate", curve: [4, 4] },
+    { color: "Marfil", curve: [3, 3] }
+  ], 30),
+  sweater2027WomenProduct(232, "6266", "Sweater Avelina", [
+    { color: "Avena Claro", curve: [3, 3] },
+    { color: "Negro", curve: [5, 5] },
+    { color: "Chocolate Oscuro", curve: [4, 4] },
+    { color: "Marfil", curve: [3, 4] }
+  ], 30),
+  sweater2027WomenProduct(233, "8711", "Sweater Calista", [
+    { color: "Avena Claro", curve: [3, 3] },
+    { color: "Negro", curve: [3, 3] },
+    { color: "Chocolate Oscuro", curve: [3, 3] },
+    { color: "Marfil", curve: [3, 3] }
+  ], 24),
+  sweater2027WomenProduct(234, "929", "Sweater Magnolia", [
+    { color: "Avena Claro", curve: [3, 3] },
+    { color: "Negro", curve: [5, 5] },
+    { color: "Chocolate", curve: [4, 4] },
+    { color: "Marfil", curve: [3, 4] }
+  ], 30),
+  sweater2027WomenProduct(235, "", "Sweater Allegra", [
+    { color: "Marfil", curve: [3, 3] },
+    { color: "Chocolate", curve: [3, 3] },
+    { color: "Crudo", curve: [2, 2] },
+    { color: "Avena Claro", curve: [3, 3] },
+    { color: "Celeste", curve: [1, 1] },
+    { color: "Negro", curve: [3, 3] }
+  ], 30),
+  sweater2027WomenProduct(236, "", "Sweater Violeta", [
+    { color: "Avena Claro", curve: [3, 3] },
+    { color: "Negro", curve: [3, 3] },
+    { color: "Chocolate", curve: [3, 3] },
+    { color: "Marfil", curve: [3, 3] },
+    { color: "Pistacho", curve: [2, 2] },
+    { color: "Gris", curve: [1, 1] }
+  ], 30),
+  sweater2027WomenProduct(237, "", "Sweater Serena", [
+    { color: "Crudo", curve: [3, 3] },
+    { color: "Avena", curve: [3, 3] },
+    { color: "Chocolate", curve: [3, 3] },
+    { color: "Negro", curve: [3, 3] },
+    { color: "Avena Oscuro", curve: [2, 2] },
+    { color: "Celeste", curve: [1, 1] }
+  ], 30),
+  sweater2027WomenProduct(238, "9029", "Sweater India", [
+    { color: "Avena Claro", curve: [4, 4] },
+    { color: "Negro", curve: [5, 5] },
+    { color: "Chocolate Oscuro", curve: [4, 4] },
+    { color: "Marfil", curve: [3, 3] },
+    { color: "Pistacho", curve: [2, 2] },
+    { color: "Gris", curve: [2, 2] },
+    { color: "Avena Oscuro", curve: [3, 3] },
+    { color: "Chocolate", curve: [4, 4] },
+    { color: "Celeste", curve: [3, 3] }
+  ], 60),
+  sweater2027WomenProduct(239, "9011", "Sweater Justina", [
+    { color: "Marfil", curve: [4, 4] },
+    { color: "Gris", curve: [2, 2] },
+    { color: "Chocolate", curve: [4, 4] },
+    { color: "Latte", curve: [3, 3] },
+    { color: "Negro", curve: [2, 2] },
+    { color: "Rojo", curve: [2, 2] },
+    { color: "Azul Marino", curve: [3, 3] },
+    { color: "Avena", curve: [4, 4] }
+  ], 60),
+  sweater2027WomenProduct(240, "F74-620", "Sweater Pola", [
+    { color: "Marfil", curve: [4, 4] },
+    { color: "Beige", curve: [3, 3] },
+    { color: "Visón", curve: [3, 3] },
+    { color: "Negro", curve: [5, 5] }
+  ], 30),
+  sweater2027WomenProduct(241, "F74-617", "Sweater Teza", [
+    { color: "Crudo", curve: [3, 3] },
+    { color: "Beige", curve: [2, 2] },
+    { color: "Visón", curve: [2, 2] },
+    { color: "Marrón", curve: [4, 4] },
+    { color: "Negro", curve: [4, 4] }
+  ], 30),
+  sweater2027WomenProduct(242, "", "Sweater Renata", [
+    { color: "Marfil", curve: [4, 4] },
+    { color: "Chocolate", curve: [4, 4] },
+    { color: "Negro", curve: [4, 4] },
+    { color: "Gris", curve: [3, 3] }
+  ], 30),
+  sweater2027WomenProduct(243, "", "Sweater Aurora", [
+    { color: "Marfil", curve: [4, 4] },
+    { color: "Avena", curve: [4, 4] },
+    { color: "Tostado", curve: [4, 4] },
+    { color: "Negro", curve: [6, 6] },
+    { color: "Azul Marino", curve: [4, 4] },
+    { color: "Gris Oscuro", curve: [4, 4] },
+    { color: "Celeste", curve: [2, 2] },
+    { color: "Lima", curve: [2, 2] },
+    { color: "Chocolate", curve: [4, 4] }
+  ], 68),
+  sweater2027WomenProduct(244, "MIYAQI", "Sweater Dana", [
+    { color: "Beige Muestra", curve: [3, 3] },
+    { color: "Negro", curve: [3, 3] },
+    { color: "Marfil", curve: [3, 3] },
+    { color: "Chocolate", curve: [3, 3] },
+    { color: "Azul Marino", curve: [3, 3] }
+  ], 30),
+  sweater2027WomenProduct(245, "2620", "Sweater Guillermina", [
+    { color: "Marfil", curve: [5, 5] },
+    { color: "Chocolate", curve: [5, 5] },
+    { color: "Negro", curve: [5, 5] }
+  ], 30),
+  sweater2027WomenProduct(246, "7251", "Sweater Bela", [
+    { color: "Avena con Vivo Chocolate", curve: [5, 5] },
+    { color: "Negro con Vivo Marfil", curve: [5, 5] },
+    { color: "Chocolate con Vivo Marfil", curve: [5, 5] }
+  ], 30),
+  sweater2027WomenProduct(247, "7250", "Sweater Tainy", [
+    { color: "Marfil", curve: [4, 4] },
+    { color: "Negro", curve: [4, 4] },
+    { color: "Chocolate", curve: [4, 4] },
+    { color: "Gris", curve: [3, 3] }
+  ], 30),
+  sweater2027WomenProduct(248, "", "Sweater Donna", [
+    { color: "Chocolate con Amarillo", curve: [4, 4] },
+    { color: "Marfil con Beige y Chocolate", curve: [4, 4] },
+    { color: "Marfil con Beige y Lima", curve: [2, 2] },
+    { color: "Negro y Blanco", curve: [5, 5] }
+  ], 30)
 ];
 
 // Sweaters plus: caja indicada por el proveedor; curva pendiente de confirmación.
@@ -2322,6 +2822,78 @@ sweater2027PlusSpecs.forEach(([id, code, name]) => {
 });
 
 products.push(...sweater2027Products);
+
+// -- HOODIES 2027 -----------------------------------------------------------
+function hoodie2027Product(spec) {
+  const rows = spec.rows || [];
+  const calculatedTotal = rows.reduce((total, row) => {
+    return total + Object.values(row.sizePieces || {}).reduce((sum, pieces) => sum + (Number(pieces) || 0), 0);
+  }, 0);
+  return {
+    id: spec.id,
+    name: spec.name,
+    preserveProductName: true,
+    category: spec.category,
+    subcategory: "Buzos",
+    description: "",
+    orderNumber: spec.orderNumber || "",
+    collection: "hoodies-2027",
+    colors: [...new Set(rows.map(row => row.color))],
+    sizes: spec.sizes || [...new Set(rows.flatMap(row => Object.keys(row.sizePieces || {})))],
+    driveLink: "",
+    sourcePacking: "ASSORTED SIZE / ASSORTED COLOR",
+    sourceWorkbook: "HOODIES 2027",
+    packaging: {
+      totalPieces: spec.totalPieces ?? calculatedTotal,
+      ...(spec.totalLabel ? { totalLabel: spec.totalLabel } : {}),
+      rows
+    }
+  };
+}
+
+const hoodie2027Products = [
+  hoodie2027Product({ id: 211, name: "Kangaroo Hombre", category: "HOMBRE", orderNumber: "3JA7507", rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 2, 1]),
+    ...production2027Rows("Azul Marino", [1, 2, 2, 2, 1]),
+    ...production2027Rows("Melange Oscuro", [1, 2, 2, 2, 1])
+  ] }),
+  hoodie2027Product({ id: 212, name: "Kangaroo Mujer", category: "MUJER", orderNumber: "3VT8056", rows: [
+    ...production2027Rows("Negro", [2, 2, 2, 2, 1]),
+    ...production2027Rows("Chocolate", [2, 2, 2, 2, 1]),
+    ...production2027Rows("Melange Claro", [2, 2, 2, 2, 1])
+  ] }),
+  hoodie2027Product({ id: 213, name: "Kangaroo Niños", category: "NINOS", orderNumber: "226-223", sizes: PRODUCTION_2027_KIDS_SIZES, totalLabel: "Cantidad no informada", rows: [
+    ...production2027Rows("Negro", null, { sizes: PRODUCTION_2027_KIDS_SIZES, curveText: "4 a 16" }),
+    ...production2027Rows("Azul Marino", null, { sizes: PRODUCTION_2027_KIDS_SIZES, curveText: "4 a 16" }),
+    ...production2027Rows("Melange Claro", null, { sizes: PRODUCTION_2027_KIDS_SIZES, curveText: "4 a 16" })
+  ] }),
+  hoodie2027Product({ id: 214, name: "Fiesco", category: "HOMBRE", orderNumber: "3VT8067-1", rows: [
+    ...production2027Rows("Negro", [1, 2, 2, 2, 1]),
+    ...production2027Rows("Azul Marino", [1, 2, 2, 2, 1]),
+    ...production2027Rows("Melange Oscuro", [1, 2, 2, 2, 1])
+  ] }),
+  hoodie2027Product({ id: 215, name: "Pedara", category: "MUJER", orderNumber: "3VT8068-1", rows: [
+    ...production2027Rows("Negro", [2, 2, 2, 2, 1]),
+    ...production2027Rows("Chocolate", [2, 2, 2, 2, 1]),
+    ...production2027Rows("Melange Claro", [2, 2, 2, 2, 1])
+  ] }),
+  hoodie2027Product({ id: 216, name: "Fiesco Plus", category: "UNISEX", orderNumber: "3VT8067-1", sizes: PRODUCTION_2027_PLUS_SIZES, totalLabel: "Cantidad no informada", rows: [
+    ...production2027Rows("Negro", null, { sizes: PRODUCTION_2027_PLUS_SIZES, curveText: "3XL a 6XL" }),
+    ...production2027Rows("Azul Marino", null, { sizes: PRODUCTION_2027_PLUS_SIZES, curveText: "3XL a 6XL" }),
+    ...production2027Rows("Melange Oscuro", null, { sizes: PRODUCTION_2027_PLUS_SIZES, curveText: "3XL a 6XL" })
+  ] }),
+  hoodie2027Product({ id: 217, name: "Fiesco Pedara Unisex", category: "NINOS", orderNumber: "226-320", sizes: PRODUCTION_2027_KIDS_SIZES, totalLabel: "Cantidad no informada", rows: [
+    ...production2027Rows("Negro", null, { sizes: PRODUCTION_2027_KIDS_SIZES, curveText: "4 a 16" }),
+    ...production2027Rows("Azul Marino", null, { sizes: PRODUCTION_2027_KIDS_SIZES, curveText: "4 a 16" }),
+    ...production2027Rows("Melange Claro", null, { sizes: PRODUCTION_2027_KIDS_SIZES, curveText: "4 a 16" })
+  ] }),
+  hoodie2027Product({ id: 218, name: "Ventura Reversible", category: "UNISEX", orderNumber: "226-326", sizes: ["S", "M", "L", "XL"], totalPieces: 1440, totalLabel: "1.440 piezas · 720 por color", rows: [
+    ...production2027Rows("Negro", [1, 3, 2, 2], { sizes: ["S", "M", "L", "XL"] }),
+    ...production2027Rows("Chocolate", [1, 3, 2, 2], { sizes: ["S", "M", "L", "XL"] })
+  ] })
+];
+
+products.push(...hoodie2027Products);
 
 const legacyProduction2027Products = [
   production2027Product({ id: 102, name: "Kangaroo Men", category: "HOMBRE", subcategory: "Buzos", orderNumber: "3JA7507", sourcePacking: "ASSORTED SIZE / ASSORTED COLOR", rows: [
@@ -2374,7 +2946,7 @@ const legacyProduction2027Products = [
   production2027Product({ id: 116, name: "Pascal Vest", category: "HOMBRE", subcategory: "Chalecos", sourcePacking: "CAJA SURTIDA", rows: [
     ...production2027Rows("Negro", [1, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Gris Oscuro", [1, 2, 2, 2, 1])
   ] }),
-  production2027Product({ id: 117, name: "Jackie", category: "HOMBRE", sourcePacking: "CAJA SURTIDA", totalLabel: "Curva incompleta en origen", rows: [
+  production2027Product({ id: 117, name: "JASON", category: "HOMBRE", sourcePacking: "CAJA SURTIDA", totalLabel: "Curva incompleta en origen", rows: [
     ...production2027Rows("Negro", [1, 2, 2, 2, null]), ...production2027Rows("Caqui", [1, 2, 2, 2, null]), ...production2027Rows("Marino", [1, 2, 2, 2, null]), ...production2027Rows("Gris", [1, 2, 2, 2, null])
   ] }),
   production2027Product({ id: 118, name: "Merano", category: "HOMBRE", sourcePacking: "CAJA POR COLOR", rows: [...production2027Rows("Negro", [1, 1, 2, 2, 2])] }),
@@ -2476,7 +3048,7 @@ const production2027Products = [
   production2027Product({ id: 116, name: "Chaleco Pascal", category: "HOMBRE", subcategory: "Chalecos", orderNumber: "226-312", sourcePacking: "CAJA SURTIDA", rows: [
     ...production2027Rows("Negro", [1, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Gris Oscuro", [1, 2, 2, 2, 1])
   ] }),
-  production2027Product({ id: 117, name: "Jackie", category: "HOMBRE", orderNumber: "226-331", sourcePacking: "CAJA SURTIDA", rows: [
+  production2027Product({ id: 117, name: "JASON", category: "HOMBRE", orderNumber: "226-331", sourcePacking: "CAJA SURTIDA", rows: [
     ...production2027Rows("Negro", [1, 2, 2, 2, 1]), ...production2027Rows("Caqui", [1, 2, 2, 2, 1]), ...production2027Rows("Marino", [1, 2, 2, 2, 1]), ...production2027Rows("Gris", [1, 2, 2, 2, 1])
   ] }),
   production2027Product({ id: 118, name: "Merano", category: "HOMBRE", orderNumber: "226-308", sourcePacking: "CAJA POR COLOR", rows: [...production2027Rows("Negro", [1, 1, 2, 2, 2])] }),
@@ -3080,12 +3652,12 @@ const packagingByProductId = {
     totalPieces: 72,
     totalLabel: "72 piezas totales",
     rows: [
-      { color: "Blanco", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 }, pieces: "12 piezas por color" },
-      { color: "Melange", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 }, pieces: "12 piezas por color" },
-      { color: "Petróleo", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 }, pieces: "12 piezas por color" },
-      { color: "Marino", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 }, pieces: "12 piezas por color" },
-      { color: "Negro", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 }, pieces: "12 piezas por color" },
-      { color: "Negro", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 }, pieces: "12 piezas por color" },
+      { color: "Blanco", sizePieces: { "3XL": 3, "4XL": 3, "5XL": 3, "6XL": 3 }, pieces: "12 piezas por color" },
+      { color: "Melange", sizePieces: { "3XL": 3, "4XL": 3, "5XL": 3, "6XL": 3 }, pieces: "12 piezas por color" },
+      { color: "Petróleo", sizePieces: { "3XL": 3, "4XL": 3, "5XL": 3, "6XL": 3 }, pieces: "12 piezas por color" },
+      { color: "Marino", sizePieces: { "3XL": 3, "4XL": 3, "5XL": 3, "6XL": 3 }, pieces: "12 piezas por color" },
+      { color: "Negro", sizePieces: { "3XL": 3, "4XL": 3, "5XL": 3, "6XL": 3 }, pieces: "12 piezas por color" },
+      { color: "Negro", sizePieces: { "3XL": 3, "4XL": 3, "5XL": 3, "6XL": 3 }, pieces: "12 piezas por color" },
     ],
   },
   35: {
@@ -3108,12 +3680,12 @@ const packagingByProductId = {
     totalPieces: 72,
     totalLabel: "72 piezas totales",
     rows: [
-      { color: "Blanco", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 }, pieces: "12 piezas por color" },
-      { color: "Melange", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 }, pieces: "12 piezas por color" },
-      { color: "Petróleo", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 }, pieces: "12 piezas por color" },
-      { color: "Marino", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 }, pieces: "12 piezas por color" },
-      { color: "Negro", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 }, pieces: "12 piezas por color" },
-      { color: "Negro", sizePieces: { "3XL": 1, "4XL": 1, "5XL": 1, "6XL": 1 }, pieces: "12 piezas por color" },
+      { color: "Blanco", sizePieces: { "3XL": 3, "4XL": 3, "5XL": 3, "6XL": 3 }, pieces: "12 piezas por color" },
+      { color: "Melange", sizePieces: { "3XL": 3, "4XL": 3, "5XL": 3, "6XL": 3 }, pieces: "12 piezas por color" },
+      { color: "Petróleo", sizePieces: { "3XL": 3, "4XL": 3, "5XL": 3, "6XL": 3 }, pieces: "12 piezas por color" },
+      { color: "Marino", sizePieces: { "3XL": 3, "4XL": 3, "5XL": 3, "6XL": 3 }, pieces: "12 piezas por color" },
+      { color: "Negro", sizePieces: { "3XL": 3, "4XL": 3, "5XL": 3, "6XL": 3 }, pieces: "12 piezas por color" },
+      { color: "Negro", sizePieces: { "3XL": 3, "4XL": 3, "5XL": 3, "6XL": 3 }, pieces: "12 piezas por color" },
     ],
   },
   37: {
@@ -3384,6 +3956,16 @@ winterSourceProducts.forEach(product => {
   delete product.packaging;
 });
 
+sweater2027Products.forEach(product => {
+  packagingByProductId[product.id] = product.packaging;
+  delete product.packaging;
+});
+
+hoodie2027Products.forEach(product => {
+  packagingByProductId[product.id] = product.packaging;
+  delete product.packaging;
+});
+
 production2027Products.forEach(product => {
   packagingByProductId[product.id] = product.packaging;
   delete product.packaging;
@@ -3523,7 +4105,8 @@ function getStockLabel(product) {
 function buildCollectionFilters() {
   const collectionFilters = document.getElementById("collection-filters");
   if (!collectionFilters) return;
-  collectionFilters.innerHTML = collections.filter(collection => !collection.hidden).map(collection => `
+  const visibleCollections = collections.filter(collection => !collection.hidden);
+  collectionFilters.innerHTML = visibleCollections.map(collection => `
     <button class="pill ${collection.id === activeCollection ? "active" : ""}" data-filter="collection" data-value="${collection.id}">
       ${collection.name}
     </button>
@@ -3617,7 +4200,9 @@ function loadPersistedState() {
   try {
     const savedCatalog = JSON.parse(localStorage.getItem(CATALOG_STORAGE_KEY) || 'null');
     if (savedCatalog) {
-      activeCollection = savedCatalog.collection || activeCollection;
+      activeCollection = savedCatalog.collection === 'todos'
+        ? 'invierno-2027'
+        : (savedCatalog.collection || activeCollection);
       activeGender = savedCatalog.gender || activeGender;
       activeCategory = savedCatalog.category || activeCategory;
       productSearchQuery = savedCatalog.search || '';
@@ -3679,6 +4264,8 @@ const filtersSection = document.getElementById('catalogo');
 const filtersPanel = document.getElementById('filters-panel');
 const filtersToggle = document.getElementById('filters-toggle');
 const filtersScrollSentinel = document.getElementById('filters-scroll-sentinel');
+const filtersClose = document.getElementById('filters-close');
+const filtersDrawerOverlay = document.getElementById('filters-drawer-overlay');
 const modalOverlay = document.getElementById('modal-overlay');
 const productModal = document.getElementById('product-modal');
 const toast = document.getElementById('toast');
@@ -3703,8 +4290,9 @@ function updateGenderFilters() {
   const unisexFilter = genderFilters.querySelector('[data-value="UNISEX"]');
   if (!kidsFilter || !unisexFilter) return;
 
-  const showKids = activeCollection === "todos" || isWinterCollection();
-  const showUnisex = activeCollection === "todos" || activeCollection === "accesorios";
+  const isHoodiesCollection = activeCollection === "hoodies-2027";
+  const showKids = activeCollection === "todos" || isWinterCollection() || isHoodiesCollection;
+  const showUnisex = activeCollection === "todos" || activeCollection === "accesorios" || isHoodiesCollection;
   kidsFilter.style.display = showKids ? '' : 'none';
   unisexFilter.style.display = showUnisex ? '' : 'none';
 
@@ -3720,16 +4308,16 @@ function updateGenderFilters() {
 // ── CATEGORY FILTERS ────────────────────────────
 function buildCategoryFilters() {
   const allBtn = document.createElement('button');
-  allBtn.className = 'pill active';
+  allBtn.className = `pill ${activeCategory === 'all' ? 'active' : ''}`;
   allBtn.dataset.filter = 'category';
   allBtn.dataset.value = 'all';
-  allBtn.textContent = 'Todas';
+  allBtn.textContent = 'Todas las prendas';
   categoryFilters.appendChild(allBtn);
 
   const cats = [...new Set(getCollectionProducts().flatMap(getProductSubcategories))].sort();
   cats.forEach(cat => {
     const btn = document.createElement('button');
-    btn.className = 'pill';
+    btn.className = `pill ${activeCategory === cat ? 'active' : ''}`;
     btn.dataset.filter = 'category';
     btn.dataset.value = cat;
     btn.textContent = cat;
@@ -4028,7 +4616,7 @@ function openModal(p, initialPurchaseOptionId = null) {
   modalImgWrap.querySelectorAll('.modal-gallery-dots, .gallery-arrow, .modal-empty-image').forEach(el => el.remove());
 
   // Build gallery without blocking the modal opening.
-  const gallery = getProduction2027Gallery(p, displayedColors);
+  const gallery = getProduction2027Gallery(p, displayedColors, selectedOption);
   const gallerySrcs = gallery.sources;
   let galleryIdx = 0;
   let dots = null;
@@ -4623,7 +5211,7 @@ async function downloadProductPDF(product, optionId = null) {
     const packaging = selectedOption?.packaging || product.packaging || null;
     const packingLabel = selectedOption?.sourcePacking || product.sourcePacking || '';
     const orderNumber = selectedOption?.orderNumber || product.orderNumber || '';
-    const gallery = getProduction2027Gallery(product, colors);
+    const gallery = getProduction2027Gallery(product, colors, selectedOption);
     const loadedImages = (await Promise.all(gallery.sources.map(loadPdfImage)))
       .map((image, index) => image ? {
         ...image,
@@ -4667,31 +5255,6 @@ async function downloadProductPDF(product, optionId = null) {
       const drawW = image.width * ratio;
       const drawH = image.height * ratio;
       doc.addImage(image.dataUrl, 'JPEG', x + (width - drawW) / 2, y + (height - drawH) / 2, drawW, drawH, undefined, 'FAST');
-    }
-
-    if (loadedImages.length) {
-      for (let pageStart = 0; pageStart < loadedImages.length; pageStart += 6) {
-        if (pageStart > 0) doc.addPage();
-        paintPageHeader(pageStart === 0 ? `${product.name} · Imágenes` : `${product.name} · Imágenes (continuación)`);
-        const pageImages = loadedImages.slice(pageStart, pageStart + 6);
-        const gap = 6;
-        const cellW = (pageW - margin * 2 - gap) / 2;
-        const cellH = 78;
-        pageImages.forEach((image, index) => {
-          const col = index % 2;
-          const row = Math.floor(index / 2);
-          const x = margin + col * (cellW + gap);
-          const y = 30 + row * (cellH + 7);
-          doc.setFillColor(255, 250, 241);
-          doc.roundedRect(x, y, cellW, cellH, 2, 2, 'F');
-          drawContainedImage(image, x + 2, y + 2, cellW - 4, cellH - 11);
-          doc.setFont('helvetica', image.label ? 'bold' : 'normal');
-          doc.setFontSize(7.5);
-          doc.setTextColor(...(image.label ? terracotta : muted));
-          doc.text(image.label || `Foto ${pageStart + index + 1}`, x + cellW / 2, y + cellH - 3.5, { align: 'center', maxWidth: cellW - 5 });
-        });
-      }
-      doc.addPage();
     }
 
     paintPageHeader(`${getActiveCollection().name} · Ficha de producto`);
@@ -4779,6 +5342,21 @@ async function downloadProductPDF(product, optionId = null) {
         y += rowH;
       });
     }
+
+    loadedImages.forEach((image, index) => {
+      doc.addPage();
+      const photoLabel = image.label || `Foto ${index + 1}`;
+      paintPageHeader(`${product.name} · ${photoLabel}`);
+
+      doc.setFillColor(255, 250, 241);
+      doc.roundedRect(margin, 30, pageW - margin * 2, 248, 2.5, 2.5, 'F');
+      drawContainedImage(image, margin + 4, 34, pageW - margin * 2 - 8, 232);
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10);
+      doc.setTextColor(...terracotta);
+      doc.text(photoLabel, pageW / 2, 273, { align: 'center', maxWidth: pageW - margin * 2 - 10 });
+    });
 
     const totalPages = doc.internal.getNumberOfPages();
     for (let page = 1; page <= totalPages; page += 1) {
@@ -4898,68 +5476,43 @@ function initHeroCarousel() {
 // ── EVENTS ───────────────────────────────────────
 function bindEvents() {
   initHeroCarousel();
+  let filterMenuLastFocus = null;
+  const openFiltersDrawer = () => {
+    if (!filtersPanel || !filtersDrawerOverlay || !filtersToggle) return;
+    filterMenuLastFocus = document.activeElement;
+    filtersPanel.classList.add('open');
+    filtersPanel.setAttribute('aria-hidden', 'false');
+    filtersDrawerOverlay.classList.add('active');
+    filtersToggle.setAttribute('aria-expanded', 'true');
+    filtersToggle.setAttribute('aria-label', 'Cerrar menú de filtros');
+    document.body.classList.add('filter-menu-open');
+    requestAnimationFrame(() => filtersClose?.focus());
+  };
+  const closeFiltersDrawer = () => {
+    if (!filtersPanel?.classList.contains('open')) return;
+    filtersPanel.classList.remove('open');
+    filtersPanel.setAttribute('aria-hidden', 'true');
+    filtersDrawerOverlay?.classList.remove('active');
+    filtersToggle?.setAttribute('aria-expanded', 'false');
+    filtersToggle?.setAttribute('aria-label', 'Abrir menú de filtros');
+    document.body.classList.remove('filter-menu-open');
+    filterMenuLastFocus?.focus?.();
+  };
   document.querySelectorAll('.hero-cta[data-collection]').forEach(link => {
     link.addEventListener('click', () => activateCatalogCollection(link.dataset.collection));
   });
 
-  // Mobile filters: keep the search bar stable and collapse the filter panel on downward scroll.
-  if (filtersSection && filtersPanel && filtersToggle) {
-    const mobileQuery = window.matchMedia('(max-width: 768px)');
-    let lastScrollY = window.scrollY;
-    let downwardTravel = 0;
-    let manuallyExpanded = false;
-    let scrollFrame = null;
+  filtersToggle?.addEventListener('click', openFiltersDrawer);
+  filtersClose?.addEventListener('click', closeFiltersDrawer);
+  filtersDrawerOverlay?.addEventListener('click', closeFiltersDrawer);
 
-    const syncFiltersPanelHeight = () => {
-      filtersSection.style.setProperty('--filters-panel-height', `${filtersPanel.scrollHeight}px`);
-    };
-
-    const setFiltersCollapsed = collapsed => {
-      if (!mobileQuery.matches) collapsed = false;
-      syncFiltersPanelHeight();
-      filtersSection.classList.toggle('filters-collapsed', collapsed);
-      filtersToggle.setAttribute('aria-expanded', String(!collapsed));
-      filtersToggle.setAttribute('aria-label', collapsed ? 'Mostrar filtros' : 'Ocultar filtros');
-    };
-
-    filtersToggle.addEventListener('click', () => {
-      const willCollapse = !filtersSection.classList.contains('filters-collapsed');
-      manuallyExpanded = !willCollapse;
-      setFiltersCollapsed(willCollapse);
-    });
-
-    if (filtersScrollSentinel && 'IntersectionObserver' in window) {
-      const headerHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) || 0;
-      const stickyObserver = new IntersectionObserver(entries => {
-        const sentinel = entries[0];
-        const passedStickyPoint = !sentinel.isIntersecting && sentinel.boundingClientRect.top <= headerHeight;
-        if (mobileQuery.matches && !manuallyExpanded && passedStickyPoint) {
-          setFiltersCollapsed(true);
-        }
-      }, { rootMargin: `-${headerHeight}px 0px 0px 0px`, threshold: 0 });
-      stickyObserver.observe(filtersScrollSentinel);
+  const mobileQuery = window.matchMedia('(max-width: 768px)');
+  const dismissMobileHero = () => {
+    if (mobileQuery.matches && window.scrollY > 24) {
+      document.body.classList.add('mobile-hero-dismissed');
     }
-
-    window.addEventListener('scroll', () => {
-      if (scrollFrame !== null) return;
-      scrollFrame = requestAnimationFrame(() => {
-        const currentScrollY = Math.max(window.scrollY, 0);
-        const scrollDelta = currentScrollY - lastScrollY;
-        if (scrollDelta < 0) manuallyExpanded = false;
-        downwardTravel = scrollDelta > 0 ? downwardTravel + scrollDelta : 0;
-        if (mobileQuery.matches && !manuallyExpanded && downwardTravel > 12 && currentScrollY > 80) {
-          setFiltersCollapsed(true);
-          downwardTravel = 0;
-        }
-        lastScrollY = currentScrollY;
-        scrollFrame = null;
-      });
-    }, { passive: true });
-
-    window.addEventListener('resize', syncFiltersPanelHeight, { passive: true });
-    mobileQuery.addEventListener?.('change', () => setFiltersCollapsed(false));
-    setFiltersCollapsed(mobileQuery.matches);
-  }
+  };
+  window.addEventListener('scroll', dismissMobileHero, { passive: true });
 
   // Product search
   productSearchInput?.addEventListener('input', () => {
@@ -5030,6 +5583,7 @@ function bindEvents() {
     activeCategory = btn.dataset.value;
     categoryFilters.querySelectorAll('.pill').forEach(b => b.classList.toggle('active', b === btn));
     renderProducts();
+    closeFiltersDrawer();
   });
 
   // Cart actions
@@ -5057,10 +5611,13 @@ function bindEvents() {
       keepFocusInside(productModal, e);
     } else if (e.key === 'Tab' && cartSidebar.classList.contains('open')) {
       keepFocusInside(cartSidebar, e);
+    } else if (e.key === 'Tab' && filtersPanel?.classList.contains('open')) {
+      keepFocusInside(filtersPanel, e);
     }
     if (e.key === 'Escape') {
       closeModal();
       closeCart();
+      closeFiltersDrawer();
     }
   });
 }
