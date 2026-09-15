@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Revisión de encuadre · BYE BYE</title>
+  <style>
+    :root{font-family:Arial,sans-serif;color:#241d18;background:#eee7dc}body{margin:0;padding:28px}header{position:sticky;top:0;z-index:2;background:#eee7dc;padding:4px 0 20px}h1{margin:0 0 8px;font-size:24px}p{margin:0 0 14px;color:#685e55}select{font:inherit;padding:10px 14px;border:1px solid #bba996;border-radius:20px;background:#fff}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px}.item{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 3px 14px #5a4a3b1a}.item img{display:block;width:100%;aspect-ratio:4/5;object-fit:contain;background:#fff}.item span{display:block;padding:10px 12px;font-size:12px;color:#6c6259}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Revisión de encuadre por producto</h1>
+    <p>Todas las variantes usan el mismo lienzo 4:5 y muestran la prenda completa.</p>
+    <select id="product"></select>
+  </header>
+  <main class="grid" id="grid"></main>
+  <script>
+    const select=document.querySelector('#product'); const grid=document.querySelector('#grid');
+    fetch('normalization-report.json').then(r=>r.json()).then(report=>{
+      const ids=Object.keys(report.products).sort((a,b)=>Number(a)-Number(b));
+      select.innerHTML=ids.map(id=>`<option value="${id}" ${id==='25'?'selected':''}>Producto ${id}</option>`).join('');
+      const render=()=>{grid.innerHTML=report.products[select.value].map(row=>`<article class="item"><img src="images/${row.file}" alt="${row.file}"><span>${row.file} · ${row.mode}</span></article>`).join('')};
+      select.addEventListener('change',render); render();
+    });
+  </script>
+</body>
+</html>

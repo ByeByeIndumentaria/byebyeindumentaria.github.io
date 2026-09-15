@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BYE BYE — Catálogo</title>
+  <meta name="description" content="Catálogo mayorista BYE BYE. Explorá las colecciones, armá tu pedido y solicitá una cotización por WhatsApp." />
+  <meta name="theme-color" content="#f4ede3" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="BYE BYE — Catálogo mayorista" />
+  <meta property="og:description" content="Explorá las colecciones BYE BYE y armá tu pedido mayorista." />
+  <meta property="og:locale" content="es_AR" />
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="stylesheet" href="style.css?v=20260903-01" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    .purchase-options { margin: 0 0 16px; }
+    .purchase-options-label { display: block; margin-bottom: 8px; font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+    .purchase-options-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+    .purchase-option-btn { padding: 10px 12px; border: 1px solid #b9ad9f; border-radius: 999px; background: transparent; color: inherit; cursor: pointer; font: inherit; font-size: 13px; }
+    .purchase-option-btn.active { border-color: #111; background: #111; color: #fff; }
+    .purchase-option-details { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 0 0 12px; font-size: 12px; color: #625b53; }
+    .catalog-search { max-width: 1400px; margin: 0 auto 18px; display: flex; align-items: center; gap: 10px; }
+    .filters-toggle { display: none; flex: 0 0 44px; width: 44px; height: 44px; align-items: center; justify-content: center; border: 1px solid rgba(168,79,42,.28); border-radius: 50%; background: rgba(255,250,241,.82); color: #564b3e; transition: border-color .2s ease, background .2s ease, transform .2s ease; }
+    .filters-toggle:active { transform: scale(.96); }
+    .filters-toggle svg { width: 20px; height: 20px; }
+    .catalog-search-field { position: relative; max-width: 520px; }
+    .catalog-search-icon { position: absolute; left: 16px; top: 50%; width: 18px; height: 18px; transform: translateY(-50%); color: #7d7162; pointer-events: none; }
+    .catalog-search-input { width: 100%; min-height: 46px; padding: 11px 46px 11px 46px; border: 1px solid rgba(168,79,42,.28); border-radius: 999px; outline: none; background: rgba(255,250,241,.82); color: #1f1a15; font: inherit; transition: border-color .2s ease, box-shadow .2s ease, background .2s ease; }
+    .catalog-search-input::placeholder { color: #7d7162; }
+    .catalog-search-input:focus { border-color: #9d4f38; background: #fffaf1; box-shadow: 0 0 0 3px rgba(157,79,56,.12); }
+    .catalog-search-clear { position: absolute; right: 7px; top: 50%; width: 34px; height: 34px; transform: translateY(-50%); border-radius: 50%; color: #564b3e; font-size: 20px; line-height: 1; }
+    .catalog-search-clear:hover { background: rgba(157,79,56,.10); }
+    .modal-image-wrap { position: relative; overflow: hidden; touch-action: pan-y; }
+    #modal-img { transition: transform .22s ease; transform-origin: 50% 50%; user-select: none; -webkit-user-drag: none; }
+    .modal-image-wrap.is-zoomed { cursor: zoom-out; touch-action: none; }
+    .modal-image-wrap.is-zoomed #modal-img { transform: scale(2.25); cursor: zoom-out; }
+    .modal-image-wrap.is-zoomed .gallery-arrow, .modal-image-wrap.is-zoomed .modal-gallery-dots { opacity: 0; pointer-events: none; }
+    .modal-zoom-toggle { position: absolute; z-index: 7; top: 16px; right: 16px; display: inline-flex; align-items: center; gap: 7px; min-height: 38px; padding: 8px 12px; border-radius: 999px; background: rgba(255,250,241,.90); color: #1f1a15; box-shadow: 0 4px 16px rgba(0,0,0,.13); font-size: 12px; font-weight: 600; backdrop-filter: blur(8px); }
+    .modal-zoom-toggle svg { width: 16px; height: 16px; }
+    .modal-image-wrap.is-zoomed .modal-zoom-toggle { background: #1f1a15; color: #fff; }
+    @media (max-width: 768px) {
+      .catalog-search { margin-bottom: 0; }
+      .catalog-search-field { max-width: none; flex: 1 1 auto; min-width: 0; }
+      .filters-toggle { display: inline-flex; }
+      .catalog-search-input { min-height: 44px; font-size: 16px; }
+      .modal-zoom-toggle { top: auto; right: 12px; bottom: 14px; width: 40px; height: 40px; padding: 0; justify-content: center; }
+      .modal-zoom-label { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header id="site-header">
+    <div class="header-inner">
+      <div class="header-left">
+        <span class="collection-tag">BYE BYE Mayorista</span>
+      </div>
+      <div class="header-brand">
+        <h1 class="brand-name">BYE BYE</h1>
+      </div>
+      <div class="header-right">
+        <button class="cart-btn" id="cart-toggle" aria-label="Ver carrito">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>
+          </svg>
+          <span class="cart-count" id="cart-count">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero" id="hero-carousel" data-active-collection="invierno-2027" aria-roledescription="carrusel" aria-label="Colecciones destacadas">
+    <div class="hero-track">
+      <article class="hero-slide baked-banner winter-banner active" data-collection="invierno-2027" style="--hero-image:url('images/banner-invierno-drop.jpg'); --mobile-hero-image:url('images/banner-mobile-invierno-2027.jpg')" aria-hidden="false">
+      </article>
+      <article class="hero-slide accessories-banner" data-collection="accesorios" style="--hero-image:url('images/banner-accesorios-everyday.jpg'); --mobile-hero-image:url('images/banner-mobile-accesorios-2027.jpg')" aria-hidden="true">
+      </article>
+      <article class="hero-slide summer-banner" data-collection="verano-2027" style="--hero-image:url('images/banner-verano-2027.jpg'); --mobile-hero-image:url('images/banner-mobile-verano-2027.jpg')" aria-hidden="true">
+        <div class="hero-content">
+          <p class="hero-eyebrow">Catálogo mayorista · BYE BYE</p>
+          <h2 class="hero-title">Summer<br><em>collection</em><br>2027</h2>
+        </div>
+      </article>
+    </div>
+    <div class="hero-dots" role="group" aria-label="Banner actual">
+      <span class="hero-dot active"></span>
+      <span class="hero-dot"></span>
+      <span class="hero-dot"></span>
+    </div>
+  </section>
+
+  <!-- FILTERS -->
+  <div class="filters-scroll-sentinel" id="filters-scroll-sentinel" aria-hidden="true"></div>
+  <section class="filters-section" id="catalogo">
+    <div class="catalog-search" role="search">
+      <button class="filters-toggle" id="filters-toggle" type="button" aria-label="Ocultar filtros" aria-controls="filters-panel" aria-expanded="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+          <line x1="4" y1="7" x2="20" y2="7"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="17" x2="20" y2="17"></line>
+        </svg>
+      </button>
+      <div class="catalog-search-field">
+        <svg class="catalog-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"></circle><line x1="16.5" y1="16.5" x2="21" y2="21"></line>
+        </svg>
+        <input class="catalog-search-input" id="product-search" type="search" placeholder="Buscar por nombre o código" autocomplete="off" aria-label="Buscar productos por nombre o código" />
+        <button class="catalog-search-clear" id="product-search-clear" type="button" aria-label="Limpiar búsqueda" hidden>×</button>
+      </div>
+    </div>
+    <div class="filters-inner" id="filters-panel">
+      <div class="filter-group">
+        <span class="filter-label">Colección</span>
+        <div class="filter-pills" id="collection-filters"></div>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Género</span>
+        <div class="filter-pills" id="gender-filters">
+          <button class="pill active" data-filter="gender" data-value="all">Todos</button>
+          <button class="pill" data-filter="gender" data-value="MUJER">Mujer</button>
+          <button class="pill" data-filter="gender" data-value="HOMBRE">Hombre</button>
+          <button class="pill" data-filter="gender" data-value="NINOS" style="display:none">Niños</button>
+          <button class="pill" data-filter="gender" data-value="UNISEX" style="display:none">Unisex</button>
+        </div>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Categoría</span>
+        <div class="filter-pills" id="category-filters">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+    <div class="results-info">
+      <span id="results-count"></span>
+    </div>
+  </section>
+
+  <section class="catalog-area">
+    <!-- PRODUCT GRID -->
+    <main class="catalog-grid" id="product-grid">
+      <!-- Cards rendered by JS -->
+    </main>
+
+    <!-- EMPTY STATE -->
+    <div class="empty-state" id="empty-state" style="display:none">
+      <p>No hay productos para los filtros seleccionados.</p>
+    </div>
+  </section>
+
+  <!-- CART SIDEBAR -->
+  <aside class="cart-sidebar" id="cart-sidebar" role="dialog" aria-modal="true" aria-labelledby="cart-title" aria-hidden="true">
+    <div class="cart-header">
+      <h3 id="cart-title">Pedido mayorista</h3>
+      <button class="close-cart" id="close-cart" aria-label="Cerrar carrito">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="cart-items" id="cart-items">
+      <!-- Cart items rendered by JS -->
+    </div>
+    <div class="cart-empty" id="cart-empty">
+      <p>Aún no agregaste prendas.</p>
+      <p class="cart-empty-hint">Explorá el catálogo y sumá lo que te gusta.</p>
+    </div>
+    <div class="cart-actions" id="cart-actions" style="display:none">
+      <button class="btn-primary" id="btn-whatsapp">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+        Pedir cotización por WhatsApp
+      </button>
+      <button class="btn-secondary" id="btn-pdf">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
+        </svg>
+        Descargar PDF
+      </button>
+      <button class="btn-ghost" id="btn-clear">Vaciar selección</button>
+    </div>
+  </aside>
+  <div class="cart-overlay" id="cart-overlay"></div>
+
+  <!-- PRODUCT MODAL -->
+  <div class="modal-overlay" id="modal-overlay" aria-hidden="true">
+    <div class="modal" id="product-modal" role="dialog" aria-modal="true" aria-labelledby="modal-name" tabindex="-1">
+      <button class="modal-close" id="modal-close" aria-label="Cerrar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+      <div class="modal-image-wrap">
+        <img id="modal-img" src="" alt="" />
+        <button class="modal-zoom-toggle" id="modal-zoom-toggle" type="button" aria-label="Ampliar imagen" aria-pressed="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"></circle><line x1="15.5" y1="15.5" x2="21" y2="21"></line><line x1="10.5" y1="7.5" x2="10.5" y2="13.5"></line><line x1="7.5" y1="10.5" x2="13.5" y2="10.5"></line></svg>
+          <span class="modal-zoom-label">Ampliar</span>
+        </button>
+        <div class="modal-badges">
+          <span class="badge-gender" id="modal-gender"></span>
+          <span class="badge-cat" id="modal-subcat"></span>
+        </div>
+      </div>
+      <div class="modal-info">
+        <p class="modal-collection" id="modal-collection"></p>
+        <h2 class="modal-title" id="modal-name"></h2>
+        <p class="modal-code" id="modal-code" hidden></p>
+        <p class="modal-desc" id="modal-desc"></p>
+        <div class="modal-colors" id="modal-colors"></div>
+        <div class="modal-sizes" id="modal-sizes"></div>
+        <div class="modal-packaging" id="modal-packaging"></div>
+        <button class="btn-product-pdf" id="modal-pdf-btn" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="12" x2="12" y2="18"/><polyline points="9 15 12 18 15 15"/></svg>
+          Descargar ficha PDF
+        </button>
+        <button class="btn-add-modal" id="modal-add-btn">Agregar a la selección</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <footer class="site-footer">
+    <p class="footer-brand">BYE BYE</p>
+    <p>Catálogo mayorista · Pedidos y cotizaciones por WhatsApp</p>
+    <a href="#catalogo">Volver al catálogo</a>
+  </footer>
+
+  <script src="script.js?v=20260907-02"></script>
+</body>
+</html>

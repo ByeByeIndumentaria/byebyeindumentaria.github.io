@@ -1,0 +1,17 @@
+[
+  {
+    "index": 1,
+    "name": "PRODUCCIÓN HOODIES",
+    "rangeAddress": "A2:H10"
+  },
+  {
+    "index": 2,
+    "name": "PRODUCCIÓN MEN",
+    "rangeAddress": "A2:H24"
+  },
+  {
+    "index": 3,
+    "name": "PRODUCCIÓN WOMEN",
+    "rangeAddress": "A2:H24"
+  }
+]
