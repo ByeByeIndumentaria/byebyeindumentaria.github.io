@@ -1400,16 +1400,16 @@ Object.assign(productImagesById, {
   "159": [1, 2, 3],
   "160": [1, 2],
   "161": [1, 2, 3],
-  "162": [1, 2, 3],
-  "163": [1],
+  "162": [1, 2, 3, 4],
+  "163": [1, 2, 3, 4],
   "164": [1, 2, 3, 4],
   "165": [1, 2, 3],
   "166": [1, 2, 3],
   "167": [1, 2],
-  "168": [1],
+  "168": [1, 2, 3],
   "169": [1, 2, 3, 4],
   "170": [1, 2, 3, 4],
-  "171": [1],
+  "171": [1, 2, 3],
   "172": [1, 2, 3, 4],
   "182": [1, 2, 3, 4],
   "183": [1, 2, 3],
@@ -1526,7 +1526,7 @@ Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumber
   ])].sort((a, b) => a - b);
 });
 
-const IMAGE_ASSET_VERSION = "20260915-08";
+const IMAGE_ASSET_VERSION = "20260915-12";
 
 const PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID = {
   118: 48,  // Merano
@@ -1627,7 +1627,8 @@ function getProductImageSources(id) {
 const colorImageByProductId = {
   160: { "Marrón": 1, "Negro": 2 },
   161: { "Camel": 1, "Negro": 2, "Chocolate": 3 },
-  162: { "Camel": 1, "Chocolate": 2, "Negro": 3 },
+  162: { "Marrón": 1, "Chocolate": 2, "Negro": 3, "Camel": 4 },
+  163: { "Negro/Bordó": 1, "Negro": 2, "Gris/Negro": 3, "Beige/Negro": 4 },
   164: { "Beige": 1, "Chocolate": 2, "Camel": 3, "Negro": 4 },
   159: { "Oliva": 1, "Negro": 2, "Gris": 3 },
   165: { "Gris Oscuro": 1, "Beige": 2, "Negro": 3 },
@@ -1635,6 +1636,8 @@ const colorImageByProductId = {
   167: { "Negro": 1, "Chocolate": 2 },
   169: { "Chocolate": 1, "Marrón": 2, "Camel": 3, "Negro": 4 },
   170: { "Crudo/Marino": 1, "Negro/Marino": 2, "Marino": 3, "Negro": 4 },
+  171: { "Negro": 1, "Beige/Negro": 2, "Oliva/Negro": 3 },
+  168: { "Camel/Crudo": 1, "Chocolate/Crudo": 2, "Negro/Crudo": 3 },
   157: { "Negro": 1, "Camel": 2, "Oliva": 3 },
   156: { "Negro": 1, "Gris": 2, "Oliva": 3 },
   155: { "Negro": 1, "Melange claro": 2, "Melange oscuro": 3, "Beige": 4 },
@@ -3224,8 +3227,14 @@ if (floydProduct) {
 
 const stephenProduct = production2027Products.find(product => product.id === 162);
 if (stephenProduct) {
-  stephenProduct.colors = ["Camel", "Chocolate", "Negro"];
+  stephenProduct.colors = ["Marrón", "Chocolate", "Negro", "Camel"];
   stephenProduct.preserveCatalogColors = true;
+}
+
+const doyleProduct = production2027Products.find(product => product.id === 163);
+if (doyleProduct) {
+  doyleProduct.colors = ["Negro/Bordó", "Negro", "Gris/Negro", "Beige/Negro"];
+  doyleProduct.preserveCatalogColors = true;
 }
 
 const curnoProduct = production2027Products.find(product => product.id === 164);
@@ -3268,6 +3277,18 @@ const mikeyProduct = production2027Products.find(product => product.id === 170);
 if (mikeyProduct) {
   mikeyProduct.colors = ["Crudo/Marino", "Negro/Marino", "Marino", "Negro"];
   mikeyProduct.preserveCatalogColors = true;
+}
+
+const ubonProduct = production2027Products.find(product => product.id === 171);
+if (ubonProduct) {
+  ubonProduct.colors = ["Negro", "Beige/Negro", "Oliva/Negro"];
+  ubonProduct.preserveCatalogColors = true;
+}
+
+const gesicoProduct = production2027Products.find(product => product.id === 168);
+if (gesicoProduct) {
+  gesicoProduct.colors = ["Camel/Crudo", "Chocolate/Crudo", "Negro/Crudo"];
+  gesicoProduct.preserveCatalogColors = true;
 }
 
 const aimmenProduct = production2027Products.find(product => product.id === 172);
@@ -4144,6 +4165,17 @@ function getActiveCollection() {
   return collections.find(collection => collection.id === activeCollection) || collections[0];
 }
 
+function isPreorderCollection(collection = getActiveCollection()) {
+  return /2027/.test(`${collection.id} ${collection.name} ${collection.label}`);
+}
+
+function getModalAddButtonLabel(product, selectedOption, inCart) {
+  if (!product.inStock) return 'Fuera de stock';
+  if (inCart) return '✓ Opción en tu selección';
+  if (isPreorderCollection()) return selectedOption ? 'Reservar esta opción' : 'Reservar / agregar al pedido';
+  return selectedOption ? 'Agregar esta opción' : 'Agregar a la selección';
+}
+
 function getCollectionProducts() {
   return products.filter(product => (
     activeCollection === "todos" || product.collections.includes(activeCollection)
@@ -4186,7 +4218,8 @@ function buildCollectionFilters() {
   const visibleCollections = collections.filter(collection => !collection.hidden);
   collectionFilters.innerHTML = visibleCollections.map(collection => `
     <button class="pill ${collection.id === activeCollection ? "active" : ""}" data-filter="collection" data-value="${collection.id}">
-      ${collection.name}
+      <span>${collection.name}</span>
+      ${isPreorderCollection(collection) ? '<small class="pill-preorder">Preventa</small>' : ''}
     </button>
   `).join("");
 }
@@ -4442,10 +4475,13 @@ function getFilteredProducts() {
 function renderProducts() {
   persistCatalogState();
   const filtered = getFilteredProducts();
+  const preorderCollection = isPreorderCollection();
   resetProductImageObserver();
   productGrid.innerHTML = '';
 
   resultsCountEl.textContent = `${filtered.length} prenda${filtered.length !== 1 ? 's' : ''}`;
+  const preorderNotice = document.getElementById('preorder-notice');
+  if (preorderNotice) preorderNotice.hidden = !preorderCollection;
 
   if (filtered.length === 0) {
     emptyState.style.display = 'block';
@@ -4462,7 +4498,7 @@ function renderProducts() {
   filtered.forEach(p => {
     const inCart = cart.some(c => c.id === p.id);
     const card = document.createElement('div');
-    card.className = 'product-card' + (p.inStock ? '' : ' out-of-stock');
+    card.className = 'product-card' + (preorderCollection ? ' preorder' : '') + (p.inStock ? '' : ' out-of-stock');
     card.dataset.id = p.id;
     card.tabIndex = 0;
     card.setAttribute('role', 'button');
@@ -4471,6 +4507,7 @@ function renderProducts() {
     card.innerHTML = `
       <div class="card-img-wrap">
         <span class="card-badge-gender">${getGenderLabel(p.category)}</span>
+        ${preorderCollection && p.inStock ? `<span class="card-badge-preorder">Disponible para reservar</span>` : ''}
         ${p.inStock ? '' : `<span class="card-badge-stock">Sin stock</span>`}
         <img class="card-img" src="" alt="${p.name}" loading="lazy" decoding="async" style="display:none;width:100%;height:100%;object-fit:cover;" />
         <div class="card-placeholder" id="ph-${p.id}">
@@ -4647,7 +4684,10 @@ function openModal(p, initialPurchaseOptionId = null) {
   document.getElementById('modal-name').textContent = p.name;
   document.getElementById('modal-gender').textContent = getGenderLabel(p.category);
   document.getElementById('modal-subcat').textContent = formatProductSubcategory(p);
-  document.getElementById('modal-collection').textContent = `${getActiveCollection().name.toUpperCase()} · ${getStockLabel(p).toUpperCase()}`;
+  const modalAvailability = isPreorderCollection() && p.inStock
+    ? 'PREVENTA · DISPONIBLE PARA RESERVAR'
+    : getStockLabel(p).toUpperCase();
+  document.getElementById('modal-collection').textContent = `${getActiveCollection().name.toUpperCase()} · ${modalAvailability}`;
   const modalCode = document.getElementById('modal-code');
   const displayedOrderNumber = selectedOption?.orderNumber || p.orderNumber;
   modalCode.textContent = displayedOrderNumber ? `Cód. ${displayedOrderNumber}` : '';
@@ -4655,6 +4695,8 @@ function openModal(p, initialPurchaseOptionId = null) {
   const modalDescription = document.getElementById('modal-desc');
   modalDescription.textContent = p.description || '';
   modalDescription.hidden = !p.description;
+  const modalPreorderNotice = document.getElementById('modal-preorder-notice');
+  modalPreorderNotice.hidden = !isPreorderCollection() || !p.inStock;
 
   // Colors
   const colorsEl = document.getElementById('modal-colors');
@@ -4939,7 +4981,7 @@ function openModal(p, initialPurchaseOptionId = null) {
 
   const addBtn = document.getElementById('modal-add-btn');
   addBtn.disabled = !p.inStock;
-  addBtn.textContent = !p.inStock ? 'Fuera de stock' : (inCart ? '✓ Opción en tu selección' : (selectedOption ? 'Agregar esta opción' : 'Agregar a la selección'));
+  addBtn.textContent = getModalAddButtonLabel(p, selectedOption, inCart);
   addBtn.className = 'btn-add-modal' + (inCart ? ' in-cart' : '') + (p.inStock ? '' : ' disabled');
 
   modalOverlay.classList.add('active');
@@ -5063,7 +5105,7 @@ function updateCartUI() {
     const inCart = cart.some(c => c.cartKey === getCartKey(currentModalProduct, option?.id));
     const addBtn = document.getElementById('modal-add-btn');
     addBtn.disabled = !currentModalProduct.inStock;
-    addBtn.textContent = !currentModalProduct.inStock ? 'Fuera de stock' : (inCart ? '✓ Opción en tu selección' : (option ? 'Agregar esta opción' : 'Agregar a la selección'));
+    addBtn.textContent = getModalAddButtonLabel(currentModalProduct, option, inCart);
     addBtn.className = 'btn-add-modal' + (inCart ? ' in-cart' : '') + (currentModalProduct.inStock ? '' : ' disabled');
   }
 }

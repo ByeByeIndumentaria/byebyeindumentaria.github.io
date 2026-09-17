@@ -271,6 +271,14 @@ input:focus-visible,
   transition: all var(--transition);
   white-space: nowrap;
 }
+.pill-preorder {
+  margin-left: 5px;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  opacity: .72;
+}
 .pill:hover { border-color: var(--clay); color: var(--clay); background: #cbbba8; }
 .pill.active {
   background: var(--clay);
@@ -282,6 +290,32 @@ input:focus-visible,
   font-size: 12px;
   color: var(--gray-400);
   letter-spacing: 0.06em;
+}
+.preorder-notice {
+  max-width: 1400px;
+  margin: 12px auto 0;
+  padding: 11px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid rgba(168,79,42,.25);
+  border-radius: 8px;
+  background: rgba(244,237,227,.92);
+  color: var(--gray-600);
+  font-size: 12px;
+  line-height: 1.4;
+}
+.preorder-notice[hidden] { display: none; }
+.preorder-notice-label {
+  flex: 0 0 auto;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--clay);
+  color: #fffaf1;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
 }
 
 /* ── PRODUCT GRID ─────────────────────── */
@@ -362,6 +396,20 @@ input:focus-visible,
   padding: 4px 10px;
   border-radius: 999px;
   z-index: 1;
+}
+.card-badge-preorder {
+  position: absolute;
+  top: 40px; left: 10px;
+  z-index: 1;
+  max-width: calc(100% - 20px);
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--olive);
+  color: #fffaf1;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
 }
 .product-card.out-of-stock .card-img-wrap img,
 .product-card.out-of-stock .card-placeholder { filter: grayscale(1); opacity: 0.58; }
@@ -704,6 +752,21 @@ input:focus-visible,
   max-height: 90vh;
   overflow-y: auto;
 }
+.modal-preorder-notice {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin: 14px 0 18px;
+  padding: 12px 14px;
+  border-left: 3px solid var(--olive);
+  border-radius: 0 6px 6px 0;
+  background: rgba(119,121,82,.1);
+  color: var(--gray-600);
+  font-size: 12px;
+  line-height: 1.45;
+}
+.modal-preorder-notice[hidden] { display: none; }
+.modal-preorder-notice strong { color: var(--olive); }
 .modal-collection {
   font-size: 11px;
   letter-spacing: 0.16em;
