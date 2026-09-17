@@ -16,6 +16,13 @@ const collections = [
   { id: "hoodies-2027", name: "Hoodies 2027", label: "HOODIES 2027", tagline: "Hoodies 2027." }
 ];
 
+const PREORDER_COLLECTION_IDS = new Set([
+  "verano-2027",
+  "produccion-invierno-2027",
+  "sweaters-2027",
+  "hoodies-2027"
+]);
+
 const SPRING_PRODUCT_IDS = [51, 53, 54, 58, 61, 62, 63, 66, 68, 77, 78];
 const SPORTS_PRODUCT_IDS = [39, 51, 85, 86, 87];
 
@@ -1396,7 +1403,7 @@ Object.assign(productImagesById, {
   "155": [1, 2, 3, 4],
   "156": [1, 2, 3],
   "157": [1, 2, 3],
-  "158": [1, 2],
+  "158": [1, 2, 3, 4],
   "159": [1, 2, 3],
   "160": [1, 2],
   "161": [1, 2, 3],
@@ -1526,7 +1533,7 @@ Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumber
   ])].sort((a, b) => a - b);
 });
 
-const IMAGE_ASSET_VERSION = "20260915-12";
+const IMAGE_ASSET_VERSION = "20260917-01";
 
 const PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID = {
   118: 48,  // Merano
@@ -1625,6 +1632,7 @@ function getProductImageSources(id) {
 
 // Foto principal por color. El numero corresponde a prod_ID_NUMERO.
 const colorImageByProductId = {
+  158: { "Negro/Camel": 1, "Oliva/Azul": 2, "Marino/Rojo": 3, "Beige/Oliva": 4 },
   160: { "Marrón": 1, "Negro": 2 },
   161: { "Camel": 1, "Negro": 2, "Chocolate": 3 },
   162: { "Marrón": 1, "Chocolate": 2, "Negro": 3, "Camel": 4 },
@@ -3213,6 +3221,12 @@ if (comisoProduct) {
   comisoProduct.preserveCatalogColors = true;
 }
 
+const parkerProduct = production2027Products.find(product => product.id === 158);
+if (parkerProduct) {
+  parkerProduct.colors = ["Negro/Camel", "Oliva/Azul", "Marino/Rojo", "Beige/Oliva"];
+  parkerProduct.preserveCatalogColors = true;
+}
+
 const carlAldenoProduct = production2027Products.find(product => product.id === 160);
 if (carlAldenoProduct) {
   carlAldenoProduct.colors = ["Marrón", "Negro"];
@@ -4166,7 +4180,7 @@ function getActiveCollection() {
 }
 
 function isPreorderCollection(collection = getActiveCollection()) {
-  return /2027/.test(`${collection.id} ${collection.name} ${collection.label}`);
+  return PREORDER_COLLECTION_IDS.has(collection.id);
 }
 
 function getModalAddButtonLabel(product, selectedOption, inCart) {
