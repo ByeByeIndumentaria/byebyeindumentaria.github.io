@@ -112,9 +112,6 @@ const OUT_OF_STOCK_VARIANTS = {
   },
   66: {
     Negro: ["S", "M", "L", "XL", "XXL"]
-  },
-  124: {
-    Negro: ["S", "M", "L", "XL", "XXL"]
   }
 };
 
@@ -1382,6 +1379,7 @@ Object.assign(productImagesById, {
   "120": [1, 2, 3],
   "121": [1, 2, 3],
   "123": [1, 2],
+  "124": [1, 2],
   "126": [1, 2],
   "127": [1],
   "128": [1, 2],
@@ -1449,6 +1447,7 @@ Object.assign(productImagesById, {
   "256": [1, 2, 3],
   "257": [1, 2, 3],
   "258": [1, 2, 3],
+  "259": [1, 2, 3],
   "211": [1, 2, 3],
   "212": [1, 2, 3],
   "213": [1, 2, 3],
@@ -1533,11 +1532,10 @@ Object.entries(winterImageAdditionsByProductId).forEach(([productId, photoNumber
   ])].sort((a, b) => a - b);
 });
 
-const IMAGE_ASSET_VERSION = "20260917-01";
+const IMAGE_ASSET_VERSION = "20260917-06";
 
 const PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID = {
   118: 48,  // Merano
-  124: 51,  // Taft
   125: 70,  // Felipe Hood con Piel Fina
   132: 72,  // Messika
   138: 80,  // Sirena Hood
@@ -1632,10 +1630,12 @@ function getProductImageSources(id) {
 
 // Foto principal por color. El numero corresponde a prod_ID_NUMERO.
 const colorImageByProductId = {
+  124: { "Negro": 1, "Marino": 2 },
+  259: { "Oliva": 1, "Negro": 2, "Caqui": 3 },
   158: { "Negro/Camel": 1, "Oliva/Azul": 2, "Marino/Rojo": 3, "Beige/Oliva": 4 },
   160: { "Marrón": 1, "Negro": 2 },
   161: { "Camel": 1, "Negro": 2, "Chocolate": 3 },
-  162: { "Marrón": 1, "Chocolate": 2, "Negro": 3, "Camel": 4 },
+  162: { "Camel": 1, "Chocolate": 2, "Negro": 3, "Marrón": 4 },
   163: { "Negro/Bordó": 1, "Negro": 2, "Gris/Negro": 3, "Beige/Negro": 4 },
   164: { "Beige": 1, "Chocolate": 2, "Camel": 3, "Negro": 4 },
   159: { "Oliva": 1, "Negro": 2, "Gris": 3 },
@@ -1743,7 +1743,7 @@ const colorImageByProductId = {
   149: { "Leopardo": 1, "Chita": 2 },
   150: { "Crudo": 1 },
   110: { "Negro": 1, "Marino": 2, "Azul": 2 },
-  111: { "Negro": 1, "Gris Oscuro": 2, "Chocolate": 3 },
+  111: { "Negro": 1, "Chocolate": 2, "Gris Oscuro": 3 },
   112: { "Gris Oscuro": 1, "Chocolate": 2, "Negro": 3 },
   114: { "Negro": 1, "Chocolate": 2 },
   115: { "Negro": 1, "Gris Oscuro": 2 },
@@ -3021,7 +3021,7 @@ const legacyProduction2027Products = [
   production2027Product({ id: 133, name: "Croviana Plus Size", category: "MUJER", sourcePacking: "SURTIDO", sizes: PRODUCTION_2027_PLUS_SIZES, rows: [
     ...production2027Rows("Negro", [1, 1, 1, 1], { sizes: PRODUCTION_2027_PLUS_SIZES, repeat: 2 }), ...production2027Rows("Chocolate", [1, 1, 1, 1], { sizes: PRODUCTION_2027_PLUS_SIZES }), ...production2027Rows("Militar Oscuro", [1, 1, 1, 1], { sizes: PRODUCTION_2027_PLUS_SIZES })
   ] }),
-  production2027Product({ id: 134, name: "Cumiana", category: "MUJER", subcategory: "Chalecos", sourcePacking: "SURTIDO + CAJA POR COLOR", rows: [
+  production2027Product({ id: 134, name: "Cumiana Vest", category: "MUJER", subcategory: "Chalecos", sourcePacking: "SURTIDO + CAJA POR COLOR", rows: [
     ...production2027Rows("Negro", [2, 2, 2, 2, 1], { repeat: 3 }), ...production2027Rows("Chocolate", [2, 2, 2, 2, 1]), ...production2027Rows("Beige", [2, 2, 2, 2, 1])
   ] }),
   production2027Product({ id: 135, name: "Cumiana Long", category: "MUJER", subcategory: "Chalecos", sourcePacking: "SURTIDO", description: "Chaleco largo Cumiana. Producción Invierno 2027.", rows: [
@@ -3130,7 +3130,7 @@ const production2027Products = [
   production2027Product({ id: 133, name: "Croviana Plus Size", category: "MUJER", orderNumber: "126-479", sourcePacking: "CAJA SURTIDA", sizes: PRODUCTION_2027_PLUS_SIZES, rows: [
     ...production2027Rows("Negro", null, { sizes: PRODUCTION_2027_PLUS_SIZES, repeat: 2, curveText: "3XL a 6XL · 1/1/1" }), ...production2027Rows("Chocolate", null, { sizes: PRODUCTION_2027_PLUS_SIZES, curveText: "3XL a 6XL · 1/1/1" }), ...production2027Rows("Militar Oscuro", null, { sizes: PRODUCTION_2027_PLUS_SIZES, curveText: "3XL a 6XL · 1/1/1" })
   ] }),
-  production2027Product({ id: 134, name: "Cumiana", category: "MUJER", subcategory: "Chalecos", orderNumber: "126-452", sourcePacking: "CAJA POR COLOR + CAJA SURTIDA", rows: [
+  production2027Product({ id: 134, name: "Cumiana Vest", category: "MUJER", subcategory: "Chalecos", orderNumber: "126-452", sourcePacking: "CAJA POR COLOR + CAJA SURTIDA", rows: [
     ...production2027Rows("Negro", [2, 2, 2, 2, 1], { repeat: 2 }), ...production2027Rows("Chocolate", [2, 2, 2, 2, 1]), ...production2027Rows("Beige", [2, 2, 2, 2, 1])
   ] }),
   production2027Product({ id: 135, name: "Cumiana Largo", category: "MUJER", subcategory: "Chalecos", orderNumber: "126-454", sourcePacking: "CAJA SURTIDA", rows: [
@@ -3194,7 +3194,20 @@ const production2027Products = [
     colors,
     sizes,
     sourceWorkbook: "Stock Ladies MP088 2.pdf"
-  }))
+  })),
+  {
+    id: 259,
+    name: "Cumiana",
+    category: "MUJER",
+    subcategory: "Camperas",
+    description: "Campera inflable para mujer. Producción Invierno 2027.",
+    orderNumber: "",
+    collection: "produccion-invierno-2027",
+    colors: ["Oliva", "Negro", "Caqui"],
+    sizes: [],
+    driveLink: "",
+    preserveCatalogColors: true
+  }
 ];
 
 const dobbyProduct = production2027Products.find(product => product.id === 157);
@@ -3241,7 +3254,7 @@ if (floydProduct) {
 
 const stephenProduct = production2027Products.find(product => product.id === 162);
 if (stephenProduct) {
-  stephenProduct.colors = ["Marrón", "Chocolate", "Negro", "Camel"];
+  stephenProduct.colors = ["Camel", "Chocolate", "Negro", "Marrón"];
   stephenProduct.preserveCatalogColors = true;
 }
 
