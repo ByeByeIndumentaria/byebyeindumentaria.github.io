@@ -1450,6 +1450,7 @@ Object.assign(productImagesById, {
   "257": [1, 2, 3],
   "258": [1, 2, 3],
   "259": [1, 2, 3],
+  "260": [1, 2, 3, 4],
   "211": [1, 2, 3],
   "212": [1, 2, 3],
   "213": [1, 2, 3],
@@ -1634,6 +1635,7 @@ function getProductImageSources(id) {
 const colorImageByProductId = {
   124: { "Negro": 1, "Marino": 2 },
   259: { "Oliva": 1, "Negro": 2, "Caqui": 3 },
+  260: { "Negro": 1, "Marino": 2, "Oliva": 3, "Chocolate": 4 },
   158: { "Negro/Camel": 1, "Oliva/Azul": 2, "Marino/Rojo": 3, "Beige/Oliva": 4 },
   160: { "Marrón": 1, "Negro": 2 },
   161: { "Camel": 1, "Negro": 2, "Chocolate": 3 },
@@ -3206,6 +3208,19 @@ const production2027Products = [
     orderNumber: "",
     collection: "produccion-invierno-2027",
     colors: ["Oliva", "Negro", "Caqui"],
+    sizes: [],
+    driveLink: "",
+    preserveCatalogColors: true
+  },
+  {
+    id: 260,
+    name: "Cumiano",
+    category: "HOMBRE",
+    subcategory: "Camperas",
+    description: "Campera inflable con cuello alto y cierre frontal. Producción Invierno 2027.",
+    orderNumber: "",
+    collection: "produccion-invierno-2027",
+    colors: ["Negro", "Marino", "Oliva", "Chocolate"],
     sizes: [],
     driveLink: "",
     preserveCatalogColors: true
