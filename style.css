@@ -1244,3 +1244,7 @@ body.filter-menu-open {
   .filters-inner.filters-drawer,
   .filters-drawer-overlay { transition-duration: .01ms; }
 }
+
+/* Disponibilidad junto al selector de color. */
+.color-option { display: inline-flex; align-items: center; gap: 6px; }
+.color-stock-label { color: #a33939; font-size: 12px; font-weight: 600; }

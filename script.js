@@ -103,9 +103,11 @@ const PRODUCT_DESCRIPTION_BY_ID = {
 // -- EASY CATALOG CONTROL -------------------------
 // Para poner un producto fuera de stock, agregá su número:
 // const OUT_OF_STOCK_PRODUCT_IDS = [12, 43];
-const OUT_OF_STOCK_PRODUCT_IDS = [1, 3, 6, 8, 9, 12, 13, 14, 15, 16, 17, 20, 24, 25, 27, 28, 30, 33, 45, 46, 50, 51, 59, 85, 86, 101, 163, 172, 174, 188];
+const OUT_OF_STOCK_PRODUCT_IDS = [1, 3, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 20, 21, 24, 25, 27, 28, 30, 33, 45, 46, 50, 51, 59, 78, 81, 85, 86, 101, 163, 172, 174, 188];
 
 // Stock agotado por variante. Los talles que no figuran acá continúan disponibles.
+const OUT_OF_STOCK_COLORS = { 68: ["Negro"] };
+
 const OUT_OF_STOCK_VARIANTS = {
   40: {
     Negro: ["S", "M", "L", "XL", "3XL"]
@@ -4496,7 +4498,7 @@ function getFilteredProducts() {
     ].filter(Boolean).join(' '));
     const searchOk = !productSearchQuery || searchableText.includes(productSearchQuery);
     return genderOk && catOk && searchOk;
-  });
+  }).sort((a, b) => Number(b.inStock) - Number(a.inStock));
 }
 
 function renderProducts() {
@@ -4728,7 +4730,10 @@ function openModal(p, initialPurchaseOptionId = null) {
   // Colors
   const colorsEl = document.getElementById('modal-colors');
   const displayedColors = selectedOption?.colors || p.colors;
-  colorsEl.innerHTML = displayedColors.map((c, i) => `<button type="button" class="color-chip" data-color-index="${i}">${c}</button>`).join('');
+  colorsEl.innerHTML = displayedColors.map((c, i) => {
+    const unavailable = OUT_OF_STOCK_COLORS[p.id]?.includes(c);
+    return `<span class="color-option"><button type="button" class="color-chip" data-color-index="${i}"${unavailable ? ` aria-label="${c}: agotado"` : ''}>${c}</button>${unavailable ? '<span class="color-stock-label">Agotado</span>' : ''}</span>`;
+  }).join('');
 
   // Sizes
   const sizesEl = document.getElementById('modal-sizes');
@@ -4737,7 +4742,7 @@ function openModal(p, initialPurchaseOptionId = null) {
     const unavailableSizes = new Set(OUT_OF_STOCK_VARIANTS[p.id]?.[color] || []);
     sizesEl.innerHTML = displayedSizes.map(size => {
       const normalizedSize = normalizeCatalogSize(size);
-      const isUnavailable = unavailableSizes.has(normalizedSize);
+      const isUnavailable = OUT_OF_STOCK_COLORS[p.id]?.includes(color) || unavailableSizes.has(normalizedSize);
       const stockLabel = isUnavailable ? ' · Agotado' : '';
       return `<span class="size-chip${isUnavailable ? ' out-of-stock' : ''}"${isUnavailable ? ` title="${color} ${normalizedSize}: agotado" aria-label="${color} ${normalizedSize}: agotado"` : ''}>${normalizedSize}${stockLabel}</span>`;
     }).join('');
