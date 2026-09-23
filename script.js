@@ -1451,6 +1451,11 @@ Object.assign(productImagesById, {
   "258": [1, 2, 3],
   "259": [1, 2, 3],
   "260": [1, 2, 3, 4],
+  "261": [1, 2, 3, 4],
+  "262": [1, 2, 3, 4],
+  "263": [1, 2, 3, 4],
+  "264": [1, 2, 3],
+  "265": [1, 2, 3],
   "211": [1, 2, 3],
   "212": [1, 2, 3],
   "213": [1, 2, 3],
@@ -1636,6 +1641,11 @@ const colorImageByProductId = {
   124: { "Negro": 1, "Marino": 2 },
   259: { "Oliva": 1, "Negro": 2, "Caqui": 3 },
   260: { "Negro": 1, "Marino": 2, "Oliva": 3, "Chocolate": 4 },
+  261: { "Negro": 1, "Marino": 2, "Oliva": 3, "Chocolate": 4 },
+  262: { "Negro": 1, "Marino": 2, "Caqui": 3, "Rosa": 4 },
+  263: { "Negro": 1, "Marino": 2, "Rosa": 3, "Caqui": 4 },
+  264: { "Negro": 1, "Verde Menta": 2, "Beige": 3 },
+  265: { "Negro": 1, "Verde Menta": 2, "Malva": 3 },
   158: { "Negro/Camel": 1, "Oliva/Azul": 2, "Marino/Rojo": 3, "Beige/Oliva": 4 },
   160: { "Marrón": 1, "Negro": 2 },
   161: { "Camel": 1, "Negro": 2, "Chocolate": 3 },
@@ -2920,7 +2930,7 @@ const hoodie2027Products = [
     ...production2027Rows("Azul Marino", null, { sizes: PRODUCTION_2027_KIDS_SIZES, curveText: "4 a 16" }),
     ...production2027Rows("Melange Claro", null, { sizes: PRODUCTION_2027_KIDS_SIZES, curveText: "4 a 16" })
   ] }),
-  hoodie2027Product({ id: 218, name: "Ventura Reversible", category: "UNISEX", orderNumber: "226-326", sizes: ["S", "M", "L", "XL"], totalPieces: 1440, totalLabel: "1.440 piezas · 720 por color", rows: [
+  hoodie2027Product({ id: 218, name: "Ventura Reversible", category: "UNISEX", orderNumber: "226-326", sizes: ["S", "M", "L", "XL"], rows: [
     ...production2027Rows("Negro", [1, 3, 2, 2], { sizes: ["S", "M", "L", "XL"] }),
     ...production2027Rows("Chocolate", [1, 3, 2, 2], { sizes: ["S", "M", "L", "XL"] })
   ] })
@@ -2956,7 +2966,7 @@ const legacyProduction2027Products = [
     ...production2027Rows("Marino", null, { sizes: PRODUCTION_2027_KIDS_SIZES, curveText: "Talles 4 a 16 · cantidad no informada" }),
     ...production2027Rows("Gris Melange Claro", null, { sizes: PRODUCTION_2027_KIDS_SIZES, curveText: "Talles 4 a 16 · cantidad no informada" })
   ] }),
-  production2027Product({ id: 109, name: "Ventura Reversible con Piel", category: "UNISEX", sourcePacking: "ASSORTED SIZE / ASSORTED COLOR", sizes: ["S", "M", "L", "XL"], totalPieces: 1440, totalLabel: "1.440 piezas · 720 por color", rows: [
+  production2027Product({ id: 109, name: "Ventura Reversible con Piel", category: "UNISEX", sourcePacking: "ASSORTED SIZE / ASSORTED COLOR", sizes: ["S", "M", "L", "XL"], rows: [
     ...production2027Rows("Negro", [1, 3, 2, 2], { sizes: ["S", "M", "L", "XL"] }), ...production2027Rows("Chocolate", [1, 3, 2, 2], { sizes: ["S", "M", "L", "XL"] })
   ] }),
 
@@ -3221,6 +3231,73 @@ const production2027Products = [
     orderNumber: "",
     collection: "produccion-invierno-2027",
     colors: ["Negro", "Marino", "Oliva", "Chocolate"],
+    sizes: [],
+    driveLink: "",
+    preserveCatalogColors: true
+  },
+  {
+    id: 261,
+    name: "Cumiano boys",
+    category: "NINOS",
+    subcategory: "Camperas",
+    description: "Campera inflable para niños con cuello alto y cierre frontal. Producción Invierno 2027.",
+    orderNumber: "",
+    collection: "produccion-invierno-2027",
+    colors: ["Negro", "Marino", "Oliva", "Chocolate"],
+    sizes: [],
+    driveLink: "",
+    preserveCatalogColors: true
+  },
+  {
+    id: 262,
+    name: "Cumiana Vest Girls",
+    preserveProductName: true,
+    category: "NINOS",
+    subcategory: "Chalecos",
+    description: "Chaleco inflable para niñas con cuello alto y cierre frontal. Producción Invierno 2027.",
+    orderNumber: "",
+    collection: "produccion-invierno-2027",
+    colors: ["Negro", "Marino", "Caqui", "Rosa"],
+    sizes: [],
+    driveLink: "",
+    preserveCatalogColors: true
+  },
+  {
+    id: 263,
+    name: "Cumiana Girls",
+    preserveProductName: true,
+    category: "NINOS",
+    subcategory: "Chalecos",
+    description: "Prenda inflable para niñas con cuello alto y cierre frontal. Producción Invierno 2027.",
+    orderNumber: "",
+    collection: "produccion-invierno-2027",
+    colors: ["Negro", "Marino", "Rosa", "Caqui"],
+    sizes: [],
+    driveLink: "",
+    preserveCatalogColors: true
+  },
+  {
+    id: 264,
+    name: "Zoelyes",
+    category: "MUJER",
+    subcategory: "Polares",
+    description: "Polar para mujer con cuello alto, cierre frontal y bolsillos con cierre. Producción Invierno 2027.",
+    orderNumber: "126-532",
+    collection: "produccion-invierno-2027",
+    colors: ["Negro", "Verde Menta", "Beige"],
+    sizes: [],
+    driveLink: "",
+    preserveCatalogColors: true
+  },
+  {
+    id: 265,
+    name: "Mesh",
+    category: "MUJER",
+    subcategory: "Rompevientos",
+    description: "Rompevientos para mujer con capucha, cierre frontal y bolsillos con cierre. Producción Invierno 2027.",
+    orderNumber: "126-283",
+    collection: "produccion-invierno-2027",
+    colors: ["Negro", "Verde Menta", "Malva"],
     sizes: [],
     driveLink: "",
     preserveCatalogColors: true
@@ -4114,6 +4191,36 @@ production2027Products.forEach(product => {
   delete product.packaging;
 });
 
+// Una cantidad por color explícita puede representar varias curvas.
+// Sin cantidades completas no se publica un total parcial ni se supone cero.
+function getRowPieces(row) {
+  if (Number.isInteger(row.pieces) && row.pieces > 0) return row.pieces;
+  const explicit = typeof row.pieces === "string"
+    ? row.pieces.trim().match(/^(\d+)(?: piezas(?: por color)?)?$/i)
+    : null;
+  if (explicit && Number(explicit[1]) > 0) return Number(explicit[1]);
+  const quantities = Object.values(row.sizePieces || {});
+  if (!quantities.length || !quantities.every(value => Number.isInteger(value) && value >= 0)) return null;
+  const total = quantities.reduce((sum, value) => sum + value, 0);
+  return total > 0 ? total : null;
+}
+
+function getRowPiecesLabel(row) {
+  const pieces = getRowPieces(row);
+  if (pieces !== null) return pieces;
+  // Una cantidad por talle no equivale a un total por color.
+  if (typeof row.pieces === "string" && /^\d+ por talle(?: disponible)?$/.test(row.pieces)) return row.pieces;
+  return "-";
+}
+
+function normalizePackagingTotals(packaging) {
+  const quantities = packaging.rows.map(getRowPieces);
+  packaging.totalPieces = quantities.length && quantities.every(value => value !== null)
+    ? quantities.reduce((sum, value) => sum + value, 0)
+    : null;
+  packaging.totalLabel = packaging.totalPieces === null ? "" : `${packaging.totalPieces} piezas por caja`;
+}
+
 function applyCatalogData() {
   products.forEach(product => {
     product.name = product.name && !product.preserveProductName
@@ -4145,6 +4252,7 @@ function applyCatalogData() {
         )
       }))
     };
+    normalizePackagingTotals(product.packaging);
     if (!product.preserveCatalogColors) {
       product.colors = [...new Set(packaging.rows.map(row => row.color))];
     }
@@ -4163,6 +4271,7 @@ function applyCatalogData() {
           }))
         }
       }));
+      product.purchaseOptions.forEach(option => normalizePackagingTotals(option.packaging));
       product.colors = [...new Set(product.purchaseOptions.flatMap(option => option.colors))];
       product.sizes = [...new Set(product.purchaseOptions.flatMap(option => option.sizes.map(normalizeCatalogSize)))];
     }
@@ -4194,14 +4303,13 @@ function normalizeCatalogSize(size) {
 
 function getTotalPiecesLabel(product) {
   if (product.collection === "produccion-invierno-2027") return "Curva por talle";
-  if (!product.packaging) return "Sin dato";
-  return product.packaging.totalLabel || `${product.packaging.totalPieces} piezas`;
+  return product.packaging?.totalLabel || "-";
 }
 
 function formatCurve(row) {
   if (row.curveText) return row.curveText;
   return Object.entries(row.sizePieces || {})
-    .map(([size, pieces]) => `${size}/${pieces}`)
+    .map(([size, pieces]) => `${size}/${pieces == null ? "-" : pieces}`)
     .join(" - ");
 }
 
@@ -4286,7 +4394,7 @@ function renderPackagingTable(product) {
     <tr>
       <td>${row.color}</td>
       <td>${formatCurve(row)}</td>
-      ${hideTotals ? "" : `<td>${row.pieces || (row.sizePieces ? Object.values(row.sizePieces).reduce((sum, value) => sum + Number(value || 0), 0) : "-")}</td>`}
+      ${hideTotals ? "" : `<td>${getRowPiecesLabel(row)}</td>`}
     </tr>
   `).join("");
 
@@ -4313,7 +4421,7 @@ function renderPackagingTable(product) {
   wrap.innerHTML = `
     ${optionSelector}
     ${optionDetails}
-    ${hideTotals ? "" : `<div class="packaging-summary">
+    ${hideTotals || packaging.totalPieces === null ? "" : `<div class="packaging-summary">
       <span>Piezas totales</span>
       <strong>${packaging.totalLabel || `${packaging.totalPieces} piezas`}</strong>
     </div>`}
@@ -5090,8 +5198,7 @@ function getCartProductColors(product) {
 function getCartProductTotalLabel(product) {
   if (product.collection === "produccion-invierno-2027") return "Curva por talle";
   const packaging = product.selectedPurchaseOption?.packaging || product.packaging;
-  if (!packaging) return "Sin dato";
-  return packaging.totalLabel || `${packaging.totalPieces} piezas`;
+  return packaging?.totalLabel || "-";
 }
 
 function updateCartUI() {
@@ -5461,7 +5568,7 @@ async function downloadProductPDF(product, optionId = null) {
     drawInfoBlock('Colores', colors.join(', '));
     drawInfoBlock('Talles', sizes.map(normalizeCatalogSize).join(', '));
     drawInfoBlock('Empaque', packingLabel);
-    drawInfoBlock('Cantidad', packaging ? (packaging.totalLabel || `${packaging.totalPieces} piezas`) : 'Sin dato');
+    if (packaging?.totalLabel) drawInfoBlock('Cantidad', packaging.totalLabel);
     if (product.description) drawInfoBlock('Detalle', product.description);
 
     if (packaging?.rows?.length) {
@@ -5499,7 +5606,7 @@ async function downloadProductPDF(product, optionId = null) {
           doc.setFillColor(255, 250, 241);
           doc.rect(margin, y, pageW - margin * 2, rowH, 'F');
         }
-        const pieces = row.pieces || Object.values(row.sizePieces || {}).reduce((sum, value) => sum + Number(value || 0), 0);
+        const pieces = getRowPiecesLabel(row);
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(8);
         doc.setTextColor(...ink);
