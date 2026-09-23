@@ -3224,7 +3224,7 @@ const production2027Products = [
   },
   {
     id: 260,
-    name: "Cumiano",
+    name: "Keith",
     category: "HOMBRE",
     subcategory: "Camperas",
     description: "Campera inflable con cuello alto y cierre frontal. Producción Invierno 2027.",
@@ -3237,7 +3237,7 @@ const production2027Products = [
   },
   {
     id: 261,
-    name: "Cumiano boys",
+    name: "Keith boys",
     category: "NINOS",
     subcategory: "Camperas",
     description: "Campera inflable para niños con cuello alto y cierre frontal. Producción Invierno 2027.",
