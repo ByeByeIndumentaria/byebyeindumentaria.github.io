@@ -3258,7 +3258,15 @@ const production2027Products = [
     orderNumber: "",
     collection: "produccion-invierno-2027",
     colors: ["Negro", "Marino", "Caqui", "Rosa"],
-    sizes: [],
+    sizes: [...PRODUCTION_2027_KIDS_SIZES],
+    packaging: {
+      rows: [
+        ...production2027Rows("Negro", [1, 1, 1, 1, 1, 1, 1], { sizes: PRODUCTION_2027_KIDS_SIZES }),
+        ...production2027Rows("Marino", [1, 1, 1, 1, 1, 1, 1], { sizes: PRODUCTION_2027_KIDS_SIZES }),
+        ...production2027Rows("Caqui", [1, 1, 1, 1, 1, 1, 1], { sizes: PRODUCTION_2027_KIDS_SIZES }),
+        ...production2027Rows("Rosa", [1, 1, 1, 1, 1, 1, 1], { sizes: PRODUCTION_2027_KIDS_SIZES }),
+      ]
+    },
     driveLink: "",
     preserveCatalogColors: true
   },
@@ -3272,7 +3280,15 @@ const production2027Products = [
     orderNumber: "",
     collection: "produccion-invierno-2027",
     colors: ["Negro", "Marino", "Rosa", "Caqui"],
-    sizes: [],
+    sizes: [...PRODUCTION_2027_KIDS_SIZES],
+    packaging: {
+      rows: [
+        ...production2027Rows("Negro", [1, 1, 1, 1, 1, 1, 1], { sizes: PRODUCTION_2027_KIDS_SIZES }),
+        ...production2027Rows("Marino", [1, 1, 1, 1, 1, 1, 1], { sizes: PRODUCTION_2027_KIDS_SIZES }),
+        ...production2027Rows("Rosa", [1, 1, 1, 1, 1, 1, 1], { sizes: PRODUCTION_2027_KIDS_SIZES }),
+        ...production2027Rows("Caqui", [1, 1, 1, 1, 1, 1, 1], { sizes: PRODUCTION_2027_KIDS_SIZES }),
+      ]
+    },
     driveLink: "",
     preserveCatalogColors: true
   },
