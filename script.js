@@ -1629,6 +1629,8 @@ function getProductImagePhotoNumbers(id) {
 }
 
 function getProductImageSources(id) {
+  const cloudProduct = products.find(item => item.id === id && item.cloudManaged);
+  if (cloudProduct?.gallery) return cloudProduct.gallery.sources || [];
   const sourceProductId = PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID[id] || id;
   return getProductImagePhotoNumbers(sourceProductId).map(photoNumber => {
     const extension = productImageExtensionByKey[`${sourceProductId}_${photoNumber}`] || "jpg";
@@ -1897,6 +1899,9 @@ function getColorGalleryIndex(product, colorIndex, galleryLength) {
 }
 
 function getProduction2027Gallery(product, colors, option = null) {
+  if (product.cloudManaged && (option?.gallery || product.gallery)) {
+    return { colorMap: {}, photoNumbers: [], ...((option?.gallery) || product.gallery) };
+  }
   const onlyColorLinkedPhotos = (product.collection === "produccion-invierno-2027" || product.onlyColorLinkedPhotos || option?.imageProductId) && colors.length > 0;
   const optionImageProductId = option?.imageProductId || product.id;
   const mappedSourceProductId = PRODUCTION_2027_IMAGE_SOURCE_BY_PRODUCT_ID[optionImageProductId];
