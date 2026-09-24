@@ -19,10 +19,13 @@
       if(explicit !== null) { total+=explicit; continue; }
       const values=Object.values(row.sizePieces||{});
       if(!values.length || values.some(v=>!Number.isInteger(v)||v<0)) complete=false;
-      else total+=values.reduce((a,b)=>a+b,0);
+      else {
+        row.pieces=values.reduce((a,b)=>a+b,0);
+        total+=row.pieces;
+      }
     }
     packaging.totalPieces=complete?total:null;
-    packaging.totalLabel=complete?`${total} piezas`:'';
+    packaging.totalLabel=complete?`${total} piezas por caja`:'';
   }
   function validate(p, original = null) {
     for(const key of ['name','category','collection','subcategory']) if(!p[key]?.trim()) throw new Error('Completá nombre, colección, género y tipo de prenda.');

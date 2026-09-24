@@ -64,8 +64,11 @@ window.CatalogAPI = (() => {
       return request('/rest/v1/rpc/save_catalog_product', { method: 'POST', body: JSON.stringify({ product_id: id, expected_version: expectedVersion, product_data: payload }) }, true);
     },
     async upload(blob) {
-      const path = session.user.id + '/' + crypto.randomUUID() + '.webp';
-      await request('/storage/v1/object/catalog-photos/' + path, { method:'POST', body: blob, headers: { 'Content-Type': 'image/webp', 'Cache-Control': '31536000' } }, true);
+      const extensions = {'image/jpeg':'jpg','image/png':'png','image/webp':'webp'};
+      const extension = extensions[blob.type];
+      if (!extension) throw new Error('La foto debe ser JPG, PNG o WebP.');
+      const path = session.user.id + '/' + crypto.randomUUID() + '.' + extension;
+      await request('/storage/v1/object/catalog-photos/' + path, { method:'POST', body: blob, headers: { 'Content-Type': blob.type, 'Cache-Control': '31536000' } }, true);
       return config.url + '/storage/v1/object/public/catalog-photos/' + path;
     }
   };

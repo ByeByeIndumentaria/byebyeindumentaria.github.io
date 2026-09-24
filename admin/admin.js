@@ -4,7 +4,7 @@ const preview=new URLSearchParams(location.search).has('preview');
 const clone=value=>JSON.parse(JSON.stringify(value));
 const asset=src=>src?new URL(src, new URL('../',location.href)).href:'';
 let seed, records=new Map(), editing=null, editingId=null, version=0, dirty=false, busy=false, uploads=0;
-let pendingPhotos=new Map(), currentGroup=0, savedPackaging=new Map();
+let pendingPhotos=new Map(), currentGroup=0, savedPackaging=new Map(), galleryDirty=false;
 function el(tag,text,className){const e=document.createElement(tag);if(text!=null)e.textContent=text;if(className)e.className=className;return e;}
 function notice(text){$('notice').textContent=text;}
 function message(error){$('save-status').textContent=error.message||String(error);}
@@ -14,15 +14,17 @@ function galleryFor(p){return p.gallery||{sources:[],colorGalleryIndexByNormaliz
 function colorPhoto(p,color){const g=galleryFor(p);const n=model.normalize(color);const idx=g.colorGalleryIndexByNormalizedColor?.[n];if(idx!=null)return g.sources[idx];const match=Object.entries(g.colorMap||{}).find(([c])=>model.normalize(c)===n);if(match){const i=(g.photoNumbers||[]).indexOf(Number(match[1]));if(i>=0)return g.sources[i];}return '';}
 function removeColorPhoto(p,color){
   const g=p.gallery;if(!g)return;
-  const removed=colorPhoto(p,color),otherColors=p.colors.filter(c=>c!==color);
-  const otherPhotos=new Map(otherColors.map(c=>[model.normalize(c),colorPhoto(p,c)]));
-  const index=g.sources.indexOf(removed);
-  if(index>=0&&![...otherPhotos.values()].includes(removed)){
-    g.sources.splice(index,1);if(g.photoNumbers)g.photoNumbers.splice(index,1);
-  }
-  g.colorGalleryIndexByNormalizedColor=Object.fromEntries([...otherPhotos].map(([c,src])=>[c,g.sources.indexOf(src)]).filter(([,i])=>i>=0));
+  for(const key of Object.keys(g.colorGalleryIndexByNormalizedColor||{}))if(model.normalize(key)===model.normalize(color))delete g.colorGalleryIndexByNormalizedColor[key];
   for(const key of Object.keys(g.colorMap||{}))if(model.normalize(key)===model.normalize(color))delete g.colorMap[key];
 }
+function normalizeGallery(p){
+  const g=p.gallery||={sources:[],colorGalleryIndexByNormalizedColor:{}},mapped={...(g.colorGalleryIndexByNormalizedColor||{})};
+  for(const color of p.colors||[]){const key=model.normalize(color);if(mapped[key]!=null)continue;const src=colorPhoto(p,color),index=g.sources.indexOf(src);if(index>=0)mapped[key]=index;}
+  g.colorGalleryIndexByNormalizedColor=mapped;delete g.colorMap;delete g.photoNumbers;return g;
+}
+function photoSrc(src){const pending=pendingPhotos.get(src);return pending?.url||(src?asset(src):'');}
+function remapGallery(g,previous){g.colorGalleryIndexByNormalizedColor=Object.fromEntries(Object.entries(previous).map(([color,src])=>[color,g.sources.indexOf(src)]).filter(([,index])=>index>=0));}
+function galleryAssignments(g){return Object.fromEntries(Object.entries(g.colorGalleryIndexByNormalizedColor||{}).map(([color,index])=>[color,g.sources[index]]).filter(([,src])=>src));}
 function resetPhotos(){for(const v of pendingPhotos.values())URL.revokeObjectURL(v.url);pendingPhotos.clear();}
 async function loadRecords(){
   const next=new Map(seed.products.map(p=>[p.id,{id:p.id,payload:p,version:0}]));
@@ -45,35 +47,42 @@ async function openEditor(id,curve=false){
     try{const [latest]=await api.getProducts([Number(id)]);if(latest)records.set(Number(id),latest);}
     catch(e){notice('No se pudo cargar la última versión. '+e.message);return;}
   }
-  resetPhotos();savedPackaging.clear();currentGroup=0;editingId=id;version=id==null?0:records.get(id).version;
+  resetPhotos();savedPackaging.clear();currentGroup=0;galleryDirty=false;editingId=id;version=id==null?0:records.get(id).version;
   editing=id==null?{name:'',orderNumber:'',category:'MUJER',subcategory:'Camperas',collection:'produccion-invierno-2027',colors:[],sizes:[],packaging:{rows:[]},inStock:true,description:'',gallery:{sources:[],colorGalleryIndexByNormalizedColor:{}},preserveProductName:true,preserveCatalogColors:true}:clone(records.get(id).payload);
+  normalizeGallery(editing);
   dirty=false;$('save-status').textContent='';$('editor-title').textContent=id==null?'Agregar producto':editing.name;$('save').textContent=preview?'Vista previa · sin publicar':id==null?'Publicar producto':'Guardar cambios';$('save').disabled=preview;
   for(const [input,key] of [['name','name'],['code','orderNumber'],['collection','collection'],['gender','category'],['subcategory','subcategory'],['description','description']])$(input).value=editing[key]||'';
   $('stock').checked=editing.inStock!==false;
   const hasOptions=!!editing.purchaseOptions?.length;$('option-label').hidden=!hasOptions;$('variants-note').hidden=!hasOptions;
   $('new-color').disabled=hasOptions;$('add-color').disabled=hasOptions;
   if(hasOptions)selectOptions($('option'),editing.purchaseOptions.map((o,i)=>[String(i),o.label]));
-  renderColors();renderCurve();$('editor').showModal();if(curve)$('curve-section').scrollIntoView({block:'start'});
+  renderColors();renderPhotos();renderCurve();$('editor').showModal();if(curve)$('curve-section').scrollIntoView({block:'start'});
 }
 function closeEditor(){if(busy||uploads)return;if(dirty&&!confirm('¿Cerrar sin guardar los cambios?'))return;$('editor').close();resetPhotos();editing=null;dirty=false;}
 function renderColors(){
   $('colors').replaceChildren();
-  for(const color of editing.colors){const row=el('div',null,'color-row');const img=el('img');img.alt=color;const pending=pendingPhotos.get(color);const src=pending?.url||colorPhoto(editing,color);if(src)img.src=src.startsWith('blob:')?src:asset(src);
-    const title=el('strong',color,'color-name'),label=el('label','Cambiar / subir foto'),input=el('input');input.type='file';input.accept='image/png,image/jpeg,image/webp';input.setAttribute('aria-label','Foto '+color);input.onchange=()=>optimizePhoto(color,input.files[0]);label.append(input);if(pending)label.append(el('small',`Lista · ${Math.round(pending.blob.size/1024)} KB`));
-    row.append(img,title,label);
-    if(!editing.purchaseOptions?.length){const remove=el('button','Quitar');remove.type='button';remove.onclick=()=>{if(!confirm('¿Quitar el color '+color+' y su curva?'))return;removeColorPhoto(editing,color);editing.colors=editing.colors.filter(c=>c!==color);if(editing.packaging)editing.packaging.rows=editing.packaging.rows.filter(r=>r.color!==color);const pending=pendingPhotos.get(color);if(pending)URL.revokeObjectURL(pending.url);pendingPhotos.delete(color);dirty=true;renderColors();renderCurve();};row.append(remove);}
+  for(const color of editing.colors){const row=el('div',null,'color-row'),src=colorPhoto(editing,color),img=el('img');img.alt=src?'Foto vinculada a '+color:'Sin foto vinculada';if(src)img.src=photoSrc(src);
+    const title=el('strong',color,'color-name'),status=el('span',src?'Foto vinculada':'Sin foto vinculada','color-photo-status');row.append(img,title,status);
+    if(!editing.purchaseOptions?.length){const remove=el('button','Quitar');remove.type='button';remove.onclick=()=>{if(!confirm('¿Quitar el color '+color+' y su curva?'))return;removeColorPhoto(editing,color);editing.colors=editing.colors.filter(c=>c!==color);if(editing.packaging)editing.packaging.rows=editing.packaging.rows.filter(r=>r.color!==color);galleryDirty=true;dirty=true;renderColors();renderPhotos();renderCurve();};row.append(remove);}
     $('colors').append(row);
   }
 }
-async function optimizePhoto(color,file){
-  if(!file)return;
-  if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>25*1024*1024){message('Elegí una imagen JPG, PNG o WebP de hasta 25 MB.');return;}
-  uploads++;$('save').disabled=true;$('save-status').textContent='Optimizando foto…';
-  try{const bitmap=await createImageBitmap(file);if(bitmap.width*bitmap.height>50000000){bitmap.close();throw new Error('La foto es demasiado grande. Usá una de menos de 50 megapíxeles.');}
-    const ratio=Math.min(1,1600/Math.max(bitmap.width,bitmap.height)),canvas=document.createElement('canvas');canvas.width=Math.round(bitmap.width*ratio);canvas.height=Math.round(bitmap.height*ratio);const ctx=canvas.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(bitmap,0,0,canvas.width,canvas.height);bitmap.close();
-    const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/webp',.88));if(!blob||blob.type!=='image/webp'||blob.size>5242880)throw new Error('No se pudo optimizar esta foto. Probá con otra imagen.');
-    const previous=pendingPhotos.get(color);if(previous)URL.revokeObjectURL(previous.url);pendingPhotos.set(color,{blob,url:URL.createObjectURL(blob)});dirty=true;renderColors();$('save-status').textContent='Foto optimizada y lista para guardar.';
-  }catch(e){message(e);}finally{uploads--;$('save').disabled=preview||busy||uploads>0;}
+function addPhotos(files){
+  for(const file of files){if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>5*1024*1024){message('Cada foto debe ser JPG, PNG o WebP y pesar hasta 5 MB.');continue;}const key='pending:'+crypto.randomUUID();pendingPhotos.set(key,{blob:file,url:URL.createObjectURL(file),name:file.name});normalizeGallery(editing).sources.push(key);galleryDirty=true;dirty=true;}
+  $('add-photos').value='';renderPhotos();renderColors();if(pendingPhotos.size)$('save-status').textContent=`${pendingPhotos.size} foto${pendingPhotos.size===1?'':'s'} lista${pendingPhotos.size===1?'':'s'} para publicar, sin optimizar.`;
+}
+function renderPhotos(){
+  const list=$('photos'),g=normalizeGallery(editing);list.replaceChildren();
+  if(!g.sources.length){list.append(el('p','Todavía no hay fotos. Podés publicar el producto y agregarlas después.','empty-photos'));return;}
+  g.sources.forEach((src,index)=>{const card=el('article',null,'photo-item'),img=el('img');img.src=photoSrc(src);img.alt=`Foto ${index+1} de ${editing.name||'producto'}`;const info=el('div',null,'photo-info');info.append(el('strong',`Foto ${index+1}`));const select=el('select');select.setAttribute('aria-label',`Color de la foto ${index+1}`);select.append(new Option('Sin vincular a un color',''));
+    for(const color of editing.colors)select.append(new Option(color,model.normalize(color)));const assigned=Object.entries(g.colorGalleryIndexByNormalizedColor||{}).find(([,photoIndex])=>photoIndex===index);select.value=assigned?.[0]||'';select.onchange=()=>{for(const key of Object.keys(g.colorGalleryIndexByNormalizedColor||{}))if(g.colorGalleryIndexByNormalizedColor[key]===index||key===select.value)delete g.colorGalleryIndexByNormalizedColor[key];if(select.value)g.colorGalleryIndexByNormalizedColor[select.value]=index;galleryDirty=true;dirty=true;renderColors();renderPhotos();};info.append(el('label','Vincular con un color (opcional)'));info.lastChild.append(select);
+    const controls=el('div',null,'photo-actions'),up=el('button','←'),down=el('button','→'),remove=el('button','Quitar');up.type=down.type=remove.type='button';up.title='Mover antes';down.title='Mover después';up.disabled=index===0;down.disabled=index===g.sources.length-1;up.onclick=()=>movePhoto(index,index-1);down.onclick=()=>movePhoto(index,index+1);remove.onclick=()=>removePhoto(index);controls.append(up,down,remove);card.append(img,info,controls);list.append(card);});
+}
+function movePhoto(from,to){const g=normalizeGallery(editing),mapped=galleryAssignments(g),[src]=g.sources.splice(from,1);g.sources.splice(to,0,src);remapGallery(g,mapped);galleryDirty=true;dirty=true;renderPhotos();renderColors();}
+function removePhoto(index){const g=normalizeGallery(editing),mapped=galleryAssignments(g),[src]=g.sources.splice(index,1),pending=pendingPhotos.get(src);if(pending){URL.revokeObjectURL(pending.url);pendingPhotos.delete(src);}remapGallery(g,mapped);galleryDirty=true;dirty=true;renderPhotos();renderColors();}
+function syncOptionGalleries(p){
+  if(!galleryDirty||!p.purchaseOptions?.length)return;const g=normalizeGallery(p),linkedBySource=new Map();for(const [color,index] of Object.entries(g.colorGalleryIndexByNormalizedColor||{})){const src=g.sources[index];if(src){const colors=linkedBySource.get(src)||[];colors.push(color);linkedBySource.set(src,colors);}}
+  for(const option of p.purchaseOptions){const allowed=new Set((option.colors||[]).map(model.normalize)),sources=g.sources.filter(src=>!linkedBySource.has(src)||linkedBySource.get(src).some(color=>allowed.has(color)));option.gallery={sources,colorGalleryIndexByNormalizedColor:Object.fromEntries(Object.entries(g.colorGalleryIndexByNormalizedColor||{}).map(([color,index])=>[color,sources.indexOf(g.sources[index])]).filter(([color,index])=>allowed.has(color)&&index>=0))};}
 }
 function renderCurve(){
   const g=group();$('pending').checked=!g.packaging;$('curve-controls').hidden=!g.packaging;$('sizes').value=(g.sizes||[]).join(', ');
@@ -95,26 +104,22 @@ function preparePayload(){
   if(p.purchaseOptions?.length)p.sizes=[...new Set(p.purchaseOptions.flatMap(o=>o.sizes||[]))];
   model.validate(p, editingId == null ? null : records.get(editingId).payload);
   for(const g of groups)model.recalculate(g.packaging);
+  syncOptionGalleries(p);
   return p;
 }
-function installPhoto(p,color,url){
-  const g=p.gallery||={sources:[],colorGalleryIndexByNormalizedColor:{}};
-  const existing=colorPhoto(p,color),idx=g.sources.indexOf(existing);
-  if(idx>=0){g.sources[idx]=url;}else g.sources.push(url);
-  g.colorGalleryIndexByNormalizedColor||={};g.colorGalleryIndexByNormalizedColor[model.normalize(color)]=idx>=0?idx:g.sources.length-1;
-}
 async function save(event){event.preventDefault();if(preview||busy||uploads)return;let payload;
-  try{payload=preparePayload();for(const c of payload.colors)if(!pendingPhotos.has(c)&&!colorPhoto(payload,c)&&editingId==null)throw new Error('Agregá una foto para '+c+'.');}catch(e){message(e);return;}
+  try{payload=preparePayload();}catch(e){message(e);return;}
   busy=true;$('save').disabled=true;$('save-status').textContent='Guardando fotos y producto…';
   try{
-    for(const [color,photo] of pendingPhotos){photo.remoteUrl||=await api.upload(photo.blob);installPhoto(payload,color,photo.remoteUrl);for(const o of payload.purchaseOptions||[])if(o.colors.includes(color))installPhoto(o,color,photo.remoteUrl);}
+    for(const [key,photo] of pendingPhotos){photo.remoteUrl||=await api.upload(photo.blob);for(const target of [payload,...(payload.purchaseOptions||[])]){const g=target.gallery;if(!g)continue;g.sources=g.sources.map(src=>src===key?photo.remoteUrl:src);}}
     const result=await api.save(editingId,version,payload);records.set(Number(result.id),result);dirty=false;$('editor').close();resetPhotos();editing=null;renderCards();notice('Publicado. El catálogo de tus clientes se actualizará en unos segundos.');
   }catch(e){message(e);}finally{busy=false;$('save').disabled=preview;}
 }
 $('add-product').onclick=()=>openEditor(null);$('close-editor').onclick=closeEditor;$('cancel').onclick=closeEditor;
 $('editor').addEventListener('cancel',e=>{e.preventDefault();closeEditor();});$('product-form').addEventListener('submit',save);
 $('product-form').addEventListener('input',()=>{dirty=true;});window.addEventListener('beforeunload',e=>{if(dirty||busy){e.preventDefault();e.returnValue='';}});
-$('add-color').onclick=()=>{const color=$('new-color').value.trim();if(!color)return;if(editing.colors.some(c=>model.normalize(c)===model.normalize(color))){message('Ese color ya existe.');return;}editing.colors.push(color);if(editing.packaging)editing.packaging.rows.push({color,sizePieces:Object.fromEntries(editing.sizes.map(s=>[s,null]))});$('new-color').value='';dirty=true;renderColors();renderCurve();};
+$('add-photos').onchange=()=>addPhotos($('add-photos').files);
+$('add-color').onclick=()=>{const color=$('new-color').value.trim();if(!color)return;if(editing.colors.some(c=>model.normalize(c)===model.normalize(color))){message('Ese color ya existe.');return;}editing.colors.push(color);if(editing.packaging)editing.packaging.rows.push({color,sizePieces:Object.fromEntries(editing.sizes.map(s=>[s,null]))});$('new-color').value='';dirty=true;renderColors();renderPhotos();renderCurve();};
 $('new-color').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();$('add-color').click();}};
 $('option').onchange=()=>{currentGroup=Number($('option').value);renderCurve();};
 $('pending').onchange=()=>{const g=group();if($('pending').checked){savedPackaging.set(currentGroup,clone({packaging:g.packaging,sizes:g.sizes}));delete g.packaging;g.sizes=[];}else{const saved=savedPackaging.get(currentGroup);if(saved){g.packaging=saved.packaging;g.sizes=saved.sizes;}else{g.sizes=[];g.packaging={rows:(g.colors||editing.colors).map(color=>({color,sizePieces:{}}))};}}dirty=true;renderCurve();};
