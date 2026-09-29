@@ -4323,7 +4323,6 @@ function normalizeCatalogSize(size) {
 }
 
 function getTotalPiecesLabel(product) {
-  if (product.collection === "produccion-invierno-2027") return "Curva por talle";
   return product.packaging?.totalLabel || "-";
 }
 
@@ -4404,18 +4403,20 @@ function renderPackagingTable(product) {
   const purchaseOptions = product.purchaseOptions || [];
   const selectedOption = purchaseOptions.find(option => option.id === currentPurchaseOptionId) || purchaseOptions[0] || null;
   const packaging = selectedOption?.packaging || product.packaging;
-  const hideTotals = product.collection === "produccion-invierno-2027";
 
   if (!packaging) {
     wrap.innerHTML = "";
     return;
   }
 
+  const showQuantities = packaging.totalPieces !== null && packaging.totalPieces !== undefined
+    || packaging.rows.some(row => getRowPiecesLabel(row) !== "-");
+
   const rows = packaging.rows.map(row => `
     <tr>
       <td>${row.color}</td>
       <td>${formatCurve(row)}</td>
-      ${hideTotals ? "" : `<td>${getRowPiecesLabel(row)}</td>`}
+      ${showQuantities ? `<td>${getRowPiecesLabel(row)}</td>` : ""}
     </tr>
   `).join("");
 
@@ -4442,7 +4443,7 @@ function renderPackagingTable(product) {
   wrap.innerHTML = `
     ${optionSelector}
     ${optionDetails}
-    ${hideTotals || packaging.totalPieces === null ? "" : `<div class="packaging-summary">
+    ${packaging.totalPieces === null || packaging.totalPieces === undefined ? "" : `<div class="packaging-summary">
       <span>Piezas totales</span>
       <strong>${packaging.totalLabel || `${packaging.totalPieces} piezas`}</strong>
     </div>`}
@@ -4452,7 +4453,7 @@ function renderPackagingTable(product) {
           <tr>
             <th>Color</th>
             <th>Curva de talles</th>
-            ${hideTotals ? "" : "<th>Piezas</th>"}
+            ${showQuantities ? "<th>Piezas</th>" : ""}
           </tr>
         </thead>
         <tbody>${rows}</tbody>
@@ -5217,7 +5218,6 @@ function getCartProductColors(product) {
 }
 
 function getCartProductTotalLabel(product) {
-  if (product.collection === "produccion-invierno-2027") return "Curva por talle";
   const packaging = product.selectedPurchaseOption?.packaging || product.packaging;
   return packaging?.totalLabel || "-";
 }
