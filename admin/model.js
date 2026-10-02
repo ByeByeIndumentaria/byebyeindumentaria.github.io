@@ -48,6 +48,17 @@
     }
     return p;
   }
-  const api={normalize,sizes,quantity,recalculate,validate};
+  function collectionId(value) {
+    const id=normalize(value).replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+    if(!id || id.length>60) throw new Error('Ingresá un nombre válido para la colección.');
+    return id;
+  }
+  function validateCollection(c) {
+    if(!c?.name?.trim()) throw new Error('Ingresá el nombre de la colección.');
+    if(!['stock','preorder'].includes(c.type)) throw new Error('Elegí Stock o Preventa.');
+    if([c.name,c.label,c.tagline].some(value=>/[<>"`]/.test(value||''))) throw new Error('Los textos no pueden incluir <, >, comillas dobles ni acentos invertidos.');
+    return c;
+  }
+  const api={normalize,sizes,quantity,recalculate,validate,collectionId,validateCollection};
   if(typeof module!=='undefined') module.exports=api; else root.CatalogModel=api;
 })(typeof window==='undefined'?{}:window);

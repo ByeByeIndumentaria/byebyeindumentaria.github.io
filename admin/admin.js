@@ -5,6 +5,8 @@ const clone=value=>JSON.parse(JSON.stringify(value));
 const asset=src=>src?new URL(src, new URL('../',location.href)).href:'';
 let seed, records=new Map(), editing=null, editingId=null, version=0, dirty=false, busy=false, uploads=0;
 let pendingPhotos=new Map(), currentGroup=0, savedPackaging=new Map(), galleryDirty=false;
+let collections=new Map(), editingCollectionId=null, collectionVersion=0, collectionBusy=false;
+const legacyPreorders=new Set(['verano-2027','produccion-invierno-2027','sweaters-2027','hoodies-2027']);
 function el(tag,text,className){const e=document.createElement(tag);if(text!=null)e.textContent=text;if(className)e.className=className;return e;}
 function notice(text){$('notice').textContent=text;}
 function message(error){$('save-status').textContent=error.message||String(error);}
@@ -26,6 +28,37 @@ function photoSrc(src){const pending=pendingPhotos.get(src);return pending?.url|
 function remapGallery(g,previous){g.colorGalleryIndexByNormalizedColor=Object.fromEntries(Object.entries(previous).map(([color,src])=>[color,g.sources.indexOf(src)]).filter(([,index])=>index>=0));}
 function galleryAssignments(g){return Object.fromEntries(Object.entries(g.colorGalleryIndexByNormalizedColor||{}).map(([color,index])=>[color,g.sources[index]]).filter(([,src])=>src));}
 function resetPhotos(){for(const v of pendingPhotos.values())URL.revokeObjectURL(v.url);pendingPhotos.clear();}
+function refreshCollectionControls(){
+  const values=[...collections.values()].sort((a,b)=>(a.position??999)-(b.position??999)).map(r=>[r.id,r.payload.name]);
+  selectOptions($('collection'),values);selectOptions($('collection-filter'),[['','Todas las colecciones'],...values]);renderCollections();
+}
+async function loadCollections(){
+  collections=new Map(seed.collections.map((payload,position)=>[payload.id,{id:payload.id,payload:{...payload,type:payload.type||(legacyPreorders.has(payload.id)?'preorder':'stock')},position,version:0}]));
+  if(api.configured&&!preview){
+    try{for(const row of await api.listCollections())collections.set(row.id,row);}
+    catch(error){notice('Los productos están disponibles, pero falta activar la administración de colecciones. Ejecutá la actualización SQL.');}
+  }
+  refreshCollectionControls();
+}
+function renderCollections(){
+  const list=$('collections-list');list.replaceChildren();
+  for(const row of [...collections.values()].sort((a,b)=>(a.position??999)-(b.position??999))){const c=row.payload,card=el('article',null,'collection-card'),kind=el('span',c.type==='preorder'?'Preventa':'Stock','collection-kind'+(c.type==='preorder'?' preorder':''));card.append(kind,el('h3',c.name),el('p',c.label||c.tagline||'Sin descripción'));const edit=el('button','Editar colección');edit.type='button';edit.onclick=()=>openCollectionEditor(row.id);card.append(edit);list.append(card);}
+}
+function openCollectionEditor(id=null){
+  editingCollectionId=id;const row=id?collections.get(id):null;collectionVersion=row?.version||0;const c=row?.payload||{name:'',label:'',tagline:'',type:'stock'};
+  $('collection-editor-title').textContent=id?'Editar colección':'Agregar colección';$('collection-name').value=c.name||'';$('collection-label').value=c.label||'';$('collection-tagline').value=c.tagline||'';
+  const radio=document.querySelector(`input[name="collection-type"][value="${c.type||'stock'}"]`);if(radio)radio.checked=true;$('collection-save-status').textContent='';$('save-collection').disabled=preview;$('save-collection').textContent=preview?'Vista previa · sin publicar':'Guardar colección';$('collection-editor').showModal();
+}
+function closeCollectionEditor(){if(collectionBusy)return;$('collection-editor').close();editingCollectionId=null;}
+async function saveCollection(event){
+  event.preventDefault();if(preview||collectionBusy)return;
+  const payload={name:$('collection-name').value.trim(),label:$('collection-label').value.trim(),tagline:$('collection-tagline').value.trim(),type:document.querySelector('input[name="collection-type"]:checked')?.value};
+  try{model.validateCollection(payload);}catch(error){$('collection-save-status').textContent=error.message;return;}
+  const id=editingCollectionId||model.collectionId(payload.name);if(!editingCollectionId&&collections.has(id)){$('collection-save-status').textContent='Ya existe una colección con ese nombre.';return;}
+  payload.id=id;payload.position=editingCollectionId?(collections.get(id).position??collections.size):collections.size;collectionBusy=true;$('save-collection').disabled=true;$('collection-save-status').textContent='Guardando colección…';
+  try{const result=await api.saveCollection(id,collectionVersion,payload);collections.set(result.id,result);refreshCollectionControls();$('collection-editor').close();editingCollectionId=null;notice('Colección publicada. El catálogo se actualizará en unos segundos.');}
+  catch(error){$('collection-save-status').textContent=error.message;}finally{collectionBusy=false;$('save-collection').disabled=preview;}
+}
 async function loadRecords(){
   const next=new Map(seed.products.map(p=>[p.id,{id:p.id,payload:p,version:0}]));
   if(api.configured&&!preview){for(const r of await api.list())next.set(Number(r.id),r);}
@@ -126,9 +159,11 @@ $('pending').onchange=()=>{const g=group();if($('pending').checked){savedPackagi
 $('set-sizes').onclick=()=>{try{const g=group(),next=model.sizes($('sizes').value);if(g.sizes.some(s=>!next.includes(s))&&!confirm('Los talles quitados perderán sus cantidades. ¿Continuar?'))return;g.sizes=next;for(const row of g.packaging.rows){row.sizePieces=Object.fromEntries(next.map(s=>[s,row.sizePieces?.[s]??null]));delete row.curveText;delete row.pieces;}dirty=true;renderCurve();}catch(e){message(e);}};
 $('copy-curve').onclick=()=>{try{const g=group(),first=g.packaging.rows[0];if(!first||!g.sizes.length)throw new Error('Primero agregá colores, talles y completá la primera curva.');g.sizes.forEach(s=>model.quantity(first.sizePieces[s]));for(const row of g.packaging.rows){row.sizePieces=clone(first.sizePieces);delete row.curveText;delete row.pieces;}dirty=true;renderCurve();}catch(e){message(e);}};
 $('search').oninput=renderCards;$('collection-filter').onchange=renderCards;
+$('manage-collections').onclick=()=>{$('collections-panel').hidden=!$('collections-panel').hidden;if(!$('collections-panel').hidden)$('collections-panel').scrollIntoView({behavior:'smooth',block:'start'});};
+$('add-collection').onclick=()=>openCollectionEditor();$('close-collection-editor').onclick=closeCollectionEditor;$('cancel-collection').onclick=closeCollectionEditor;$('collection-form').addEventListener('submit',saveCollection);$('collection-editor').addEventListener('cancel',event=>{event.preventDefault();closeCollectionEditor();});
 $('login-form').onsubmit=async e=>{e.preventDefault();const button=e.target.querySelector('button');button.disabled=true;try{await api.login($('email').value,$('password').value);$('password').value='';await showCatalog();}catch(e){notice(e.message);}finally{button.disabled=false;}};
 $('logout').onclick=async()=>{await api.logout();location.reload();};
-async function showCatalog(){await loadRecords();$('login').hidden=true;$('catalog').hidden=false;$('account').textContent=preview?'Vista previa':api.user?.email||'';$('logout').hidden=preview;notice(preview?'Vista previa: podés probar el formulario. Publicar está deshabilitado hasta conectar el proyecto y entrar con una cuenta autorizada.':'');}
-(async()=>{try{const r=await fetch('catalog-seed.json');if(!r.ok)throw new Error('No se pudo cargar el catálogo.');seed=await r.json();const values=seed.collections.map(c=>[c.id,c.name]);selectOptions($('collection'),values);selectOptions($('collection-filter'),[['','Todas las colecciones'],...values]);$('categories').replaceChildren(...[...new Set(seed.products.map(p=>p.subcategory).filter(Boolean))].sort().map(s=>{const o=el('option');o.value=s;return o;}));
+async function showCatalog(){await loadCollections();await loadRecords();$('login').hidden=true;$('catalog').hidden=false;$('account').textContent=preview?'Vista previa':api.user?.email||'';$('logout').hidden=preview;if(preview)notice('Vista previa: podés probar los formularios. Publicar está deshabilitado hasta conectar el proyecto y entrar con una cuenta autorizada.');}
+(async()=>{try{const r=await fetch('catalog-seed.json');if(!r.ok)throw new Error('No se pudo cargar el catálogo.');seed=await r.json();$('categories').replaceChildren(...[...new Set(seed.products.map(p=>p.subcategory).filter(Boolean))].sort().map(s=>{const o=el('option');o.value=s;return o;}));
  if(preview){await showCatalog();return;}if(!api.configured){notice('El panel está preparado. Falta conectar el nuevo proyecto del catálogo.');const link=el('a','Probar el panel en vista previa');link.href='?preview=1';$('notice').append(document.createElement('br'),link);return;}if(api.user){try{await api.authorize();await showCatalog();return;}catch{}}$('login').hidden=false;
 }catch(e){notice(e.message);}})();
