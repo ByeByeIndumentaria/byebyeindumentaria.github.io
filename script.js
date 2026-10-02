@@ -6,14 +6,14 @@
 // ── PRODUCT DATA ────────────────────────────────
 // -- COLLECTIONS ----------------------------------
 const collections = [
-  { id: "invierno-2027", name: "Invierno", label: "FW 2027", tagline: "Abrigos y prendas de invierno." },
-  { id: "primavera-2027", name: "Primavera", label: "SP 2027", tagline: "Camperas para media estación." },
-  { id: "accesorios", name: "Accesorios", label: "ACCESSORIES", tagline: "Gorros, bolsos y mochilas." },
-  { id: "deportivo", name: "Deportivo", label: "SPORT", tagline: "Indumentaria deportiva." },
-  { id: "verano-2027", name: "Verano 2027", label: "SS 2027", tagline: "Made for summer." },
-  { id: "produccion-invierno-2027", name: "Invierno 2027", label: "FW 2027", tagline: "Producción Invierno 2027." },
-  { id: "sweaters-2027", name: "Sweaters 2027", label: "SWEATERS 2027", tagline: "Sweaters 2027." },
-  { id: "hoodies-2027", name: "Hoodies 2027", label: "HOODIES 2027", tagline: "Hoodies 2027." }
+  { id: "invierno-2027", name: "Invierno", label: "FW 2027", tagline: "Abrigos y prendas de invierno.", type: "stock" },
+  { id: "primavera-2027", name: "Primavera", label: "SP 2027", tagline: "Camperas para media estación.", type: "stock" },
+  { id: "accesorios", name: "Accesorios", label: "ACCESSORIES", tagline: "Gorros, bolsos y mochilas.", type: "stock" },
+  { id: "deportivo", name: "Deportivo", label: "SPORT", tagline: "Indumentaria deportiva.", type: "stock" },
+  { id: "verano-2027", name: "Verano 2027", label: "SS 2027", tagline: "Made for summer.", type: "preorder" },
+  { id: "produccion-invierno-2027", name: "Invierno 2027", label: "FW 2027", tagline: "Producción Invierno 2027.", type: "preorder" },
+  { id: "sweaters-2027", name: "Sweaters 2027", label: "SWEATERS 2027", tagline: "Sweaters 2027.", type: "preorder" },
+  { id: "hoodies-2027", name: "Hoodies 2027", label: "HOODIES 2027", tagline: "Hoodies 2027.", type: "preorder" }
 ];
 
 const PREORDER_COLLECTION_IDS = new Set([
@@ -4338,13 +4338,17 @@ function getActiveCollection() {
 }
 
 function isPreorderCollection(collection = getActiveCollection()) {
-  return PREORDER_COLLECTION_IDS.has(collection.id);
+  return collection.type === 'preorder' || (!collection.type && PREORDER_COLLECTION_IDS.has(collection.id));
+}
+
+function canOrderProduct(product, collection = getActiveCollection()) {
+  return product.inStock && !isPreorderCollection(collection);
 }
 
 function getModalAddButtonLabel(product, selectedOption, inCart) {
   if (!product.inStock) return 'Fuera de stock';
+  if (isPreorderCollection()) return 'Próximamente';
   if (inCart) return '✓ Opción en tu selección';
-  if (isPreorderCollection()) return selectedOption ? 'Reservar esta opción' : 'Reservar / agregar al pedido';
   return selectedOption ? 'Agregar esta opción' : 'Agregar a la selección';
 }
 
@@ -4497,12 +4501,16 @@ function loadPersistedState() {
     cart = savedCart.map(saved => {
       const product = products.find(item => item.id === saved.id);
       if (!product || !product.inStock) return null;
+      const cartCollectionId = saved.collectionId || product.collection;
+      const cartCollection = collections.find(item => item.id === cartCollectionId);
+      if (cartCollection && isPreorderCollection(cartCollection)) return null;
       const selectedPurchaseOption = saved.optionId
         ? product.purchaseOptions?.find(option => option.id === saved.optionId) || null
         : null;
       return {
         ...product,
         cartKey: getCartKey(product, selectedPurchaseOption?.id || null),
+        cartCollectionId,
         selectedPurchaseOption
       };
     }).filter(Boolean);
@@ -4515,7 +4523,8 @@ function persistCart() {
   try {
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart.map(item => ({
       id: item.id,
-      optionId: item.selectedPurchaseOption?.id || null
+      optionId: item.selectedPurchaseOption?.id || null,
+      collectionId: item.cartCollectionId || item.collection
     }))));
   } catch (error) {}
 }
@@ -4676,12 +4685,12 @@ function renderProducts() {
     card.dataset.id = p.id;
     card.tabIndex = 0;
     card.setAttribute('role', 'button');
-    card.setAttribute('aria-label', `Ver ${p.name}${p.inStock ? '' : ', sin stock'}`);
+    card.setAttribute('aria-label', `Ver ${p.name}${p.inStock ? (preorderCollection ? ', preventa' : '') : ', sin stock'}`);
 
     card.innerHTML = `
       <div class="card-img-wrap">
         <span class="card-badge-gender">${getGenderLabel(p.category)}</span>
-        ${preorderCollection && p.inStock ? `<span class="card-badge-preorder">Disponible para reservar</span>` : ''}
+        ${preorderCollection && p.inStock ? `<span class="card-badge-preorder">Preventa · Próximamente</span>` : ''}
         ${p.inStock ? '' : `<span class="card-badge-stock">Sin stock</span>`}
         <img class="card-img" src="" alt="${p.name}" loading="lazy" decoding="async" style="display:none;width:100%;height:100%;object-fit:cover;" />
         <div class="card-placeholder" id="ph-${p.id}">
@@ -4690,7 +4699,7 @@ function renderProducts() {
           </svg>
           <span class="placeholder-name">${p.name}</span>
         </div>
-        <button class="card-add ${inCart ? 'added' : ''}" data-id="${p.id}" aria-label="Agregar al carrito" ${p.inStock ? '' : 'disabled'}>
+        <button class="card-add ${inCart ? 'added' : ''}" data-id="${p.id}" aria-label="Agregar al carrito" ${canOrderProduct(p) ? '' : 'disabled'}>
           ${inCart
             ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>`
             : `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`
@@ -4859,7 +4868,7 @@ function openModal(p, initialPurchaseOptionId = null) {
   document.getElementById('modal-gender').textContent = getGenderLabel(p.category);
   document.getElementById('modal-subcat').textContent = formatProductSubcategory(p);
   const modalAvailability = isPreorderCollection() && p.inStock
-    ? 'PREVENTA · DISPONIBLE PARA RESERVAR'
+    ? 'PREVENTA · PRÓXIMAMENTE'
     : getStockLabel(p).toUpperCase();
   document.getElementById('modal-collection').textContent = `${getActiveCollection().name.toUpperCase()} · ${modalAvailability}`;
   const modalCode = document.getElementById('modal-code');
@@ -5157,9 +5166,9 @@ function openModal(p, initialPurchaseOptionId = null) {
   showGalleryImage(0);
 
   const addBtn = document.getElementById('modal-add-btn');
-  addBtn.disabled = !p.inStock;
+  addBtn.disabled = !canOrderProduct(p);
   addBtn.textContent = getModalAddButtonLabel(p, selectedOption, inCart);
-  addBtn.className = 'btn-add-modal' + (inCart ? ' in-cart' : '') + (p.inStock ? '' : ' disabled');
+  addBtn.className = 'btn-add-modal' + (inCart ? ' in-cart' : '') + (canOrderProduct(p) ? '' : ' disabled');
 
   modalOverlay.classList.add('active');
   modalOverlay.setAttribute('aria-hidden', 'false');
@@ -5187,11 +5196,15 @@ function toggleCart(product, optionId = null) {
     showToast(`"${product.name}" está fuera de stock`);
     return;
   }
+  if (isPreorderCollection()) {
+    showToast(`"${product.name}" todavía no está disponible para pedir`);
+    return;
+  }
   const selectedOption = optionId ? product.purchaseOptions?.find(option => option.id === optionId) : null;
   const cartKey = getCartKey(product, selectedOption?.id || null);
   const idx = cart.findIndex(item => item.cartKey === cartKey);
   if (idx === -1) {
-    cart.push({ ...product, cartKey, selectedPurchaseOption: selectedOption || null });
+    cart.push({ ...product, cartKey, cartCollectionId: activeCollection, selectedPurchaseOption: selectedOption || null });
     showToast(`"${product.name}"${selectedOption ? ` · ${selectedOption.label}` : ''} agregada`);
   } else {
     cart.splice(idx, 1);
@@ -5279,9 +5292,9 @@ function updateCartUI() {
     const option = getSelectedPurchaseOption(currentModalProduct);
     const inCart = cart.some(c => c.cartKey === getCartKey(currentModalProduct, option?.id));
     const addBtn = document.getElementById('modal-add-btn');
-    addBtn.disabled = !currentModalProduct.inStock;
+    addBtn.disabled = !canOrderProduct(currentModalProduct);
     addBtn.textContent = getModalAddButtonLabel(currentModalProduct, option, inCart);
-    addBtn.className = 'btn-add-modal' + (inCart ? ' in-cart' : '') + (currentModalProduct.inStock ? '' : ' disabled');
+    addBtn.className = 'btn-add-modal' + (inCart ? ' in-cart' : '') + (canOrderProduct(currentModalProduct) ? '' : ' disabled');
   }
 }
 
@@ -5290,7 +5303,7 @@ function updateCardStates() {
     const id = parseInt(btn.dataset.id);
     const product = products.find(p => p.id === id);
     const inCart = cart.some(c => c.id === id);
-    btn.disabled = product ? !product.inStock : false;
+    btn.disabled = product ? !canOrderProduct(product) : false;
     btn.classList.toggle('added', inCart);
     btn.innerHTML = inCart
       ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>`

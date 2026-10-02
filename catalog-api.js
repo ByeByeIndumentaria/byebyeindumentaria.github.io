@@ -60,6 +60,12 @@ window.CatalogAPI = (() => {
       for(let i=0;i<ids.length;i+=100) rows.push(...await request('/rest/v1/catalog_products?select=*&id=in.(' + ids.slice(i,i+100).join(',') + ')'));
       return rows;
     },
+    async listCollections() {
+      return request('/rest/v1/catalog_collections?select=*&order=position,id');
+    },
+    saveCollection(id, expectedVersion, payload) {
+      return request('/rest/v1/rpc/save_catalog_collection', { method: 'POST', body: JSON.stringify({ collection_id: id, expected_version: expectedVersion, collection_data: payload }) }, true);
+    },
     save(id, expectedVersion, payload) {
       return request('/rest/v1/rpc/save_catalog_product', { method: 'POST', body: JSON.stringify({ product_id: id, expected_version: expectedVersion, product_data: payload }) }, true);
     },

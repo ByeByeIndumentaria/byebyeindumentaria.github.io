@@ -1,7 +1,7 @@
 /* Reads cloud overrides without requiring a GitHub deployment per product. */
 (() => {
   if (!window.CatalogAPI?.configured) return;
-  let running=false, fingerprint='';
+  let running=false, fingerprint='', collectionFingerprint='';
   const versions=new Map();
   const escape=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   function sanitize(value,key='') {
@@ -19,7 +19,16 @@
   async function refresh(){
     if(running||document.hidden)return;running=true;
     try{
-      const metadata=await CatalogAPI.list('id,version'),next=JSON.stringify(metadata.map(r=>[r.id,r.version]));if(next===fingerprint)return;
+      let collectionChanged=false;
+      try {
+        const collectionRows=await CatalogAPI.listCollections(),nextCollections=JSON.stringify(collectionRows.map(r=>[r.id,r.version]));
+        if(nextCollections!==collectionFingerprint){
+          for(const row of collectionRows){if(!row.payload?.name||!['stock','preorder'].includes(row.payload.type))continue;const payload=sanitize(row.payload),next={...payload,id:row.id,type:row.payload.type};const index=collections.findIndex(c=>c.id===row.id);if(index<0)collections.push(next);else collections[index]=next;}
+          collectionFingerprint=nextCollections;collectionChanged=true;buildCollectionFilters();
+        }
+      } catch(error) { console.warn('Las colecciones conservan su configuración local.',error.message); }
+      const metadata=await CatalogAPI.list('id,version'),next=JSON.stringify(metadata.map(r=>[r.id,r.version]));
+      if(next===fingerprint&&!collectionChanged)return;
       const changed=metadata.filter(r=>versions.get(Number(r.id))!==r.version);
       const rows=await CatalogAPI.getProducts(changed.map(r=>Number(r.id)));
       for(const row of rows){const id=Number(row.id);if(!Number.isSafeInteger(id)||!row.payload?.name)continue;
@@ -32,9 +41,9 @@
       fingerprint=next;
       // Refresh open detail only when its saved version changes, preserving its option.
       const openId=currentModalProduct?.id,openBefore=currentModalProduct;
-      cart=cart.map(item=>{const p=products.find(p=>p.id===item.id);if(!p||!p.inStock||p.isHidden)return null;const selectedPurchaseOption=p.purchaseOptions?.find(o=>o.id===item.selectedPurchaseOption?.id)||null;return {...item,...p,selectedPurchaseOption};}).filter(Boolean);
+      cart=cart.map(item=>{const p=products.find(p=>p.id===item.id),cartCollection=collections.find(c=>c.id===(item.cartCollectionId||item.collection));if(!p||!p.inStock||p.isHidden||(cartCollection&&isPreorderCollection(cartCollection)))return null;const selectedPurchaseOption=p.purchaseOptions?.find(o=>o.id===item.selectedPurchaseOption?.id)||null;return {...item,...p,selectedPurchaseOption};}).filter(Boolean);
       buildCategoryFilters();renderProducts();updateCartUI();persistCart();
-      if(openId){const p=products.find(p=>p.id===openId);if(p?.isHidden)closeModal();else if(p&&JSON.stringify(p)!==JSON.stringify(openBefore))openModal(p,currentPurchaseOptionId);}
+      if(openId){const p=products.find(p=>p.id===openId);if(p?.isHidden)closeModal();else if(p&&(collectionChanged||JSON.stringify(p)!==JSON.stringify(openBefore)))openModal(p,currentPurchaseOptionId);}
     }catch(error){console.warn('El catálogo conserva su última versión disponible.',error.message);}finally{running=false;}
   }
   document.addEventListener('DOMContentLoaded',()=>{refresh();setInterval(refresh,10000);});
