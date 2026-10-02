@@ -17,6 +17,10 @@ uno, se guarda una copia completa en la nube con el mismo ID. Las nuevas altas
 reciben IDs a partir de 10000. No es necesario volver a subir las fotos antiguas.
 Las opciones de compra existentes se conservan y cada curva se edita por opción.
 
+En un proyecto que ya tenía el panel activado, ejecutar una vez
+`add-collections.sql` para habilitar el alta de colecciones y
+la configuración Stock/Preventa desde el panel.
+
 El catálogo consulta cambios cada 10 segundos y al volver a la pestaña. Ante
 un error conserva lo que ya estaba cargado y, al abrir la web, puede usar el
 catálogo histórico como respaldo. Los cambios más recientes requieren conexión.
