@@ -75,7 +75,16 @@ test('el buscador muestra el catálogo administrado completo, sin el límite his
   assert.match(appJs, /buscarItems\(elBuscador\.value, Math\.max\(ITEMS\.length, 1\)\)/);
   assert.match(appJs, /addEventListener\("focus", actualizarResultadosBuscador\)/);
   assert.match(appJs, /\$\{CATALOGO\.length\} productos totales/);
-  assert.match(indexHtml, /app\.js\?v=20261007-infantil-colores-curvas-v4/);
+  assert.match(indexHtml, /app\.js\?v=20261007-admin-visibles-v5/);
+});
+
+test('Taft, Jirina y los demás productos creados en Administración quedan visibles sin buscarlos', () => {
+  const appJs = fs.readFileSync('pedidos/app.js', 'utf8');
+  const indexHtml = fs.readFileSync('pedidos/index.html', 'utf8');
+  assert.match(indexHtml, /id="productos-admin-recientes"/);
+  assert.match(appJs, /item\.productoId >= 10000/);
+  assert.match(appJs, /Agregados desde Administración/);
+  assert.match(appJs, /boton\.addEventListener\("click", \(\) => seleccionarItem\(item\)\)/);
 });
 
 test('al agregar una prenda la lista no tapa el cartel de colores del pedido', () => {
