@@ -469,9 +469,18 @@ function renderResultados() {
 }
 
 elBuscador.addEventListener("input", () => {
-  resultadosActuales = buscarItems(elBuscador.value, 25);
-  renderResultados();
+  actualizarResultadosBuscador();
 });
+
+function actualizarResultadosBuscador() {
+  // El catálogo completo es suficientemente chico para mostrarlo sin paginar.
+  // Esto también hace visibles las prendas creadas desde Administración con
+  // IDs nuevos, que antes quedaban fuera del corte de los primeros 25 ítems.
+  resultadosActuales = buscarItems(elBuscador.value, Math.max(ITEMS.length, 1));
+  renderResultados();
+}
+
+elBuscador.addEventListener("focus", actualizarResultadosBuscador);
 
 elBuscador.addEventListener("keydown", (e) => {
   if (e.key === "ArrowDown" && resultadosActuales.length) {
@@ -1510,7 +1519,7 @@ function actualizarBarraEstado() {
   const conCodigo = enStock.filter(p => p.codigo).length;
   const totalArticulosPrecio = Object.keys({ ...PRECIOS_BASE_MAP, ...preciosImportados }).length;
   document.getElementById("barra-estado").textContent =
-    `Catálogo: ${enStock.length} productos en stock (${conFoto} con foto, ${conCodigo} con código) · ` +
+    `Catálogo: ${CATALOGO.length} productos totales · ${enStock.length} en stock (${conFoto} con foto, ${conCodigo} con código) · ` +
     `${sinStock} sin stock · Precios cargados: ${totalArticulosPrecio} códigos`;
 }
 
@@ -1618,6 +1627,7 @@ async function activarBaseCompartida() {
       pedidoItems = pedidoItems.map(normalizarItemPedido);
       renderTablaPedido();
       actualizarBarraEstado();
+      if (document.activeElement === elBuscador || elBuscador.value.trim()) actualizarResultadosBuscador();
     } catch (errorCatalogo) {
       console.warn("Se conserva la copia local del catálogo.", errorCatalogo);
     }

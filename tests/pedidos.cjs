@@ -47,3 +47,12 @@ test('Notas de pedidos sincroniza automáticamente los productos publicados desd
   assert.match(app, /CATALOGO\.push\(actualizado\)/);
   assert.match(app, /await sincronizarCatalogoAdministrado\(\)/);
 });
+
+test('el buscador muestra el catálogo administrado completo, sin el límite histórico de 25 productos', () => {
+  const appJs = fs.readFileSync('pedidos/app.js', 'utf8');
+  const indexHtml = fs.readFileSync('pedidos/index.html', 'utf8');
+  assert.match(appJs, /buscarItems\(elBuscador\.value, Math\.max\(ITEMS\.length, 1\)\)/);
+  assert.match(appJs, /addEventListener\("focus", actualizarResultadosBuscador\)/);
+  assert.match(appJs, /\$\{CATALOGO\.length\} productos totales/);
+  assert.match(indexHtml, /app\.js\?v=20261007-catalogo-completo-v3/);
+});
