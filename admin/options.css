@@ -12,7 +12,7 @@
 .color-stock-toggle.out { color: #8b3d35; background: #f8e9e6; border-color: #e5bbb5; }
 .purchase-mode {
   display: grid;
-  grid-template-columns: minmax(240px, 1fr) 2fr;
+  grid-template-columns: minmax(210px, 1fr) minmax(210px, 1fr) 2fr;
   gap: 18px;
   align-items: end;
   margin-bottom: 18px;

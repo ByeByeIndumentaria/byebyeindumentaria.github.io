@@ -37,6 +37,7 @@ function syncColorAcrossOptions(color,remove=false){
 }
 function refreshOptionEditor(){
   const multiple=!!editing.purchaseOptions?.length;$('purchase-mode').value=multiple?'multiple':'single';$('purchase-options-editor').hidden=!multiple;$('variants-note').hidden=!multiple;
+  $('packing-type').value=group().packingType||inferredPackingType(group().sourcePacking);
   if(!multiple)return;
   editing.purchaseOptions.forEach(normalizeOption);currentGroup=Math.min(currentGroup,editing.purchaseOptions.length-1);
   selectOptions($('option'),editing.purchaseOptions.map((option,index)=>[String(index),option.label]));$('option').value=String(currentGroup);
@@ -182,6 +183,7 @@ function preparePayload(){
   const groups=p.purchaseOptions?.length?p.purchaseOptions:[p];
   p.outOfStockColors=(p.outOfStockColors||[]).filter(color=>p.colors.some(item=>model.normalize(item)===model.normalize(color)));
   if(p.purchaseOptions?.length){p.sizes=[...new Set(p.purchaseOptions.flatMap(o=>o.sizes||[]))];p.packaging=clone(p.purchaseOptions[0].packaging);p.sourcePacking='';p.purchaseOptions.forEach(option=>{option.outOfStockColors=clone(p.outOfStockColors);option.sourcePacking=model.packingLabel(option.packingType);});}
+  else p.sourcePacking=model.packingLabel(p.packingType);
   model.validate(p, editingId == null ? null : records.get(editingId).payload);
   for(const g of groups)model.recalculate(g.packaging,g.packingType);
   syncOptionGalleries(p);

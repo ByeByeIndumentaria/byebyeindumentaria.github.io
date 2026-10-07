@@ -47,6 +47,9 @@
     const text=[p.name,p.orderNumber,p.description,p.subcategory,...p.colors,...p.sizes,...(p.purchaseOptions||[]).flatMap(option=>[option.label,option.sourcePacking,...(option.colors||[]),...(option.sizes||[])])];
     if(text.some(s=>/[<>"`]/.test(s||''))) throw new Error('Los textos no pueden incluir <, >, comillas dobles ni acentos invertidos.');
     const groups=p.purchaseOptions?.length?p.purchaseOptions:[p];
+    // Older products did not persist packingType. Keep them editable; the form
+    // infers the value from sourcePacking and writes it on the next save.
+    if(!p.purchaseOptions?.length && p.packingType && !['single-color','mixed-colors'].includes(p.packingType)) throw new Error('Elegí Caja por color o Surtido de colores.');
     if(p.purchaseOptions?.length) {
       if(p.purchaseOptions.length<2) throw new Error('Agregá al menos dos opciones de compra o usá una sola distribución.');
       if(new Set(p.purchaseOptions.map(option=>option.id)).size!==p.purchaseOptions.length) throw new Error('Las opciones de compra deben ser diferentes.');
