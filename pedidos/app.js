@@ -928,7 +928,6 @@ function limpiarSeleccion() {
   elBuscador.value = "";
   resultadosActuales = [];
   renderResultados();
-  elBuscador.focus();
 }
 
 function renderTablaPedido() {
