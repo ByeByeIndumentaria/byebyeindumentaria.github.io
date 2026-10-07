@@ -30,7 +30,20 @@ test('Notas de pedidos conserva curvas y formatos de compra alternativos', () =>
 
 test('los colores informativos también forman parte del PDF', () => {
   const app = fs.readFileSync('pedidos/app.js', 'utf8');
+  const html = fs.readFileSync('pedidos/index.html', 'utf8');
   assert.match(app, /preview-colores/);
-  assert.match(app, /`Colores disponibles: \$\{colores\}`/);
+  assert.match(app, /`Colores disponibles:\\n\$\{colores\}`/);
   assert.match(app, /`Formato de venta: \$\{it\.formatoVenta/);
+  assert.match(html, /<th>Colores disponibles<\/th>/);
+  assert.match(app, /class="colores-pedido"/);
+});
+
+test('Notas de pedidos sincroniza automáticamente los productos publicados desde Administración', () => {
+  const app = fs.readFileSync('pedidos/app.js', 'utf8');
+  const html = fs.readFileSync('pedidos/index.html', 'utf8');
+  assert.match(html, /\.\.\/catalog-config\.js\?v=20261007-pedidos-sync/);
+  assert.match(html, /\.\.\/catalog-api\.js\?v=20261007-pedidos-sync/);
+  assert.match(app, /async function sincronizarCatalogoAdministrado\(\)/);
+  assert.match(app, /CATALOGO\.push\(actualizado\)/);
+  assert.match(app, /await sincronizarCatalogoAdministrado\(\)/);
 });

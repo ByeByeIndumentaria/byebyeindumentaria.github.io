@@ -4338,10 +4338,18 @@ function getTotalPiecesLabel(product) {
   return product.packaging?.totalLabel || "-";
 }
 
-function formatCurve(row) {
+function formatCurve(row, sizeOrder = []) {
   if (row.curveText) return row.curveText;
-  return Object.entries(row.sizePieces || {})
-    .map(([size, pieces]) => `${size}/${pieces == null ? "-" : pieces}`)
+  const entries = Object.entries(row.sizePieces || {});
+  const orderedSizes = [];
+  for (const preferred of sizeOrder || []) {
+    const match = entries.find(([size]) => size === preferred || normalizeCatalogSize(size) === normalizeCatalogSize(preferred));
+    if (match && !orderedSizes.includes(match[0])) orderedSizes.push(match[0]);
+  }
+  for (const [size] of entries) if (!orderedSizes.includes(size)) orderedSizes.push(size);
+  const quantities = Object.fromEntries(entries);
+  return orderedSizes
+    .map(size => `${normalizeCatalogSize(size)}/${quantities[size] == null ? "-" : quantities[size]}`)
     .join(" - ");
 }
 
@@ -4451,7 +4459,7 @@ function renderPackagingTable(product) {
   const rows = packaging.rows.map(row => `
     <tr>
       <td>${row.color}</td>
-      <td>${formatCurve(row)}</td>
+      <td>${formatCurve(row, selectedOption?.sizes || product.sizes || [])}</td>
       ${showQuantities ? `<td>${getRowPiecesLabel(row)}</td>` : ""}
     </tr>
   `).join("");
@@ -5664,7 +5672,7 @@ async function downloadProductPDF(product, optionId = null) {
 
       drawTableHeader();
       packaging.rows.forEach((row, index) => {
-        const curve = formatCurve(row);
+        const curve = formatCurve(row, sizes);
         const curveLines = doc.splitTextToSize(curve, 92);
         const rowH = Math.max(10, curveLines.length * 4 + 4);
         if (y + rowH > 280) {

@@ -54,6 +54,63 @@ let inventarioProductos = new Map();
 let inventarioStock = [];
 let inventarioMovimientos = [];
 
+function rutaImagenCatalogo(src) {
+  if (!src) return "";
+  return /^images\//.test(src) ? `../${src}` : src;
+}
+
+function opcionCatalogoAdministrado(opcion, producto) {
+  const colores = opcion.colors?.length ? opcion.colors : (producto.colors || []);
+  const fuentes = opcion.gallery?.sources?.length ? opcion.gallery.sources : (producto.gallery?.sources || []);
+  return {
+    ...opcion,
+    codigo: opcion.orderNumber || producto.orderNumber || "",
+    colores: [...colores],
+    talles: [...(opcion.sizes || producto.sizes || [])],
+    imagenes: fuentes.map(rutaImagenCatalogo),
+    formatoVenta: opcion.sourcePacking || opcion.label || "Formato no informado",
+    packingType: opcion.packingType || "mixed-colors"
+  };
+}
+
+function productoCatalogoAdministrado(row, anterior = null) {
+  const producto = row.payload || {};
+  const imagenes = (producto.gallery?.sources || []).map(rutaImagenCatalogo);
+  return {
+    ...(anterior || {}),
+    id: Number(row.id),
+    codigo: producto.orderNumber || "",
+    nombre: producto.name,
+    categoria: producto.category || "",
+    subcategoria: producto.subcategory || "",
+    descripcion: producto.description || "",
+    colores: [...(producto.colors || [])],
+    coloresFueraDeStock: [...(producto.outOfStockColors || [])],
+    talles: [...(producto.sizes || [])],
+    imagenes,
+    packaging: producto.packaging || null,
+    formatoVenta: producto.sourcePacking || (producto.packingType === "single-color" ? "Caja por color" : "Caja surtida"),
+    packingType: producto.packingType || "mixed-colors",
+    purchaseOptions: (producto.purchaseOptions || []).map(opcion => opcionCatalogoAdministrado(opcion, producto)),
+    enStock: producto.inStock !== false,
+    coleccion: producto.collection || "",
+    cloudManaged: true,
+    precioReferencia: anterior?.precioReferencia
+  };
+}
+
+async function sincronizarCatalogoAdministrado() {
+  if (!window.CatalogAPI?.configured) return;
+  const filas = await window.CatalogAPI.list();
+  filas.forEach(row => {
+    if (!Number.isSafeInteger(Number(row.id)) || !row.payload?.name) return;
+    const indice = CATALOGO.findIndex(producto => producto.id === Number(row.id));
+    const actualizado = productoCatalogoAdministrado(row, indice >= 0 ? CATALOGO[indice] : null);
+    if (indice >= 0) CATALOGO[indice] = actualizado;
+    else CATALOGO.push(actualizado);
+  });
+}
+
 function filasStockProducto(productId) {
   return inventarioStock.filter(fila => fila.product_id === productId);
 }
@@ -292,7 +349,7 @@ function construirItems() {
       const codigoOpcion = opcion?.codigo || codigo;
       const nombreVisible = opcion ? `${p.nombre} · ${opcion.label}` : p.nombre;
       const coloresOpcion = opcion?.colores?.length ? opcion.colores : (p.colores || []);
-      const formatoVenta = opcion?.label || p.formatoVenta || (p.packingType === "single-color" ? "Caja por color" : "Caja surtida");
+      const formatoVenta = opcion?.formatoVenta || opcion?.label || p.formatoVenta || (p.packingType === "single-color" ? "Caja por color" : "Caja surtida");
       items.push({
         idItem: `prod:${p.id}${opcion ? `:${opcion.id}` : ""}`,
         productoId: p.id,
@@ -305,7 +362,8 @@ function construirItems() {
         subcategoria: p.subcategoria,
         colores: coloresOpcion,
         coloresProducto: p.colores || coloresOpcion,
-        imagenes: p.imagenes || [],
+        talles: opcion?.talles?.length ? opcion.talles : (p.talles || []),
+        imagenes: opcion?.imagenes?.length ? opcion.imagenes : (p.imagenes || []),
         packaging: opcion?.packaging || p.packaging || null,
         formatoVenta,
         packingType: opcion?.packingType || p.packingType || "mixed-colors",
@@ -481,7 +539,7 @@ function renderCurvaCaja(item) {
 
     const rows = item.packaging.rows || [];
     // Juntamos todos los talles que aparecen en cualquier fila, en orden.
-    const talles = [];
+    const talles = [...(item.talles || [])];
     rows.forEach(r => Object.keys(r.sizePieces || {}).forEach(t => { if (!talles.includes(t)) talles.push(t); }));
 
     if (rows.length) {
@@ -872,11 +930,13 @@ function renderTablaPedido() {
   pedidoItems.forEach((it, i) => {
     const unidTot = it.cajas * it.unidadesPorCaja;
     const subtotal = unidTot * it.precioUnitario;
+    const coloresDisponibles = (it.coloresProducto || it.colores || []).join(", ") || "Sin información";
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td>${celdaFotoHTML(it.imagenes, "miniatura", "miniatura-vacia")}</td>
       <td>${it.codigo || "-"}</td>
-      <td>${escaparHTML(it.nombre)}${it.enStock === false ? '<br><span class="etiqueta-sin-stock">FUERA DE STOCK</span>' : ''}<br><span class="detalle-informativo"><strong>Colores:</strong> ${escaparHTML((it.coloresProducto || it.colores || []).join(", ") || "Sin información")}<br><strong>Venta:</strong> ${escaparHTML(it.formatoVenta || "No informado")}</span></td>
+      <td>${escaparHTML(it.nombre)}${it.enStock === false ? '<br><span class="etiqueta-sin-stock">FUERA DE STOCK</span>' : ''}<br><span class="detalle-informativo"><strong>Venta:</strong> ${escaparHTML(it.formatoVenta || "No informado")}</span></td>
+      <td><div class="colores-pedido"><strong>Colores disponibles</strong><span>${escaparHTML(coloresDisponibles)}</span></div></td>
       <td>${it.varianteStock ? `<strong>${escaparHTML(it.varianteStock === "SURTIDO" ? "Caja surtida" : it.varianteStock)}</strong><br>` : ""}<textarea class="observacion-item" data-idx="${i}" data-campo="observacion" placeholder="Observación">${escaparHTML(it.observacion || "")}</textarea></td>
       <td><input type="number" min="1" value="${it.cajas}" data-idx="${i}" data-campo="cajas" style="width:56px"></td>
       <td><input type="number" min="1" value="${it.unidadesPorCaja}" data-idx="${i}" data-campo="unidades" style="width:68px" ${it.packaging && inventarioProductos.has(it.productoId) ? "readonly" : ""}></td>
@@ -921,7 +981,7 @@ function renderTablaPedido() {
       recalcularResumen();
       const tds = e.target.closest("tr").querySelectorAll("td");
       const unidTot = pedidoItems[idx].cajas * pedidoItems[idx].unidadesPorCaja;
-      tds[7].textContent = "$" + (unidTot * pedidoItems[idx].precioUnitario).toFixed(2);
+      tds[8].textContent = "$" + (unidTot * pedidoItems[idx].precioUnitario).toFixed(2);
     });
   });
   tbody.querySelectorAll("input[data-campo='precio']").forEach(inp => {
@@ -932,7 +992,7 @@ function renderTablaPedido() {
       recalcularResumen();
       const tds = e.target.closest("tr").querySelectorAll("td");
       const unidTot = pedidoItems[idx].cajas * pedidoItems[idx].unidadesPorCaja;
-      tds[7].textContent = "$" + (unidTot * pedidoItems[idx].precioUnitario).toFixed(2);
+      tds[8].textContent = "$" + (unidTot * pedidoItems[idx].precioUnitario).toFixed(2);
     });
   });
   tbody.querySelectorAll("textarea[data-campo='observacion']").forEach(inp => {
@@ -1083,32 +1143,32 @@ document.getElementById("btn-pdf").addEventListener("click", async () => {
       const variante = it.varianteStock ? (it.varianteStock === "SURTIDO" ? "Caja surtida" : it.varianteStock) : "";
       const colores = (it.coloresProducto || it.colores || []).join(", ") || "Sin información";
       const detalleExtra = [
-        `Colores disponibles: ${colores}`,
         `Formato de venta: ${it.formatoVenta || "No informado"}`,
         variante && `Variante: ${variante}`,
         it.observacion && `Observaciones: ${it.observacion}`
       ].filter(Boolean).join("\n");
       const detalle = detalleExtra ? `${it.nombre}\n${detalleExtra}` : it.nombre;
-      return ["", it.codigo || "-", detalle, String(it.cajas), String(unidTot), `$${it.precioUnitario.toFixed(2)}`, `$${(unidTot * it.precioUnitario).toFixed(2)}`];
+      return ["", it.codigo || "-", detalle, `Colores disponibles:\n${colores}`, String(it.cajas), String(unidTot), `$${it.precioUnitario.toFixed(2)}`, `$${(unidTot * it.precioUnitario).toFixed(2)}`];
     });
 
     doc.autoTable({
       startY: 37,
-      head: [["Foto", "Código", "Prenda / color", "Cajas", "Unid.", "Precio", "Subtotal"]],
+      head: [["Foto", "Código", "Prenda / formato", "Colores disponibles", "Cajas", "Unid.", "Precio", "Subtotal"]],
       body: cuerpo,
       margin: { left: 12, right: 12, bottom: 14 },
-      tableWidth: 172,
+      tableWidth: 186,
       theme: "grid",
       styles: { font: "helvetica", fontSize: 8, cellPadding: 2, valign: "middle", lineColor: [180, 180, 180], lineWidth: 0.15 },
       headStyles: { fillColor: [22, 20, 18], textColor: [255, 255, 255], fontStyle: "bold" },
       columnStyles: {
-        0: { cellWidth: 16, minCellHeight: 16 },
-        1: { cellWidth: 23 },
-        2: { cellWidth: 57 },
-        3: { cellWidth: 14, halign: "center" },
-        4: { cellWidth: 14, halign: "center" },
-        5: { cellWidth: 22, halign: "right" },
-        6: { cellWidth: 26, halign: "right" }
+        0: { cellWidth: 14, minCellHeight: 16 },
+        1: { cellWidth: 20 },
+        2: { cellWidth: 38 },
+        3: { cellWidth: 48 },
+        4: { cellWidth: 12, halign: "center" },
+        5: { cellWidth: 12, halign: "center" },
+        6: { cellWidth: 20, halign: "right" },
+        7: { cellWidth: 22, halign: "right" }
       },
       didDrawCell(data) {
         if (data.section !== "body" || data.column.index !== 0) return;
@@ -1552,6 +1612,15 @@ async function migrarPedidosLocales() {
 async function activarBaseCompartida() {
   document.getElementById("estado-base").textContent = "Sincronizando pedidos…";
   try {
+    try {
+      await sincronizarCatalogoAdministrado();
+      construirItems();
+      pedidoItems = pedidoItems.map(normalizarItemPedido);
+      renderTablaPedido();
+      actualizarBarraEstado();
+    } catch (errorCatalogo) {
+      console.warn("Se conserva la copia local del catálogo.", errorCatalogo);
+    }
     await cargarInventario();
     const pedidosLocalesPendientes = await migrarPedidosLocales();
     await cargarPedidosDesdeBase(pedidosLocalesPendientes);
