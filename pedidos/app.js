@@ -417,7 +417,6 @@ function construirItems() {
   });
 
   ITEMS = items;
-  renderProductosAdministrados();
 }
 
 const PRECIOS_BASE_MAP = {};
@@ -447,31 +446,6 @@ const elBuscador = document.getElementById("buscador");
 const elResultados = document.getElementById("resultados");
 let resultadosActuales = [];
 let itemSeleccionado = null;
-
-function renderProductosAdministrados() {
-  const panel = document.getElementById("productos-admin-recientes");
-  if (!panel) return;
-  const vistos = new Set();
-  const productos = ITEMS.filter(item => item.productoId >= 10000 && !vistos.has(item.productoId) && vistos.add(item.productoId));
-  panel.innerHTML = "";
-  panel.hidden = productos.length === 0;
-  if (!productos.length) return;
-  const titulo = document.createElement("div");
-  titulo.className = "productos-admin-titulo";
-  titulo.textContent = `Agregados desde Administración (${productos.length})`;
-  const botones = document.createElement("div");
-  botones.className = "productos-admin-botones";
-  productos.sort((a, b) => a.nombre.localeCompare(b.nombre, "es"));
-  productos.forEach(item => {
-    const boton = document.createElement("button");
-    boton.type = "button";
-    boton.className = "producto-admin-rapido";
-    boton.textContent = item.nombre;
-    boton.addEventListener("click", () => seleccionarItem(item));
-    botones.appendChild(boton);
-  });
-  panel.append(titulo, botones);
-}
 
 function renderResultados() {
   elResultados.innerHTML = "";

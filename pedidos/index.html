@@ -165,12 +165,6 @@
   #resultados li.sin-stock .codigo{color:var(--acento);font-weight:700;}
   #resultados li .codigo{color:var(--tinta-suave);font-variant-numeric:tabular-nums;white-space:nowrap;}
   #resultados li .sinfoto{color:#a89a80;font-size:11px;}
-  .productos-admin-recientes{margin-top:10px;padding:10px;border:2px solid #cda874;border-radius:10px;background:#fff4df;}
-  .productos-admin-recientes[hidden]{display:none;}
-  .productos-admin-titulo{margin-bottom:7px;color:var(--acento);font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;}
-  .productos-admin-botones{display:flex;flex-wrap:wrap;gap:6px;}
-  .producto-admin-rapido{padding:7px 10px;border:1px solid #cda874;border-radius:999px;background:#fff;color:var(--tinta);font:600 12px inherit;cursor:pointer;}
-  .producto-admin-rapido:hover{background:var(--acento-suave);}
 
   .preview{
     display:flex;gap:12px;margin-top:14px;
@@ -344,7 +338,6 @@
     <div class="panel">
       <h2>Buscar producto</h2>
       <input type="text" id="buscador" placeholder="Código o nombre… (ej: TE11810-BB o &quot;chomba&quot;)" autocomplete="off">
-      <div id="productos-admin-recientes" class="productos-admin-recientes" hidden></div>
       <ul id="resultados"></ul>
 
       <div class="preview">
@@ -485,6 +478,6 @@ const PRECIOS_BASE = [{"codigo":"T01","nombre":"Set algodón","descripcion":"Pre
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4/dist/umd/supabase.min.js" crossorigin="anonymous"></script>
 <script src="../catalog-config.js?v=20261007-pedidos-sync"></script>
 <script src="../catalog-api.js?v=20261007-pedidos-sync"></script>
-<script src="app.js?v=20261007-admin-visibles-v5"></script>
+<script src="app.js?v=20261007-sin-cartel-admin-v6"></script>
 </body>
 </html>
