@@ -11,6 +11,51 @@ function el(tag,text,className){const e=document.createElement(tag);if(text!=nul
 function notice(text){$('notice').textContent=text;}
 function message(error){$('save-status').textContent=error.message||String(error);}
 function group(){return editing.purchaseOptions?.length?editing.purchaseOptions[currentGroup]:editing;}
+function inferredPackingType(value=''){return /POR COLOR|SOLID COLOR/i.test(value)?'single-color':'mixed-colors';}
+function optionLabel(type){return type==='single-color'?'Caja por color':'Surtido de colores';}
+function normalizeOption(option,index){
+  option.id||=model.optionId(option.label||`opcion-${index+1}`,editing.purchaseOptions?.map(item=>item.id).filter(Boolean)||[]);
+  option.label||=optionLabel(inferredPackingType(option.sourcePacking));
+  option.packingType||=inferredPackingType(option.sourcePacking||option.label);
+  option.sourcePacking||=model.packingLabel(option.packingType);
+  option.colors||=clone(editing.colors||[]);option.sizes||=[];
+  option.packaging&&=clone(option.packaging);
+  return option;
+}
+function colorIsInStock(color){return !(editing.outOfStockColors||[]).some(item=>model.normalize(item)===model.normalize(color));}
+function setColorStock(color,inStock){
+  const current=(editing.outOfStockColors||[]).filter(item=>model.normalize(item)!==model.normalize(color));
+  editing.outOfStockColors=inStock?current:[...current,color];dirty=true;renderColors();
+}
+function syncColorAcrossOptions(color,remove=false){
+  for(const option of editing.purchaseOptions||[]){
+    option.colors||=[];
+    if(remove){option.colors=option.colors.filter(item=>model.normalize(item)!==model.normalize(color));if(option.packaging)option.packaging.rows=option.packaging.rows.filter(row=>model.normalize(row.color)!==model.normalize(color));continue;}
+    if(!option.colors.some(item=>model.normalize(item)===model.normalize(color)))option.colors.push(color);
+    if(option.packaging&&!option.packaging.rows.some(row=>model.normalize(row.color)===model.normalize(color)))option.packaging.rows.push({color,sizePieces:Object.fromEntries((option.sizes||[]).map(size=>[size,null]))});
+  }
+}
+function refreshOptionEditor(){
+  const multiple=!!editing.purchaseOptions?.length;$('purchase-mode').value=multiple?'multiple':'single';$('purchase-options-editor').hidden=!multiple;$('variants-note').hidden=!multiple;
+  if(!multiple)return;
+  editing.purchaseOptions.forEach(normalizeOption);currentGroup=Math.min(currentGroup,editing.purchaseOptions.length-1);
+  selectOptions($('option'),editing.purchaseOptions.map((option,index)=>[String(index),option.label]));$('option').value=String(currentGroup);
+  const current=group();$('option-name').value=current.label;$('packing-type').value=current.packingType;$('remove-option').disabled=editing.purchaseOptions.length<=2;
+}
+function makeOption(source,type,label){
+  const taken=(editing.purchaseOptions||[]).map(option=>option.id),option=clone(source);
+  option.label=label;option.id=model.optionId(label,taken);option.packingType=type;option.sourcePacking=model.packingLabel(type);option.colors=clone(editing.colors);option.gallery=clone(editing.gallery||{sources:[],colorGalleryIndexByNormalizedColor:{}});
+  if(option.packaging)option.packaging.rows=(editing.colors||[]).map(color=>clone(option.packaging.rows.find(row=>model.normalize(row.color)===model.normalize(color))||{color,sizePieces:Object.fromEntries((option.sizes||[]).map(size=>[size,null]))}));
+  return option;
+}
+function enableMultipleOptions(){
+  const base=clone(editing),firstType=editing.packingType||inferredPackingType(editing.sourcePacking),secondType=firstType==='single-color'?'mixed-colors':'single-color';
+  delete base.purchaseOptions;const first=makeOption(base,firstType,editing.sourcePacking||optionLabel(firstType)),second=makeOption(base,secondType,optionLabel(secondType));
+  editing.purchaseOptions=[first,second];currentGroup=0;dirty=true;refreshOptionEditor();renderCurve();
+}
+function disableMultipleOptions(){
+  const selected=clone(group());editing.sizes=selected.sizes||[];editing.packaging=selected.packaging;editing.sourcePacking=selected.sourcePacking;editing.packingType=selected.packingType;delete editing.purchaseOptions;currentGroup=0;dirty=true;refreshOptionEditor();renderCurve();
+}
 function selectOptions(select,values){select.replaceChildren(...values.map(([value,label])=>{const o=el('option',label);o.value=value;return o;}));}
 function galleryFor(p){return p.gallery||{sources:[],colorGalleryIndexByNormalizedColor:{}};}
 function colorPhoto(p,color){const g=galleryFor(p);const n=model.normalize(color);const idx=g.colorGalleryIndexByNormalizedColor?.[n];if(idx!=null)return g.sources[idx];const match=Object.entries(g.colorMap||{}).find(([c])=>model.normalize(c)===n);if(match){const i=(g.photoNumbers||[]).indexOf(Number(match[1]));if(i>=0)return g.sources[i];}return '';}
@@ -81,22 +126,22 @@ async function openEditor(id,curve=false){
     catch(e){notice('No se pudo cargar la última versión. '+e.message);return;}
   }
   resetPhotos();savedPackaging.clear();currentGroup=0;galleryDirty=false;editingId=id;version=id==null?0:records.get(id).version;
-  editing=id==null?{name:'',orderNumber:'',category:'MUJER',subcategory:'Camperas',collection:'produccion-invierno-2027',colors:[],sizes:[],packaging:{rows:[]},inStock:true,description:'',gallery:{sources:[],colorGalleryIndexByNormalizedColor:{}},preserveProductName:true,preserveCatalogColors:true}:clone(records.get(id).payload);
+  editing=id==null?{name:'',orderNumber:'',category:'MUJER',subcategory:'Camperas',collection:'produccion-invierno-2027',colors:[],outOfStockColors:[],sizes:[],packaging:{rows:[]},packingType:'mixed-colors',sourcePacking:'CAJA SURTIDA DE COLORES',inStock:true,description:'',gallery:{sources:[],colorGalleryIndexByNormalizedColor:{}},preserveProductName:true,preserveCatalogColors:true}:clone(records.get(id).payload);
+  editing.outOfStockColors=Array.isArray(editing.outOfStockColors)?editing.outOfStockColors:[];
+  editing.packingType||=inferredPackingType(editing.sourcePacking);if(editing.purchaseOptions?.length)editing.purchaseOptions.forEach(normalizeOption);
   normalizeGallery(editing);
   dirty=false;$('save-status').textContent='';$('editor-title').textContent=id==null?'Agregar producto':editing.name;$('save').textContent=preview?'Vista previa · sin publicar':id==null?'Publicar producto':'Guardar cambios';$('save').disabled=preview;
   for(const [input,key] of [['name','name'],['code','orderNumber'],['collection','collection'],['gender','category'],['subcategory','subcategory'],['description','description']])$(input).value=editing[key]||'';
   $('stock').checked=editing.inStock!==false;
-  const hasOptions=!!editing.purchaseOptions?.length;$('option-label').hidden=!hasOptions;$('variants-note').hidden=!hasOptions;
-  $('new-color').disabled=hasOptions;$('add-color').disabled=hasOptions;
-  if(hasOptions)selectOptions($('option'),editing.purchaseOptions.map((o,i)=>[String(i),o.label]));
+  $('new-color').disabled=false;$('add-color').disabled=false;refreshOptionEditor();
   renderColors();renderPhotos();renderCurve();$('editor').showModal();if(curve)$('curve-section').scrollIntoView({block:'start'});
 }
 function closeEditor(){if(busy||uploads)return;if(dirty&&!confirm('¿Cerrar sin guardar los cambios?'))return;$('editor').close();resetPhotos();editing=null;dirty=false;}
 function renderColors(){
   $('colors').replaceChildren();
   for(const color of editing.colors){const row=el('div',null,'color-row'),src=colorPhoto(editing,color),img=el('img');img.alt=src?'Foto vinculada a '+color:'Sin foto vinculada';if(src)img.src=photoSrc(src);
-    const title=el('strong',color,'color-name'),status=el('span',src?'Foto vinculada':'Sin foto vinculada','color-photo-status');row.append(img,title,status);
-    if(!editing.purchaseOptions?.length){const remove=el('button','Quitar');remove.type='button';remove.onclick=()=>{if(!confirm('¿Quitar el color '+color+' y su curva?'))return;removeColorPhoto(editing,color);editing.colors=editing.colors.filter(c=>c!==color);if(editing.packaging)editing.packaging.rows=editing.packaging.rows.filter(r=>r.color!==color);galleryDirty=true;dirty=true;renderColors();renderPhotos();renderCurve();};row.append(remove);}
+    const title=el('strong',color,'color-name'),status=el('span',src?'Foto vinculada':'Sin foto vinculada','color-photo-status'),stock=el('label',null,'color-stock-toggle'+(colorIsInStock(color)?'':' out')),checkbox=el('input');checkbox.type='checkbox';checkbox.checked=colorIsInStock(color);checkbox.setAttribute('aria-label',`${color} en stock`);checkbox.onchange=()=>setColorStock(color,checkbox.checked);stock.append(checkbox,document.createTextNode(checkbox.checked?'En stock':'Fuera de stock'));row.append(img,title,status,stock);
+    const remove=el('button','Quitar');remove.type='button';remove.onclick=()=>{if(!confirm('¿Quitar el color '+color+' y sus curvas?'))return;removeColorPhoto(editing,color);editing.colors=editing.colors.filter(c=>c!==color);editing.outOfStockColors=editing.outOfStockColors.filter(c=>model.normalize(c)!==model.normalize(color));if(editing.packaging)editing.packaging.rows=editing.packaging.rows.filter(r=>r.color!==color);syncColorAcrossOptions(color,true);galleryDirty=true;dirty=true;renderColors();renderPhotos();renderCurve();};row.append(remove);
     $('colors').append(row);
   }
 }
@@ -120,7 +165,8 @@ function syncOptionGalleries(p){
 function renderCurve(){
   const g=group();$('pending').checked=!g.packaging;$('curve-controls').hidden=!g.packaging;$('sizes').value=(g.sizes||[]).join(', ');
   $('curve-table').replaceChildren();if(!g.packaging)return;
-  const table=el('table'),head=el('tr');head.append(el('th','Color'));for(const size of g.sizes||[])head.append(el('th',size));head.append(el('th','Total'));const thead=el('thead');thead.append(head);table.append(thead);const tbody=el('tbody');
+  const note=el('p',g.packingType==='single-color'?'Cada fila representa una caja completa del color elegido.':'La caja combina las cantidades de todos los colores de esta opción.','curve-packaging-note');$('curve-table').append(note);
+  const table=el('table'),head=el('tr');head.append(el('th','Color'));for(const size of g.sizes||[])head.append(el('th',size));head.append(el('th',g.packingType==='single-color'?'Piezas por caja':'Subtotal'));const thead=el('thead');thead.append(head);table.append(thead);const tbody=el('tbody');
   for(const row of g.packaging.rows){const tr=el('tr'),name=el('th',row.color);name.scope='row';if(row.curveText)name.append(el('small',' · '+row.curveText));tr.append(name);const total=el('td');
     const updateTotal=()=>{const values=(g.sizes||[]).map(s=>row.sizePieces?.[s]);total.textContent=values.length&&values.every(Number.isInteger)?values.reduce((a,b)=>a+b,0):'—';};
     for(const size of g.sizes||[]){const td=el('td'),input=el('input');input.type='number';input.min='0';input.max='9999';input.step='1';input.value=row.sizePieces?.[size]??'';input.setAttribute('aria-label',`${row.color}, talle ${size}`);
@@ -134,9 +180,10 @@ function preparePayload(){
   if(p.collection!==editing.collection)p.collections=[p.collection];if(p.subcategory!==editing.subcategory)delete p.subcategories;
   p.inStock=$('stock').checked;p.preserveProductName=true;
   const groups=p.purchaseOptions?.length?p.purchaseOptions:[p];
-  if(p.purchaseOptions?.length)p.sizes=[...new Set(p.purchaseOptions.flatMap(o=>o.sizes||[]))];
+  p.outOfStockColors=(p.outOfStockColors||[]).filter(color=>p.colors.some(item=>model.normalize(item)===model.normalize(color)));
+  if(p.purchaseOptions?.length){p.sizes=[...new Set(p.purchaseOptions.flatMap(o=>o.sizes||[]))];p.packaging=clone(p.purchaseOptions[0].packaging);p.sourcePacking='';p.purchaseOptions.forEach(option=>{option.outOfStockColors=clone(p.outOfStockColors);option.sourcePacking=model.packingLabel(option.packingType);});}
   model.validate(p, editingId == null ? null : records.get(editingId).payload);
-  for(const g of groups)model.recalculate(g.packaging);
+  for(const g of groups)model.recalculate(g.packaging,g.packingType);
   syncOptionGalleries(p);
   return p;
 }
@@ -152,9 +199,15 @@ $('add-product').onclick=()=>openEditor(null);$('close-editor').onclick=closeEdi
 $('editor').addEventListener('cancel',e=>{e.preventDefault();closeEditor();});$('product-form').addEventListener('submit',save);
 $('product-form').addEventListener('input',()=>{dirty=true;});window.addEventListener('beforeunload',e=>{if(dirty||busy){e.preventDefault();e.returnValue='';}});
 $('add-photos').onchange=()=>addPhotos($('add-photos').files);
-$('add-color').onclick=()=>{const color=$('new-color').value.trim();if(!color)return;if(editing.colors.some(c=>model.normalize(c)===model.normalize(color))){message('Ese color ya existe.');return;}editing.colors.push(color);if(editing.packaging)editing.packaging.rows.push({color,sizePieces:Object.fromEntries(editing.sizes.map(s=>[s,null]))});$('new-color').value='';dirty=true;renderColors();renderPhotos();renderCurve();};
+$('add-color').onclick=()=>{const color=$('new-color').value.trim();if(!color)return;if(editing.colors.some(c=>model.normalize(c)===model.normalize(color))){message('Ese color ya existe.');return;}editing.colors.push(color);if(editing.packaging)editing.packaging.rows.push({color,sizePieces:Object.fromEntries(editing.sizes.map(s=>[s,null]))});syncColorAcrossOptions(color);$('new-color').value='';dirty=true;renderColors();renderPhotos();renderCurve();};
 $('new-color').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();$('add-color').click();}};
-$('option').onchange=()=>{currentGroup=Number($('option').value);renderCurve();};
+$('purchase-mode').onchange=()=>{$('purchase-mode').value==='multiple'?enableMultipleOptions():disableMultipleOptions();};
+$('option').onchange=()=>{currentGroup=Number($('option').value);refreshOptionEditor();renderCurve();};
+$('option-name').oninput=()=>{const value=$('option-name').value.trim();if(value){group().label=value;$('option').options[currentGroup].textContent=value;dirty=true;}};
+$('packing-type').onchange=()=>{const g=group();g.packingType=$('packing-type').value;g.sourcePacking=model.packingLabel(g.packingType);dirty=true;renderCurve();};
+$('add-option').onclick=()=>{const source=group(),type=source.packingType==='single-color'?'mixed-colors':'single-color',next=makeOption(source,type,optionLabel(type));editing.purchaseOptions.push(next);currentGroup=editing.purchaseOptions.length-1;dirty=true;refreshOptionEditor();renderCurve();};
+$('duplicate-option').onclick=()=>{const source=group(),next=makeOption(source,source.packingType,`${source.label} copia`);editing.purchaseOptions.push(next);currentGroup=editing.purchaseOptions.length-1;dirty=true;refreshOptionEditor();renderCurve();};
+$('remove-option').onclick=()=>{if(editing.purchaseOptions.length<=2){message('Para usar varias opciones de compra necesitás al menos dos.');return;}editing.purchaseOptions.splice(currentGroup,1);currentGroup=Math.max(0,currentGroup-1);dirty=true;refreshOptionEditor();renderCurve();};
 $('pending').onchange=()=>{const g=group();if($('pending').checked){savedPackaging.set(currentGroup,clone({packaging:g.packaging,sizes:g.sizes}));delete g.packaging;g.sizes=[];}else{const saved=savedPackaging.get(currentGroup);if(saved){g.packaging=saved.packaging;g.sizes=saved.sizes;}else{g.sizes=[];g.packaging={rows:(g.colors||editing.colors).map(color=>({color,sizePieces:{}}))};}}dirty=true;renderCurve();};
 $('set-sizes').onclick=()=>{try{const g=group(),next=model.sizes($('sizes').value);if(g.sizes.some(s=>!next.includes(s))&&!confirm('Los talles quitados perderán sus cantidades. ¿Continuar?'))return;g.sizes=next;for(const row of g.packaging.rows){row.sizePieces=Object.fromEntries(next.map(s=>[s,row.sizePieces?.[s]??null]));delete row.curveText;delete row.pieces;}dirty=true;renderCurve();}catch(e){message(e);}};
 $('copy-curve').onclick=()=>{try{const g=group(),first=g.packaging.rows[0];if(!first||!g.sizes.length)throw new Error('Primero agregá colores, talles y completá la primera curva.');g.sizes.forEach(s=>model.quantity(first.sizePieces[s]));for(const row of g.packaging.rows){row.sizePieces=clone(first.sizePieces);delete row.curveText;delete row.pieces;}dirty=true;renderCurve();}catch(e){message(e);}};

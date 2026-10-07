@@ -135,12 +135,21 @@ function validarStockPedido(items = pedidoItems) {
 }
 
 function normalizarItemPedido(item) {
-  if (item.productoId) return item;
   const catalogo = ITEMS.find(candidato =>
-    (item.codigo && candidato.codigo === item.codigo && norm(candidato.nombre) === norm(item.nombre)) ||
-    (!item.codigo && norm(candidato.nombre) === norm(item.nombre))
+    (item.productoId && candidato.productoId === item.productoId && (!item.purchaseOptionId || candidato.purchaseOptionId === item.purchaseOptionId)) ||
+    (item.codigo && candidato.codigo === item.codigo && norm(candidato.nombreBase || candidato.nombre) === norm(item.nombre)) ||
+    (!item.codigo && norm(candidato.nombreBase || candidato.nombre) === norm(item.nombre))
   );
-  return catalogo ? { ...item, productoId: catalogo.productoId, packaging: catalogo.packaging } : item;
+  return catalogo ? {
+    ...item,
+    productoId: catalogo.productoId,
+    purchaseOptionId: item.purchaseOptionId || catalogo.purchaseOptionId || null,
+    packaging: item.packaging || catalogo.packaging,
+    colores: item.colores?.length ? item.colores : catalogo.colores,
+    coloresProducto: item.coloresProducto?.length ? item.coloresProducto : catalogo.coloresProducto,
+    formatoVenta: item.formatoVenta || catalogo.formatoVenta,
+    packingType: item.packingType || catalogo.packingType
+  } : item;
 }
 
 // Los precios editados al cargar un pedido nunca se conservan para pedidos
@@ -278,22 +287,34 @@ function construirItems() {
       precio = PRECIOS_BASE_MAP[codigo].precio; origen = "base";
     }
 
-    items.push({
-      idItem: "prod:" + p.id,
-      productoId: p.id,
-      codigo,
-      nombre: p.nombre,
-      descripcion: p.descripcion,
-      categoria: p.categoria,
-      subcategoria: p.subcategoria,
-      colores: p.colores || [],
-      imagenes: p.imagenes || [],
-      packaging: p.packaging || null,
-      precio,
-      precioOrigen: origen,
-      enStock,
-      tieneFoto: (p.imagenes || []).length > 0,
-      busqueda: norm(`${p.nombre} ${codigo || ""} ${p.subcategoria} ${p.descripcion}`)
+    const opcionesCompra = p.purchaseOptions?.length ? p.purchaseOptions : [null];
+    opcionesCompra.forEach(opcion => {
+      const codigoOpcion = opcion?.codigo || codigo;
+      const nombreVisible = opcion ? `${p.nombre} · ${opcion.label}` : p.nombre;
+      const coloresOpcion = opcion?.colores?.length ? opcion.colores : (p.colores || []);
+      const formatoVenta = opcion?.label || p.formatoVenta || (p.packingType === "single-color" ? "Caja por color" : "Caja surtida");
+      items.push({
+        idItem: `prod:${p.id}${opcion ? `:${opcion.id}` : ""}`,
+        productoId: p.id,
+        purchaseOptionId: opcion?.id || null,
+        codigo: codigoOpcion,
+        nombre: nombreVisible,
+        nombreBase: p.nombre,
+        descripcion: p.descripcion,
+        categoria: p.categoria,
+        subcategoria: p.subcategoria,
+        colores: coloresOpcion,
+        coloresProducto: p.colores || coloresOpcion,
+        imagenes: p.imagenes || [],
+        packaging: opcion?.packaging || p.packaging || null,
+        formatoVenta,
+        packingType: opcion?.packingType || p.packingType || "mixed-colors",
+        precio,
+        precioOrigen: origen,
+        enStock,
+        tieneFoto: (p.imagenes || []).length > 0,
+        busqueda: norm(`${p.nombre} ${opcion?.label || ""} ${codigoOpcion || ""} ${p.subcategoria} ${p.descripcion} ${formatoVenta}`)
+      });
     });
   });
 
@@ -469,14 +490,14 @@ function renderCurvaCaja(item) {
         const celdas = talles.map(t => `<td>${r.sizePieces[t] || "–"}</td>`).join("");
         return `<tr><td>${r.color}</td>${celdas}</tr>`;
       }).join("");
-      const tituloCaja = item.packaging.porColor
+      const tituloCaja = item.packingType === "single-color" || item.packaging.porColor
         ? `Caja por color: ${item.packaging.totalPieces} unidades · Indicá el color en la observación`
         : `Caja tipo sugerida: ${item.packaging.totalPieces} unidades`;
       cont.innerHTML = `<div class="titulo-curva">${tituloCaja}</div>
         <table><thead>${thead}</thead><tbody>${tbody}</tbody></table>`;
       cont.style.display = "block";
     } else {
-      const tituloCaja = item.packaging.porColor
+      const tituloCaja = item.packingType === "single-color" || item.packaging.porColor
         ? `Caja por color: ${item.packaging.totalPieces} unidades · Indicá el color en la observación`
         : `Caja tipo sugerida: ${item.packaging.totalPieces} unidades`;
       cont.innerHTML = `<div class="titulo-curva">${tituloCaja}</div>`;
@@ -499,6 +520,15 @@ function seleccionarItem(it) {
     textoCodigo += " · precio de referencia (vinculado por nombre, sin código de artículo todavía)";
   }
   document.getElementById("preview-codigo").textContent = textoCodigo;
+  const colores = [...new Set((it.coloresProducto || it.colores || []).filter(Boolean))];
+  const cartelColores = document.getElementById("preview-colores");
+  cartelColores.innerHTML = colores.length
+    ? `<strong>Colores disponibles:</strong> ${colores.map(escaparHTML).join(", ")}`
+    : "<strong>Colores disponibles:</strong> sin información";
+  cartelColores.classList.add("visible");
+  const cartelFormato = document.getElementById("preview-formato");
+  cartelFormato.innerHTML = `<strong>Formato de venta:</strong> ${escaparHTML(it.formatoVenta || "No informado")}`;
+  cartelFormato.classList.add("visible");
   document.getElementById("preview-precio").value = it.precio != null ? it.precio.toFixed(2) : "";
 
   const foto = document.getElementById("preview-foto");
@@ -513,7 +543,7 @@ function seleccionarItem(it) {
   renderSelectorStock(it);
   const observacionItem = document.getElementById("in-observacion-item");
   observacionItem.value = "";
-  observacionItem.placeholder = it.packaging?.porColor
+  observacionItem.placeholder = it.packingType === "single-color" || it.packaging?.porColor
     ? `Obligatorio: indicá un color (${(it.colores || []).join(", ")})`
     : it.colores && it.colores.length
     ? `Colores disponibles: ${it.colores.join(", ")}`
@@ -783,9 +813,15 @@ function agregarItemAlPedido() {
     productoId: itemSeleccionado.productoId,
     codigo: itemSeleccionado.codigo,
     nombre: itemSeleccionado.nombre,
+    nombreBase: itemSeleccionado.nombreBase || itemSeleccionado.nombre,
     imagenes: itemSeleccionado.imagenes,
     enStock: itemSeleccionado.enStock,
     packaging: itemSeleccionado.packaging,
+    purchaseOptionId: itemSeleccionado.purchaseOptionId || null,
+    colores: [...(itemSeleccionado.colores || [])],
+    coloresProducto: [...(itemSeleccionado.coloresProducto || itemSeleccionado.colores || [])],
+    formatoVenta: itemSeleccionado.formatoVenta || "No informado",
+    packingType: itemSeleccionado.packingType || "mixed-colors",
     varianteStock: itemSeleccionado.varianteStock || null,
     cajas, unidadesPorCaja: unidCaja, precioUnitario: precio, observacion
   };
@@ -805,6 +841,10 @@ function limpiarSeleccion() {
   itemSeleccionado = null;
   document.getElementById("preview-nombre").textContent = "Ningún producto seleccionado";
   document.getElementById("preview-codigo").textContent = "";
+  document.getElementById("preview-colores").textContent = "";
+  document.getElementById("preview-colores").classList.remove("visible");
+  document.getElementById("preview-formato").textContent = "";
+  document.getElementById("preview-formato").classList.remove("visible");
   document.getElementById("preview-precio").value = "";
   document.getElementById("in-observacion-item").value = "";
   document.getElementById("in-observacion-item").placeholder = "Ej.: Negro y beige; priorizar talle M";
@@ -836,7 +876,7 @@ function renderTablaPedido() {
     tr.innerHTML = `
       <td>${celdaFotoHTML(it.imagenes, "miniatura", "miniatura-vacia")}</td>
       <td>${it.codigo || "-"}</td>
-      <td>${it.nombre}${it.enStock === false ? '<br><span class="etiqueta-sin-stock">FUERA DE STOCK</span>' : ''}</td>
+      <td>${escaparHTML(it.nombre)}${it.enStock === false ? '<br><span class="etiqueta-sin-stock">FUERA DE STOCK</span>' : ''}<br><span class="detalle-informativo"><strong>Colores:</strong> ${escaparHTML((it.coloresProducto || it.colores || []).join(", ") || "Sin información")}<br><strong>Venta:</strong> ${escaparHTML(it.formatoVenta || "No informado")}</span></td>
       <td>${it.varianteStock ? `<strong>${escaparHTML(it.varianteStock === "SURTIDO" ? "Caja surtida" : it.varianteStock)}</strong><br>` : ""}<textarea class="observacion-item" data-idx="${i}" data-campo="observacion" placeholder="Observación">${escaparHTML(it.observacion || "")}</textarea></td>
       <td><input type="number" min="1" value="${it.cajas}" data-idx="${i}" data-campo="cajas" style="width:56px"></td>
       <td><input type="number" min="1" value="${it.unidadesPorCaja}" data-idx="${i}" data-campo="unidades" style="width:68px" ${it.packaging && inventarioProductos.has(it.productoId) ? "readonly" : ""}></td>
@@ -1041,7 +1081,13 @@ document.getElementById("btn-pdf").addEventListener("click", async () => {
     const cuerpo = pedidoItems.map(it => {
       const unidTot = it.cajas * it.unidadesPorCaja;
       const variante = it.varianteStock ? (it.varianteStock === "SURTIDO" ? "Caja surtida" : it.varianteStock) : "";
-      const detalleExtra = [variante && `Variante: ${variante}`, it.observacion && `Observaciones: ${it.observacion}`].filter(Boolean).join("\n");
+      const colores = (it.coloresProducto || it.colores || []).join(", ") || "Sin información";
+      const detalleExtra = [
+        `Colores disponibles: ${colores}`,
+        `Formato de venta: ${it.formatoVenta || "No informado"}`,
+        variante && `Variante: ${variante}`,
+        it.observacion && `Observaciones: ${it.observacion}`
+      ].filter(Boolean).join("\n");
       const detalle = detalleExtra ? `${it.nombre}\n${detalleExtra}` : it.nombre;
       return ["", it.codigo || "-", detalle, String(it.cajas), String(unidTot), `$${it.precioUnitario.toFixed(2)}`, `$${(unidTot * it.precioUnitario).toFixed(2)}`];
     });

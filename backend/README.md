@@ -16,6 +16,7 @@ Los productos históricos se cargan desde `admin/catalog-seed.json`. Al editar
 uno, se guarda una copia completa en la nube con el mismo ID. Las nuevas altas
 reciben IDs a partir de 10000. No es necesario volver a subir las fotos antiguas.
 Las opciones de compra existentes se conservan y cada curva se edita por opción.
+El panel también permite marcar stock por color y crear varias opciones de caja (por color o surtida), cada una con su propia curva. En proyectos existentes, ejecutá `add-product-options.sql` para actualizar la validación del guardado.
 
 En un proyecto que ya tenía el panel activado, ejecutar una vez
 `add-collections.sql` para habilitar el alta de colecciones y

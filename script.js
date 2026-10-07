@@ -4234,12 +4234,24 @@ function getRowPiecesLabel(row) {
   return "-";
 }
 
-function normalizePackagingTotals(packaging) {
+function normalizePackagingTotals(packaging, packingType = "mixed-colors") {
   const quantities = packaging.rows.map(getRowPieces);
-  packaging.totalPieces = quantities.length && quantities.every(value => value !== null)
-    ? quantities.reduce((sum, value) => sum + value, 0)
-    : null;
-  packaging.totalLabel = packaging.totalPieces === null ? "" : `${packaging.totalPieces} piezas por caja`;
+  if (!quantities.length || quantities.some(value => value === null)) {
+    packaging.totalPieces = null;
+    packaging.totalLabel = "";
+    return;
+  }
+  if (packingType === "single-color") {
+    const min = Math.min(...quantities);
+    const max = Math.max(...quantities);
+    packaging.totalPieces = min === max ? min : null;
+    packaging.totalLabel = min === max
+      ? `${min} piezas por caja y color`
+      : `${min}–${max} piezas por caja según color`;
+    return;
+  }
+  packaging.totalPieces = quantities.reduce((sum, value) => sum + value, 0);
+  packaging.totalLabel = `${packaging.totalPieces} piezas por caja`;
 }
 
 function applyCatalogData() {
@@ -4273,7 +4285,7 @@ function applyCatalogData() {
         )
       }))
     };
-    normalizePackagingTotals(product.packaging);
+    normalizePackagingTotals(product.packaging, product.packingType);
     if (!product.preserveCatalogColors) {
       product.colors = [...new Set(packaging.rows.map(row => row.color))];
     }
@@ -4292,7 +4304,7 @@ function applyCatalogData() {
           }))
         }
       }));
-      product.purchaseOptions.forEach(option => normalizePackagingTotals(option.packaging));
+      product.purchaseOptions.forEach(option => normalizePackagingTotals(option.packaging, option.packingType || (/POR COLOR|SOLID COLOR/i.test(option.sourcePacking || "") ? "single-color" : "mixed-colors")));
       product.colors = [...new Set(product.purchaseOptions.flatMap(option => option.colors))];
       product.sizes = [...new Set(product.purchaseOptions.flatMap(option => option.sizes.map(normalizeCatalogSize)))];
     }
@@ -4341,12 +4353,32 @@ function isPreorderCollection(collection = getActiveCollection()) {
   return collection.type === 'preorder' || (!collection.type && PREORDER_COLLECTION_IDS.has(collection.id));
 }
 
-function canOrderProduct(product, collection = getActiveCollection()) {
-  return product.inStock && !isPreorderCollection(collection);
+function getUnavailableColors(product, selectedOption = null) {
+  return new Set([
+    ...(OUT_OF_STOCK_COLORS[product.id] || []),
+    ...(product.outOfStockColors || []),
+    ...(selectedOption?.outOfStockColors || [])
+  ].map(normalizeColorName));
+}
+
+function isColorUnavailable(product, color, selectedOption = null) {
+  return getUnavailableColors(product, selectedOption).has(normalizeColorName(color));
+}
+
+function hasAvailableColor(product, selectedOption = null) {
+  if (!product.inStock) return false;
+  if (!selectedOption && product.purchaseOptions?.length) return product.purchaseOptions.some(option => hasAvailableColor(product, option));
+  const colors = selectedOption?.colors || product.colors || [];
+  return colors.length ? colors.some(color => !isColorUnavailable(product, color, selectedOption)) : true;
+}
+
+function canOrderProduct(product, collection = getActiveCollection(), selectedOption = null) {
+  return hasAvailableColor(product, selectedOption) && !isPreorderCollection(collection);
 }
 
 function getModalAddButtonLabel(product, selectedOption, inCart) {
   if (!product.inStock) return 'Fuera de stock';
+  if (!hasAvailableColor(product, selectedOption)) return 'Sin colores en stock';
   if (isPreorderCollection()) return 'Próximamente';
   if (inCart) return '✓ Opción en tu selección';
   return selectedOption ? 'Agregar esta opción' : 'Agregar a la selección';
@@ -4385,7 +4417,7 @@ function formatProductSubcategory(product) {
 }
 
 function getStockLabel(product) {
-  return product.inStock ? "En stock" : "Sin stock";
+  return hasAvailableColor(product) ? "En stock" : "Sin stock";
 }
 
 function buildCollectionFilters() {
@@ -4885,7 +4917,7 @@ function openModal(p, initialPurchaseOptionId = null) {
   const colorsEl = document.getElementById('modal-colors');
   const displayedColors = selectedOption?.colors || p.colors;
   colorsEl.innerHTML = displayedColors.map((c, i) => {
-    const unavailable = OUT_OF_STOCK_COLORS[p.id]?.includes(c);
+    const unavailable = isColorUnavailable(p, c, selectedOption);
     return `<span class="color-option"><button type="button" class="color-chip" data-color-index="${i}"${unavailable ? ` aria-label="${c}: agotado"` : ''}>${c}</button>${unavailable ? '<span class="color-stock-label">Agotado</span>' : ''}</span>`;
   }).join('');
 
@@ -4896,7 +4928,7 @@ function openModal(p, initialPurchaseOptionId = null) {
     const unavailableSizes = new Set(OUT_OF_STOCK_VARIANTS[p.id]?.[color] || []);
     sizesEl.innerHTML = displayedSizes.map(size => {
       const normalizedSize = normalizeCatalogSize(size);
-      const isUnavailable = OUT_OF_STOCK_COLORS[p.id]?.includes(color) || unavailableSizes.has(normalizedSize);
+      const isUnavailable = isColorUnavailable(p, color, selectedOption) || unavailableSizes.has(normalizedSize);
       const stockLabel = isUnavailable ? ' · Agotado' : '';
       return `<span class="size-chip${isUnavailable ? ' out-of-stock' : ''}"${isUnavailable ? ` title="${color} ${normalizedSize}: agotado" aria-label="${color} ${normalizedSize}: agotado"` : ''}>${normalizedSize}${stockLabel}</span>`;
     }).join('');
@@ -5166,9 +5198,9 @@ function openModal(p, initialPurchaseOptionId = null) {
   showGalleryImage(0);
 
   const addBtn = document.getElementById('modal-add-btn');
-  addBtn.disabled = !canOrderProduct(p);
+  addBtn.disabled = !canOrderProduct(p, getActiveCollection(), selectedOption);
   addBtn.textContent = getModalAddButtonLabel(p, selectedOption, inCart);
-  addBtn.className = 'btn-add-modal' + (inCart ? ' in-cart' : '') + (canOrderProduct(p) ? '' : ' disabled');
+  addBtn.className = 'btn-add-modal' + (inCart ? ' in-cart' : '') + (canOrderProduct(p, getActiveCollection(), selectedOption) ? '' : ' disabled');
 
   modalOverlay.classList.add('active');
   modalOverlay.setAttribute('aria-hidden', 'false');
@@ -5201,6 +5233,10 @@ function toggleCart(product, optionId = null) {
     return;
   }
   const selectedOption = optionId ? product.purchaseOptions?.find(option => option.id === optionId) : null;
+  if (!hasAvailableColor(product, selectedOption)) {
+    showToast(`"${product.name}" no tiene colores disponibles en esta opción`);
+    return;
+  }
   const cartKey = getCartKey(product, selectedOption?.id || null);
   const idx = cart.findIndex(item => item.cartKey === cartKey);
   if (idx === -1) {
@@ -5227,7 +5263,8 @@ function clearCart() {
 }
 
 function getCartProductColors(product) {
-  return product.selectedPurchaseOption?.colors || product.colors;
+  const option=product.selectedPurchaseOption||null;
+  return (option?.colors || product.colors).filter(color=>!isColorUnavailable(product,color,option));
 }
 
 function getCartProductTotalLabel(product) {
@@ -5292,9 +5329,9 @@ function updateCartUI() {
     const option = getSelectedPurchaseOption(currentModalProduct);
     const inCart = cart.some(c => c.cartKey === getCartKey(currentModalProduct, option?.id));
     const addBtn = document.getElementById('modal-add-btn');
-    addBtn.disabled = !canOrderProduct(currentModalProduct);
+    addBtn.disabled = !canOrderProduct(currentModalProduct, getActiveCollection(), option);
     addBtn.textContent = getModalAddButtonLabel(currentModalProduct, option, inCart);
-    addBtn.className = 'btn-add-modal' + (inCart ? ' in-cart' : '') + (canOrderProduct(currentModalProduct) ? '' : ' disabled');
+    addBtn.className = 'btn-add-modal' + (inCart ? ' in-cart' : '') + (canOrderProduct(currentModalProduct, getActiveCollection(), option) ? '' : ' disabled');
   }
 }
 

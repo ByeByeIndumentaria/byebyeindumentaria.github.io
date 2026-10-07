@@ -32,16 +32,16 @@
       const changed=metadata.filter(r=>versions.get(Number(r.id))!==r.version);
       const rows=await CatalogAPI.getProducts(changed.map(r=>Number(r.id)));
       for(const row of rows){const id=Number(row.id);if(!Number.isSafeInteger(id)||!row.payload?.name)continue;
-        const p=sanitize(row.payload);p.id=id;p.cloudManaged=true;p.collections=p.collections||[p.collection];p.colors=p.colors||[];p.sizes=p.sizes||[];p.inStock=p.inStock!==false;
+        const p=sanitize(row.payload);p.id=id;p.cloudManaged=true;p.collections=p.collections||[p.collection];p.colors=p.colors||[];p.outOfStockColors=p.outOfStockColors||[];p.sizes=p.sizes||[];p.inStock=p.inStock!==false;
         const groups=p.purchaseOptions?.length?p.purchaseOptions:[p];
-        for(const group of groups)if(group.packaging)normalizePackagingTotals(group.packaging);
+        for(const group of groups)if(group.packaging)normalizePackagingTotals(group.packaging,group.packingType||(/POR COLOR|SOLID COLOR/i.test(group.sourcePacking||'')?'single-color':'mixed-colors'));
         const existing=products.findIndex(v=>v.id===id);if(existing<0)products.push(p);else products[existing]=p;
       }
       for(const row of rows)versions.set(Number(row.id),row.version);
       fingerprint=next;
       // Refresh open detail only when its saved version changes, preserving its option.
       const openId=currentModalProduct?.id,openBefore=currentModalProduct;
-      cart=cart.map(item=>{const p=products.find(p=>p.id===item.id),cartCollection=collections.find(c=>c.id===(item.cartCollectionId||item.collection));if(!p||!p.inStock||p.isHidden||(cartCollection&&isPreorderCollection(cartCollection)))return null;const selectedPurchaseOption=p.purchaseOptions?.find(o=>o.id===item.selectedPurchaseOption?.id)||null;return {...item,...p,selectedPurchaseOption};}).filter(Boolean);
+      cart=cart.map(item=>{const p=products.find(p=>p.id===item.id),cartCollection=collections.find(c=>c.id===(item.cartCollectionId||item.collection));if(!p||p.isHidden||(cartCollection&&isPreorderCollection(cartCollection)))return null;const selectedPurchaseOption=p.purchaseOptions?.find(o=>o.id===item.selectedPurchaseOption?.id)||null;if(!canOrderProduct(p,cartCollection||getActiveCollection(),selectedPurchaseOption))return null;return {...item,...p,selectedPurchaseOption};}).filter(Boolean);
       buildCategoryFilters();renderProducts();updateCartUI();persistCart();
       if(openId){const p=products.find(p=>p.id===openId);if(p?.isHidden)closeModal();else if(p&&(collectionChanged||JSON.stringify(p)!==JSON.stringify(openBefore)))openModal(p,currentPurchaseOptionId);}
     }catch(error){console.warn('El catálogo conserva su última versión disponible.',error.message);}finally{running=false;}

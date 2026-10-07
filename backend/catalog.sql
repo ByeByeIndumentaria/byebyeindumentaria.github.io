@@ -30,7 +30,23 @@ begin
   if jsonb_typeof(product_data) <> 'object' or length(trim(coalesce(product_data->>'name',''))) = 0
      or length(product_data::text) > 500000
      or jsonb_typeof(product_data->'colors') is distinct from 'array'
-     or jsonb_typeof(product_data->'sizes') is distinct from 'array' then
+     or jsonb_typeof(product_data->'sizes') is distinct from 'array'
+     or (product_data ? 'outOfStockColors' and jsonb_typeof(product_data->'outOfStockColors') is distinct from 'array')
+     or (product_data ? 'purchaseOptions' and (
+       jsonb_typeof(product_data->'purchaseOptions') is distinct from 'array'
+       or jsonb_array_length(product_data->'purchaseOptions') < 2
+     ))
+     or exists (
+       select 1 from jsonb_array_elements(case when jsonb_typeof(product_data->'purchaseOptions') = 'array' then product_data->'purchaseOptions' else '[]'::jsonb end) option
+       where coalesce(option->>'packingType','') not in ('single-color','mixed-colors')
+          or length(trim(coalesce(option->>'label',''))) = 0
+          or jsonb_typeof(option->'colors') is distinct from 'array'
+          or jsonb_typeof(option->'sizes') is distinct from 'array'
+     )
+     or exists (
+       select 1 from jsonb_array_elements_text(case when jsonb_typeof(product_data->'outOfStockColors') = 'array' then product_data->'outOfStockColors' else '[]'::jsonb end) unavailable
+       where not (product_data->'colors' ? unavailable)
+     ) then
     raise exception 'INVALID_PRODUCT';
   end if;
   if product_id is null then
