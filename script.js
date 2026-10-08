@@ -5646,20 +5646,12 @@ async function downloadProductPDF(product, optionId = null) {
       doc.addImage(image.coverDataUrl, 'JPEG', x, y, width, height, undefined, 'FAST');
     }
 
-    function drawPhotoPage(title, images, emptyMessage) {
+    function drawPhotoPage(title, images) {
       paintPageHeader(`${product.name} · ${title}`);
       doc.setTextColor(...ink);
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(13);
       doc.text(title.toUpperCase(), margin, 34);
-
-      if (!images.length) {
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(10);
-        doc.setTextColor(...muted);
-        doc.text(emptyMessage, pageW / 2, 145, { align: 'center' });
-        return;
-      }
 
       const gap = 4;
       const labelH = 7;
@@ -5706,12 +5698,22 @@ async function downloadProductPDF(product, optionId = null) {
     }
 
     const photoGroups = groupPdfPhotos(loadedImages);
-    drawPhotoPage('Fotos de modelo', photoGroups.model, 'Este producto no tiene fotos de modelo cargadas.');
-    doc.addPage();
-    drawPhotoPage('Fotos por color', photoGroups.color, 'Este producto no tiene fotos vinculadas a colores.');
+    let pageStarted = false;
+    function startSectionPage() {
+      if (pageStarted) doc.addPage();
+      pageStarted = true;
+    }
+    if (photoGroups.model.length) {
+      startSectionPage();
+      drawPhotoPage('Fotos de modelo', photoGroups.model);
+    }
+    if (photoGroups.color.length) {
+      startSectionPage();
+      drawPhotoPage('Fotos por color', photoGroups.color);
+    }
 
     // Product information deliberately comes after every photo page.
-    doc.addPage();
+    startSectionPage();
     paintPageHeader(`${getActiveCollection().name} · Información del producto`);
     let y = 34;
     doc.setTextColor(...ink);
@@ -5804,7 +5806,7 @@ async function downloadProductPDF(product, optionId = null) {
       addFooter();
     }
 
-    doc.save(`ByeBye_${safePdfFilename(orderNumber || product.name)}_Ficha_3_paginas.pdf`);
+    doc.save(`ByeBye_${safePdfFilename(orderNumber || product.name)}_Ficha_ordenada.pdf`);
     showToast('Ficha PDF descargada');
   } catch (error) {
     console.error('No se pudo generar la ficha PDF', error);
