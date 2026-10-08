@@ -7,6 +7,7 @@ let seed, records=new Map(), editing=null, editingId=null, version=0, dirty=fals
 let pendingPhotos=new Map(), currentGroup=0, savedPackaging=new Map(), galleryDirty=false;
 let collections=new Map(), editingCollectionId=null, collectionVersion=0, collectionBusy=false;
 let photoMaintenanceBusy=false;
+const cardImageObserver='IntersectionObserver' in window?new IntersectionObserver(entries=>{for(const entry of entries)if(entry.isIntersecting){loadCardImage(entry.target);cardImageObserver.unobserve(entry.target);}},{rootMargin:'800px 0px'}):null;
 const legacyPreorders=new Set(['verano-2027','produccion-invierno-2027','sweaters-2027','hoodies-2027']);
 function el(tag,text,className){const e=document.createElement(tag);if(text!=null)e.textContent=text;if(className)e.className=className;return e;}
 function notice(text){$('notice').textContent=text;}
@@ -60,6 +61,12 @@ function disableMultipleOptions(){
 }
 function selectOptions(select,values){select.replaceChildren(...values.map(([value,label])=>{const o=el('option',label);o.value=value;return o;}));}
 function galleryFor(p){return p.gallery||{sources:[],colorGalleryIndexByNormalizedColor:{}};}
+function loadCardImage(img){
+  const src=img.dataset.src;if(!src)return;delete img.dataset.src;
+  img.onerror=()=>{if(img.dataset.retried)return;img.dataset.retried='true';const separator=src.includes('?')?'&':'?';setTimeout(()=>{img.src=`${src}${separator}retry=${Date.now()}`;},250);};
+  img.onload=()=>{img.onerror=null;delete img.dataset.retried;};img.src=src;
+}
+function queueCardImage(img,src){img.decoding='async';img.dataset.src=src;if(cardImageObserver)cardImageObserver.observe(img);else loadCardImage(img);}
 function colorPhoto(p,color){const g=galleryFor(p);const n=model.normalize(color);const idx=g.colorGalleryIndexByNormalizedColor?.[n];if(idx!=null)return g.sources[idx];const match=Object.entries(g.colorMap||{}).find(([c])=>model.normalize(c)===n);if(match){const i=(g.photoNumbers||[]).indexOf(Number(match[1]));if(i>=0)return g.sources[i];}return '';}
 function removeColorPhoto(p,color){
   const g=p.gallery;if(!g)return;
@@ -112,12 +119,13 @@ async function loadRecords(){
   records=next;renderCards();
 }
 function renderCards(){
+  cardImageObserver?.disconnect();
   const q=model.normalize($('search').value),collection=$('collection-filter').value;
   const list=[...records.values()].filter(r=>(!collection||(r.payload.collections||[r.payload.collection]).includes(collection))&&model.normalize(r.payload.name+' '+(r.payload.orderNumber||'')).includes(q));
   $('count').textContent=`${list.length} productos`;
   $('products').replaceChildren();
-  for(const r of list){const p=r.payload,card=el('article',null,'card'),img=el('img');img.loading='lazy';img.alt=p.name;
-    const src=galleryFor(p).sources[0];if(src)img.src=asset(src);else img.alt='Sin foto · '+p.name;
+  for(const r of list){const p=r.payload,card=el('article',null,'card'),img=el('img');img.alt=p.name;
+    const src=galleryFor(p).sources[0];if(src)queueCardImage(img,asset(src));else img.alt='Sin foto · '+p.name;
     const body=el('div',null,'card-info');body.append(el('span',p.isHidden?'Oculto':p.inStock===false?'Sin stock':p.subcategory,'badge'),el('h3',p.name),el('p',p.orderNumber||'Sin código'),el('p',`${p.colors.length} colores · ${p.packaging||p.purchaseOptions?.length?'Curva cargada':'Curva pendiente'}`));
     const actions=el('div',null,'actions');for(const [label,curve] of [['Editar',false],['Editar curva',true]]){const b=el('button',label);b.onclick=()=>openEditor(r.id,curve);actions.append(b);}body.append(actions);card.append(img,body);$('products').append(card);
   }
