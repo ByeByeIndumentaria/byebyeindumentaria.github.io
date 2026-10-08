@@ -1,11 +1,12 @@
 'use strict';
-const $=id=>document.getElementById(id), api=window.CatalogAPI, model=window.CatalogModel;
+const $=id=>document.getElementById(id), api=window.CatalogAPI, model=window.CatalogModel, imageOptimizer=window.CatalogImageOptimizer;
 const preview=new URLSearchParams(location.search).has('preview');
 const clone=value=>JSON.parse(JSON.stringify(value));
 const asset=src=>src?new URL(src, new URL('../',location.href)).href:'';
 let seed, records=new Map(), editing=null, editingId=null, version=0, dirty=false, busy=false, uploads=0;
 let pendingPhotos=new Map(), currentGroup=0, savedPackaging=new Map(), galleryDirty=false;
 let collections=new Map(), editingCollectionId=null, collectionVersion=0, collectionBusy=false;
+let photoMaintenanceBusy=false;
 const legacyPreorders=new Set(['verano-2027','produccion-invierno-2027','sweaters-2027','hoodies-2027']);
 function el(tag,text,className){const e=document.createElement(tag);if(text!=null)e.textContent=text;if(className)e.className=className;return e;}
 function notice(text){$('notice').textContent=text;}
@@ -146,9 +147,30 @@ function renderColors(){
     $('colors').append(row);
   }
 }
-function addPhotos(files){
-  for(const file of files){if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>5*1024*1024){message('Cada foto debe ser JPG, PNG o WebP y pesar hasta 5 MB.');continue;}const key='pending:'+crypto.randomUUID();pendingPhotos.set(key,{blob:file,url:URL.createObjectURL(file),name:file.name});normalizeGallery(editing).sources.push(key);galleryDirty=true;dirty=true;}
-  $('add-photos').value='';renderPhotos();renderColors();if(pendingPhotos.size)$('save-status').textContent=`${pendingPhotos.size} foto${pendingPhotos.size===1?'':'s'} lista${pendingPhotos.size===1?'':'s'} para publicar, sin optimizar.`;
+function bytes(value){return value<1024*1024?`${Math.max(1,Math.round(value/1024))} KB`:`${(value/1024/1024).toFixed(1)} MB`;}
+async function addPhotos(files){
+  uploads++;$('add-photos').disabled=true;$('save').disabled=true;$('save-status').textContent='Optimizando fotos…';let before=0,after=0,added=0,lastError='';
+  try{
+    for(const file of files){try{const result=await imageOptimizer.optimize(file);if(result.blob.size>5*1024*1024)throw new Error('La foto sigue pesando más de 5 MB después de optimizarla.');const key='pending:'+crypto.randomUUID();pendingPhotos.set(key,{blob:result.blob,url:URL.createObjectURL(result.blob),name:file.name,originalBytes:result.originalBytes});normalizeGallery(editing).sources.push(key);before+=result.originalBytes;after+=result.optimizedBytes;added++;galleryDirty=true;dirty=true;}catch(error){lastError=error.message||String(error);}}
+    renderPhotos();renderColors();if(added)$('save-status').textContent=`${added} foto${added===1?'':'s'} optimizada${added===1?'':'s'} y lista${added===1?'':'s'} para publicar (${bytes(before)} → ${bytes(after)}).`;else if(lastError)message(new Error(lastError));
+  }finally{uploads--;$('add-photos').value='';$('add-photos').disabled=false;$('save').disabled=preview||busy||uploads>0;}
+}
+
+function adminPhotoUrls(payload){return [...new Set([...(payload.gallery?.sources||[]),...(payload.purchaseOptions||[]).flatMap(option=>option.gallery?.sources||[])].filter(src=>String(src).includes('/storage/v1/object/public/catalog-photos/')))];}
+function replacePhotoUrl(payload,from,to){for(const target of [payload,...(payload.purchaseOptions||[])])if(target.gallery)target.gallery.sources=target.gallery.sources.map(src=>src===from?to:src);}
+async function optimizeExistingPhotos(){
+  if(preview||photoMaintenanceBusy)return;const affected=[...records.values()].filter(row=>adminPhotoUrls(row.payload).length);const total=[...new Set(affected.flatMap(row=>adminPhotoUrls(row.payload)))].length;
+  if(!total){notice('No hay fotos de Administración para optimizar.');return;}
+  if(!confirm(`Se revisarán ${total} fotos de ${affected.length} productos. Sólo se reemplazarán las que queden más livianas. ¿Continuar?`))return;
+  photoMaintenanceBusy=true;$('optimize-photos').disabled=true;$('add-product').disabled=true;const replacements=new Map();let reviewed=0,optimized=0,before=0,after=0;
+  try{
+    for(const url of [...new Set(affected.flatMap(row=>adminPhotoUrls(row.payload)))]){notice(`Optimizando fotos… ${reviewed+1} de ${total}`);const response=await fetch(url);if(!response.ok)throw new Error('No se pudo descargar una foto existente.');const original=await response.blob(),result=await imageOptimizer.optimize(original);before+=original.size;
+      if(result.changed&&result.blob.type==='image/webp'&&result.blob.size<original.size*.95){const next=await api.upload(result.blob);replacements.set(url,next);after+=result.blob.size;optimized++;}else after+=original.size;reviewed++;
+    }
+    let saved=0;for(const row of affected){const payload=clone(row.payload);let changed=false;for(const from of adminPhotoUrls(payload)){const to=replacements.get(from);if(to){replacePhotoUrl(payload,from,to);changed=true;}}if(!changed)continue;notice(`Actualizando productos… ${saved+1}`);const result=await api.save(Number(row.id),row.version,payload);records.set(Number(result.id),result);saved++;}
+    renderCards();notice(`Listo: ${optimized} fotos optimizadas en ${saved} productos (${bytes(before)} → ${bytes(after)}).`);
+  }catch(error){notice(`La optimización se detuvo después de revisar ${reviewed} fotos. ${error.message||error}`);}
+  finally{photoMaintenanceBusy=false;$('optimize-photos').disabled=false;$('add-product').disabled=false;}
 }
 function renderPhotos(){
   const list=$('photos'),g=normalizeGallery(editing);list.replaceChildren();
@@ -200,7 +222,7 @@ async function save(event){event.preventDefault();if(preview||busy||uploads)retu
 $('add-product').onclick=()=>openEditor(null);$('close-editor').onclick=closeEditor;$('cancel').onclick=closeEditor;
 $('editor').addEventListener('cancel',e=>{e.preventDefault();closeEditor();});$('product-form').addEventListener('submit',save);
 $('product-form').addEventListener('input',()=>{dirty=true;});window.addEventListener('beforeunload',e=>{if(dirty||busy){e.preventDefault();e.returnValue='';}});
-$('add-photos').onchange=()=>addPhotos($('add-photos').files);
+$('add-photos').onchange=()=>addPhotos([...$('add-photos').files]);
 $('add-color').onclick=()=>{const color=$('new-color').value.trim();if(!color)return;if(editing.colors.some(c=>model.normalize(c)===model.normalize(color))){message('Ese color ya existe.');return;}editing.colors.push(color);if(editing.packaging)editing.packaging.rows.push({color,sizePieces:Object.fromEntries(editing.sizes.map(s=>[s,null]))});syncColorAcrossOptions(color);$('new-color').value='';dirty=true;renderColors();renderPhotos();renderCurve();};
 $('new-color').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();$('add-color').click();}};
 $('purchase-mode').onchange=()=>{$('purchase-mode').value==='multiple'?enableMultipleOptions():disableMultipleOptions();};
@@ -214,6 +236,7 @@ $('pending').onchange=()=>{const g=group();if($('pending').checked){savedPackagi
 $('set-sizes').onclick=()=>{try{const g=group(),next=model.sizes($('sizes').value);if(g.sizes.some(s=>!next.includes(s))&&!confirm('Los talles quitados perderán sus cantidades. ¿Continuar?'))return;g.sizes=next;for(const row of g.packaging.rows){row.sizePieces=Object.fromEntries(next.map(s=>[s,row.sizePieces?.[s]??null]));delete row.curveText;delete row.pieces;}dirty=true;renderCurve();}catch(e){message(e);}};
 $('copy-curve').onclick=()=>{try{const g=group(),first=g.packaging.rows[0];if(!first||!g.sizes.length)throw new Error('Primero agregá colores, talles y completá la primera curva.');g.sizes.forEach(s=>model.quantity(first.sizePieces[s]));for(const row of g.packaging.rows){row.sizePieces=clone(first.sizePieces);delete row.curveText;delete row.pieces;}dirty=true;renderCurve();}catch(e){message(e);}};
 $('search').oninput=renderCards;$('collection-filter').onchange=renderCards;
+$('optimize-photos').onclick=optimizeExistingPhotos;
 $('manage-collections').onclick=()=>{$('collections-panel').hidden=!$('collections-panel').hidden;if(!$('collections-panel').hidden)$('collections-panel').scrollIntoView({behavior:'smooth',block:'start'});};
 $('add-collection').onclick=()=>openCollectionEditor();$('close-collection-editor').onclick=closeCollectionEditor;$('cancel-collection').onclick=closeCollectionEditor;$('collection-form').addEventListener('submit',saveCollection);$('collection-editor').addEventListener('cancel',event=>{event.preventDefault();closeCollectionEditor();});
 $('login-form').onsubmit=async e=>{e.preventDefault();const button=e.target.querySelector('button');button.disabled=true;try{await api.login($('email').value,$('password').value);$('password').value='';await showCatalog();}catch(e){notice(e.message);}finally{button.disabled=false;}};
