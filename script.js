@@ -5515,8 +5515,40 @@ function loadPdfImage(src) {
         context.fillStyle = '#fffaf1';
         context.fillRect(0, 0, canvas.width, canvas.height);
         context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+        // The catalog cards use a 3:4 frame with object-fit: cover. Prepare the
+        // same crop once so PDF frames are completely filled without borders.
+        const coverCanvas = document.createElement('canvas');
+        coverCanvas.width = 900;
+        coverCanvas.height = 1200;
+        const coverContext = coverCanvas.getContext('2d');
+        const targetRatio = coverCanvas.width / coverCanvas.height;
+        const sourceRatio = image.naturalWidth / image.naturalHeight;
+        let sourceX = 0;
+        let sourceY = 0;
+        let sourceWidth = image.naturalWidth;
+        let sourceHeight = image.naturalHeight;
+        if (sourceRatio > targetRatio) {
+          sourceWidth = image.naturalHeight * targetRatio;
+          sourceX = (image.naturalWidth - sourceWidth) / 2;
+        } else if (sourceRatio < targetRatio) {
+          sourceHeight = image.naturalWidth / targetRatio;
+          sourceY = (image.naturalHeight - sourceHeight) / 2;
+        }
+        coverContext.drawImage(
+          image,
+          sourceX,
+          sourceY,
+          sourceWidth,
+          sourceHeight,
+          0,
+          0,
+          coverCanvas.width,
+          coverCanvas.height
+        );
         resolve({
           dataUrl: canvas.toDataURL('image/jpeg', .88),
+          coverDataUrl: coverCanvas.toDataURL('image/jpeg', .9),
           width: canvas.width,
           height: canvas.height
         });
@@ -5534,6 +5566,13 @@ function getPdfPhotoLabel(product, gallery, imageIndex, colors) {
     return getProduction2027ColorGalleryIndex(gallery, color) === imageIndex;
   });
   return linkedColors.join(' / ');
+}
+
+function groupPdfPhotos(images) {
+  return {
+    model: images.filter(image => !image.label),
+    color: images.filter(image => image.label)
+  };
 }
 
 function safePdfFilename(value) {
@@ -5603,14 +5642,77 @@ async function downloadProductPDF(product, optionId = null) {
       doc.text(`Página ${doc.internal.getCurrentPageInfo().pageNumber}`, pageW - margin, 289, { align: 'right' });
     }
 
-    function drawContainedImage(image, x, y, width, height) {
-      const ratio = Math.min(width / image.width, height / image.height);
-      const drawW = image.width * ratio;
-      const drawH = image.height * ratio;
-      doc.addImage(image.dataUrl, 'JPEG', x + (width - drawW) / 2, y + (height - drawH) / 2, drawW, drawH, undefined, 'FAST');
+    function drawCoverImage(image, x, y, width, height) {
+      doc.addImage(image.coverDataUrl, 'JPEG', x, y, width, height, undefined, 'FAST');
     }
 
-    paintPageHeader(`${getActiveCollection().name} · Ficha de producto`);
+    function drawPhotoPage(title, images, emptyMessage) {
+      paintPageHeader(`${product.name} · ${title}`);
+      doc.setTextColor(...ink);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(13);
+      doc.text(title.toUpperCase(), margin, 34);
+
+      if (!images.length) {
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(10);
+        doc.setTextColor(...muted);
+        doc.text(emptyMessage, pageW / 2, 145, { align: 'center' });
+        return;
+      }
+
+      const gap = 4;
+      const labelH = 7;
+      const contentTop = 40;
+      const contentBottom = 280;
+      const contentWidth = pageW - margin * 2;
+      const contentHeight = contentBottom - contentTop;
+      let best = null;
+      for (let columns = 1; columns <= images.length; columns += 1) {
+        const rows = Math.ceil(images.length / columns);
+        const cellWidth = (contentWidth - gap * (columns - 1)) / columns;
+        const cellHeight = (contentHeight - gap * (rows - 1)) / rows;
+        const frameWidth = Math.min(cellWidth, (cellHeight - labelH) * .75);
+        const frameHeight = frameWidth / .75;
+        const score = frameWidth * frameHeight;
+        if (!best || score > best.score) best = { columns, rows, cellWidth, cellHeight, frameWidth, frameHeight, score };
+      }
+
+      const gridHeight = best.rows * best.cellHeight + gap * (best.rows - 1);
+      const startY = contentTop + Math.max(0, (contentHeight - gridHeight) / 2);
+      images.forEach((image, index) => {
+        const row = Math.floor(index / best.columns);
+        const column = index % best.columns;
+        const rowCount = Math.min(best.columns, images.length - row * best.columns);
+        const rowWidth = rowCount * best.cellWidth + gap * (rowCount - 1);
+        const rowStartX = margin + (contentWidth - rowWidth) / 2;
+        const cellX = rowStartX + column * (best.cellWidth + gap);
+        const cellY = startY + row * (best.cellHeight + gap);
+        const imageX = cellX + (best.cellWidth - best.frameWidth) / 2;
+        const imageY = cellY;
+        doc.setDrawColor(199, 181, 160);
+        doc.roundedRect(imageX, imageY, best.frameWidth, best.frameHeight, 1.5, 1.5, 'S');
+        drawCoverImage(image, imageX, imageY, best.frameWidth, best.frameHeight);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(Math.max(6.5, Math.min(9, best.frameWidth / 9)));
+        doc.setTextColor(...terracotta);
+        doc.text(
+          image.label || `Foto de modelo ${index + 1}`,
+          cellX + best.cellWidth / 2,
+          imageY + best.frameHeight + 4.8,
+          { align: 'center', maxWidth: best.cellWidth }
+        );
+      });
+    }
+
+    const photoGroups = groupPdfPhotos(loadedImages);
+    drawPhotoPage('Fotos de modelo', photoGroups.model, 'Este producto no tiene fotos de modelo cargadas.');
+    doc.addPage();
+    drawPhotoPage('Fotos por color', photoGroups.color, 'Este producto no tiene fotos vinculadas a colores.');
+
+    // Product information deliberately comes after every photo page.
+    doc.addPage();
+    paintPageHeader(`${getActiveCollection().name} · Información del producto`);
     let y = 34;
     doc.setTextColor(...ink);
     doc.setFont('helvetica', 'bold');
@@ -5695,21 +5797,6 @@ async function downloadProductPDF(product, optionId = null) {
         y += rowH;
       });
     }
-
-    loadedImages.forEach((image, index) => {
-      doc.addPage();
-      const photoLabel = image.label || `Foto ${index + 1}`;
-      paintPageHeader(`${product.name} · ${photoLabel}`);
-
-      doc.setFillColor(255, 250, 241);
-      doc.roundedRect(margin, 30, pageW - margin * 2, 248, 2.5, 2.5, 'F');
-      drawContainedImage(image, margin + 4, 34, pageW - margin * 2 - 8, 232);
-
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(10);
-      doc.setTextColor(...terracotta);
-      doc.text(photoLabel, pageW / 2, 273, { align: 'center', maxWidth: pageW - margin * 2 - 10 });
-    });
 
     const totalPages = doc.internal.getNumberOfPages();
     for (let page = 1; page <= totalPages; page += 1) {
