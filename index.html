@@ -14,7 +14,7 @@
   <link rel="icon" type="image/png" href="/favicon.png" />
   <link rel="shortcut icon" href="/favicon.ico" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-  <link rel="stylesheet" href="style.css?v=20260923-stock" />
+  <link rel="stylesheet" href="style.css?v=20261009-compact-mobile-filters" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -104,6 +104,8 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
           <line x1="4" y1="7" x2="20" y2="7"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="17" x2="20" y2="17"></line>
         </svg>
+        <span class="filters-toggle-label">Filtros</span>
+        <span class="filters-toggle-count" id="filters-toggle-count" hidden>0</span>
       </button>
       <div class="catalog-search-field">
         <svg class="catalog-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
@@ -113,6 +115,7 @@
         <button class="catalog-search-clear" id="product-search-clear" type="button" aria-label="Limpiar búsqueda" hidden>×</button>
       </div>
     </div>
+    <div class="active-filter-chips" id="active-filter-chips" aria-label="Filtros activos" hidden></div>
     <div class="results-info">
       <span id="results-count"></span>
     </div>
@@ -131,25 +134,31 @@
         </div>
         <button class="filters-drawer-close" id="filters-close" type="button" aria-label="Cerrar menú de filtros">×</button>
       </div>
-      <div class="filter-group filter-menu-level">
-        <span class="filter-label">Colecciones</span>
-        <div class="filter-pills" id="collection-filters"></div>
-      </div>
-      <div class="filter-group filter-menu-level">
-        <span class="filter-label">Géneros</span>
-        <div class="filter-pills" id="gender-filters">
-          <button class="pill active" data-filter="gender" data-value="all">Todos/as</button>
-          <button class="pill" data-filter="gender" data-value="MUJER">Mujer</button>
-          <button class="pill" data-filter="gender" data-value="HOMBRE">Hombre</button>
-          <button class="pill" data-filter="gender" data-value="NINOS" style="display:none">Niños</button>
-          <button class="pill" data-filter="gender" data-value="UNISEX" style="display:none">Unisex</button>
+      <div class="filters-drawer-body">
+        <div class="filter-group filter-menu-level">
+          <span class="filter-label">Colecciones</span>
+          <div class="filter-pills" id="collection-filters"></div>
+        </div>
+        <div class="filter-group filter-menu-level">
+          <span class="filter-label">Géneros</span>
+          <div class="filter-pills" id="gender-filters">
+            <button class="pill active" data-filter="gender" data-value="all">Todos/as</button>
+            <button class="pill" data-filter="gender" data-value="MUJER">Mujer</button>
+            <button class="pill" data-filter="gender" data-value="HOMBRE">Hombre</button>
+            <button class="pill" data-filter="gender" data-value="NINOS" style="display:none">Niños</button>
+            <button class="pill" data-filter="gender" data-value="UNISEX" style="display:none">Unisex</button>
+          </div>
+        </div>
+        <div class="filter-group filter-menu-level">
+          <span class="filter-label">Prendas</span>
+          <div class="filter-pills" id="category-filters">
+            <!-- Populated by JS -->
+          </div>
         </div>
       </div>
-      <div class="filter-group filter-menu-level">
-        <span class="filter-label">Prendas</span>
-        <div class="filter-pills" id="category-filters">
-          <!-- Populated by JS -->
-        </div>
+      <div class="filters-drawer-footer">
+        <button class="filters-reset" id="filters-reset" type="button">Limpiar</button>
+        <button class="filters-apply" id="filters-apply" type="button">Ver prendas</button>
       </div>
   </aside>
 
@@ -252,7 +261,7 @@
 
   <script src="catalog-config.js?v=20261007-box-options"></script>
   <script src="catalog-api.js?v=20261007-box-options"></script>
-  <script src="script.js?v=20261008-product-sheet-layout-v3-20261009-catalog"></script>
+  <script src="script.js?v=20261008-product-sheet-layout-v3-20261009-catalog-mobile-filters"></script>
   <script src="catalog-live.js?v=20261009-catalog"></script>
 </body>
 </html>

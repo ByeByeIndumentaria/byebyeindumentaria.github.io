@@ -4608,6 +4608,10 @@ const filtersToggle = document.getElementById('filters-toggle');
 const filtersScrollSentinel = document.getElementById('filters-scroll-sentinel');
 const filtersClose = document.getElementById('filters-close');
 const filtersDrawerOverlay = document.getElementById('filters-drawer-overlay');
+const filtersToggleCount = document.getElementById('filters-toggle-count');
+const activeFilterChips = document.getElementById('active-filter-chips');
+const filtersReset = document.getElementById('filters-reset');
+const filtersApply = document.getElementById('filters-apply');
 const modalOverlay = document.getElementById('modal-overlay');
 const productModal = document.getElementById('product-modal');
 const toast = document.getElementById('toast');
@@ -4688,6 +4692,66 @@ function updateCategoryFilters() {
   }
 }
 
+function updateFilterSummary(resultCount = getFilteredProducts().length) {
+  const activeFilters = [];
+  const collection = collections.find(item => item.id === activeCollection);
+  if (collection && activeCollection !== 'invierno-2027') {
+    activeFilters.push({ type: 'collection', label: collection.name });
+  }
+  if (activeGender !== 'all') activeFilters.push({ type: 'gender', label: getGenderLabel(activeGender) });
+  if (activeCategory !== 'all') activeFilters.push({ type: 'category', label: activeCategory });
+
+  if (filtersToggleCount) {
+    filtersToggleCount.textContent = String(activeFilters.length);
+    filtersToggleCount.hidden = activeFilters.length === 0;
+  }
+  if (filtersApply) {
+    filtersApply.textContent = `Ver ${resultCount} prenda${resultCount === 1 ? '' : 's'}`;
+  }
+  if (!activeFilterChips) return;
+
+  activeFilterChips.replaceChildren(...activeFilters.map(filter => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'active-filter-chip';
+    button.dataset.clearFilter = filter.type;
+    button.textContent = `${filter.label} ×`;
+    button.setAttribute('aria-label', `Quitar filtro ${filter.label}`);
+    return button;
+  }));
+  activeFilterChips.hidden = activeFilters.length === 0;
+}
+
+function refreshFilterControls() {
+  buildCollectionFilters();
+  updateGenderFilters();
+  genderFilters.querySelectorAll('.pill').forEach(button => {
+    button.classList.toggle('active', button.dataset.value === activeGender);
+  });
+  categoryFilters.innerHTML = '';
+  buildCategoryFilters();
+  updateCategoryFilters();
+}
+
+function resetCatalogFilters() {
+  activeCollection = 'invierno-2027';
+  activeGender = 'all';
+  activeCategory = 'all';
+  productSearchQuery = '';
+  if (productSearchInput) productSearchInput.value = '';
+  if (productSearchClear) productSearchClear.hidden = true;
+  refreshFilterControls();
+  renderProducts();
+}
+
+function clearActiveFilter(type) {
+  if (type === 'collection') activeCollection = 'invierno-2027';
+  if (type === 'gender') activeGender = 'all';
+  if (type === 'category') activeCategory = 'all';
+  refreshFilterControls();
+  renderProducts();
+}
+
 // ── RENDER PRODUCTS ──────────────────────────────
 function getFilteredProducts() {
   return getCollectionProducts().filter(p => {
@@ -4711,6 +4775,7 @@ function renderProducts() {
   productGrid.innerHTML = '';
 
   resultsCountEl.textContent = `${filtered.length} prenda${filtered.length !== 1 ? 's' : ''}`;
+  updateFilterSummary(filtered.length);
   const preorderNotice = document.getElementById('preorder-notice');
   if (preorderNotice) preorderNotice.hidden = !preorderCollection;
 
@@ -5955,6 +6020,12 @@ function bindEvents() {
   filtersToggle?.addEventListener('click', openFiltersDrawer);
   filtersClose?.addEventListener('click', closeFiltersDrawer);
   filtersDrawerOverlay?.addEventListener('click', closeFiltersDrawer);
+  filtersApply?.addEventListener('click', closeFiltersDrawer);
+  filtersReset?.addEventListener('click', resetCatalogFilters);
+  activeFilterChips?.addEventListener('click', event => {
+    const button = event.target.closest('[data-clear-filter]');
+    if (button) clearActiveFilter(button.dataset.clearFilter);
+  });
 
   const mobileQuery = window.matchMedia('(max-width: 768px)');
   const dismissMobileHero = () => {
@@ -6033,7 +6104,6 @@ function bindEvents() {
     activeCategory = btn.dataset.value;
     categoryFilters.querySelectorAll('.pill').forEach(b => b.classList.toggle('active', b === btn));
     renderProducts();
-    closeFiltersDrawer();
   });
 
   // Cart actions
