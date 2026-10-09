@@ -221,6 +221,16 @@ let matches = LS.get("bb_matches", { matches: {}, ignorados: [] }); // {matches:
 const productosAgotados = new Set([163, 172, 174, 188]);
 CATALOGO.forEach(producto => {
   if (productosAgotados.has(producto.id)) producto.enStock = false;
+  if (producto.categoria === 'MUJER' && producto.subcategoria === 'Sweaters') {
+    const talle = valor => valor === 'S/M' ? '1' : valor === 'M/L' ? '2' : valor;
+    const grupos = [producto, ...(producto.purchaseOptions || [])];
+    for (const grupo of grupos) {
+      grupo.talles = (grupo.talles || []).map(talle);
+      for (const fila of grupo.packaging?.rows || []) {
+        fila.sizePieces = Object.fromEntries(Object.entries(fila.sizePieces || {}).map(([size, cantidad]) => [talle(size), cantidad]));
+      }
+    }
+  }
 });
 const felipeHoodFur = CATALOGO.find(producto => producto.id === 70);
 if (felipeHoodFur) {

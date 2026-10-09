@@ -15,6 +15,18 @@ function message(error){$('save-status').textContent=error.message||String(error
 function group(){return editing.purchaseOptions?.length?editing.purchaseOptions[currentGroup]:editing;}
 function inferredPackingType(value=''){return /POR COLOR|SOLID COLOR/i.test(value)?'single-color':'mixed-colors';}
 function optionLabel(type){return type==='single-color'?'Caja por color':'Surtido de colores';}
+const womenSweaterSize=size=>size==='S/M'?'1':size==='M/L'?'2':size;
+function normalizeCatalogProduct(product){
+  const memberships=Array.isArray(product.collections)&&product.collections.length?product.collections:[product.collection].filter(Boolean);
+  if(memberships.includes('primavera-2027'))memberships.push('invierno-2027');
+  if(memberships.some(id=>id==='sweaters-2027'||id==='hoodies-2027'))memberships.push('produccion-invierno-2027');
+  product.collections=[...new Set(memberships)];
+  if(product.category==='MUJER'&&product.subcategory==='Sweaters')for(const group of [product,...(product.purchaseOptions||[])]){
+    group.sizes=(group.sizes||[]).map(womenSweaterSize);
+    for(const row of group.packaging?.rows||[])row.sizePieces=Object.fromEntries(Object.entries(row.sizePieces||{}).map(([size,pieces])=>[womenSweaterSize(size),pieces]));
+  }
+  return product;
+}
 function normalizeOption(option,index){
   option.id||=model.optionId(option.label||`opcion-${index+1}`,editing.purchaseOptions?.map(item=>item.id).filter(Boolean)||[]);
   option.label||=optionLabel(inferredPackingType(option.sourcePacking));
@@ -84,7 +96,16 @@ function galleryAssignments(g){return Object.fromEntries(Object.entries(g.colorG
 function resetPhotos(){for(const v of pendingPhotos.values())URL.revokeObjectURL(v.url);pendingPhotos.clear();}
 function refreshCollectionControls(){
   const values=[...collections.values()].sort((a,b)=>(a.position??999)-(b.position??999)).map(r=>[r.id,r.payload.name]);
-  selectOptions($('collection'),values);selectOptions($('collection-filter'),[['','Todas las colecciones'],...values]);renderCollections();
+  selectOptions($('collection-filter'),[['','Todas las colecciones'],...values]);renderCollections();
+}
+function renderProductCollections(selected=[]){
+  const chosen=new Set(selected.filter(Boolean)),list=$('product-collections');list.replaceChildren();
+  for(const row of [...collections.values()].sort((a,b)=>(a.position??999)-(b.position??999))){
+    const label=el('label',null,'product-collection-option'),checkbox=el('input'),text=el('span');
+    checkbox.type='checkbox';checkbox.name='product-collection';checkbox.value=row.id;checkbox.checked=chosen.has(row.id);
+    text.append(el('strong',row.payload.name),el('small',row.payload.type==='preorder'?'Preventa':'Stock'));
+    label.append(checkbox,text);list.append(label);
+  }
 }
 async function loadCollections(){
   collections=new Map(seed.collections.map((payload,position)=>[payload.id,{id:payload.id,payload:{...payload,type:payload.type||(legacyPreorders.has(payload.id)?'preorder':'stock')},position,version:0}]));
@@ -114,8 +135,8 @@ async function saveCollection(event){
   catch(error){$('collection-save-status').textContent=error.message;}finally{collectionBusy=false;$('save-collection').disabled=preview;}
 }
 async function loadRecords(){
-  const next=new Map(seed.products.map(p=>[p.id,{id:p.id,payload:p,version:0}]));
-  if(api.configured&&!preview){for(const r of await api.list())next.set(Number(r.id),r);}
+  const next=new Map(seed.products.map(p=>[p.id,{id:p.id,payload:normalizeCatalogProduct(p),version:0}]));
+  if(api.configured&&!preview){for(const r of await api.list()){normalizeCatalogProduct(r.payload);next.set(Number(r.id),r);}}
   records=next;renderCards();
 }
 function renderCards(){
@@ -132,16 +153,17 @@ function renderCards(){
 }
 async function openEditor(id,curve=false){
   if(id!=null&&api.configured&&!preview){
-    try{const [latest]=await api.getProducts([Number(id)]);if(latest)records.set(Number(id),latest);}
+    try{const [latest]=await api.getProducts([Number(id)]);if(latest){normalizeCatalogProduct(latest.payload);records.set(Number(id),latest);}}
     catch(e){notice('No se pudo cargar la última versión. '+e.message);return;}
   }
   resetPhotos();savedPackaging.clear();currentGroup=0;galleryDirty=false;editingId=id;version=id==null?0:records.get(id).version;
-  editing=id==null?{name:'',orderNumber:'',category:'MUJER',subcategory:'Camperas',collection:'produccion-invierno-2027',colors:[],outOfStockColors:[],sizes:[],packaging:{rows:[]},packingType:'mixed-colors',sourcePacking:'CAJA SURTIDA DE COLORES',inStock:true,description:'',gallery:{sources:[],colorGalleryIndexByNormalizedColor:{}},preserveProductName:true,preserveCatalogColors:true}:clone(records.get(id).payload);
+  editing=id==null?{name:'',orderNumber:'',category:'MUJER',subcategory:'Camperas',collection:'produccion-invierno-2027',collections:['produccion-invierno-2027'],colors:[],outOfStockColors:[],sizes:[],packaging:{rows:[]},packingType:'mixed-colors',sourcePacking:'CAJA SURTIDA DE COLORES',inStock:true,description:'',gallery:{sources:[],colorGalleryIndexByNormalizedColor:{}},preserveProductName:true,preserveCatalogColors:true}:clone(records.get(id).payload);
   editing.outOfStockColors=Array.isArray(editing.outOfStockColors)?editing.outOfStockColors:[];
   editing.packingType||=inferredPackingType(editing.sourcePacking);if(editing.purchaseOptions?.length)editing.purchaseOptions.forEach(normalizeOption);
   normalizeGallery(editing);
   dirty=false;$('save-status').textContent='';$('editor-title').textContent=id==null?'Agregar producto':editing.name;$('save').textContent=preview?'Vista previa · sin publicar':id==null?'Publicar producto':'Guardar cambios';$('save').disabled=preview;
-  for(const [input,key] of [['name','name'],['code','orderNumber'],['collection','collection'],['gender','category'],['subcategory','subcategory'],['description','description']])$(input).value=editing[key]||'';
+  for(const [input,key] of [['name','name'],['code','orderNumber'],['gender','category'],['subcategory','subcategory'],['description','description']])$(input).value=editing[key]||'';
+  renderProductCollections(Array.isArray(editing.collections)&&editing.collections.length?editing.collections:[editing.collection]);
   $('stock').checked=editing.inStock!==false;
   $('new-color').disabled=false;$('add-color').disabled=false;refreshOptionEditor();
   renderColors();renderPhotos();renderCurve();$('editor').showModal();if(curve)$('curve-section').scrollIntoView({block:'start'});
@@ -207,8 +229,11 @@ function renderCurve(){
 }
 function preparePayload(){
   if(group().packaging && $('sizes').value.trim() !== (group().sizes||[]).join(', ')) throw new Error('Tocá «Aplicar talles» para confirmar la nueva lista antes de guardar.');
-  const p=clone(editing);for(const [input,key] of [['name','name'],['code','orderNumber'],['collection','collection'],['gender','category'],['subcategory','subcategory'],['description','description']])p[key]=$(input).value.trim();
-  if(p.collection!==editing.collection)p.collections=[p.collection];if(p.subcategory!==editing.subcategory)delete p.subcategories;
+  const p=clone(editing);for(const [input,key] of [['name','name'],['code','orderNumber'],['gender','category'],['subcategory','subcategory'],['description','description']])p[key]=$(input).value.trim();
+  const selectedCollections=[...document.querySelectorAll('input[name="product-collection"]:checked')].map(input=>input.value);
+  const primaryCollection=selectedCollections.includes(editing.collection)?editing.collection:selectedCollections[0];
+  p.collection=primaryCollection||'';p.collections=primaryCollection?[primaryCollection,...selectedCollections.filter(id=>id!==primaryCollection)]:[];
+  if(p.subcategory!==editing.subcategory)delete p.subcategories;
   p.inStock=$('stock').checked;p.preserveProductName=true;
   const groups=p.purchaseOptions?.length?p.purchaseOptions:[p];
   p.outOfStockColors=(p.outOfStockColors||[]).filter(color=>p.colors.some(item=>model.normalize(item)===model.normalize(color)));

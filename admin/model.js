@@ -37,7 +37,11 @@
     packaging.totalLabel=`${total} piezas por caja`;
   }
   function validate(p, original = null) {
-    for(const key of ['name','category','collection','subcategory']) if(!p[key]?.trim()) throw new Error('Completá nombre, colección, género y tipo de prenda.');
+    for(const key of ['name','category','subcategory']) if(!p[key]?.trim()) throw new Error('Completá nombre, colección, género y tipo de prenda.');
+    const memberships=Array.isArray(p.collections)?p.collections:[p.collection].filter(Boolean);
+    if(!memberships.length||memberships.some(id=>!id?.trim())) throw new Error('Elegí al menos una colección.');
+    if(new Set(memberships).size!==memberships.length) throw new Error('Hay colecciones repetidas.');
+    if(!p.collection?.trim()) throw new Error('Falta definir la colección principal.');
     if(!p.colors.length) throw new Error('Agregá al menos un color.');
     if(new Set(p.colors.map(normalize)).size!==p.colors.length) throw new Error('Hay colores repetidos.');
     if(!Array.isArray(p.outOfStockColors)) p.outOfStockColors=[];

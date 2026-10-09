@@ -2529,29 +2529,30 @@ function sweater2027ProductWithPacks(id, code, name, optionSpecs) {
   return product;
 }
 
-const SWEATER_2027_WOMEN_SIZES = ["S/M", "M/L"];
+const SWEATER_2027_WOMEN_SIZES = ["1", "2"];
+const THREAD_PANTS_SIZES = ["S/M", "M/L"];
 
-function sweater2027WomenRow(entry) {
+function sweater2027WomenRow(entry, sizes = SWEATER_2027_WOMEN_SIZES) {
   const row = {
     color: entry.color,
     sizePieces: entry.curve
-      ? Object.fromEntries(SWEATER_2027_WOMEN_SIZES.map((size, index) => [size, entry.curve[index]]))
+      ? Object.fromEntries(sizes.map((size, index) => [size, entry.curve[index]]))
       : {}
   };
   if (entry.pieces) row.pieces = entry.pieces;
   return row;
 }
 
-function sweater2027WomenRows(entries) {
-  return entries.map(entry => sweater2027WomenRow(entry));
+function sweater2027WomenRows(entries, sizes = SWEATER_2027_WOMEN_SIZES) {
+  return entries.map(entry => sweater2027WomenRow(entry, sizes));
 }
 
 function sweater2027WomenBoxLabel(boxPieces) {
   return `CAJA ${boxPieces} SURTIDA`;
 }
 
-function sweater2027WomenProduct(id, code, name, entries, boxPieces) {
-  const rows = sweater2027WomenRows(entries);
+function sweater2027WomenProduct(id, code, name, entries, boxPieces, sizes = SWEATER_2027_WOMEN_SIZES) {
+  const rows = sweater2027WomenRows(entries, sizes);
   const sourcePacking = sweater2027WomenBoxLabel(boxPieces);
   return {
     id,
@@ -2563,7 +2564,7 @@ function sweater2027WomenProduct(id, code, name, entries, boxPieces) {
     orderNumber: code,
     collection: "sweaters-2027",
     colors: [...new Set(rows.map(row => row.color))],
-    sizes: SWEATER_2027_WOMEN_SIZES,
+    sizes,
     driveLink: "",
     sourcePacking,
     sourceWorkbook: "OJT SWEATERS 26-8",
@@ -2708,7 +2709,7 @@ const sweater2027Products = [
     { color: "Chocolate", curve: [3, 3] },
     { color: "Melange", curve: [2, 2] },
     { color: "Negro", curve: [3, 3] }
-  ], 20), { subcategory: "Pantalón de hilo" }),
+  ], 20, THREAD_PANTS_SIZES), { subcategory: "Pantalón de hilo" }),
   sweater2027WomenProduct(230, "265604", "Sweater Uma", [
     { color: "Chocolate", curve: [3, 3] },
     { color: "Negro", curve: [4, 4] },
@@ -4263,11 +4264,18 @@ function applyCatalogData() {
     const explicitCollections = Array.isArray(product.collections)
       ? product.collections
       : null;
-    product.collections = explicitCollections || [...new Set([
+    const baseCollections = explicitCollections || [...new Set([
       ...(SPRING_PRODUCT_IDS.includes(product.id) ? ["primavera-2027"] : []),
       ...(SPORTS_PRODUCT_IDS.includes(product.id) ? ["deportivo"] : []),
       ...(!SPRING_PRODUCT_IDS.includes(product.id) && !SPORTS_PRODUCT_IDS.includes(product.id)
         ? [product.collection]
+        : [])
+    ])];
+    product.collections = [...new Set([
+      ...baseCollections,
+      ...(baseCollections.includes("primavera-2027") ? ["invierno-2027"] : []),
+      ...(baseCollections.some(id => id === "sweaters-2027" || id === "hoodies-2027")
+        ? ["produccion-invierno-2027"]
         : [])
     ])];
     product.subcategory = OUTERWEAR_SUBCATEGORY_BY_PRODUCT_ID[product.id] || product.subcategory;

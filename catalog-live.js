@@ -4,6 +4,17 @@
   let running=false, fingerprint='', collectionFingerprint='';
   const versions=new Map();
   const escape=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const womenSweaterSize=size=>size==='S/M'?'1':size==='M/L'?'2':size;
+  function normalizeCatalogProduct(product){
+    const memberships=Array.isArray(product.collections)&&product.collections.length?product.collections:[product.collection].filter(Boolean);
+    if(memberships.includes('primavera-2027'))memberships.push('invierno-2027');
+    if(memberships.some(id=>id==='sweaters-2027'||id==='hoodies-2027'))memberships.push('produccion-invierno-2027');
+    product.collections=[...new Set(memberships)];
+    if(product.category==='MUJER'&&product.subcategory==='Sweaters')for(const group of [product,...(product.purchaseOptions||[])]){
+      group.sizes=(group.sizes||[]).map(womenSweaterSize);
+      for(const row of group.packaging?.rows||[])row.sizePieces=Object.fromEntries(Object.entries(row.sizePieces||{}).map(([size,pieces])=>[womenSweaterSize(size),pieces]));
+    }
+  }
   function sanitize(value,key='') {
     if(Array.isArray(value))return value.map(v=>sanitize(v,key));
     if(value&&typeof value==='object')return Object.fromEntries(Object.entries(value).filter(([k])=>!['__proto__','constructor','prototype'].includes(k)).map(([k,v])=>[escape(k),sanitize(v,k)]));
@@ -32,7 +43,7 @@
       const changed=metadata.filter(r=>versions.get(Number(r.id))!==r.version);
       const rows=await CatalogAPI.getProducts(changed.map(r=>Number(r.id)));
       for(const row of rows){const id=Number(row.id);if(!Number.isSafeInteger(id)||!row.payload?.name)continue;
-        const p=sanitize(row.payload);p.id=id;p.cloudManaged=true;p.collections=p.collections||[p.collection];p.colors=p.colors||[];p.outOfStockColors=p.outOfStockColors||[];p.sizes=p.sizes||[];p.inStock=p.inStock!==false;
+        const p=sanitize(row.payload);p.id=id;p.cloudManaged=true;p.collections=p.collections||[p.collection];p.colors=p.colors||[];p.outOfStockColors=p.outOfStockColors||[];p.sizes=p.sizes||[];p.inStock=p.inStock!==false;normalizeCatalogProduct(p);
         const groups=p.purchaseOptions?.length?p.purchaseOptions:[p];
         for(const group of groups)if(group.packaging)normalizePackagingTotals(group.packaging,group.packingType||(/POR COLOR|SOLID COLOR/i.test(group.sourcePacking||'')?'single-color':'mixed-colors'));
         const existing=products.findIndex(v=>v.id===id);if(existing<0)products.push(p);else products[existing]=p;

@@ -12,6 +12,11 @@ function routeImage(src) {
   return src.startsWith('../') ? src : `../${src}`;
 }
 
+function orderSizes(product, sizes) {
+  if (product.category !== 'MUJER' || product.subcategory !== 'Sweaters') return [...sizes];
+  return sizes.map(size => size === 'S/M' ? '1' : size === 'M/L' ? '2' : size);
+}
+
 function mapOption(option, product) {
   const colors = option.colors?.length ? option.colors : (product.colors || []);
   const sources = option.gallery?.sources?.length ? option.gallery.sources : (product.gallery?.sources || []);
@@ -19,7 +24,7 @@ function mapOption(option, product) {
     ...option,
     codigo: option.orderNumber || product.orderNumber || '',
     colores: [...colors],
-    talles: [...(option.sizes || product.sizes || [])],
+    talles: orderSizes(product, option.sizes || product.sizes || []),
     imagenes: sources.map(routeImage),
     formatoVenta: option.sourcePacking || option.label || 'Formato no informado',
     packingType: option.packingType || 'mixed-colors'
@@ -38,7 +43,7 @@ function mapProduct(row, previous = null) {
     descripcion: product.description || '',
     colores: [...(product.colors || [])],
     coloresFueraDeStock: [...(product.outOfStockColors || [])],
-    talles: [...(product.sizes || [])],
+    talles: orderSizes(product, product.sizes || []),
     imagenes: (product.gallery?.sources || []).map(routeImage),
     packaging: product.packaging || null,
     formatoVenta: product.sourcePacking || (product.packingType === 'single-color' ? 'Caja por color' : 'Caja surtida'),
