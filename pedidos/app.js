@@ -59,15 +59,27 @@ function rutaImagenCatalogo(src) {
   return /^images\//.test(src) ? `../${src}` : src;
 }
 
+function galeriaCatalogoAdministrado(galeria) {
+  if (!galeria?.sources?.length) return null;
+  return {
+    ...galeria,
+    sources: galeria.sources.map(rutaImagenCatalogo),
+    colorMap: { ...(galeria.colorMap || {}) },
+    photoNumbers: [...(galeria.photoNumbers || [])],
+    colorGalleryIndexByNormalizedColor: { ...(galeria.colorGalleryIndexByNormalizedColor || {}) }
+  };
+}
+
 function opcionCatalogoAdministrado(opcion, producto) {
   const colores = opcion.colors?.length ? opcion.colors : (producto.colors || []);
-  const fuentes = opcion.gallery?.sources?.length ? opcion.gallery.sources : (producto.gallery?.sources || []);
+  const galeria = galeriaCatalogoAdministrado(opcion.gallery?.sources?.length ? opcion.gallery : producto.gallery);
   return {
     ...opcion,
     codigo: opcion.orderNumber || producto.orderNumber || "",
     colores: [...colores],
     talles: [...(opcion.sizes || producto.sizes || [])],
-    imagenes: fuentes.map(rutaImagenCatalogo),
+    imagenes: galeria?.sources || [],
+    galeria,
     formatoVenta: opcion.sourcePacking || opcion.label || "Formato no informado",
     packingType: opcion.packingType || "mixed-colors"
   };
@@ -75,7 +87,8 @@ function opcionCatalogoAdministrado(opcion, producto) {
 
 function productoCatalogoAdministrado(row, anterior = null) {
   const producto = row.payload || {};
-  const imagenes = (producto.gallery?.sources || []).map(rutaImagenCatalogo);
+  const galeria = galeriaCatalogoAdministrado(producto.gallery);
+  const imagenes = galeria?.sources || [];
   return {
     ...(anterior || {}),
     id: Number(row.id),
@@ -88,6 +101,7 @@ function productoCatalogoAdministrado(row, anterior = null) {
     coloresFueraDeStock: [...(producto.outOfStockColors || [])],
     talles: [...(producto.sizes || [])],
     imagenes,
+    galeria,
     packaging: producto.packaging || null,
     formatoVenta: producto.sourcePacking || (producto.packingType === "single-color" ? "Caja por color" : "Caja surtida"),
     packingType: producto.packingType || "mixed-colors",
@@ -271,6 +285,8 @@ function normalizarItemPedido(item) {
     packaging: item.packaging || catalogo.packaging,
     colores: item.colores?.length ? item.colores : catalogo.colores,
     coloresProducto: item.coloresProducto?.length ? item.coloresProducto : catalogo.coloresProducto,
+    galeria: item.galeria || catalogo.galeria || null,
+    imagenes: item.imagenes?.length ? item.imagenes : catalogo.imagenes,
     formatoVenta: item.formatoVenta || catalogo.formatoVenta,
     packingType: item.packingType || catalogo.packingType
   };
@@ -449,6 +465,7 @@ function construirItems() {
         coloresProducto: p.colores || coloresOpcion,
         talles: opcion?.talles?.length ? opcion.talles : (p.talles || []),
         imagenes: opcion?.imagenes?.length ? opcion.imagenes : (p.imagenes || []),
+        galeria: opcion?.galeria || p.galeria || null,
         packaging: opcion?.packaging || p.packaging || null,
         formatoVenta,
         packingType: opcion?.packingType || p.packingType || "mixed-colors",
@@ -582,6 +599,52 @@ function rutaImagen(imagenes) {
   return imagenes && imagenes.length ? imagenes[0] : null;
 }
 
+function indiceFotoVinculadaAColor(galeria, color) {
+  if (!galeria || !color) return -1;
+  const colorNormalizado = norm(color);
+  const indicesDirectos = galeria.colorGalleryIndexByNormalizedColor || {};
+  const claveDirecta = Object.keys(indicesDirectos).find(clave => norm(clave) === colorNormalizado);
+  if (claveDirecta !== undefined) {
+    const indice = Number(indicesDirectos[claveDirecta]);
+    if (Number.isInteger(indice) && indice >= 0) return indice;
+  }
+
+  const mapaColores = galeria.colorMap || {};
+  const claveColor = Object.keys(mapaColores).find(clave => norm(clave) === colorNormalizado);
+  if (claveColor === undefined) return -1;
+  const numeroFoto = Number(mapaColores[claveColor]);
+  const numeros = (galeria.photoNumbers || []).map(Number);
+  const indicePorNumero = numeros.indexOf(numeroFoto);
+  return indicePorNumero >= 0 ? indicePorNumero : (numeroFoto > 0 ? numeroFoto - 1 : -1);
+}
+
+function imagenesPriorizadasPorColor(item) {
+  const galeria = item?.galeria;
+  const imagenes = (galeria?.sources?.length ? galeria.sources : (item?.imagenes || [])).filter(Boolean);
+  if (!imagenes.length || !galeria) return imagenes;
+  const variante = item.varianteStock && !["TOTAL", "SURTIDO"].includes(item.varianteStock)
+    ? item.varianteStock
+    : null;
+  const colores = [variante, ...(item.colores || []), ...(item.coloresProducto || [])]
+    .filter((color, indice, lista) => color && lista.findIndex(otro => norm(otro) === norm(color)) === indice);
+  for (const color of colores) {
+    const indice = indiceFotoVinculadaAColor(galeria, color);
+    if (indice >= 0 && indice < imagenes.length) {
+      return [imagenes[indice], ...imagenes.filter((_, posicion) => posicion !== indice)];
+    }
+  }
+  return imagenes;
+}
+
+function actualizarFotoSeleccion() {
+  if (!itemSeleccionado) return;
+  document.getElementById("preview-foto").innerHTML = construirImgConFallback(
+    imagenesPriorizadasPorColor(itemSeleccionado),
+    `style="width:100%;height:100%;object-fit:cover"`,
+    `<span class="sin">Sin imagen</span>`
+  );
+}
+
 // Genera un <img> que va probando, EN ORDEN, todas las fotos candidatas de
 // un producto (prod_X_1, prod_X_2, prod_X_3...) hasta encontrar una que
 // realmente exista en la carpeta images/. Si ninguna existe, se reemplaza
@@ -683,12 +746,7 @@ function seleccionarItem(it) {
   cartelFormato.classList.add("visible");
   document.getElementById("preview-precio").value = it.precio != null ? it.precio.toFixed(2) : "";
 
-  const foto = document.getElementById("preview-foto");
-  foto.innerHTML = construirImgConFallback(
-    it.imagenes,
-    `style="width:100%;height:100%;object-fit:cover"`,
-    `<span class="sin">Sin imagen</span>`
-  );
+  actualizarFotoSeleccion();
 
   elResultados.classList.remove("visible");
   renderCurvaCaja(it);
@@ -730,6 +788,7 @@ function renderSelectorStock(item) {
   }
   const actualizar = () => {
     itemSeleccionado.varianteStock = select.value;
+    actualizarFotoSeleccion();
     const porColor = unidadesColorPorCaja(itemSeleccionado);
     if (select.value && select.value !== "SURTIDO" && porColor[select.value]) {
       document.getElementById("in-unidcaja").value = porColor[select.value];
@@ -988,6 +1047,7 @@ function agregarItemAlPedido() {
     nombre: itemSeleccionado.nombre,
     nombreBase: itemSeleccionado.nombreBase || itemSeleccionado.nombre,
     imagenes: itemSeleccionado.imagenes,
+    galeria: itemSeleccionado.galeria || null,
     enStock: itemSeleccionado.enStock,
     packaging: itemSeleccionado.packaging,
     purchaseOptionId: itemSeleccionado.purchaseOptionId || null,
@@ -1046,7 +1106,7 @@ function renderTablaPedido() {
     const coloresDisponibles = (it.coloresProducto || it.colores || []).join(", ") || "Sin información";
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td>${celdaFotoHTML(it.imagenes, "miniatura", "miniatura-vacia")}</td>
+      <td>${celdaFotoHTML(imagenesPriorizadasPorColor(it), "miniatura", "miniatura-vacia")}</td>
       <td>${it.codigo || "-"}</td>
       <td>${escaparHTML(it.nombre)}${itemSinStock(it, faltantesStock) ? '<br><span class="etiqueta-sin-stock">SIN STOCK</span>' : ''}<br><span class="detalle-informativo"><strong>Venta:</strong> ${escaparHTML(it.formatoVenta || "No informado")}</span></td>
       <td><div class="colores-pedido"><strong>Colores disponibles</strong><span>${escaparHTML(coloresDisponibles)}</span></div></td>
@@ -1232,7 +1292,7 @@ document.getElementById("btn-pdf").addEventListener("click", async () => {
 
   try {
     await cargarLibreriasPDF();
-    const fotos = await Promise.all(pedidoItems.map(it => primeraFotoDisponible(it.imagenes)));
+    const fotos = await Promise.all(pedidoItems.map(it => primeraFotoDisponible(imagenesPriorizadasPorColor(it))));
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
 

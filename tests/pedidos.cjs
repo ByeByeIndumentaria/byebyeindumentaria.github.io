@@ -75,7 +75,7 @@ test('el buscador muestra el catálogo administrado completo, sin el límite his
   assert.match(appJs, /buscarItems\(elBuscador\.value, Math\.max\(ITEMS\.length, 1\)\)/);
   assert.match(appJs, /addEventListener\("focus", actualizarResultadosBuscador\)/);
   assert.match(appJs, /\$\{CATALOGO\.length\} productos totales/);
-  assert.match(indexHtml, /app\.js\?v=20261016-stock-informativo/);
+  assert.match(indexHtml, /app\.js\?v=20261016-fotos-color/);
 });
 
 test('los productos administrados siguen buscables sin mostrar un cartel especial', () => {
@@ -137,4 +137,26 @@ test('el inventario se vincula sólo si coincide el código o el nombre del prod
   assert.match(app, /function productoIdInventarioParaOpcion/);
   assert.match(app, /productoId: productoIdInventario/);
   assert.match(app, /Se ignoró una vinculación de inventario incompatible/);
+});
+
+test('las fotos de pedidos priorizan una imagen vinculada a un botón de color', () => {
+  const app = fs.readFileSync('pedidos/app.js', 'utf8');
+  const indice = app.match(/function indiceFotoVinculadaAColor\(galeria, color\) \{[\s\S]*?\n\}\n\nfunction imagenesPriorizadasPorColor/);
+  assert(indice, 'falta el selector de foto por color');
+  const indiceFotoVinculadaAColor = Function(`
+    function quitarAcentos(t) { return (t || '').normalize('NFD').replace(/[\\u0300-\\u036f]/g, ''); }
+    function norm(t) { return quitarAcentos(String(t || '')).toLowerCase().trim(); }
+    ${indice[0].replace(/\n\nfunction imagenesPriorizadasPorColor$/, '')}
+    return indiceFotoVinculadaAColor;
+  `)();
+  assert.equal(indiceFotoVinculadaAColor({
+    colorMap: { Beige: 6 },
+    photoNumbers: [1, 2, 5, 6]
+  }, 'beige'), 3);
+  assert.equal(indiceFotoVinculadaAColor({
+    colorGalleryIndexByNormalizedColor: { 'gris melange': 7 }
+  }, 'Gris Mélange'), 7);
+  assert.match(app, /galeria: opcion\?\.galeria \|\| p\.galeria \|\| null/);
+  assert.match(app, /celdaFotoHTML\(imagenesPriorizadasPorColor\(it\)/);
+  assert.match(app, /primeraFotoDisponible\(imagenesPriorizadasPorColor\(it\)\)/);
 });
