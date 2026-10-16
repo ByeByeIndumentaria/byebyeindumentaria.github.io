@@ -74,8 +74,8 @@ test('el buscador muestra el catálogo administrado completo, sin el límite his
   const indexHtml = fs.readFileSync('pedidos/index.html', 'utf8');
   assert.match(appJs, /buscarItems\(elBuscador\.value, Math\.max\(ITEMS\.length, 1\)\)/);
   assert.match(appJs, /addEventListener\("focus", actualizarResultadosBuscador\)/);
-  assert.match(appJs, /\$\{CATALOGO\.length\} productos totales/);
-  assert.match(indexHtml, /app\.js\?v=20261016-fotos-color-v2/);
+  assert.match(appJs, /\$\{catalogoVisible\.length\} productos totales/);
+  assert.match(indexHtml, /app\.js\?v=20261016-catalogo-alineado/);
 });
 
 test('los productos administrados siguen buscables sin mostrar un cartel especial', () => {
@@ -163,4 +163,17 @@ test('las fotos de pedidos priorizan una imagen vinculada a un botón de color',
   assert.match(app, /galeria: opcion\?\.galeria \|\| p\.galeria \|\| null/);
   assert.match(app, /celdaFotoHTML\(imagenesPriorizadasPorColor\(it\)/);
   assert.match(app, /primeraFotoDisponible\(imagenesPriorizadasPorColor\(it\)\)/);
+});
+
+test('pedidos se mantiene alineado automáticamente con Administración', () => {
+  const app = fs.readFileSync('pedidos/app.js', 'utf8');
+  const products = embeddedCatalog();
+  for (const id of [239, 242, 246]) {
+    assert.equal(products.find(product => product.id === id)?.oculto, true);
+  }
+  assert.match(app, /catalogoAdministradoFingerprint/);
+  assert.match(app, /setInterval\(actualizarCatalogoPedidos, 10000\)/);
+  assert.match(app, /visibilitychange/);
+  assert.match(app, /pedidoItems = pedidoItems\.map\(normalizarItemPedido\)/);
+  assert.match(app, /if \(p\.oculto \|\| CATALOGO_ELIMINADOS\.has\(Number\(p\.id\)\)\) return/);
 });

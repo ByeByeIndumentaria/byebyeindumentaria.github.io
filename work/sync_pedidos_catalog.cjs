@@ -1,4 +1,5 @@
 const fs = require('node:fs');
+const REMOVED_PRODUCT_IDS = new Set([239, 242, 246]);
 
 const htmlPath = 'pedidos/index.html';
 const config = fs.readFileSync('catalog-config.js', 'utf8');
@@ -64,6 +65,7 @@ function mapProduct(row, previous = null) {
     packingType: product.packingType || 'mixed-colors',
     purchaseOptions: (product.purchaseOptions || []).map(option => mapOption(option, product)),
     enStock: product.inStock !== false,
+    oculto: product.isHidden === true || REMOVED_PRODUCT_IDS.has(Number(row.id)),
     coleccion: product.collection || '',
     cloudManaged: true,
     precioReferencia: previous?.precioReferencia
@@ -83,6 +85,7 @@ async function main() {
   for (const product of catalog) {
     const source = seedById.get(Number(product.id));
     if (!source) continue;
+    product.oculto = source.isHidden === true || REMOVED_PRODUCT_IDS.has(Number(product.id));
     product.galeria = mapGallery(source.gallery);
     for (const option of product.purchaseOptions || []) {
       const sourceOption = (source.purchaseOptions || []).find(candidate => candidate.id === option.id);

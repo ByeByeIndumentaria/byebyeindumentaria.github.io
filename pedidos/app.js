@@ -53,6 +53,9 @@ let baseCompartidaLista = false;
 let inventarioProductos = new Map();
 let inventarioStock = [];
 let inventarioMovimientos = [];
+const CATALOGO_ELIMINADOS = new Set([239, 242, 246]);
+let catalogoAdministradoFingerprint = "";
+let sincronizandoCatalogoPedidos = false;
 
 function rutaImagenCatalogo(src) {
   if (!src) return "";
@@ -107,6 +110,7 @@ function productoCatalogoAdministrado(row, anterior = null) {
     packingType: producto.packingType || "mixed-colors",
     purchaseOptions: (producto.purchaseOptions || []).map(opcion => opcionCatalogoAdministrado(opcion, producto)),
     enStock: producto.inStock !== false,
+    oculto: producto.isHidden === true || CATALOGO_ELIMINADOS.has(Number(row.id)),
     coleccion: producto.collection || "",
     cloudManaged: true,
     precioReferencia: anterior?.precioReferencia
@@ -114,8 +118,10 @@ function productoCatalogoAdministrado(row, anterior = null) {
 }
 
 async function sincronizarCatalogoAdministrado() {
-  if (!window.CatalogAPI?.configured) return;
+  if (!window.CatalogAPI?.configured) return false;
   const filas = await window.CatalogAPI.list();
+  const fingerprint = JSON.stringify(filas.map(row => [Number(row.id), row.version]));
+  if (fingerprint === catalogoAdministradoFingerprint) return false;
   filas.forEach(row => {
     if (!Number.isSafeInteger(Number(row.id)) || !row.payload?.name) return;
     const indice = CATALOGO.findIndex(producto => producto.id === Number(row.id));
@@ -123,6 +129,29 @@ async function sincronizarCatalogoAdministrado() {
     if (indice >= 0) CATALOGO[indice] = actualizado;
     else CATALOGO.push(actualizado);
   });
+  catalogoAdministradoFingerprint = fingerprint;
+  return true;
+}
+
+async function actualizarCatalogoPedidos() {
+  if (sincronizandoCatalogoPedidos || document.hidden) return;
+  sincronizandoCatalogoPedidos = true;
+  try {
+    if (!await sincronizarCatalogoAdministrado()) return;
+    const itemSeleccionadoId = itemSeleccionado?.idItem;
+    construirItems();
+    pedidoItems = pedidoItems.map(normalizarItemPedido);
+    itemSeleccionado = itemSeleccionadoId
+      ? ITEMS.find(item => item.idItem === itemSeleccionadoId) || null
+      : null;
+    renderTablaPedido();
+    actualizarBarraEstado();
+    if (document.activeElement === elBuscador || elBuscador.value.trim()) actualizarResultadosBuscador();
+  } catch (error) {
+    console.warn("No se pudo actualizar el catálogo de pedidos.", error);
+  } finally {
+    sincronizandoCatalogoPedidos = false;
+  }
 }
 
 function filasStockProducto(productId) {
@@ -281,14 +310,18 @@ function normalizarItemPedido(item) {
   const normalizado = {
     ...item,
     productoId: catalogo.productoId,
-    purchaseOptionId: item.purchaseOptionId || catalogo.purchaseOptionId || null,
-    packaging: item.packaging || catalogo.packaging,
-    colores: item.colores?.length ? item.colores : catalogo.colores,
-    coloresProducto: item.coloresProducto?.length ? item.coloresProducto : catalogo.coloresProducto,
-    galeria: item.galeria || catalogo.galeria || null,
-    imagenes: item.imagenes?.length ? item.imagenes : catalogo.imagenes,
-    formatoVenta: item.formatoVenta || catalogo.formatoVenta,
-    packingType: item.packingType || catalogo.packingType
+    purchaseOptionId: catalogo.purchaseOptionId || item.purchaseOptionId || null,
+    codigo: catalogo.codigo,
+    nombre: catalogo.nombre,
+    nombreBase: catalogo.nombreBase || catalogo.nombre,
+    packaging: catalogo.packaging,
+    colores: catalogo.colores,
+    coloresProducto: catalogo.coloresProducto,
+    galeria: catalogo.galeria || null,
+    imagenes: catalogo.imagenes,
+    formatoVenta: catalogo.formatoVenta,
+    packingType: catalogo.packingType,
+    enStock: catalogo.enStock
   };
   const productoInventario = inventarioProductos.get(normalizado.productoId);
   if (productoInventario?.tracking_mode === "color" && normalizado.varianteStock) {
@@ -419,6 +452,7 @@ function construirItems() {
   const codigosCatalogo = new Set();
 
   CATALOGO.forEach(p => {
+    if (p.oculto || CATALOGO_ELIMINADOS.has(Number(p.id))) return;
     const matchGuardado = matches.matches[String(p.id)];
     let codigo = p.codigo || (matchGuardado ? (typeof matchGuardado === "string" ? matchGuardado : matchGuardado.codigo) : null);
     if (codigo) {
@@ -1671,13 +1705,14 @@ document.getElementById("btn-reset").addEventListener("click", () => {
 });
 
 function actualizarBarraEstado() {
-  const enStock = CATALOGO.filter(p => p.enStock !== false);
-  const sinStock = CATALOGO.length - enStock.length;
+  const catalogoVisible = CATALOGO.filter(p => !p.oculto && !CATALOGO_ELIMINADOS.has(Number(p.id)));
+  const enStock = catalogoVisible.filter(p => p.enStock !== false);
+  const sinStock = catalogoVisible.length - enStock.length;
   const conFoto = enStock.filter(p => (p.imagenes || []).length > 0).length;
   const conCodigo = enStock.filter(p => p.codigo).length;
   const totalArticulosPrecio = Object.keys({ ...PRECIOS_BASE_MAP, ...preciosImportados }).length;
   document.getElementById("barra-estado").textContent =
-    `Catálogo: ${CATALOGO.length} productos totales · ${enStock.length} en stock (${conFoto} con foto, ${conCodigo} con código) · ` +
+    `Catálogo: ${catalogoVisible.length} productos totales · ${enStock.length} en stock (${conFoto} con foto, ${conCodigo} con código) · ` +
     `${sinStock} sin stock · Precios cargados: ${totalArticulosPrecio} códigos`;
 }
 
@@ -1851,6 +1886,11 @@ window.addEventListener("beforeunload", event => {
   event.preventDefault();
   event.returnValue = "";
 });
+window.addEventListener("online", actualizarCatalogoPedidos);
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) actualizarCatalogoPedidos();
+});
+setInterval(actualizarCatalogoPedidos, 10000);
 
 function recuperarPedidoEnCurso() {
   const borrador = LS.get(CLAVE_BORRADOR_ACTUAL, null);

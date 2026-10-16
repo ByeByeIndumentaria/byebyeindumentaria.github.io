@@ -43,7 +43,7 @@
       const changed=metadata.filter(r=>versions.get(Number(r.id))!==r.version);
       const rows=await CatalogAPI.getProducts(changed.map(r=>Number(r.id)));
       for(const row of rows){const id=Number(row.id);if(!Number.isSafeInteger(id)||!row.payload?.name)continue;
-        const p=sanitize(row.payload);p.id=id;p.cloudManaged=true;p.collections=p.collections||[p.collection];p.colors=p.colors||[];p.outOfStockColors=p.outOfStockColors||[];p.sizes=p.sizes||[];p.inStock=p.inStock!==false;normalizeCatalogProduct(p);
+        const p=sanitize(row.payload);p.id=id;p.cloudManaged=true;p.collections=p.collections||[p.collection];p.colors=p.colors||[];p.outOfStockColors=p.outOfStockColors||[];p.sizes=p.sizes||[];p.inStock=p.inStock!==false;if([239,242,246].includes(id))p.isHidden=true;normalizeCatalogProduct(p);
         const groups=p.purchaseOptions?.length?p.purchaseOptions:[p];
         for(const group of groups)if(group.packaging)normalizePackagingTotals(group.packaging,group.packingType||(/POR COLOR|SOLID COLOR/i.test(group.sourcePacking||'')?'single-color':'mixed-colors'));
         const existing=products.findIndex(v=>v.id===id);if(existing<0)products.push(p);else products[existing]=p;
