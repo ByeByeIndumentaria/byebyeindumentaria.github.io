@@ -115,10 +115,16 @@ function filasStockProducto(productId) {
   return inventarioStock.filter(fila => fila.product_id === productId);
 }
 
+function unidadesFilaPorCaja(fila) {
+  const piezasDeclaradas = Number.parseInt(String(fila?.pieces ?? "").replace(/[^0-9].*$/, ""), 10);
+  if (Number.isFinite(piezasDeclaradas) && piezasDeclaradas > 0) return piezasDeclaradas;
+  return Object.values(fila?.sizePieces || {}).reduce((suma, valor) => suma + Number(valor || 0), 0);
+}
+
 function unidadesColorPorCaja(item) {
   const cantidades = {};
   ((item.packaging || {}).rows || []).forEach(fila => {
-    cantidades[fila.color] = (cantidades[fila.color] || 0) + Object.values(fila.sizePieces || {}).reduce((suma, valor) => suma + Number(valor || 0), 0);
+    cantidades[fila.color] = (cantidades[fila.color] || 0) + unidadesFilaPorCaja(fila);
   });
   return cantidades;
 }
@@ -197,7 +203,8 @@ function normalizarItemPedido(item) {
     (item.codigo && candidato.codigo === item.codigo && norm(candidato.nombreBase || candidato.nombre) === norm(item.nombre)) ||
     (!item.codigo && norm(candidato.nombreBase || candidato.nombre) === norm(item.nombre))
   );
-  return catalogo ? {
+  if (!catalogo) return item;
+  const normalizado = {
     ...item,
     productoId: catalogo.productoId,
     purchaseOptionId: item.purchaseOptionId || catalogo.purchaseOptionId || null,
@@ -206,7 +213,15 @@ function normalizarItemPedido(item) {
     coloresProducto: item.coloresProducto?.length ? item.coloresProducto : catalogo.coloresProducto,
     formatoVenta: item.formatoVenta || catalogo.formatoVenta,
     packingType: item.packingType || catalogo.packingType
-  } : item;
+  };
+  const productoInventario = inventarioProductos.get(normalizado.productoId);
+  if (productoInventario?.tracking_mode === "color" && normalizado.varianteStock) {
+    const porColor = unidadesColorPorCaja(normalizado);
+    normalizado.unidadesPorCaja = normalizado.varianteStock === "SURTIDO"
+      ? Object.values(porColor).reduce((suma, cantidad) => suma + cantidad, 0)
+      : Number(porColor[normalizado.varianteStock] || normalizado.unidadesPorCaja || 0);
+  }
+  return normalizado;
 }
 
 // Los precios editados al cargar un pedido nunca se conservan para pedidos
@@ -772,16 +787,26 @@ function filaPedido(pedido) {
   };
 }
 
-async function guardarPedidoActual() {
+function numeroPedidoValido(numero) {
+  return Boolean(numero) && !String(numero).startsWith("SIN-NUMERO-");
+}
+
+async function recuperarPedidoGuardado(id) {
+  const { data, error } = await supabaseClient.from("orders").select("payload").eq("id", id).maybeSingle();
+  if (error) throw error;
+  return data?.payload || null;
+}
+
+async function guardarPedidoActual({ silencioso = false } = {}) {
   if (!baseCompartidaLista) {
     alert("La base compartida todavía no está conectada. Volvé a ingresar e intentá nuevamente.");
-    return;
+    return null;
   }
   const pedido = datosPedidoActual();
   const validacion = validarStockPedido(pedidoItems);
   if (!validacion.ok) {
     alert(`No se puede guardar el pedido. ${validacion.mensaje}`);
-    return;
+    return null;
   }
   const { data, error } = await supabaseClient.rpc("save_order_with_inventory", { p_order: pedido });
   if (error) {
@@ -789,9 +814,21 @@ async function guardarPedidoActual() {
     alert(error.code === "23505"
       ? "Ya existe otro pedido con ese número. Cambiá el número e intentá nuevamente."
       : `No se pudo guardar el pedido: ${error.message || "revisá la conexión e intentá nuevamente."}`);
-    return;
+    return null;
   }
-  const pedidoGuardado = data?.pedido || { ...pedido, numero: data?.numero || pedido.numero };
+  const respuesta = Array.isArray(data) ? data[0] : data;
+  let pedidoGuardado = respuesta?.pedido || { ...pedido, numero: respuesta?.numero || pedido.numero };
+  if (!numeroPedidoValido(pedidoGuardado.numero)) {
+    try {
+      pedidoGuardado = await recuperarPedidoGuardado(pedido.id) || pedidoGuardado;
+    } catch (errorRecuperacion) {
+      console.error("No se pudo recuperar el pedido recién guardado", errorRecuperacion);
+    }
+  }
+  if (!numeroPedidoValido(pedidoGuardado.numero)) {
+    alert("El pedido se guardó, pero la base no le asignó un número. Volvé a intentarlo antes de descargar el PDF.");
+    return null;
+  }
   pedidoActualId = pedidoGuardado.id;
   document.getElementById("f-numero").value = pedidoGuardado.numero || "";
   pedidosGuardados = [pedidoGuardado, ...pedidosGuardados.filter(item => item.id !== pedidoGuardado.id)];
@@ -799,7 +836,8 @@ async function guardarPedidoActual() {
   await cargarInventario();
   marcarPedidoGuardado();
   renderHistorialPedidos();
-  alert(`Pedido ${pedidoGuardado.numero || "sin número"} guardado como ${pedidoGuardado.estado}.`);
+  if (!silencioso) alert(`Pedido ${pedidoGuardado.numero} guardado como ${pedidoGuardado.estado}.`);
+  return pedidoGuardado;
 }
 
 function cargarPedidoGuardado(id) {
@@ -1127,8 +1165,12 @@ document.getElementById("btn-pdf").addEventListener("click", async () => {
   const cliente = document.getElementById("f-cliente").value.trim();
   if (!cliente) { alert("Ingresá el nombre del cliente / razón social."); return; }
 
-  const numero = document.getElementById("f-numero").value.trim();
-  if (!numero) { alert("Guardá el pedido primero para asignarle un número antes de generar el PDF."); return; }
+  let numero = document.getElementById("f-numero").value.trim();
+  if (!numeroPedidoValido(numero)) {
+    const pedidoGuardado = await guardarPedidoActual({ silencioso: true });
+    if (!pedidoGuardado) return;
+    numero = pedidoGuardado.numero;
+  }
   const fecha = document.getElementById("f-fecha").value.trim();
   const estadoPedido = document.getElementById("f-estado").value;
   const telefono = document.getElementById("f-telefono").value.trim();

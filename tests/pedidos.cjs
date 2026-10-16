@@ -93,3 +93,22 @@ test('al agregar una prenda la lista no tapa el cartel de colores del pedido', (
   assert.doesNotMatch(limpiar, /elBuscador\.focus\(\)/);
   assert.match(appJs, /class="colores-pedido"/);
 });
+
+test('el stock por color usa las piezas declaradas y no la proporción de talles', () => {
+  const app = fs.readFileSync('pedidos/app.js', 'utf8');
+  const helper = app.match(/function unidadesFilaPorCaja\(fila\) \{[\s\S]*?\n\}/);
+  const calculator = app.match(/function unidadesColorPorCaja\(item\) \{[\s\S]*?\n\}/);
+  assert(helper && calculator);
+  const unidadesColorPorCaja = Function(`${helper[0]}\n${calculator[0]}\nreturn unidadesColorPorCaja;`)();
+  const cantidades = unidadesColorPorCaja({ packaging: { rows: [
+    { color: 'Beige', pieces: '48 piezas por color', sizePieces: { 30: 2, 32: 2, 34: 2, 36: 1, 38: 1 } },
+    { color: 'Negro', pieces: 48, sizePieces: { 30: 2, 32: 2, 34: 2, 36: 1, 38: 1 } }
+  ] } });
+  assert.deepEqual(cantidades, { Beige: 48, Negro: 48 });
+});
+
+test('el PDF guarda automáticamente un pedido que todavía no tiene número', () => {
+  const app = fs.readFileSync('pedidos/app.js', 'utf8');
+  assert.match(app, /await guardarPedidoActual\(\{ silencioso: true \}\)/);
+  assert.match(app, /recuperarPedidoGuardado/);
+});
