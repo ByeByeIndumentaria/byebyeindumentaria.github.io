@@ -75,7 +75,7 @@ test('el buscador muestra el catálogo administrado completo, sin el límite his
   assert.match(appJs, /buscarItems\(elBuscador\.value, Math\.max\(ITEMS\.length, 1\)\)/);
   assert.match(appJs, /addEventListener\("focus", actualizarResultadosBuscador\)/);
   assert.match(appJs, /\$\{CATALOGO\.length\} productos totales/);
-  assert.match(indexHtml, /app\.js\?v=20261016-fotos-color/);
+  assert.match(indexHtml, /app\.js\?v=20261016-fotos-color-v2/);
 });
 
 test('los productos administrados siguen buscables sin mostrar un cartel especial', () => {
@@ -141,6 +141,10 @@ test('el inventario se vincula sólo si coincide el código o el nombre del prod
 
 test('las fotos de pedidos priorizan una imagen vinculada a un botón de color', () => {
   const app = fs.readFileSync('pedidos/app.js', 'utf8');
+  const products = embeddedCatalog();
+  const chomba = products.find(product => product.id === 4);
+  assert.equal(chomba.galeria.colorMap.Blanco, 6);
+  assert.match(chomba.galeria.sources[5], /prod_4_6\.jpg/);
   const indice = app.match(/function indiceFotoVinculadaAColor\(galeria, color\) \{[\s\S]*?\n\}\n\nfunction imagenesPriorizadasPorColor/);
   assert(indice, 'falta el selector de foto por color');
   const indiceFotoVinculadaAColor = Function(`

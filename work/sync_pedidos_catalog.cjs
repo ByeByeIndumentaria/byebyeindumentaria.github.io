@@ -12,6 +12,17 @@ function routeImage(src) {
   return src.startsWith('../') ? src : `../${src}`;
 }
 
+function mapGallery(gallery) {
+  if (!gallery?.sources?.length) return null;
+  return {
+    ...gallery,
+    sources: gallery.sources.map(routeImage),
+    colorMap: { ...(gallery.colorMap || {}) },
+    photoNumbers: [...(gallery.photoNumbers || [])],
+    colorGalleryIndexByNormalizedColor: { ...(gallery.colorGalleryIndexByNormalizedColor || {}) }
+  };
+}
+
 function orderSizes(product, sizes) {
   if (product.category !== 'MUJER' || product.subcategory !== 'Sweaters') return [...sizes];
   return sizes.map(size => size === 'S/M' ? '1' : size === 'M/L' ? '2' : size);
@@ -19,13 +30,14 @@ function orderSizes(product, sizes) {
 
 function mapOption(option, product) {
   const colors = option.colors?.length ? option.colors : (product.colors || []);
-  const sources = option.gallery?.sources?.length ? option.gallery.sources : (product.gallery?.sources || []);
+  const gallery = mapGallery(option.gallery?.sources?.length ? option.gallery : product.gallery);
   return {
     ...option,
     codigo: option.orderNumber || product.orderNumber || '',
     colores: [...colors],
     talles: orderSizes(product, option.sizes || product.sizes || []),
-    imagenes: sources.map(routeImage),
+    imagenes: gallery?.sources || [],
+    galeria: gallery,
     formatoVenta: option.sourcePacking || option.label || 'Formato no informado',
     packingType: option.packingType || 'mixed-colors'
   };
@@ -33,6 +45,7 @@ function mapOption(option, product) {
 
 function mapProduct(row, previous = null) {
   const product = row.payload || {};
+  const gallery = mapGallery(product.gallery);
   return {
     ...(previous || {}),
     id: Number(row.id),
@@ -44,7 +57,8 @@ function mapProduct(row, previous = null) {
     colores: [...(product.colors || [])],
     coloresFueraDeStock: [...(product.outOfStockColors || [])],
     talles: orderSizes(product, product.sizes || []),
-    imagenes: (product.gallery?.sources || []).map(routeImage),
+    imagenes: gallery?.sources || [],
+    galeria: gallery,
     packaging: product.packaging || null,
     formatoVenta: product.sourcePacking || (product.packingType === 'single-color' ? 'Caja por color' : 'Caja surtida'),
     packingType: product.packingType || 'mixed-colors',
@@ -64,6 +78,17 @@ async function main() {
   const match = html.match(/const CATALOGO = (\[[\s\S]*?\]);\nconst PRECIOS_BASE =/);
   if (!match) throw new Error('No se encontró el catálogo embebido de Notas.');
   const catalog = JSON.parse(match[1]);
+  const seed = JSON.parse(fs.readFileSync('admin/catalog-seed.json', 'utf8'));
+  const seedById = new Map((seed.products || []).map(product => [Number(product.id), product]));
+  for (const product of catalog) {
+    const source = seedById.get(Number(product.id));
+    if (!source) continue;
+    product.galeria = mapGallery(source.gallery);
+    for (const option of product.purchaseOptions || []) {
+      const sourceOption = (source.purchaseOptions || []).find(candidate => candidate.id === option.id);
+      option.galeria = mapGallery(sourceOption?.gallery?.sources?.length ? sourceOption.gallery : source.gallery);
+    }
+  }
   for (const row of rows) {
     if (!Number.isSafeInteger(Number(row.id)) || !row.payload?.name) continue;
     const index = catalog.findIndex(product => product.id === Number(row.id));
