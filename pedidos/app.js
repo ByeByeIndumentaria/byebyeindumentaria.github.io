@@ -153,13 +153,41 @@ function asignacionesPedido(items = pedidoItems) {
 function disponibilidadAsignaciones(asignaciones) {
   return asignaciones.map(asignacion => {
     const fila = inventarioStock.find(stock => stock.product_id === asignacion.productId && stock.variant === asignacion.variant);
-    return { ...asignacion, available: Number(fila?.quantity || 0), ok: Boolean(fila) && asignacion.quantity <= Number(fila.quantity) };
+    const disponible = Math.max(0, Number(fila?.quantity || 0));
+    return { ...asignacion, available: disponible, ok: Boolean(fila) && asignacion.quantity <= disponible };
   });
 }
 
 function estadoStockItem(item) {
   const asignaciones = disponibilidadAsignaciones(asignacionesItem(item));
   return { asignaciones, ok: asignaciones.length > 0 && asignaciones.every(fila => fila.ok) };
+}
+
+function inventarioCompatible(productoInventario) {
+  const productoCatalogo = CATALOGO.find(producto => producto.id === Number(productoInventario.product_id));
+  if (!productoCatalogo) return false;
+  const codigoCatalogo = norm(productoCatalogo.codigo);
+  const codigoInventario = norm(productoInventario.code);
+  const codigosValidos = new Set([codigoCatalogo]);
+  (productoCatalogo.purchaseOptions || []).forEach(opcion => {
+    const codigoOpcion = norm(opcion.codigo || productoCatalogo.codigo);
+    if (codigoOpcion) codigosValidos.add(codigoOpcion);
+    if (codigoOpcion && opcion.label) codigosValidos.add(norm(`${codigoOpcion} ${opcion.label}`));
+  });
+  if (codigoCatalogo && codigoInventario) return codigosValidos.has(codigoInventario);
+  return norm(productoCatalogo.nombre) === norm(productoInventario.name);
+}
+
+function productoIdInventarioParaOpcion(producto, opcion) {
+  if (!opcion) return producto.id;
+  const codigoOpcion = norm(opcion.codigo || producto.codigo);
+  const codigoConFormato = norm(`${opcion.codigo || producto.codigo || ""} ${opcion.label || ""}`);
+  const coincidenciaExacta = [...inventarioProductos.values()].find(inventario => {
+    const codigoInventario = norm(inventario.code);
+    return codigoInventario && (codigoInventario === codigoConFormato ||
+      (codigoInventario === codigoOpcion && norm(inventario.name).includes(norm(opcion.label))));
+  });
+  return coincidenciaExacta?.product_id || producto.id;
 }
 
 function validarConsistenciaUnidades(items = pedidoItems) {
@@ -195,6 +223,38 @@ function validarStockPedido(items = pedidoItems) {
     ok: false,
     mensaje: `${producto?.name || "El producto"} (${sinStock.variant}): se piden ${sinStock.quantity} unidades y quedan ${sinStock.available}.`
   };
+}
+
+function reservaStockPedido(items = pedidoItems) {
+  const recuperables = new Map();
+  const pedidoAnterior = pedidoActualId ? pedidosGuardados.find(pedido => pedido.id === pedidoActualId) : null;
+  if (pedidoAnterior && !["", "Borrador", "Cancelado"].includes(pedidoAnterior.estado || "")) {
+    (pedidoAnterior.stockAllocations || []).forEach(asignacion => {
+      recuperables.set(`${asignacion.productId}|${asignacion.variant}`, Number(asignacion.quantity || 0));
+    });
+  }
+  const reservadas = [];
+  const faltantes = [];
+  disponibilidadAsignaciones(asignacionesPedido(items)).forEach(fila => {
+    const clave = `${fila.productId}|${fila.variant}`;
+    const disponible = Math.max(0, fila.available + (recuperables.get(clave) || 0));
+    const reservada = Math.min(fila.quantity, disponible);
+    if (reservada > 0) reservadas.push({ productId: fila.productId, variant: fila.variant, quantity: reservada });
+    if (reservada < fila.quantity) faltantes.push({
+      productId: fila.productId,
+      variant: fila.variant,
+      quantity: fila.quantity - reservada,
+      requested: fila.quantity,
+      available: disponible
+    });
+  });
+  return { reservadas, faltantes };
+}
+
+function itemSinStock(item, faltantes) {
+  if (item.enStock === false) return true;
+  const clavesItem = new Set(asignacionesItem(item).map(asignacion => `${asignacion.productId}|${asignacion.variant}`));
+  return faltantes.some(faltante => clavesItem.has(`${faltante.productId}|${faltante.variant}`));
 }
 
 function normalizarItemPedido(item) {
@@ -349,11 +409,6 @@ function construirItems() {
       codigosCatalogo.add(codigo);
       articulosUsados.add(`${codigo}|${norm(p.nombre)}`);
     }
-    const filasInventario = filasStockProducto(p.id);
-    const enStock = inventarioProductos.has(p.id)
-      ? filasInventario.some(fila => Number(fila.quantity || 0) > 0)
-      : p.enStock !== false;
-
     let precio = null, origen = null;
     if (p.precioReferencia) {
       // Precio confirmado por nombre por Claude/Valentina. Tiene prioridad
@@ -371,13 +426,18 @@ function construirItems() {
 
     const opcionesCompra = p.purchaseOptions?.length ? p.purchaseOptions : [null];
     opcionesCompra.forEach(opcion => {
+      const productoIdInventario = productoIdInventarioParaOpcion(p, opcion);
+      const filasInventario = filasStockProducto(productoIdInventario);
+      const enStock = inventarioProductos.has(productoIdInventario)
+        ? filasInventario.some(fila => Number(fila.quantity || 0) > 0)
+        : p.enStock !== false;
       const codigoOpcion = opcion?.codigo || codigo;
       const nombreVisible = opcion ? `${p.nombre} · ${opcion.label}` : p.nombre;
       const coloresOpcion = opcion?.colores?.length ? opcion.colores : (p.colores || []);
       const formatoVenta = opcion?.formatoVenta || opcion?.label || p.formatoVenta || (p.packingType === "single-color" ? "Caja por color" : "Caja surtida");
       items.push({
         idItem: `prod:${p.id}${opcion ? `:${opcion.id}` : ""}`,
-        productoId: p.id,
+        productoId: productoIdInventario,
         purchaseOptionId: opcion?.id || null,
         codigo: codigoOpcion,
         nombre: nombreVisible,
@@ -607,7 +667,7 @@ function seleccionarItem(it) {
   itemSeleccionado = it;
   document.getElementById("preview-nombre").textContent = it.nombre;
   let textoCodigo = it.codigo ? it.codigo : "Sin código propio";
-  if (!it.enStock) textoCodigo += " · FUERA DE STOCK (se permite agregar para pedidos anteriores)";
+  if (!it.enStock) textoCodigo += " · SIN STOCK (se permite agregar igualmente)";
   if (!it.codigo && it.precioOrigen === "referencia_nombre") {
     textoCodigo += " · precio de referencia (vinculado por nombre, sin código de artículo todavía)";
   }
@@ -696,7 +756,8 @@ function actualizarDisponibilidadSeleccion() {
     info.className = "stock-info stock-bajo";
     return;
   }
-  info.textContent = estado.asignaciones.map(f => `${f.variant}: pide ${f.quantity}, quedan ${f.available}`).join(" · ");
+  const detalle = estado.asignaciones.map(f => `${f.variant}: pide ${f.quantity}, quedan ${f.available}`).join(" · ");
+  info.textContent = estado.ok ? detalle : `SIN STOCK · ${detalle} · Se puede agregar igualmente.`;
   info.className = `stock-info ${estado.ok ? "stock-ok" : "stock-agotado"}`;
 }
 
@@ -756,6 +817,7 @@ function actualizarEstiloEstado() {
 
 function datosPedidoActual() {
   const resumen = obtenerResumen();
+  const stockPedido = reservaStockPedido();
   if (!pedidoActualId) pedidoActualId = crypto.randomUUID ? crypto.randomUUID() : `pedido-${Date.now()}`;
   return {
     id: pedidoActualId,
@@ -769,7 +831,8 @@ function datosPedidoActual() {
     descuento: document.getElementById("in-descuento").value,
     envio: document.getElementById("in-envio").value,
     items: pedidoItems.map(item => ({ ...item, imagenes: [...(item.imagenes || [])] })),
-    stockAllocations: asignacionesPedido(),
+    stockAllocations: stockPedido.reservadas,
+    stockShortages: stockPedido.faltantes,
     total: resumen.total,
     actualizadoEn: new Date().toISOString()
   };
@@ -803,11 +866,6 @@ async function guardarPedidoActual({ silencioso = false } = {}) {
     return null;
   }
   const pedido = datosPedidoActual();
-  const validacion = validarStockPedido(pedidoItems);
-  if (!validacion.ok) {
-    alert(`No se puede guardar el pedido. ${validacion.mensaje}`);
-    return null;
-  }
   const { data, error } = await supabaseClient.rpc("save_order_with_inventory", { p_order: pedido });
   if (error) {
     console.error(error);
@@ -942,9 +1000,7 @@ function agregarItemAlPedido() {
   };
   const validacion = validarStockPedido([...pedidoItems, nuevoItem]);
   if (productoInventario && !validacion.ok) {
-    alert(`No se puede agregar esa cantidad. ${validacion.mensaje}`);
-    actualizarDisponibilidadSeleccion();
-    return;
+    alert(`SIN STOCK: ${validacion.mensaje}\nLa prenda se agregará igualmente al pedido.`);
   }
   pedidoItems.push(nuevoItem);
   marcarPedidoConCambios();
@@ -983,6 +1039,7 @@ function renderTablaPedido() {
   tbody.innerHTML = "";
   document.getElementById("estado-vacio").style.display = pedidoItems.length ? "none" : "block";
 
+  const faltantesStock = reservaStockPedido(pedidoItems).faltantes;
   pedidoItems.forEach((it, i) => {
     const unidTot = it.cajas * it.unidadesPorCaja;
     const subtotal = unidTot * it.precioUnitario;
@@ -991,7 +1048,7 @@ function renderTablaPedido() {
     tr.innerHTML = `
       <td>${celdaFotoHTML(it.imagenes, "miniatura", "miniatura-vacia")}</td>
       <td>${it.codigo || "-"}</td>
-      <td>${escaparHTML(it.nombre)}${it.enStock === false ? '<br><span class="etiqueta-sin-stock">FUERA DE STOCK</span>' : ''}<br><span class="detalle-informativo"><strong>Venta:</strong> ${escaparHTML(it.formatoVenta || "No informado")}</span></td>
+      <td>${escaparHTML(it.nombre)}${itemSinStock(it, faltantesStock) ? '<br><span class="etiqueta-sin-stock">SIN STOCK</span>' : ''}<br><span class="detalle-informativo"><strong>Venta:</strong> ${escaparHTML(it.formatoVenta || "No informado")}</span></td>
       <td><div class="colores-pedido"><strong>Colores disponibles</strong><span>${escaparHTML(coloresDisponibles)}</span></div></td>
       <td>${it.varianteStock ? `<strong>${escaparHTML(it.varianteStock === "SURTIDO" ? "Caja surtida" : it.varianteStock)}</strong><br>` : ""}<textarea class="observacion-item" data-idx="${i}" data-campo="observacion" placeholder="Observación">${escaparHTML(it.observacion || "")}</textarea></td>
       <td><input type="number" min="1" value="${it.cajas}" data-idx="${i}" data-campo="cajas" style="width:56px"></td>
@@ -1006,15 +1063,10 @@ function renderTablaPedido() {
   tbody.querySelectorAll("input[data-campo='cajas']").forEach(inp => {
     inp.addEventListener("change", e => {
       const idx = +e.target.dataset.idx;
-      const anterior = pedidoItems[idx].cajas;
       pedidoItems[idx].cajas = parseInt(e.target.value || "0", 10) || 0;
       const validacion = validarStockPedido(pedidoItems);
       if (!validacion.ok) {
-        pedidoItems[idx].cajas = anterior;
-        e.target.value = anterior;
-        e.target.closest("tr").classList.add("fila-stock-invalido");
-        alert(`No se pudo cambiar la cantidad. ${validacion.mensaje}`);
-        return;
+        alert(`SIN STOCK: ${validacion.mensaje}\nLa cantidad se guardará igualmente.`);
       }
       marcarPedidoConCambios();
       renderTablaPedido();
@@ -1023,15 +1075,10 @@ function renderTablaPedido() {
   tbody.querySelectorAll("input[data-campo='unidades']").forEach(inp => {
     inp.addEventListener("input", e => {
       const idx = +e.target.dataset.idx;
-      const anterior = pedidoItems[idx].unidadesPorCaja;
       pedidoItems[idx].unidadesPorCaja = parseInt(e.target.value || "0", 10) || 0;
       const validacion = validarStockPedido(pedidoItems);
       if (!validacion.ok) {
-        pedidoItems[idx].unidadesPorCaja = anterior;
-        e.target.value = anterior;
         e.target.closest("tr").classList.add("fila-stock-invalido");
-        alert(`No se pudo cambiar la cantidad. ${validacion.mensaje}`);
-        return;
       }
       marcarPedidoConCambios();
       recalcularResumen();
@@ -1587,8 +1634,13 @@ async function cargarInventario() {
   if (errorProductos) throw errorProductos;
   if (errorStock) throw errorStock;
   if (errorMovimientos) throw errorMovimientos;
-  inventarioProductos = new Map((productos || []).map(producto => [producto.product_id, producto]));
-  inventarioStock = stock || [];
+  const productosCompatibles = (productos || []).filter(producto => {
+    const compatible = inventarioCompatible(producto);
+    if (!compatible) console.warn("Se ignoró una vinculación de inventario incompatible", producto);
+    return compatible;
+  });
+  inventarioProductos = new Map(productosCompatibles.map(producto => [producto.product_id, producto]));
+  inventarioStock = (stock || []).filter(fila => inventarioProductos.has(fila.product_id));
   inventarioMovimientos = movimientos || [];
   construirItems();
   renderStock();

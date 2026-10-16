@@ -75,7 +75,7 @@ test('el buscador muestra el catálogo administrado completo, sin el límite his
   assert.match(appJs, /buscarItems\(elBuscador\.value, Math\.max\(ITEMS\.length, 1\)\)/);
   assert.match(appJs, /addEventListener\("focus", actualizarResultadosBuscador\)/);
   assert.match(appJs, /\$\{CATALOGO\.length\} productos totales/);
-  assert.match(indexHtml, /app\.js\?v=20261007-sin-cartel-admin-v6/);
+  assert.match(indexHtml, /app\.js\?v=20261016-stock-informativo/);
 });
 
 test('los productos administrados siguen buscables sin mostrar un cartel especial', () => {
@@ -111,4 +111,30 @@ test('el PDF guarda automáticamente un pedido que todavía no tiene número', (
   const app = fs.readFileSync('pedidos/app.js', 'utf8');
   assert.match(app, /await guardarPedidoActual\(\{ silencioso: true \}\)/);
   assert.match(app, /recuperarPedidoGuardado/);
+});
+
+test('la falta de stock avisa pero nunca bloquea la carga ni el guardado', () => {
+  const app = fs.readFileSync('pedidos/app.js', 'utf8');
+  assert.match(app, /La prenda se agregará igualmente al pedido/);
+  assert.match(app, /stockAllocations: stockPedido\.reservadas/);
+  assert.match(app, /stockShortages: stockPedido\.faltantes/);
+  assert.doesNotMatch(app, /No se puede agregar esa cantidad/);
+  assert.doesNotMatch(app, /No se puede guardar el pedido/);
+});
+
+test('SIN STOCK se muestra en pantalla pero no se imprime en el PDF', () => {
+  const app = fs.readFileSync('pedidos/app.js', 'utf8');
+  assert.match(app, /etiqueta-sin-stock">SIN STOCK/);
+  const pdf = app.match(/document\.getElementById\("btn-pdf"\)[\s\S]*?\/\* ={10,}\n   IMPORTAR PRECIOS/);
+  assert(pdf, 'no se encontró el generador de PDF');
+  assert.doesNotMatch(pdf[0], /SIN STOCK|etiqueta-sin-stock/);
+});
+
+test('el inventario se vincula sólo si coincide el código o el nombre del producto', () => {
+  const app = fs.readFileSync('pedidos/app.js', 'utf8');
+  assert.match(app, /function inventarioCompatible/);
+  assert.match(app, /codigosValidos\.has\(codigoInventario\)/);
+  assert.match(app, /function productoIdInventarioParaOpcion/);
+  assert.match(app, /productoId: productoIdInventario/);
+  assert.match(app, /Se ignoró una vinculación de inventario incompatible/);
 });
