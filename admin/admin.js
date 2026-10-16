@@ -27,6 +27,12 @@ function normalizeCatalogProduct(product){
   }
   return product;
 }
+function restoreMilanCurve(id,payload){
+  if(Number(id)!==123||(payload.sizes?.length&&payload.packaging?.rows?.length))return payload;
+  const original=seed.products.find(product=>Number(product.id)===123);
+  if(!original)return payload;
+  return {...payload,sizes:clone(original.sizes),packaging:clone(original.packaging)};
+}
 function normalizeOption(option,index){
   option.id||=model.optionId(option.label||`opcion-${index+1}`,editing.purchaseOptions?.map(item=>item.id).filter(Boolean)||[]);
   option.label||=optionLabel(inferredPackingType(option.sourcePacking));
@@ -136,7 +142,7 @@ async function saveCollection(event){
 }
 async function loadRecords(){
   const next=new Map(seed.products.map(p=>[p.id,{id:p.id,payload:normalizeCatalogProduct(p),version:0}]));
-  if(api.configured&&!preview){for(const r of await api.list()){normalizeCatalogProduct(r.payload);next.set(Number(r.id),r);}}
+  if(api.configured&&!preview){for(const r of await api.list()){r.payload=restoreMilanCurve(r.id,r.payload);normalizeCatalogProduct(r.payload);next.set(Number(r.id),r);}}
   records=next;renderCards();
 }
 function renderCards(){
@@ -153,7 +159,7 @@ function renderCards(){
 }
 async function openEditor(id,curve=false){
   if(id!=null&&api.configured&&!preview){
-    try{const [latest]=await api.getProducts([Number(id)]);if(latest){normalizeCatalogProduct(latest.payload);records.set(Number(id),latest);}}
+    try{const [latest]=await api.getProducts([Number(id)]);if(latest){latest.payload=restoreMilanCurve(latest.id,latest.payload);normalizeCatalogProduct(latest.payload);records.set(Number(id),latest);}}
     catch(e){notice('No se pudo cargar la última versión. '+e.message);return;}
   }
   resetPhotos();savedPackaging.clear();currentGroup=0;galleryDirty=false;editingId=id;version=id==null?0:records.get(id).version;

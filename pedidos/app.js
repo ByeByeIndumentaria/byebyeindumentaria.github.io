@@ -92,6 +92,9 @@ function productoCatalogoAdministrado(row, anterior = null) {
   const producto = row.payload || {};
   const galeria = galeriaCatalogoAdministrado(producto.gallery);
   const imagenes = galeria?.sources || [];
+  const restaurarCurvaMilan = Number(row.id) === 123;
+  const talles = producto.sizes?.length ? producto.sizes : (restaurarCurvaMilan ? anterior?.talles : []);
+  const packaging = producto.packaging?.rows?.length ? producto.packaging : (restaurarCurvaMilan ? anterior?.packaging : null);
   return {
     ...(anterior || {}),
     id: Number(row.id),
@@ -102,10 +105,10 @@ function productoCatalogoAdministrado(row, anterior = null) {
     descripcion: producto.description || "",
     colores: [...(producto.colors || [])],
     coloresFueraDeStock: [...(producto.outOfStockColors || [])],
-    talles: [...(producto.sizes || [])],
+    talles: [...(talles || [])],
     imagenes,
     galeria,
-    packaging: producto.packaging || null,
+    packaging: packaging || null,
     formatoVenta: producto.sourcePacking || (producto.packingType === "single-color" ? "Caja por color" : "Caja surtida"),
     packingType: producto.packingType || "mixed-colors",
     purchaseOptions: (producto.purchaseOptions || []).map(opcion => opcionCatalogoAdministrado(opcion, producto)),

@@ -44,9 +44,11 @@
       const rows=await CatalogAPI.getProducts(changed.map(r=>Number(r.id)));
       for(const row of rows){const id=Number(row.id);if(!Number.isSafeInteger(id)||!row.payload?.name)continue;
         const p=sanitize(row.payload);p.id=id;p.cloudManaged=true;p.collections=p.collections||[p.collection];p.colors=p.colors||[];p.outOfStockColors=p.outOfStockColors||[];p.sizes=p.sizes||[];p.inStock=p.inStock!==false;if([239,242,246].includes(id))p.isHidden=true;normalizeCatalogProduct(p);
+        const existing=products.findIndex(v=>v.id===id);
+        if(id===123&&existing>=0){const original=products[existing];if(!p.sizes.length)p.sizes=[...(original.sizes||[])];if(!p.packaging?.rows?.length&&original.packaging)p.packaging=JSON.parse(JSON.stringify(original.packaging));}
         const groups=p.purchaseOptions?.length?p.purchaseOptions:[p];
         for(const group of groups)if(group.packaging)normalizePackagingTotals(group.packaging,group.packingType||(/POR COLOR|SOLID COLOR/i.test(group.sourcePacking||'')?'single-color':'mixed-colors'));
-        const existing=products.findIndex(v=>v.id===id);if(existing<0)products.push(p);else products[existing]=p;
+        if(existing<0)products.push(p);else products[existing]=p;
       }
       for(const row of rows)versions.set(Number(row.id),row.version);
       fingerprint=next;
