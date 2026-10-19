@@ -3644,6 +3644,10 @@ function setProduction2027PurchaseOptions(productId, optionSpecs) {
     spec.rows,
     spec.orderNumber || product.orderNumber
   ));
+  product.purchaseOptions.forEach(option => {
+    option.packingType = /POR COLOR|SOLID COLOR/i.test(option.sourcePacking || "") ? "single-color" : "mixed-colors";
+    normalizePackagingTotals(option.packaging, option.packingType);
+  });
 }
 
 function configureProduction2027PurchaseOptions(productId, key, colorRows, assortedRows) {
@@ -3683,6 +3687,10 @@ configureProduction2027PurchaseOptions(144, "mila",
 configureProduction2027PurchaseOptions(142, "trench-elena",
   production2027Rows("Negro", [2, 2, 2, 2, 1]),
   [...production2027Rows("Negro", [2, 2, 2, 2, 1]), ...production2027Rows("Chocolate", [2, 2, 2, 2, 1]), ...production2027Rows("Camel", [2, 2, 2, 2, 1]), ...production2027Rows("Piedra", [2, 2, 2, 2, 1])]);
+
+configureProduction2027PurchaseOptions(192, "lina-plus",
+  [...production2027Rows("Negro", [3, 3, 3], { sizes: ["G1", "G2", "G3"] }), ...production2027Rows("Chocolate", [3, 3, 3], { sizes: ["G1", "G2", "G3"] })],
+  [...production2027Rows("Negro", [3, 3, 3], { sizes: ["G1", "G2", "G3"], repeat: 2 }), ...production2027Rows("Chocolate", [3, 3, 3], { sizes: ["G1", "G2", "G3"] })]);
 
 products.push(...production2027Products);
 

@@ -49,6 +49,15 @@ test('Notas de pedidos conserva curvas y formatos de compra alternativos', () =>
   assert.notEqual(product.purchaseOptions[0].packaging.totalPieces, product.purchaseOptions[1].packaging.totalPieces);
 });
 
+test('Lina Plus expone sus dos cajas y la curva G1 a G3', () => {
+  const product = embeddedCatalog().find(item => item.id === 192);
+  assert(product);
+  assert.deepEqual(product.purchaseOptions.map(option => option.label), ['Caja por color', 'Caja surtida']);
+  assert.deepEqual(product.purchaseOptions[0].talles, ['G1', 'G2', 'G3']);
+  assert.equal(product.purchaseOptions[0].packaging.totalPieces, 9);
+  assert.equal(product.purchaseOptions[1].packaging.totalPieces, 27);
+});
+
 test('los colores informativos también forman parte del PDF', () => {
   const app = fs.readFileSync('pedidos/app.js', 'utf8');
   const html = fs.readFileSync('pedidos/index.html', 'utf8');
