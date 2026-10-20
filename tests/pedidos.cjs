@@ -84,7 +84,7 @@ test('el buscador muestra el catálogo administrado completo, sin el límite his
   assert.match(appJs, /buscarItems\(elBuscador\.value, Math\.max\(ITEMS\.length, 1\)\)/);
   assert.match(appJs, /addEventListener\("focus", actualizarResultadosBuscador\)/);
   assert.match(appJs, /\$\{catalogoVisible\.length\} productos totales/);
-  assert.match(indexHtml, /app\.js\?v=20261016-catalogo-alineado/);
+  assert.match(indexHtml, /app\.js\?v=20261020-numero-pedido-manual/);
 });
 
 test('los productos administrados siguen buscables sin mostrar un cartel especial', () => {
@@ -120,6 +120,22 @@ test('el PDF guarda automáticamente un pedido que todavía no tiene número', (
   const app = fs.readFileSync('pedidos/app.js', 'utf8');
   assert.match(app, /await guardarPedidoActual\(\{ silencioso: true \}\)/);
   assert.match(app, /recuperarPedidoGuardado/);
+});
+
+test('el número de pedido puede ingresarse manualmente o asignarse automáticamente', () => {
+  const app = fs.readFileSync('pedidos/app.js', 'utf8');
+  const html = fs.readFileSync('pedidos/index.html', 'utf8');
+  assert.match(html, /id="f-numero" maxlength="40" autocomplete="off"/);
+  assert.match(html, /Dejalo vacío para asignarlo automáticamente o ingresalo manualmente/);
+  assert.match(app, /f-numero"\)\.readOnly = false/);
+  assert.match(app, /pedido\.numero = await obtenerProximoNumeroPedido\(\)/);
+  assert.match(app, /for \(let intento = 0; intento < 3; intento\+\+\)/);
+
+  const helper = app.match(/function siguienteNumeroPedido\(numeros\) \{[\s\S]*?\n\}/);
+  assert(helper, 'falta el generador de números de pedido');
+  const siguienteNumeroPedido = Function(`${helper[0]}\nreturn siguienteNumeroPedido;`)();
+  assert.equal(siguienteNumeroPedido(['0007', 'SIN-NUMERO-x', 'pedido-a', '12']), '0013');
+  assert.equal(siguienteNumeroPedido([]), '0001');
 });
 
 test('la falta de stock avisa pero nunca bloquea la carga ni el guardado', () => {

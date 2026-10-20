@@ -950,6 +950,27 @@ function numeroPedidoValido(numero) {
   return Boolean(numero) && !String(numero).startsWith("SIN-NUMERO-");
 }
 
+function siguienteNumeroPedido(numeros) {
+  const mayor = numeros
+    .map(numero => String(numero || "").trim())
+    .filter(numero => /^\d+$/.test(numero))
+    .reduce((maximo, numero) => Math.max(maximo, Number(numero)), 0);
+  return String(mayor + 1).padStart(4, "0");
+}
+
+async function obtenerProximoNumeroPedido() {
+  const numerosLocales = pedidosGuardados.map(pedido => pedido.numero);
+  const { data, error } = await supabaseClient.from("orders").select("number");
+  if (error) {
+    console.warn("No se pudieron consultar los números compartidos; se usará la copia local.", error);
+    return siguienteNumeroPedido(numerosLocales);
+  }
+  return siguienteNumeroPedido([
+    ...numerosLocales,
+    ...(data || []).map(fila => fila.number)
+  ]);
+}
+
 async function recuperarPedidoGuardado(id) {
   const { data, error } = await supabaseClient.from("orders").select("payload").eq("id", id).maybeSingle();
   if (error) throw error;
@@ -962,7 +983,19 @@ async function guardarPedidoActual({ silencioso = false } = {}) {
     return null;
   }
   const pedido = datosPedidoActual();
-  const { data, error } = await supabaseClient.rpc("save_order_with_inventory", { p_order: pedido });
+  const numeroIngresadoManualmente = numeroPedidoValido(pedido.numero);
+  if (!numeroIngresadoManualmente) {
+    pedido.numero = await obtenerProximoNumeroPedido();
+    document.getElementById("f-numero").value = pedido.numero;
+  }
+  let data;
+  let error;
+  for (let intento = 0; intento < 3; intento++) {
+    ({ data, error } = await supabaseClient.rpc("save_order_with_inventory", { p_order: pedido }));
+    if (!error || error.code !== "23505" || numeroIngresadoManualmente) break;
+    pedido.numero = await obtenerProximoNumeroPedido();
+    document.getElementById("f-numero").value = pedido.numero;
+  }
   if (error) {
     console.error(error);
     alert(error.code === "23505"
@@ -1242,8 +1275,8 @@ document.getElementById("btn-vaciar").addEventListener("click", () => {
    NÚMERO DE PEDIDO / DATOS DE CABECERA
    ========================================================================== */
 document.getElementById("f-numero").value = "";
-document.getElementById("f-numero").readOnly = true;
-document.getElementById("f-numero").placeholder = "Se asigna al guardar";
+document.getElementById("f-numero").readOnly = false;
+document.getElementById("f-numero").placeholder = "Automático o manual";
 document.getElementById("f-fecha").value = new Date().toLocaleDateString("es-AR");
 
 /* ==========================================================================
