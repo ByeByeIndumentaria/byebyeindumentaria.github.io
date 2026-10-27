@@ -45,7 +45,7 @@ function normalizeOption(option,index){
 function colorIsInStock(color){return !(editing.outOfStockColors||[]).some(item=>model.normalize(item)===model.normalize(color));}
 function setColorStock(color,inStock){
   const current=(editing.outOfStockColors||[]).filter(item=>model.normalize(item)!==model.normalize(color));
-  editing.outOfStockColors=inStock?current:[...current,color];dirty=true;renderColors();
+  editing.outOfStockColors=inStock?current:[...current,color];dirty=true;renderColors();renderCurve();
 }
 function syncColorAcrossOptions(color,remove=false){
   for(const option of editing.purchaseOptions||[]){
@@ -225,8 +225,8 @@ function renderCurve(){
   const g=group();$('pending').checked=!g.packaging;$('curve-controls').hidden=!g.packaging;$('sizes').value=(g.sizes||[]).join(', ');
   $('curve-table').replaceChildren();if(!g.packaging)return;
   const note=el('p',g.packingType==='single-color'?'Cada fila representa una caja completa del color elegido.':'La caja combina las cantidades de todos los colores de esta opción.','curve-packaging-note');$('curve-table').append(note);
-  const table=el('table'),head=el('tr');head.append(el('th','Color'));for(const size of g.sizes||[])head.append(el('th',size));head.append(el('th',g.packingType==='single-color'?'Piezas por caja':'Subtotal'));const thead=el('thead');thead.append(head);table.append(thead);const tbody=el('tbody');
-  for(const row of g.packaging.rows){const tr=el('tr'),name=el('th',row.color);name.scope='row';if(row.curveText)name.append(el('small',' · '+row.curveText));tr.append(name);const total=el('td');
+  const table=el('table'),head=el('tr');head.append(el('th','Color'),el('th','Stock'));for(const size of g.sizes||[])head.append(el('th',size));head.append(el('th',g.packingType==='single-color'?'Piezas por caja':'Subtotal'));const thead=el('thead');thead.append(head);table.append(thead);const tbody=el('tbody');
+  for(const row of g.packaging.rows){const inStock=colorIsInStock(row.color),tr=el('tr');tr.className=inStock?'curve-row-in-stock':'curve-row-out-of-stock';const name=el('th',row.color);name.scope='row';if(row.curveText)name.append(el('small',' · '+row.curveText));const stock=el('td'),stockBadge=el('span',inStock?'Disponible':'Agotado','curve-stock-badge '+(inStock?'in-stock':'out-of-stock'));stock.append(stockBadge);tr.append(name,stock);const total=el('td');
     const updateTotal=()=>{const values=(g.sizes||[]).map(s=>row.sizePieces?.[s]);total.textContent=values.length&&values.every(Number.isInteger)?values.reduce((a,b)=>a+b,0):'—';};
     for(const size of g.sizes||[]){const td=el('td'),input=el('input');input.type='number';input.min='0';input.max='9999';input.step='1';input.value=row.sizePieces?.[size]??'';input.setAttribute('aria-label',`${row.color}, talle ${size}`);
       input.oninput=()=>{row.sizePieces||={};row.sizePieces[size]=input.value===''?null:Number(input.value);delete row.curveText;delete row.pieces;dirty=true;updateTotal();};td.append(input);tr.append(td);}

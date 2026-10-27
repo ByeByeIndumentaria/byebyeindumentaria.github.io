@@ -790,23 +790,31 @@ input:focus-visible,
 .modal-desc { font-size: 14px; color: var(--gray-600); line-height: 1.7; }
 
 .modal-colors, .modal-sizes { display: flex; flex-wrap: wrap; gap: 8px; }
+.modal-colors { align-items: stretch; gap: 10px; }
 .modal-packaging { margin-top: 4px; }
 .color-chip {
-  font-size: 11px;
-  letter-spacing: 0.07em;
-  padding: 4px 10px;
-  border: 1px solid var(--gray-200);
-  border-radius: 999px;
+  display: grid;
+  gap: 2px;
+  min-width: 108px;
+  padding: 8px 12px;
+  border: 1px solid #aac0a7;
+  border-radius: 8px;
   color: var(--gray-800);
-  background: var(--white);
+  background: #f3f7f1;
+  text-align: left;
   cursor: pointer;
   transition: background var(--transition), border-color var(--transition), color var(--transition);
 }
+.color-chip .color-name { font-size: 11px; font-weight: 700; letter-spacing: .06em; }
+.color-chip .color-stock-label { display: flex; align-items: center; gap: 5px; color: #3e6844; font-size: 10px; font-weight: 700; letter-spacing: .02em; }
+.color-chip .color-stock-label::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.color-chip.out-of-stock { border-color: #d9aaa3; color: #7a3a33; background: #fff3f1; }
+.color-chip.out-of-stock .color-name { text-decoration: line-through; text-decoration-thickness: 1px; }
+.color-chip.out-of-stock .color-stock-label { color: #a33939; }
 .color-chip:not(:disabled):hover,
 .color-chip.active {
-  background: var(--white);
-  border-color: var(--gray-200);
-  color: var(--gray-800);
+  border-color: var(--black);
+  box-shadow: 0 0 0 1px var(--black);
 }
 .color-chip:disabled {
   cursor: default;
@@ -866,6 +874,12 @@ input:focus-visible,
   color: var(--black);
   font-weight: 500;
 }
+.packaging-row.out-of-stock td { background: #fff5f3; color: #765c58; }
+.packaging-row.out-of-stock td:first-child { color: #7a3a33; text-decoration: line-through; }
+.curve-stock-badge { display: inline-flex; align-items: center; gap: 5px; border-radius: 999px; padding: 4px 7px; font-size: 9px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; }
+.curve-stock-badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.curve-stock-badge.in-stock { background: #e7f0e4; color: #38613e; }
+.curve-stock-badge.out-of-stock { background: #f7deda; color: #9b352c; }
 .packaging-table tbody tr:last-child td { border-bottom: 0; }
 
 .btn-add-modal {
@@ -1385,5 +1399,4 @@ body.filter-menu-open {
 }
 
 /* Disponibilidad junto al selector de color. */
-.color-option { display: inline-flex; align-items: center; gap: 6px; }
-.color-stock-label { color: #a33939; font-size: 12px; font-weight: 600; }
+.color-option { display: inline-flex; align-items: stretch; }

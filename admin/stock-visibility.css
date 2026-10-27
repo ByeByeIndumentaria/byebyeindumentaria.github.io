@@ -1,0 +1,40 @@
+.curve-row-out-of-stock {
+  background: #fff5f3;
+  color: #7b3c35;
+}
+
+.curve-row-out-of-stock input {
+  background: #fffafa;
+  color: #705d59;
+}
+
+.curve-stock-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.curve-stock-badge::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.curve-stock-badge.in-stock {
+  background: #e8f1e7;
+  color: #365a3b;
+}
+
+.curve-stock-badge.out-of-stock {
+  background: #f7deda;
+  color: #9b352c;
+}

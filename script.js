@@ -4385,8 +4385,26 @@ function getUnavailableColors(product, selectedOption = null) {
   ].map(normalizeColorName));
 }
 
+function isColorExhaustedBySizes(product, color, selectedOption = null) {
+  const variants = OUT_OF_STOCK_VARIANTS[product.id] || {};
+  const matchedColor = Object.keys(variants).find(item => normalizeColorName(item) === normalizeColorName(color));
+  if (!matchedColor) return false;
+  const unavailableSizes = new Set((variants[matchedColor] || []).map(normalizeCatalogSize));
+  const packaging = selectedOption?.packaging || product.packaging;
+  const sizes = selectedOption?.sizes?.length
+    ? selectedOption.sizes
+    : product.sizes?.length
+      ? product.sizes
+      : packaging
+        ? getPackagingSizes(packaging)
+        : [];
+  return sizes.length > 0 && sizes.every(size => unavailableSizes.has(normalizeCatalogSize(size)));
+}
+
 function isColorUnavailable(product, color, selectedOption = null) {
-  return getUnavailableColors(product, selectedOption).has(normalizeColorName(color));
+  return product.inStock === false
+    || getUnavailableColors(product, selectedOption).has(normalizeColorName(color))
+    || isColorExhaustedBySizes(product, color, selectedOption);
 }
 
 function hasAvailableColor(product, selectedOption = null) {
@@ -4472,13 +4490,17 @@ function renderPackagingTable(product) {
   const showQuantities = packaging.totalPieces !== null && packaging.totalPieces !== undefined
     || packaging.rows.some(row => getRowPiecesLabel(row) !== "-");
 
-  const rows = packaging.rows.map(row => `
-    <tr>
+  const rows = packaging.rows.map(row => {
+    const unavailable = isColorUnavailable(product, row.color, selectedOption);
+    return `
+    <tr class="packaging-row ${unavailable ? "out-of-stock" : "in-stock"}">
       <td>${row.color}</td>
+      <td><span class="curve-stock-badge ${unavailable ? "out-of-stock" : "in-stock"}">${unavailable ? "Agotado" : "Disponible"}</span></td>
       <td>${formatCurve(row, selectedOption?.sizes || product.sizes || [])}</td>
       ${showQuantities ? `<td>${getRowPiecesLabel(row)}</td>` : ""}
     </tr>
-  `).join("");
+  `;
+  }).join("");
 
   const optionSelector = purchaseOptions.length > 1 ? `
     <div class="purchase-options" role="group" aria-label="Opciones de compra">
@@ -4512,6 +4534,7 @@ function renderPackagingTable(product) {
         <thead>
           <tr>
             <th>Color</th>
+            <th>Stock</th>
             <th>Curva de talles</th>
             ${showQuantities ? "<th>Piezas</th>" : ""}
           </tr>
@@ -5007,7 +5030,8 @@ function openModal(p, initialPurchaseOptionId = null) {
   const displayedColors = selectedOption?.colors || p.colors;
   colorsEl.innerHTML = displayedColors.map((c, i) => {
     const unavailable = isColorUnavailable(p, c, selectedOption);
-    return `<span class="color-option"><button type="button" class="color-chip" data-color-index="${i}"${unavailable ? ` aria-label="${c}: agotado"` : ''}>${c}</button>${unavailable ? '<span class="color-stock-label">Agotado</span>' : ''}</span>`;
+    const status = unavailable ? 'Agotado' : 'Disponible';
+    return `<span class="color-option ${unavailable ? 'out-of-stock' : 'in-stock'}"><button type="button" class="color-chip${unavailable ? ' out-of-stock' : ''}" data-color-index="${i}" aria-label="${c}: ${status}" aria-pressed="${i === 0 ? 'true' : 'false'}"><span class="color-name">${c}</span><span class="color-stock-label">${status}</span></button></span>`;
   }).join('');
 
   // Sizes
@@ -5110,7 +5134,9 @@ function openModal(p, initialPurchaseOptionId = null) {
 
   function updateColorChips() {
     colorsEl.querySelectorAll('.color-chip').forEach(chip => {
-      chip.classList.toggle('active', Number(chip.dataset.galleryIndex) === galleryIdx);
+      const active = chip.dataset.galleryIndex !== '' && Number(chip.dataset.galleryIndex) === galleryIdx;
+      chip.classList.toggle('active', active);
+      chip.setAttribute('aria-pressed', String(active));
     });
   }
 
@@ -5236,9 +5262,13 @@ function openModal(p, initialPurchaseOptionId = null) {
   colorsEl.querySelectorAll('.color-chip').forEach((chip, colorIndex) => {
     const galleryIndex = getProduction2027ColorGalleryIndex(gallery, displayedColors[colorIndex]);
     chip.dataset.galleryIndex = galleryIndex ?? '';
-    chip.disabled = galleryIndex === null;
+    chip.classList.toggle('no-photo', galleryIndex === null);
     if (galleryIndex !== null) colorGalleryIndices.add(galleryIndex);
     chip.addEventListener('click', () => {
+      colorsEl.querySelectorAll('.color-chip').forEach(item => {
+        item.classList.toggle('active', item === chip);
+        item.setAttribute('aria-pressed', String(item === chip));
+      });
       renderSizeAvailability(displayedColors[colorIndex]);
       if (galleryIndex !== null) showGalleryImage(galleryIndex);
     });
