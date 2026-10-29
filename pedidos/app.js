@@ -432,7 +432,7 @@ if (sweaterNala) {
 
 // Al publicar una lista maestra nueva se eliminan una sola vez los precios
 // viejos guardados en cada navegador, para que no pisen la actualización.
-const VERSION_LISTA_MAESTRA = "2026-08-24-general-2026-2027";
+const VERSION_LISTA_MAESTRA = "2026-10-29-invierno-2027";
 if (LS.get("bb_version_lista_maestra", "") !== VERSION_LISTA_MAESTRA) {
   preciosManuales = {};
   preciosImportados = {};
@@ -454,9 +454,11 @@ function construirItems() {
   const items = [];
   const articulosUsados = new Set();
   const codigosCatalogo = new Set();
+  const nombresCatalogo = new Set();
 
   CATALOGO.forEach(p => {
     if (p.oculto || CATALOGO_ELIMINADOS.has(Number(p.id))) return;
+    nombresCatalogo.add(norm(p.nombre));
     const matchGuardado = matches.matches[String(p.id)];
     let codigo = p.codigo || (matchGuardado ? (typeof matchGuardado === "string" ? matchGuardado : matchGuardado.codigo) : null);
     if (codigo) {
@@ -465,17 +467,15 @@ function construirItems() {
     }
     let precio = null, origen = null;
     if (p.precioReferencia) {
-      // Precio confirmado por nombre por Claude/Valentina. Tiene prioridad
-      // sobre el precio "de base" por código en los casos donde el código
-      // del catálogo está duplicado entre dos productos distintos (por
-      // ejemplo TD1413 o Z8069, usados a la vez para la versión "largo" y
-      // "corto" de un mismo modelo) — así cada uno conserva SU precio real
-      // en vez de heredar por error el precio del otro.
+      // La referencia vinculada al producto tiene prioridad en los casos en
+      // que un código se comparte entre prendas distintas.
       precio = p.precioReferencia.precio; origen = "referencia_nombre";
     } else if (codigo && preciosImportados[codigo] && preciosImportados[codigo].precio != null) {
       precio = preciosImportados[codigo].precio; origen = "importado";
     } else if (codigo && PRECIOS_BASE_MAP[codigo]) {
       precio = PRECIOS_BASE_MAP[codigo].precio; origen = "base";
+    } else if (PRECIOS_POR_NOMBRE_MAP[norm(p.nombre)]) {
+      precio = PRECIOS_POR_NOMBRE_MAP[norm(p.nombre)].precio; origen = "base_nombre";
     }
 
     const opcionesCompra = p.purchaseOptions?.length ? p.purchaseOptions : [null];
@@ -557,11 +557,36 @@ function construirItems() {
     });
   });
 
+  // Las listas también pueden traer prendas sin código. Se vinculan por su
+  // nombre exacto y, si todavía no existen en el catálogo, quedan buscables
+  // como artículos de precio para no perder la actualización.
+  PRECIOS_POR_NOMBRE.forEach(art => {
+    const nombreNormalizado = norm(art.nombre);
+    if (!nombreNormalizado || nombresCatalogo.has(nombreNormalizado)) return;
+    items.push({
+      idItem: `nombre:${nombreNormalizado}`,
+      productoId: null,
+      codigo: "",
+      nombre: art.nombre,
+      descripcion: art.descripcion || "",
+      categoria: "",
+      subcategoria: art.hoja || "",
+      imagenes: [],
+      precio: art.precio,
+      precioOrigen: "base_nombre",
+      enStock: true,
+      tieneFoto: false,
+      busqueda: norm(`${art.nombre} ${art.descripcion || ""}`)
+    });
+  });
+
   ITEMS = items;
 }
 
 const PRECIOS_BASE_MAP = {};
 PRECIOS_BASE.forEach(a => { PRECIOS_BASE_MAP[a.codigo] = a; });
+const PRECIOS_POR_NOMBRE_MAP = {};
+PRECIOS_POR_NOMBRE.forEach(a => { PRECIOS_POR_NOMBRE_MAP[norm(a.nombre)] = a; });
 
 function buscarItems(consulta, limite = 25) {
   const q = norm(consulta);
@@ -1613,8 +1638,8 @@ function productosPendientesDeMatch() {
 
 function sugerirArticulos(producto, topN = 5) {
   const texto = `${producto.nombre} ${producto.subcategoria}`;
-  const todos = { ...PRECIOS_BASE_MAP, ...preciosImportados };
-  const candidatos = Object.values(todos)
+  const todos = [...Object.values(PRECIOS_BASE_MAP), ...Object.values(PRECIOS_POR_NOMBRE_MAP), ...Object.values(preciosImportados)];
+  const candidatos = todos
     .filter(a => a.nombre || a.descripcion)
     .map(a => ({ ...a, score: similitud(texto, `${a.nombre} ${a.descripcion}`) }));
   candidatos.sort((a, b) => b.score - a.score);
@@ -1752,7 +1777,7 @@ function actualizarBarraEstado() {
   const sinStock = catalogoVisible.length - enStock.length;
   const conFoto = enStock.filter(p => (p.imagenes || []).length > 0).length;
   const conCodigo = enStock.filter(p => p.codigo).length;
-  const totalArticulosPrecio = Object.keys({ ...PRECIOS_BASE_MAP, ...preciosImportados }).length;
+  const totalArticulosPrecio = Object.keys({ ...PRECIOS_BASE_MAP, ...preciosImportados }).length + Object.keys(PRECIOS_POR_NOMBRE_MAP).length;
   document.getElementById("barra-estado").textContent =
     `Catálogo: ${catalogoVisible.length} productos totales · ${enStock.length} en stock (${conFoto} con foto, ${conCodigo} con código) · ` +
     `${sinStock} sin stock · Precios cargados: ${totalArticulosPrecio} códigos`;

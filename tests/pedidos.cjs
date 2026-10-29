@@ -84,7 +84,7 @@ test('el buscador muestra el catálogo administrado completo, sin el límite his
   assert.match(appJs, /buscarItems\(elBuscador\.value, Math\.max\(ITEMS\.length, 1\)\)/);
   assert.match(appJs, /addEventListener\("focus", actualizarResultadosBuscador\)/);
   assert.match(appJs, /\$\{catalogoVisible\.length\} productos totales/);
-  assert.match(indexHtml, /app\.js\?v=20261029-fotos-pedidos/);
+  assert.match(indexHtml, /app\.js\?v=20261029-precios-invierno-2027/);
 });
 
 test('los productos administrados siguen buscables sin mostrar un cartel especial', () => {
@@ -214,7 +214,32 @@ test('Invierno 2027 conserva la primera foto de la muestra en notas de pedido', 
   })[0], 'color.jpg');
   assert.match(app, /coleccion: p\.coleccion \|\| ""/);
   assert.match(app, /coleccion: itemSeleccionado\.coleccion \|\| ""/);
-  assert.match(fs.readFileSync('pedidos/index.html', 'utf8'), /app\.js\?v=20261029-fotos-pedidos/);
+  assert.match(fs.readFileSync('pedidos/index.html', 'utf8'), /app\.js\?v=20261029-precios-invierno-2027/);
+});
+
+test('los precios de Invierno 2027 se cargan desde las tres listas nuevas', () => {
+  const html = fs.readFileSync('pedidos/index.html', 'utf8');
+  const pricesMatch = html.match(/const PRECIOS_BASE = (\[[\s\S]*?\]);\nconst PRECIOS_POR_NOMBRE =/);
+  const namesMatch = html.match(/const PRECIOS_POR_NOMBRE = (\[[\s\S]*?\]);/);
+  assert(pricesMatch && namesMatch, 'faltan las listas de precios embebidas');
+  const prices = JSON.parse(pricesMatch[1]);
+  const byCode = new Map(prices.map(item => [item.codigo, item.precio]));
+  assert.equal(byCode.get('125-226'), 25.5);
+  assert.equal(byCode.get('225-553'), 22);
+  assert.equal(byCode.get('225-156'), 16.5);
+  assert.equal(byCode.get('226-337'), 21.5);
+  assert.equal(byCode.get('225-597'), 24.8);
+  assert.equal(byCode.get('225-228'), 18.65);
+  assert.equal(byCode.get('NB 21-51'), 6.5);
+  assert.equal(byCode.get('NL0071'), 10);
+  assert.equal(byCode.get('126-421'), 32.5);
+  assert.equal(JSON.parse(namesMatch[1]).find(item => item.nombre === 'Ponna').precio, 20.75);
+
+  const ponna = embeddedCatalog().find(item => item.nombre === 'Ponna');
+  assert.equal(ponna.precioReferencia.precio, 20.75);
+  const app = fs.readFileSync('pedidos/app.js', 'utf8');
+  assert.match(app, /2026-10-29-invierno-2027/);
+  assert.match(app, /PRECIOS_POR_NOMBRE_MAP\[norm\(p\.nombre\)\]/);
 });
 
 test('pedidos se mantiene alineado automáticamente con Administración', () => {
