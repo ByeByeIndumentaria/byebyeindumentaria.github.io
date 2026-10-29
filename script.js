@@ -4407,6 +4407,14 @@ function isColorUnavailable(product, color, selectedOption = null) {
     || isColorExhaustedBySizes(product, color, selectedOption);
 }
 
+function showsStockByColor(product, selectedOption = null) {
+  const sourcePacking = selectedOption?.sourcePacking || product.sourcePacking || "";
+  const packingType = selectedOption?.packingType
+    || product.packingType
+    || (/POR COLOR|SOLID COLOR/i.test(sourcePacking) ? "single-color" : "mixed-colors");
+  return packingType === "single-color";
+}
+
 function hasAvailableColor(product, selectedOption = null) {
   if (!product.inStock) return false;
   if (!selectedOption && product.purchaseOptions?.length) return product.purchaseOptions.some(option => hasAvailableColor(product, option));
@@ -4481,6 +4489,7 @@ function renderPackagingTable(product) {
   const purchaseOptions = product.purchaseOptions || [];
   const selectedOption = purchaseOptions.find(option => option.id === currentPurchaseOptionId) || purchaseOptions[0] || null;
   const packaging = selectedOption?.packaging || product.packaging;
+  const showStockByColor = showsStockByColor(product, selectedOption);
 
   if (!packaging) {
     wrap.innerHTML = "";
@@ -4491,11 +4500,11 @@ function renderPackagingTable(product) {
     || packaging.rows.some(row => getRowPiecesLabel(row) !== "-");
 
   const rows = packaging.rows.map(row => {
-    const unavailable = isColorUnavailable(product, row.color, selectedOption);
+    const unavailable = showStockByColor && isColorUnavailable(product, row.color, selectedOption);
     return `
-    <tr class="packaging-row ${unavailable ? "out-of-stock" : "in-stock"}">
+    <tr class="packaging-row${showStockByColor ? ` ${unavailable ? "out-of-stock" : "in-stock"}` : ""}">
       <td>${row.color}</td>
-      <td><span class="curve-stock-badge ${unavailable ? "out-of-stock" : "in-stock"}">${unavailable ? "Agotado" : "Disponible"}</span></td>
+      ${showStockByColor ? `<td><span class="curve-stock-badge ${unavailable ? "out-of-stock" : "in-stock"}">${unavailable ? "Agotado" : "Disponible"}</span></td>` : ""}
       <td>${formatCurve(row, selectedOption?.sizes || product.sizes || [])}</td>
       ${showQuantities ? `<td>${getRowPiecesLabel(row)}</td>` : ""}
     </tr>
@@ -4534,7 +4543,7 @@ function renderPackagingTable(product) {
         <thead>
           <tr>
             <th>Color</th>
-            <th>Stock</th>
+            ${showStockByColor ? "<th>Stock</th>" : ""}
             <th>Curva de talles</th>
             ${showQuantities ? "<th>Piezas</th>" : ""}
           </tr>
@@ -5028,10 +5037,14 @@ function openModal(p, initialPurchaseOptionId = null) {
   // Colors
   const colorsEl = document.getElementById('modal-colors');
   const displayedColors = selectedOption?.colors || p.colors;
+  const showStockByColor = showsStockByColor(p, selectedOption);
   colorsEl.innerHTML = displayedColors.map((c, i) => {
-    const unavailable = isColorUnavailable(p, c, selectedOption);
+    const unavailable = showStockByColor && isColorUnavailable(p, c, selectedOption);
     const status = unavailable ? 'Agotado' : 'Disponible';
-    return `<span class="color-option ${unavailable ? 'out-of-stock' : 'in-stock'}"><button type="button" class="color-chip${unavailable ? ' out-of-stock' : ''}" data-color-index="${i}" aria-label="${c}: ${status}" aria-pressed="${i === 0 ? 'true' : 'false'}"><span class="color-name">${c}</span><span class="color-stock-label">${status}</span></button></span>`;
+    const stockClass = showStockByColor ? ` ${unavailable ? 'out-of-stock' : 'in-stock'}` : '';
+    const stockLabel = showStockByColor ? `<span class="color-stock-label">${status}</span>` : '';
+    const ariaLabel = showStockByColor ? `${c}: ${status}` : c;
+    return `<span class="color-option${stockClass}"><button type="button" class="color-chip${unavailable ? ' out-of-stock' : ''}" data-color-index="${i}" aria-label="${ariaLabel}" aria-pressed="${i === 0 ? 'true' : 'false'}"><span class="color-name">${c}</span>${stockLabel}</button></span>`;
   }).join('');
 
   // Sizes
@@ -5041,7 +5054,7 @@ function openModal(p, initialPurchaseOptionId = null) {
     const unavailableSizes = new Set(OUT_OF_STOCK_VARIANTS[p.id]?.[color] || []);
     sizesEl.innerHTML = displayedSizes.map(size => {
       const normalizedSize = normalizeCatalogSize(size);
-      const isUnavailable = isColorUnavailable(p, color, selectedOption) || unavailableSizes.has(normalizedSize);
+      const isUnavailable = showStockByColor && (isColorUnavailable(p, color, selectedOption) || unavailableSizes.has(normalizedSize));
       const stockLabel = isUnavailable ? ' · Agotado' : '';
       return `<span class="size-chip${isUnavailable ? ' out-of-stock' : ''}"${isUnavailable ? ` title="${color} ${normalizedSize}: agotado" aria-label="${color} ${normalizedSize}: agotado"` : ''}>${normalizedSize}${stockLabel}</span>`;
     }).join('');
