@@ -5615,6 +5615,9 @@ function downloadPDF() {
 function loadPdfImage(src) {
   return new Promise(resolve => {
     const image = new Image();
+    // Las fotos administradas viven en el almacenamiento público de Supabase.
+    // Cargarlas con CORS permite dibujarlas en canvas y conservarlas en el PDF.
+    image.crossOrigin = 'anonymous';
     image.onload = () => {
       try {
         const maxSide = 1800;
