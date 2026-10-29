@@ -84,7 +84,7 @@ test('el buscador muestra el catálogo administrado completo, sin el límite his
   assert.match(appJs, /buscarItems\(elBuscador\.value, Math\.max\(ITEMS\.length, 1\)\)/);
   assert.match(appJs, /addEventListener\("focus", actualizarResultadosBuscador\)/);
   assert.match(appJs, /\$\{catalogoVisible\.length\} productos totales/);
-  assert.match(indexHtml, /app\.js\?v=20261020-numero-pedido-manual/);
+  assert.match(indexHtml, /app\.js\?v=20261029-fotos-pedidos/);
 });
 
 test('los productos administrados siguen buscables sin mostrar un cartel especial', () => {
@@ -188,6 +188,33 @@ test('las fotos de pedidos priorizan una imagen vinculada a un botón de color',
   assert.match(app, /galeria: opcion\?\.galeria \|\| p\.galeria \|\| null/);
   assert.match(app, /celdaFotoHTML\(imagenesPriorizadasPorColor\(it\)/);
   assert.match(app, /primeraFotoDisponible\(imagenesPriorizadasPorColor\(it\)\)/);
+});
+
+test('Invierno 2027 conserva la primera foto de la muestra en notas de pedido', () => {
+  const app = fs.readFileSync('pedidos/app.js', 'utf8');
+  const helper = app.match(/function imagenesPriorizadasPorColor\(item\) \{[\s\S]*?\n\}/);
+  assert(helper, 'falta el selector de fotos para pedidos');
+  const imagenesPriorizadasPorColor = Function(`
+    function norm(t) { return String(t || '').toLowerCase().trim(); }
+    function indiceFotoVinculadaAColor() { return 2; }
+    ${helper[0]}
+    return imagenesPriorizadasPorColor;
+  `)();
+  const fotos = ['muestra.jpg', 'modelo.jpg', 'color.jpg'];
+  assert.deepEqual(imagenesPriorizadasPorColor({
+    coleccion: 'produccion-invierno-2027',
+    imagenes: fotos,
+    galeria: { sources: fotos }
+  }), fotos);
+  assert.equal(imagenesPriorizadasPorColor({
+    coleccion: 'verano-2027',
+    colores: ['Negro'],
+    imagenes: fotos,
+    galeria: { sources: fotos }
+  })[0], 'color.jpg');
+  assert.match(app, /coleccion: p\.coleccion \|\| ""/);
+  assert.match(app, /coleccion: itemSeleccionado\.coleccion \|\| ""/);
+  assert.match(fs.readFileSync('pedidos/index.html', 'utf8'), /app\.js\?v=20261029-fotos-pedidos/);
 });
 
 test('pedidos se mantiene alineado automáticamente con Administración', () => {

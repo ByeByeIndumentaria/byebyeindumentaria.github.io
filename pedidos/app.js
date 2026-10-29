@@ -322,6 +322,7 @@ function normalizarItemPedido(item) {
     coloresProducto: catalogo.coloresProducto,
     galeria: catalogo.galeria || null,
     imagenes: catalogo.imagenes,
+    coleccion: catalogo.coleccion || item.coleccion || "",
     formatoVenta: catalogo.formatoVenta,
     packingType: catalogo.packingType,
     enStock: catalogo.enStock
@@ -503,6 +504,7 @@ function construirItems() {
         talles: opcion?.talles?.length ? opcion.talles : (p.talles || []),
         imagenes: opcion?.imagenes?.length ? opcion.imagenes : (p.imagenes || []),
         galeria: opcion?.galeria || p.galeria || null,
+        coleccion: p.coleccion || "",
         packaging: opcion?.packaging || p.packaging || null,
         formatoVenta,
         packingType: opcion?.packingType || p.packingType || "mixed-colors",
@@ -658,6 +660,9 @@ function indiceFotoVinculadaAColor(galeria, color) {
 function imagenesPriorizadasPorColor(item) {
   const galeria = item?.galeria;
   const imagenes = (galeria?.sources?.length ? galeria.sources : (item?.imagenes || [])).filter(Boolean);
+  // En Invierno 2027 la primera foto identifica la muestra física disponible.
+  // En el resto del catálogo priorizamos una foto vinculada a un botón de color.
+  if (item?.coleccion === "produccion-invierno-2027") return imagenes;
   if (!imagenes.length || !galeria) return imagenes;
   const variante = item.varianteStock && !["TOTAL", "SURTIDO"].includes(item.varianteStock)
     ? item.varianteStock
@@ -1118,6 +1123,7 @@ function agregarItemAlPedido() {
     nombreBase: itemSeleccionado.nombreBase || itemSeleccionado.nombre,
     imagenes: itemSeleccionado.imagenes,
     galeria: itemSeleccionado.galeria || null,
+    coleccion: itemSeleccionado.coleccion || "",
     enStock: itemSeleccionado.enStock,
     packaging: itemSeleccionado.packaging,
     purchaseOptionId: itemSeleccionado.purchaseOptionId || null,
