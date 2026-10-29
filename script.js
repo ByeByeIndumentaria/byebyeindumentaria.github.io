@@ -5917,7 +5917,13 @@ async function downloadProductPDF(product, optionId = null) {
       addFooter();
     }
 
-    doc.save(`ByeBye_${safePdfFilename(orderNumber || product.name)}_Ficha_ordenada.pdf`);
+    doc.setProperties({
+      title: product.name,
+      subject: `Ficha comercial mayorista de ${product.name}`,
+      author: 'BYE BYE',
+      creator: 'BYE BYE'
+    });
+    doc.save(`ByeBye_${safePdfFilename(product.name)}.pdf`);
     showToast('Ficha PDF descargada');
   } catch (error) {
     console.error('No se pudo generar la ficha PDF', error);
