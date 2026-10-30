@@ -54,6 +54,9 @@ let inventarioProductos = new Map();
 let inventarioStock = [];
 let inventarioMovimientos = [];
 const CATALOGO_ELIMINADOS = new Set([239, 242, 246]);
+// Versiones de nube anteriores al ingreso de WH3125. Una edición posterior
+// desde Administración incrementa la versión y vuelve a tener prioridad.
+const WH3125_STALE_CLOUD_VERSIONS = new Map([[154, 1], [163, 1], [172, 3], [178, 2], [190, 2]]);
 let catalogoAdministradoFingerprint = "";
 let sincronizandoCatalogoPedidos = false;
 
@@ -93,8 +96,13 @@ function productoCatalogoAdministrado(row, anterior = null) {
   const galeria = galeriaCatalogoAdministrado(producto.gallery);
   const imagenes = galeria?.sources || [];
   const restaurarCurvaMilan = Number(row.id) === 123;
-  const talles = producto.sizes?.length ? producto.sizes : (restaurarCurvaMilan ? anterior?.talles : []);
-  const packaging = producto.packaging?.rows?.length ? producto.packaging : (restaurarCurvaMilan ? anterior?.packaging : null);
+  const conservarStockWh3125 = anterior && WH3125_STALE_CLOUD_VERSIONS.get(Number(row.id)) === row.version;
+  const talles = conservarStockWh3125
+    ? anterior.talles
+    : (producto.sizes?.length ? producto.sizes : (restaurarCurvaMilan ? anterior?.talles : []));
+  const packaging = conservarStockWh3125
+    ? anterior.packaging
+    : (producto.packaging?.rows?.length ? producto.packaging : (restaurarCurvaMilan ? anterior?.packaging : null));
   return {
     ...(anterior || {}),
     id: Number(row.id),
@@ -103,16 +111,18 @@ function productoCatalogoAdministrado(row, anterior = null) {
     categoria: producto.category || "",
     subcategoria: producto.subcategory || "",
     descripcion: producto.description || "",
-    colores: [...(producto.colors || [])],
-    coloresFueraDeStock: [...(producto.outOfStockColors || [])],
+    colores: [...(conservarStockWh3125 ? anterior.colores : (producto.colors || []))],
+    coloresFueraDeStock: [...(conservarStockWh3125 ? anterior.coloresFueraDeStock : (producto.outOfStockColors || []))],
     talles: [...(talles || [])],
     imagenes,
     galeria,
     packaging: packaging || null,
-    formatoVenta: producto.sourcePacking || (producto.packingType === "single-color" ? "Caja por color" : "Caja surtida"),
-    packingType: producto.packingType || "mixed-colors",
+    formatoVenta: conservarStockWh3125
+      ? anterior.formatoVenta
+      : (producto.sourcePacking || (producto.packingType === "single-color" ? "Caja por color" : "Caja surtida")),
+    packingType: conservarStockWh3125 ? anterior.packingType : (producto.packingType || "mixed-colors"),
     purchaseOptions: (producto.purchaseOptions || []).map(opcion => opcionCatalogoAdministrado(opcion, producto)),
-    enStock: producto.inStock !== false,
+    enStock: conservarStockWh3125 ? anterior.enStock !== false : producto.inStock !== false,
     oculto: producto.isHidden === true || CATALOGO_ELIMINADOS.has(Number(row.id)),
     coleccion: producto.collection || "",
     cloudManaged: true,

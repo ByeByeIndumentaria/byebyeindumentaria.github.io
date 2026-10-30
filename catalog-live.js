@@ -3,6 +3,10 @@
   if (!window.CatalogAPI?.configured) return;
   let running=false, fingerprint='', collectionFingerprint='';
   const versions=new Map();
+  // Estas versiones se publicaron antes de recibir WH3125. Cuando el producto
+  // vuelva a guardarse desde Administración su versión aumentará y la nube
+  // recuperará automáticamente la prioridad.
+  const wh3125StaleCloudVersions=new Map([[154,1],[163,1],[172,3],[178,2],[190,2]]);
   const escape=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const womenSweaterSize=size=>size==='S/M'?'1':size==='M/L'?'2':size;
   function normalizeCatalogProduct(product){
@@ -46,6 +50,14 @@
         const p=sanitize(row.payload);p.id=id;p.cloudManaged=true;p.collections=p.collections||[p.collection];p.colors=p.colors||[];p.outOfStockColors=p.outOfStockColors||[];p.sizes=p.sizes||[];p.inStock=p.inStock!==false;if([239,242,246].includes(id))p.isHidden=true;normalizeCatalogProduct(p);
         const existing=products.findIndex(v=>v.id===id);
         if(id===123&&existing>=0){const original=products[existing];if(!p.sizes.length)p.sizes=[...(original.sizes||[])];if(!p.packaging?.rows?.length&&original.packaging)p.packaging=JSON.parse(JSON.stringify(original.packaging));}
+        if(existing>=0&&wh3125StaleCloudVersions.get(id)===row.version){
+          const original=products[existing];
+          p.colors=[...(original.colors||[])];p.sizes=[...(original.sizes||[])];
+          p.packaging=original.packaging?JSON.parse(JSON.stringify(original.packaging)):null;
+          p.sourcePacking=original.sourcePacking;p.packingType=original.packingType;
+          p.inStock=original.inStock!==false;p.outOfStockColors=[...(original.outOfStockColors||[])];
+          p.warehouseStock=original.warehouseStock?{...original.warehouseStock}:undefined;
+        }
         const groups=p.purchaseOptions?.length?p.purchaseOptions:[p];
         for(const group of groups)if(group.packaging)normalizePackagingTotals(group.packaging,group.packingType||(/POR COLOR|SOLID COLOR/i.test(group.sourcePacking||'')?'single-color':'mixed-colors'));
         if(existing<0)products.push(p);else products[existing]=p;

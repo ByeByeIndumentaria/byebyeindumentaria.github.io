@@ -103,7 +103,7 @@ const PRODUCT_DESCRIPTION_BY_ID = {
 // -- EASY CATALOG CONTROL -------------------------
 // Para poner un producto fuera de stock, agregá su número:
 // const OUT_OF_STOCK_PRODUCT_IDS = [12, 43];
-const OUT_OF_STOCK_PRODUCT_IDS = [1, 3, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 20, 21, 24, 25, 27, 28, 30, 33, 45, 46, 50, 51, 59, 78, 81, 85, 86, 101, 163, 172, 174, 188];
+const OUT_OF_STOCK_PRODUCT_IDS = [1, 3, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 20, 21, 24, 25, 27, 28, 30, 33, 45, 46, 50, 51, 59, 78, 81, 85, 86, 101, 174];
 
 // Stock agotado por variante. Los talles que no figuran acá continúan disponibles.
 const OUT_OF_STOCK_COLORS = { 68: ["Negro"] };
@@ -3691,6 +3691,42 @@ configureProduction2027PurchaseOptions(142, "trench-elena",
 configureProduction2027PurchaseOptions(192, "lina-plus",
   [...production2027Rows("Negro", [3, 3, 3], { sizes: ["G1", "G2", "G3"] }), ...production2027Rows("Chocolate", [3, 3, 3], { sizes: ["G1", "G2", "G3"] })],
   [...production2027Rows("Negro", [3, 3, 3], { sizes: ["G1", "G2", "G3"], repeat: 2 }), ...production2027Rows("Chocolate", [3, 3, 3], { sizes: ["G1", "G2", "G3"] })]);
+
+// Stock recibido en WH3125.xlsx. Las cantidades de cada fila describen la
+// curva de una caja; cartons/pieces conservan además el total del embarque.
+const wh3125Stock = {
+  154: { sizes: ["S", "M", "L", "XL", "XXL"], cartons: 43, pieces: 774, rows: [["Negro", [1, 1, 2, 1, 1]], ["Chocolate", [1, 1, 2, 1, 1]], ["Camel", [1, 1, 2, 1, 1]]] },
+  155: { sizes: ["S", "M", "L", "XL", "XXL"], cartons: 33, pieces: 784, rows: [["Negro", [1, 1, 2, 1, 1]], ["Melange claro", [1, 1, 2, 1, 1]], ["Melange oscuro", [1, 1, 2, 1, 1]], ["Beige", [1, 1, 2, 1, 1]]] },
+  162: { sizes: ["S", "M", "L", "XL", "XXL"], cartons: 16, pieces: 512, rows: [["Camel", [1, 2, 2, 2, 1]], ["Chocolate", [1, 2, 2, 2, 1]], ["Negro", [1, 2, 2, 2, 1]], ["Marrón", [1, 2, 2, 2, 1]]] },
+  163: { sizes: ["S", "M", "L", "XL"], cartons: 42, pieces: 1008, rows: [["Negro/Bordó", [1, 2, 2, 1]], ["Negro", [1, 2, 2, 1]], ["Gris/Negro", [1, 2, 2, 1]], ["Beige/Negro", [1, 2, 2, 1]]] },
+  164: { sizes: ["S", "M", "L", "XL", "XXL"], cartons: 24, pieces: 768, rows: [["Beige", [1, 2, 2, 2, 1]], ["Chocolate", [1, 2, 2, 2, 1]], ["Camel", [1, 2, 2, 2, 1]], ["Negro", [1, 2, 2, 2, 1]]] },
+  172: { sizes: ["S", "M", "L", "XL", "XXL"], cartons: 14, pieces: 420, rows: [["Negro", [2, 2, 4, 2, 2]], ["Oliva", [1, 1, 2, 1, 1]], ["Chocolate", [1, 1, 2, 1, 1]], ["Piedra", [1, 1, 2, 1, 1]]] },
+  175: { sizes: ["S", "M", "L", "XL"], cartons: 43, pieces: 774, rows: [["Camel", [1, 2, 2, 1]], ["Negro", [1, 2, 2, 1]], ["Marrón", [1, 2, 2, 1]]] },
+  178: { sizes: ["S", "M", "L", "XL"], cartons: 51, pieces: 1224, rows: [["Chocolate", [1, 2, 2, 1]], ["Camel", [1, 2, 2, 1]], ["Negro", [2, 4, 4, 2]]] },
+  188: { sizes: ["S", "M", "L", "XL"], cartons: 47, pieces: 1128, rows: [["Negro", [1, 2, 2, 1]], ["Arena", [1, 2, 2, 1]], ["Bordó", [1, 2, 2, 1]], ["Oliva", [1, 2, 2, 1]]] },
+  190: { sizes: ["S", "M", "L", "XL"], cartons: 33, pieces: 594, rows: [["Negro", [1, 2, 2, 1]], ["Crudo", [1, 2, 2, 1]], ["Camel", [1, 2, 2, 1]]] },
+  193: { sizes: ["S", "M", "L", "XL"], cartons: 25, pieces: 600, rows: [["Negro", [1, 2, 2, 1]], ["Caqui", [1, 2, 2, 1]], ["Marrón", [1, 2, 2, 1]], ["Camel", [1, 2, 2, 1]]] },
+  252: { sizes: ["4", "6", "8", "10", "12", "14", "16"], cartons: 29, pieces: 812, rows: [["Verde/Azul", [1, 1, 1, 1, 1, 1, 1]], ["Negro/Mostaza", [1, 1, 1, 1, 1, 1, 1]], ["Azul/Rojo", [1, 1, 1, 1, 1, 1, 1]], ["Verde/Gris", [1, 1, 1, 1, 1, 1, 1]]] }
+};
+
+for (const [idText, stock] of Object.entries(wh3125Stock)) {
+  const product = production2027Products.find(item => item.id === Number(idText));
+  if (!product) continue;
+  product.colors = stock.rows.map(([color]) => color);
+  product.sizes = [...stock.sizes];
+  product.packaging = {
+    rows: stock.rows.map(([color, quantities]) => ({
+      color,
+      sizePieces: Object.fromEntries(stock.sizes.map((size, index) => [size, quantities[index]]))
+    }))
+  };
+  product.sourcePacking = "CAJA SURTIDA DE COLORES";
+  product.packingType = "mixed-colors";
+  product.inStock = true;
+  product.outOfStockColors = [];
+  product.preserveCatalogColors = true;
+  product.warehouseStock = { source: "WH3125.xlsx", cartons: stock.cartons, pieces: stock.pieces };
+}
 
 products.push(...production2027Products);
 

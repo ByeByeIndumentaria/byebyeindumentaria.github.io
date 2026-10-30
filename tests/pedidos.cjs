@@ -84,7 +84,7 @@ test('el buscador muestra el catálogo administrado completo, sin el límite his
   assert.match(appJs, /buscarItems\(elBuscador\.value, Math\.max\(ITEMS\.length, 1\)\)/);
   assert.match(appJs, /addEventListener\("focus", actualizarResultadosBuscador\)/);
   assert.match(appJs, /\$\{catalogoVisible\.length\} productos totales/);
-  assert.match(indexHtml, /app\.js\?v=20261029-precios-invierno-2027/);
+  assert.match(indexHtml, /app\.js\?v=20261030-wh3125-stock/);
 });
 
 test('los productos administrados siguen buscables sin mostrar un cartel especial', () => {
@@ -214,7 +214,26 @@ test('Invierno 2027 conserva la primera foto de la muestra en notas de pedido', 
   })[0], 'color.jpg');
   assert.match(app, /coleccion: p\.coleccion \|\| ""/);
   assert.match(app, /coleccion: itemSeleccionado\.coleccion \|\| ""/);
-  assert.match(fs.readFileSync('pedidos/index.html', 'utf8'), /app\.js\?v=20261029-precios-invierno-2027/);
+  assert.match(fs.readFileSync('pedidos/index.html', 'utf8'), /app\.js\?v=20261030-wh3125-stock/);
+});
+
+test('WH3125 también queda disponible con curvas completas en notas de pedido', () => {
+  const products = embeddedCatalog();
+  const ids = [154, 155, 162, 163, 164, 172, 175, 178, 188, 190, 193, 252];
+  for (const id of ids) {
+    const product = products.find(item => item.id === id);
+    assert(product, `falta ${id}`);
+    assert.equal(product.enStock, true);
+    assert.equal(product.packingType, 'mixed-colors');
+    assert.equal(product.warehouseStock.source, 'WH3125.xlsx');
+    assert(product.packaging?.rows?.length > 0);
+    assert(product.talles.length > 0);
+  }
+  assert.equal(products.find(item => item.id === 178).packaging.totalPieces, 24);
+  assert.equal(products.find(item => item.id === 252).packaging.totalPieces, 28);
+  assert(products.find(item => item.id === 252).talles.includes('4'));
+  const app = fs.readFileSync('pedidos/app.js', 'utf8');
+  assert.match(app, /WH3125_STALE_CLOUD_VERSIONS = new Map\(\[\[154, 1\], \[163, 1\], \[172, 3\], \[178, 2\], \[190, 2\]\]\)/);
 });
 
 test('los precios de Invierno 2027 se cargan desde las tres listas nuevas', () => {
