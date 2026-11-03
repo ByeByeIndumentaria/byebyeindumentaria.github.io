@@ -1034,8 +1034,8 @@ input:focus-visible,
   }
 
   .catalog-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px 12px;
+    grid-template-columns: 1fr;
+    gap: 28px;
     padding: 24px 16px 60px;
   }
   .card-name { font-size: 16px; }
@@ -1049,9 +1049,11 @@ input:focus-visible,
   }
   .modal-image-wrap {
     width: 100%;
-    max-height: 52vh;
+    aspect-ratio: 3 / 4;
+    max-height: none;
     min-height: 0;
   }
+  .modal-image-wrap img { object-fit: contain; }
   .modal-image-wrap.no-image { min-height: 170px; max-height: 170px; }
   .modal-close { top: 12px; right: 12px; }
   .modal-info { padding: 24px 20px; }
@@ -1060,7 +1062,7 @@ input:focus-visible,
 }
 
 @media (max-width: 400px) {
-  .catalog-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 10px; padding-inline: 12px; }
+  .catalog-grid { grid-template-columns: 1fr; gap: 26px; padding-inline: 12px; }
   .card-name { font-size: 14px; }
   .card-code { font-size: 8px; }
   .card-img-wrap { margin-bottom: 10px; }
