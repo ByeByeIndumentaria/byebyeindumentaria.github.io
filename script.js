@@ -1944,12 +1944,12 @@ function getProduction2027Gallery(product, colors, option = null) {
   const allPhotoNumbers = getProductImagePhotoNumbers(sourceProductId);
   const colorMap = colorImageByProductId[sourceProductId] || {};
   if (!mappedSourceProductId && !onlyColorLinkedPhotos) {
-    return {
+    return prependModelImagesToGallery(product.id, {
       sourceProductId,
       photoNumbers: allPhotoNumbers,
       sources: getProductImageSources(sourceProductId),
       colorMap
-    };
+    });
   }
   const assignedPhotoNumbers = new Set(Object.values(colorMap).map(Number));
   const matchingPhotoNumbers = new Set();
