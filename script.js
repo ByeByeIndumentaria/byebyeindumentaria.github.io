@@ -5151,7 +5151,7 @@ function openModal(p, initialPurchaseOptionId = null) {
   modalImgWrap.classList.remove('no-image');
   modalImg.style.display = 'none';
   modalImg.alt = p.name;
-  modalImg.style.objectFit = 'cover';
+  modalImg.style.objectFit = window.matchMedia('(max-width: 768px)').matches ? 'contain' : 'cover';
   modalImgWrap.style.background = '#d6c8b7';
   modalImgWrap.style.aspectRatio = '3 / 4';
   modalEl.style.removeProperty('--modal-media-w');
@@ -5275,7 +5275,7 @@ function openModal(p, initialPurchaseOptionId = null) {
     setModalZoom(false);
     galleryIdx = index;
     const targetSrc = gallerySrcs[index];
-    modalImg.style.objectFit = 'cover';
+    modalImg.style.objectFit = window.matchMedia('(max-width: 768px)').matches ? 'contain' : 'cover';
     modalImgWrap.style.background = '#d6c8b7';
     const isFirstImage = !modalImg.src || modalImg.style.display === 'none';
 
