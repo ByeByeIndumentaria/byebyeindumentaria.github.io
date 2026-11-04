@@ -1933,7 +1933,8 @@ function getColorGalleryIndex(product, colorIndex, galleryLength) {
 function getProduction2027Gallery(product, colors, option = null) {
   if (product.cloudManaged && (option?.gallery || product.gallery)) {
     const savedGallery = { colorMap: {}, photoNumbers: [], ...((option?.gallery) || product.gallery) };
-    if (product.galleryOrderManaged) return savedGallery;
+    const alreadyContainsImportedModels = (savedGallery.sources || []).some(source => /\/prod_\d+_model_\d+\.(?:jpg|jpeg|png|webp)(?:\?|$)/i.test(String(source)));
+    if (product.galleryOrderManaged || alreadyContainsImportedModels) return savedGallery;
     return prependModelImagesToGallery(
       product.id,
       savedGallery
