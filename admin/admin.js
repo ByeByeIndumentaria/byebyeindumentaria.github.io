@@ -55,13 +55,31 @@ function syncColorAcrossOptions(color,remove=false){
     if(option.packaging&&!option.packaging.rows.some(row=>model.normalize(row.color)===model.normalize(color)))option.packaging.rows.push({color,sizePieces:Object.fromEntries((option.sizes||[]).map(size=>[size,null]))});
   }
 }
+function setOptionColor(color,selected){
+  const option=group(),key=model.normalize(color),current=option.colors||[];
+  if(!selected&&current.length<=1){message(new Error('Cada opción de compra necesita al menos un color.'));renderOptionColors();return;}
+  option.colors=selected
+    ? editing.colors.filter(productColor=>current.some(item=>model.normalize(item)===model.normalize(productColor))||model.normalize(productColor)===key)
+    : current.filter(item=>model.normalize(item)!==key);
+  if(option.packaging){
+    if(selected&&!option.packaging.rows.some(row=>model.normalize(row.color)===key))option.packaging.rows.push({color,sizePieces:Object.fromEntries((option.sizes||[]).map(size=>[size,null]))});
+    if(!selected)option.packaging.rows=option.packaging.rows.filter(row=>model.normalize(row.color)!==key);
+  }
+  galleryDirty=true;dirty=true;$('save-status').textContent='';renderOptionColors();renderCurve();
+}
+function renderOptionColors(){
+  const list=$('option-colors');if(!list)return;list.replaceChildren();
+  if(!editing.purchaseOptions?.length)return;
+  const selected=new Set((group().colors||[]).map(model.normalize));
+  for(const color of editing.colors){const label=el('label',null,'option-color-choice'),input=el('input');input.type='checkbox';input.checked=selected.has(model.normalize(color));input.onchange=()=>setOptionColor(color,input.checked);label.append(input,document.createTextNode(color));list.append(label);}
+}
 function refreshOptionEditor(){
   const multiple=!!editing.purchaseOptions?.length;$('purchase-mode').value=multiple?'multiple':'single';$('purchase-options-editor').hidden=!multiple;$('variants-note').hidden=!multiple;
   $('packing-type').value=group().packingType||inferredPackingType(group().sourcePacking);
   if(!multiple)return;
   editing.purchaseOptions.forEach(normalizeOption);currentGroup=Math.min(currentGroup,editing.purchaseOptions.length-1);
   selectOptions($('option'),editing.purchaseOptions.map((option,index)=>[String(index),option.label]));$('option').value=String(currentGroup);
-  const current=group();$('option-name').value=current.label;$('packing-type').value=current.packingType;$('remove-option').disabled=editing.purchaseOptions.length<=2;
+  const current=group();$('option-name').value=current.label;$('packing-type').value=current.packingType;$('remove-option').disabled=editing.purchaseOptions.length<=2;renderOptionColors();
 }
 function makeOption(source,type,label){
   const taken=(editing.purchaseOptions||[]).map(option=>option.id),option=clone(source);
@@ -195,7 +213,7 @@ function renderColors(){
   $('colors').replaceChildren();
   for(const color of editing.colors){const row=el('div',null,'color-row'),src=colorPhoto(editing,color),img=el('img');img.alt=src?'Foto vinculada a '+color:'Sin foto vinculada';if(src)img.src=photoSrc(src);
     const title=el('strong',color,'color-name'),status=el('span',src?'Foto vinculada':'Sin foto vinculada','color-photo-status'),stock=el('label',null,'color-stock-toggle'+(colorIsInStock(color)?'':' out')),checkbox=el('input');checkbox.type='checkbox';checkbox.checked=colorIsInStock(color);checkbox.setAttribute('aria-label',`${color} en stock`);checkbox.onchange=()=>setColorStock(color,checkbox.checked);stock.append(checkbox,document.createTextNode(checkbox.checked?'En stock':'Fuera de stock'));row.append(img,title,status,stock);
-    const remove=el('button','Quitar');remove.type='button';remove.onclick=()=>{if(!confirm('¿Quitar el color '+color+' y sus curvas?'))return;removeColorPhoto(editing,color);editing.colors=editing.colors.filter(c=>c!==color);editing.outOfStockColors=editing.outOfStockColors.filter(c=>model.normalize(c)!==model.normalize(color));if(editing.packaging)editing.packaging.rows=editing.packaging.rows.filter(r=>r.color!==color);syncColorAcrossOptions(color,true);galleryDirty=true;dirty=true;renderColors();renderPhotos();renderCurve();};row.append(remove);
+    const remove=el('button','Quitar');remove.type='button';remove.onclick=()=>{if(!confirm('¿Quitar el color '+color+' y sus curvas?'))return;removeColorPhoto(editing,color);editing.colors=editing.colors.filter(c=>c!==color);editing.outOfStockColors=editing.outOfStockColors.filter(c=>model.normalize(c)!==model.normalize(color));if(editing.packaging)editing.packaging.rows=editing.packaging.rows.filter(r=>r.color!==color);syncColorAcrossOptions(color,true);galleryDirty=true;dirty=true;renderColors();renderPhotos();renderOptionColors();renderCurve();};row.append(remove);
     $('colors').append(row);
   }
 }
@@ -278,7 +296,7 @@ $('add-product').onclick=()=>openEditor(null);$('close-editor').onclick=closeEdi
 $('editor').addEventListener('cancel',e=>{e.preventDefault();closeEditor();});$('product-form').addEventListener('submit',save);
 $('product-form').addEventListener('input',()=>{dirty=true;});window.addEventListener('beforeunload',e=>{if(dirty||busy){e.preventDefault();e.returnValue='';}});
 $('add-photos').onchange=()=>addPhotos([...$('add-photos').files]);
-$('add-color').onclick=()=>{const color=$('new-color').value.trim();if(!color)return;if(editing.colors.some(c=>model.normalize(c)===model.normalize(color))){message('Ese color ya existe.');return;}editing.colors.push(color);if(editing.packaging)editing.packaging.rows.push({color,sizePieces:Object.fromEntries(editing.sizes.map(s=>[s,null]))});syncColorAcrossOptions(color);$('new-color').value='';dirty=true;renderColors();renderPhotos();renderCurve();};
+$('add-color').onclick=()=>{const color=$('new-color').value.trim();if(!color)return;if(editing.colors.some(c=>model.normalize(c)===model.normalize(color))){message('Ese color ya existe.');return;}editing.colors.push(color);if(editing.packaging)editing.packaging.rows.push({color,sizePieces:Object.fromEntries(editing.sizes.map(s=>[s,null]))});syncColorAcrossOptions(color);$('new-color').value='';dirty=true;renderColors();renderPhotos();renderOptionColors();renderCurve();};
 $('new-color').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();$('add-color').click();}};
 $('purchase-mode').onchange=()=>{$('purchase-mode').value==='multiple'?enableMultipleOptions():disableMultipleOptions();};
 $('option').onchange=()=>{currentGroup=Number($('option').value);refreshOptionEditor();renderCurve();};

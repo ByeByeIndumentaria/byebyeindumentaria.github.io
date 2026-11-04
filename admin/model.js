@@ -60,6 +60,15 @@
       for(const option of p.purchaseOptions) {
         if(!option.id || !option.label?.trim()) throw new Error('Completá el nombre de cada opción de compra.');
         if(option.packingType && !['single-color','mixed-colors'].includes(option.packingType)) throw new Error('Elegí Caja por color o Surtido de colores en cada opción.');
+        if(!option.colors?.length) throw new Error(`Elegí al menos un color para ${option.label}.`);
+        const optionColors=new Set(option.colors.map(normalize));
+        if(optionColors.size!==option.colors.length) throw new Error(`Hay colores repetidos en ${option.label}.`);
+        if([...optionColors].some(color=>!productColors.has(color))) throw new Error(`La opción ${option.label} incluye un color que no existe en el producto.`);
+        if(option.packaging){
+          const rowColors=new Set(option.packaging.rows.map(row=>normalize(row.color)));
+          if([...rowColors].some(color=>!optionColors.has(color))) throw new Error(`La curva de ${option.label} incluye un color no habilitado para esa opción.`);
+          if([...optionColors].some(color=>!rowColors.has(color))) throw new Error(`Falta la curva de un color habilitado en ${option.label}.`);
+        }
       }
     }
     for(const [index, group] of groups.entries()) {
