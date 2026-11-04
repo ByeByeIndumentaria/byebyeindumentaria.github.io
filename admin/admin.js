@@ -108,7 +108,9 @@ function mergeImportedModelPhotos(product,id=product.id){
       const legacy=Object.entries(g.colorMap||{}).find(([name])=>model.normalize(name)===key);
       if(legacy){const legacyIndex=(g.photoNumbers||[]).indexOf(Number(legacy[1]));if(legacyIndex>=0&&previousSources[legacyIndex])assignedSources[key]=previousSources[legacyIndex];}
     }
-    g.sources=[...modelSources,...previousSources.filter(src=>!modelSources.includes(src))];
+    g.sources=product.galleryOrderManaged
+      ? [...previousSources,...modelSources.filter(src=>!previousSources.includes(src))]
+      : [...modelSources,...previousSources.filter(src=>!modelSources.includes(src))];
     g.colorGalleryIndexByNormalizedColor=Object.fromEntries(Object.entries(assignedSources).map(([color,src])=>[color,g.sources.indexOf(src)]).filter(([,index])=>index>=0));
   }
   return product;
@@ -282,6 +284,7 @@ function preparePayload(){
   model.validate(p, editingId == null ? null : records.get(editingId).payload);
   for(const g of groups)model.recalculate(g.packaging,g.packingType);
   syncOptionGalleries(p);
+  p.galleryOrderManaged=true;
   return p;
 }
 async function save(event){event.preventDefault();if(preview||busy||uploads)return;let payload;
@@ -289,7 +292,10 @@ async function save(event){event.preventDefault();if(preview||busy||uploads)retu
   busy=true;$('save').disabled=true;$('save-status').textContent='Guardando fotos y producto…';
   try{
     for(const [key,photo] of pendingPhotos){photo.remoteUrl||=await api.upload(photo.blob);for(const target of [payload,...(payload.purchaseOptions||[])]){const g=target.gallery;if(!g)continue;g.sources=g.sources.map(src=>src===key?photo.remoteUrl:src);}}
-    const result=await api.save(editingId,version,payload);records.set(Number(result.id),result);dirty=false;$('editor').close();resetPhotos();editing=null;renderCards();notice('Publicado. El catálogo de tus clientes se actualizará en unos segundos.');
+    const result=await api.save(editingId,version,payload);
+    const [persisted]=await api.getProducts([Number(result.id)]);
+    if(!persisted||persisted.version!==result.version||JSON.stringify(persisted.payload)!==JSON.stringify(result.payload))throw new Error('El servidor recibió el cambio, pero no pudimos verificarlo. No cierres esta ventana y volvé a intentar en unos segundos.');
+    records.set(Number(persisted.id),persisted);version=persisted.version;dirty=false;$('editor').close();resetPhotos();editing=null;renderCards();notice('Publicado y verificado en la nube. El catálogo se actualizará en unos segundos.');
   }catch(e){message(e);}finally{busy=false;$('save').disabled=preview;}
 }
 $('add-product').onclick=()=>openEditor(null);$('close-editor').onclick=closeEditor;$('cancel').onclick=closeEditor;

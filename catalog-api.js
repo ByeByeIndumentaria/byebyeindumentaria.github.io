@@ -21,7 +21,9 @@ window.CatalogAPI = (() => {
       remember(await r.json());
     }
     const response = await fetch(config.url + path, {
+      cache: options.method ? 'default' : 'no-store',
       ...options, headers: { apikey: config.publicKey,
+        ...(!options.method ? { 'Cache-Control': 'no-cache' } : {}),
         ...(authenticated ? { Authorization: 'Bearer ' + session.access_token } : {}),
         'Content-Type': 'application/json', ...options.headers }, signal: AbortSignal.timeout(30000)
     });

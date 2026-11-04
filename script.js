@@ -1932,9 +1932,11 @@ function getColorGalleryIndex(product, colorIndex, galleryLength) {
 
 function getProduction2027Gallery(product, colors, option = null) {
   if (product.cloudManaged && (option?.gallery || product.gallery)) {
+    const savedGallery = { colorMap: {}, photoNumbers: [], ...((option?.gallery) || product.gallery) };
+    if (product.galleryOrderManaged) return savedGallery;
     return prependModelImagesToGallery(
       product.id,
-      { colorMap: {}, photoNumbers: [], ...((option?.gallery) || product.gallery) }
+      savedGallery
     );
   }
   const onlyColorLinkedPhotos = (product.collection === "produccion-invierno-2027" || product.onlyColorLinkedPhotos || option?.imageProductId) && colors.length > 0;
