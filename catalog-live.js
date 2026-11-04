@@ -13,6 +13,7 @@
     const memberships=Array.isArray(product.collections)&&product.collections.length?product.collections:[product.collection].filter(Boolean);
     if(memberships.includes('primavera-2027'))memberships.push('invierno-2027');
     if(memberships.some(id=>id==='sweaters-2027'||id==='hoodies-2027'))memberships.push('produccion-invierno-2027');
+    if([75,76].includes(Number(product.id)))memberships.push('produccion-invierno-2027');
     product.collections=[...new Set(memberships)];
     if(product.category==='MUJER'&&product.subcategory==='Sweaters')for(const group of [product,...(product.purchaseOptions||[])]){
       group.sizes=(group.sizes||[]).map(womenSweaterSize);
