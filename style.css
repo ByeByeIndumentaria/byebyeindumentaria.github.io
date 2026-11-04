@@ -1263,41 +1263,118 @@ body.filter-menu-open {
 }
 
 @media (max-width: 768px) {
-  .filters-section {
-    padding: 10px 16px;
+  :root { --header-h: 52px; }
+
+  /* En mobile el encabezado se desplaza con la página: sólo los controles
+     esenciales del catálogo permanecen accesibles sobre las prendas. */
+  #site-header {
+    position: relative;
+    height: var(--header-h);
   }
+  .header-inner { padding: 0 12px; }
+  .brand-name { font-size: 17px; letter-spacing: .18em; }
+  .cart-btn {
+    min-height: 36px;
+    padding: 5px 9px;
+    gap: 5px;
+  }
+  .cart-btn svg { width: 17px; height: 17px; }
+  .cart-count { min-width: 17px; height: 17px; font-size: 10px; }
+
+  .filters-section {
+    top: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 6px 8px;
+    padding: 7px 10px 8px;
+    transition: box-shadow .2s ease, padding .2s ease;
+  }
+  .catalog-search {
+    grid-column: 1 / -1;
+    width: 100%;
+    gap: 7px;
+  }
+  .catalog-search-input {
+    min-height: 40px;
+    padding: 8px 36px 8px 39px;
+    font-size: 16px;
+  }
+  .catalog-search-icon { left: 13px; width: 17px; height: 17px; }
+  .catalog-search-clear { right: 5px; width: 30px; height: 30px; }
   .filters-section .results-info {
-    max-height: 24px;
-    margin-top: 7px;
+    grid-column: 2;
+    grid-row: 2;
+    align-self: center;
+    max-height: none;
+    margin: 0;
     opacity: 1;
+    white-space: nowrap;
+    font-size: 10px;
+    letter-spacing: .03em;
   }
   .catalog-search .filters-toggle {
     flex: 0 0 auto;
-    width: auto;
-    min-width: 96px;
-    padding: 0 13px;
-    gap: 7px;
-    border-radius: 999px;
+    position: relative;
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+    padding: 0;
+    border-radius: 50%;
   }
   .filters-toggle-label {
-    display: inline;
-    font-size: 13px;
-    font-weight: 600;
+    display: none;
   }
   .filters-toggle-count {
     display: inline-flex;
-    min-width: 20px;
-    height: 20px;
-    padding: 0 6px;
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 17px;
+    height: 17px;
+    padding: 0 4px;
     align-items: center;
     justify-content: center;
     border-radius: 999px;
     background: var(--clay);
     color: #fffdf9;
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 700;
   }
   .filters-toggle-count[hidden] {
+    display: none;
+  }
+  .active-filter-chips {
+    grid-column: 1;
+    grid-row: 2;
+    min-width: 0;
+    margin: 0;
+    gap: 5px;
+  }
+  .active-filter-chip {
+    min-height: 24px;
+    padding: 2px 8px;
+    font-size: 10px;
+  }
+  .preorder-notice {
+    grid-column: 1 / -1;
+    margin: 0;
+    min-height: 30px;
+    padding: 5px 8px;
+    gap: 6px;
+    font-size: 10px;
+    line-height: 1.2;
+  }
+  .preorder-notice-label {
+    padding: 2px 6px;
+    font-size: 8px;
+  }
+  .filters-section.mobile-compact {
+    padding-block: 6px;
+    box-shadow: 0 8px 22px rgba(48,34,25,.10);
+  }
+  .filters-section.mobile-compact .active-filter-chips,
+  .filters-section.mobile-compact .results-info,
+  .filters-section.mobile-compact .preorder-notice {
     display: none;
   }
   .filters-inner.filters-drawer,
@@ -1389,9 +1466,13 @@ body.filter-menu-open {
     color: #fffdf9;
   }
   .filters-section.filters-collapsed .results-info {
-    max-height: 24px;
-    margin-top: 7px;
+    max-height: none;
+    margin-top: 0;
     opacity: 1;
+  }
+  .catalog-grid {
+    padding: 10px 10px 52px;
+    gap: 22px;
   }
 }
 

@@ -6177,7 +6177,17 @@ function bindEvents() {
       document.body.classList.add('mobile-hero-dismissed');
     }
   };
-  window.addEventListener('scroll', dismissMobileHero, { passive: true });
+  const updateMobileCatalogChrome = () => {
+    const compact = mobileQuery.matches && window.scrollY > 72;
+    filtersSection?.classList.toggle('mobile-compact', compact);
+  };
+  const updateMobileScrollState = () => {
+    dismissMobileHero();
+    updateMobileCatalogChrome();
+  };
+  window.addEventListener('scroll', updateMobileScrollState, { passive: true });
+  mobileQuery.addEventListener?.('change', updateMobileCatalogChrome);
+  updateMobileCatalogChrome();
 
   // Product search
   productSearchInput?.addEventListener('input', () => {
