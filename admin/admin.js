@@ -3,7 +3,7 @@ const $=id=>document.getElementById(id), api=window.CatalogAPI, model=window.Cat
 const preview=new URLSearchParams(location.search).has('preview');
 const clone=value=>JSON.parse(JSON.stringify(value));
 const asset=src=>src?new URL(src, new URL('../',location.href)).href:'';
-let seed, records=new Map(), editing=null, editingId=null, version=0, dirty=false, busy=false, uploads=0;
+let seed, modelImagesByProductId={}, records=new Map(), editing=null, editingId=null, version=0, dirty=false, busy=false, uploads=0;
 let pendingPhotos=new Map(), currentGroup=0, savedPackaging=new Map(), galleryDirty=false;
 let collections=new Map(), editingCollectionId=null, collectionVersion=0, collectionBusy=false;
 let photoMaintenanceBusy=false;
@@ -79,6 +79,22 @@ function disableMultipleOptions(){
 }
 function selectOptions(select,values){select.replaceChildren(...values.map(([value,label])=>{const o=el('option',label);o.value=value;return o;}));}
 function galleryFor(p){return p.gallery||{sources:[],colorGalleryIndexByNormalizedColor:{}};}
+function mergeImportedModelPhotos(product,id=product.id){
+  const modelSources=(modelImagesByProductId[id]||[]).map(src=>`${src}?v=20261103-modelos-seleccionados-01`);
+  if(!modelSources.length)return product;
+  for(const target of [product,...(product.purchaseOptions||[])]){
+    const g=target.gallery||={sources:[],colorGalleryIndexByNormalizedColor:{}},previousSources=[...(g.sources||[])],assignedSources={};
+    for(const color of target.colors||product.colors||[]){
+      const key=model.normalize(color),directIndex=g.colorGalleryIndexByNormalizedColor?.[key];
+      if(directIndex!=null&&previousSources[directIndex]){assignedSources[key]=previousSources[directIndex];continue;}
+      const legacy=Object.entries(g.colorMap||{}).find(([name])=>model.normalize(name)===key);
+      if(legacy){const legacyIndex=(g.photoNumbers||[]).indexOf(Number(legacy[1]));if(legacyIndex>=0&&previousSources[legacyIndex])assignedSources[key]=previousSources[legacyIndex];}
+    }
+    g.sources=[...modelSources,...previousSources.filter(src=>!modelSources.includes(src))];
+    g.colorGalleryIndexByNormalizedColor=Object.fromEntries(Object.entries(assignedSources).map(([color,src])=>[color,g.sources.indexOf(src)]).filter(([,index])=>index>=0));
+  }
+  return product;
+}
 function loadCardImage(img){
   const src=img.dataset.src;if(!src)return;delete img.dataset.src;
   img.onerror=()=>{if(img.dataset.retried)return;img.dataset.retried='true';const separator=src.includes('?')?'&':'?';setTimeout(()=>{img.src=`${src}${separator}retry=${Date.now()}`;},250);};
@@ -141,8 +157,8 @@ async function saveCollection(event){
   catch(error){$('collection-save-status').textContent=error.message;}finally{collectionBusy=false;$('save-collection').disabled=preview;}
 }
 async function loadRecords(){
-  const next=new Map(seed.products.map(p=>[p.id,{id:p.id,payload:normalizeCatalogProduct(p),version:0}]));
-  if(api.configured&&!preview){for(const r of await api.list()){r.payload=restoreMilanCurve(r.id,r.payload);normalizeCatalogProduct(r.payload);next.set(Number(r.id),r);}}
+  const next=new Map(seed.products.map(p=>[p.id,{id:p.id,payload:mergeImportedModelPhotos(normalizeCatalogProduct(p),p.id),version:0}]));
+  if(api.configured&&!preview){for(const r of await api.list()){r.payload=restoreMilanCurve(r.id,r.payload);normalizeCatalogProduct(r.payload);mergeImportedModelPhotos(r.payload,r.id);next.set(Number(r.id),r);}}
   records=next;renderCards();
 }
 function renderCards(){
@@ -159,7 +175,7 @@ function renderCards(){
 }
 async function openEditor(id,curve=false){
   if(id!=null&&api.configured&&!preview){
-    try{const [latest]=await api.getProducts([Number(id)]);if(latest){latest.payload=restoreMilanCurve(latest.id,latest.payload);normalizeCatalogProduct(latest.payload);records.set(Number(id),latest);}}
+    try{const [latest]=await api.getProducts([Number(id)]);if(latest){latest.payload=restoreMilanCurve(latest.id,latest.payload);normalizeCatalogProduct(latest.payload);mergeImportedModelPhotos(latest.payload,latest.id);records.set(Number(id),latest);}}
     catch(e){notice('No se pudo cargar la última versión. '+e.message);return;}
   }
   resetPhotos();savedPackaging.clear();currentGroup=0;galleryDirty=false;editingId=id;version=id==null?0:records.get(id).version;
@@ -281,6 +297,6 @@ $('add-collection').onclick=()=>openCollectionEditor();$('close-collection-edito
 $('login-form').onsubmit=async e=>{e.preventDefault();const button=e.target.querySelector('button');button.disabled=true;try{await api.login($('email').value,$('password').value);$('password').value='';await showCatalog();}catch(e){notice(e.message);}finally{button.disabled=false;}};
 $('logout').onclick=async()=>{await api.logout();location.reload();};
 async function showCatalog(){await loadCollections();await loadRecords();$('login').hidden=true;$('catalog').hidden=false;$('account').textContent=preview?'Vista previa':api.user?.email||'';$('logout').hidden=preview;if(preview)notice('Vista previa: podés probar los formularios. Publicar está deshabilitado hasta conectar el proyecto y entrar con una cuenta autorizada.');}
-(async()=>{try{const r=await fetch('catalog-seed.json');if(!r.ok)throw new Error('No se pudo cargar el catálogo.');seed=await r.json();$('categories').replaceChildren(...[...new Set(seed.products.map(p=>p.subcategory).filter(Boolean))].sort().map(s=>{const o=el('option');o.value=s;return o;}));
+(async()=>{try{const [r,modelImagesResponse]=await Promise.all([fetch('catalog-seed.json'),fetch('model-images.json?v=20261103-modelos-seleccionados-01')]);if(!r.ok||!modelImagesResponse.ok)throw new Error('No se pudo cargar el catálogo.');seed=await r.json();modelImagesByProductId=await modelImagesResponse.json();$('categories').replaceChildren(...[...new Set(seed.products.map(p=>p.subcategory).filter(Boolean))].sort().map(s=>{const o=el('option');o.value=s;return o;}));
  if(preview){await showCatalog();return;}if(!api.configured){notice('El panel está preparado. Falta conectar el nuevo proyecto del catálogo.');const link=el('a','Probar el panel en vista previa');link.href='?preview=1';$('notice').append(document.createElement('br'),link);return;}if(api.user){try{await api.authorize();await showCatalog();return;}catch{}}$('login').hidden=false;
 }catch(e){notice(e.message);}})();
