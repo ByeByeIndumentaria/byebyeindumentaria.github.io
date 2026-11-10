@@ -47,24 +47,22 @@ Si tu catálogo o tus precios cambiaron desde ahora, seguí leyendo.
 ## 3. Cargar o actualizar precios (Excel)
 
 **Ya viene con la lista completa y corregida cargada** (Invierno 2026 +
-Verano SS27 Hombre y Dama combinados — 152 artículos con código). Si en
-algún momento usaste una versión anterior de esta carpeta en esa misma
-computadora, puede haber quedado algún precio viejo o una asociación de
-código incorrecta guardada en el navegador — usá el botón **"Restablecer
-precios guardados"** (arriba a la derecha) para limpiar eso y que valgan
-los precios nuevos que trae este archivo.
+Verano SS27 Hombre y Dama combinados — 152 artículos con código). Las
+administradoras pueden usar **"Restablecer precios compartidos"** para
+borrar una importación o asociación incorrecta para todo el equipo y volver
+a los precios base incluidos en el sistema.
 
-Para cargar una lista de precios nueva en el futuro: botón **"Importar
-precios (Excel)"** → elegís uno o varios archivos `.xlsx`. Se detecta
-automáticamente la estructura (igual que hasta ahora).
+Para cargar una lista de precios nueva en el futuro: una administradora usa
+**"Importar precios (Excel)"** y elige uno o varios archivos `.xlsx`. Se
+detecta automáticamente la estructura y el resultado queda disponible para
+el resto del equipo, aunque ingrese desde otra computadora.
 
 La librería que lee Excel está incluida en `vendor/`, por lo que no se descarga
 desde un sitio externo. De todos modos, la app requiere internet para
 sincronizar pedidos e inventario con Supabase.
 
-Por ahora, los precios importados y los matches manuales quedan guardados en
-el navegador donde se cargaron. Esto no afecta los pedidos ni el inventario,
-que sí son compartidos. La centralización de precios es una fase posterior.
+Los precios importados se guardan en la base compartida. La copia local sólo
+se utiliza como caché de contingencia si hay un problema de conexión.
 
 ---
 
@@ -73,7 +71,7 @@ que sí son compartidos. La centralización de precios es una fase posterior.
 Igual que en la versión anterior: botón **"Asistente de matching"** te
 muestra, uno por uno, los productos sin código propio y te sugiere el
 artículo de precio más parecido por nombre. Confirmás, corregís a mano, o
-marcás "sin match". Esto también queda guardado en esa computadora.
+marcás "sin match". La decisión queda compartida para todo el equipo.
 
 Actualmente hay **13 productos sin código** en tu catálogo (los mismos que
 ya te había listado). Si les agregás el código directamente en tu
@@ -106,7 +104,7 @@ Igual que antes:
 
 ### Guardar y continuar pedidos
 
-- **Guardar pedido** conserva el pedido actual en este navegador, incluso si todavía es un borrador.
+- **Guardar pedido** conserva el pedido en la base compartida; además mantiene una copia local de emergencia del borrador en curso.
 - **Pedidos guardados** permite buscar, abrir y seguir editando cualquier pedido anterior.
 - Cada pedido puede marcarse como Borrador, En confirmación, Por pagar, Pagado, En preparación, Entregado o Cancelado.
 - Si intentás cerrar la página con cambios pendientes, el navegador muestra una advertencia.
@@ -131,11 +129,10 @@ no se descargan desde sitios externos.
 
 ## 7. Dónde queda todo guardado
 
-Los pedidos, el inventario, los movimientos de stock, los números de pedido y
-los permisos se guardan en la base compartida. Los precios importados, los
-matches confirmados y la copia de emergencia del pedido en curso permanecen
-en el navegador usado. Para trabajar desde otra computadora sin diferencias,
-importá allí la misma lista de precios hasta completar su centralización.
+Los pedidos, el inventario, los movimientos de stock, los números de pedido,
+los permisos, los precios importados y los matches confirmados se guardan en
+la base compartida. Sólo la copia de emergencia del pedido en curso permanece
+en el navegador usado.
 
 ---
 

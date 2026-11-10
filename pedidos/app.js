@@ -456,8 +456,8 @@ if (sweaterNala) {
   sweaterNala.packaging.totalLabel = "Caja surtida de 30 piezas";
 }
 
-// Al publicar una lista maestra nueva se eliminan una sola vez los precios
-// viejos guardados en cada navegador, para que no pisen la actualización.
+// Al publicar una lista maestra nueva se elimina una sola vez la antigua
+// caché local. La configuración compartida se carga después desde Supabase.
 const VERSION_LISTA_MAESTRA = "2026-10-29-invierno-2027";
 if (LS.get("bb_version_lista_maestra", "") !== VERSION_LISTA_MAESTRA) {
   preciosManuales = {};
@@ -472,6 +472,57 @@ if (LS.get("bb_version_lista_maestra", "") !== VERSION_LISTA_MAESTRA) {
 function guardarPreciosManuales() { LS.set("bb_precios_manuales", preciosManuales); }
 function guardarPreciosImportados() { LS.set("bb_precios_importados", preciosImportados); }
 function guardarMatches() { LS.set("bb_matches", matches); }
+let configuracionComercialCompartidaLista = false;
+
+async function cargarConfiguracionComercialCompartida() {
+  try {
+    const [preciosRespuesta, matchesRespuesta] = await Promise.all([
+      supabaseClient.from("price_list_items").select("code,name,description,price,sheet_name,source_file,updated_at"),
+      supabaseClient.from("product_price_matches").select("product_id,code,ignored,updated_at")
+    ]);
+    if (preciosRespuesta.error || matchesRespuesta.error) {
+      console.warn("La configuración comercial compartida todavía no está disponible.", preciosRespuesta.error || matchesRespuesta.error);
+      return false;
+    }
+    preciosImportados = Object.fromEntries((preciosRespuesta.data || []).map(item => [item.code, {
+      codigo: item.code,
+      nombre: item.name || "",
+      descripcion: item.description || "",
+      precio: Number(item.price),
+      hoja: item.sheet_name || "",
+      archivo: item.source_file || "",
+      fecha: item.updated_at
+    }]));
+    matches = { matches: {}, ignorados: [] };
+    for (const item of matchesRespuesta.data || []) {
+      if (item.ignored) matches.ignorados.push(item.product_id);
+      else matches.matches[String(item.product_id)] = { codigo: item.code, fecha: item.updated_at };
+    }
+    guardarPreciosImportados();
+    guardarMatches();
+    configuracionComercialCompartidaLista = true;
+    return true;
+  } catch (error) {
+    console.warn("No se pudo leer la configuración comercial compartida; se conserva la caché local.", error);
+    return false;
+  }
+}
+
+async function publicarPreciosImportadosCompartidos() {
+  if (!puedeAdministrar()) throw new Error("Sólo una administradora puede actualizar la lista de precios.");
+  const { error } = await supabaseClient.rpc("upsert_price_list_items", { p_items: Object.values(preciosImportados) });
+  if (error) throw error;
+  configuracionComercialCompartidaLista = true;
+}
+
+async function publicarMatchCompartido(productId, codigo, ignored) {
+  if (!puedeAdministrar()) throw new Error("Sólo una administradora puede modificar asociaciones de precios.");
+  const { error } = await supabaseClient.rpc("set_product_price_match", {
+    p_product_id: Number(productId), p_code: codigo || null, p_ignored: Boolean(ignored)
+  });
+  if (error) throw error;
+  configuracionComercialCompartidaLista = true;
+}
 
 // --- Construcción de la base unificada de ítems buscables ------------------
 let ITEMS = [];
@@ -1651,6 +1702,12 @@ document.getElementById("input-excel").addEventListener("change", async (e) => {
       resumen.push(`• ${file.name}: error al procesar (${err.message})`);
     }
   }
+  try {
+    await publicarPreciosImportadosCompartidos();
+    resumen.push("✓ Lista compartida con todo el equipo");
+  } catch (error) {
+    resumen.push(`⚠ Los archivos se procesaron, pero no se pudieron compartir: ${escaparHTML(error.message || "error de conexión")}`);
+  }
   resultadoDiv.innerHTML = resumen.join("<br><br>");
   construirItems();
   actualizarBarraEstado();
@@ -1719,15 +1776,19 @@ function mostrarMatchActual() {
     const btn = document.createElement("button");
     btn.className = "btn btn-acento";
     btn.textContent = "Usar este código";
-    btn.addEventListener("click", () => confirmarMatch(s.codigo));
+    btn.addEventListener("click", async () => {
+      try { await confirmarMatch(s.codigo); }
+      catch (error) { alert(`No se pudo compartir la asociación: ${error.message}`); }
+    });
     div.appendChild(btn);
     sugerenciasDiv.appendChild(div);
   });
   document.getElementById("match-manual").value = "";
 }
 
-function confirmarMatch(codigo) {
+async function confirmarMatch(codigo) {
   const p = matchPendientes[matchIndice];
+  await publicarMatchCompartido(p.id, codigo, false);
   matches.matches[String(p.id)] = { codigo, fecha: new Date().toISOString() };
   matches.ignorados = matches.ignorados.filter(id => id !== p.id);
   guardarMatches();
@@ -1735,15 +1796,19 @@ function confirmarMatch(codigo) {
   matchIndice++;
   mostrarMatchActual();
 }
-document.getElementById("match-confirmar-manual").addEventListener("click", () => {
+document.getElementById("match-confirmar-manual").addEventListener("click", async () => {
   const codigo = document.getElementById("match-manual").value.trim();
-  if (codigo) confirmarMatch(codigo);
+  if (!codigo) return;
+  try { await confirmarMatch(codigo); }
+  catch (error) { alert(`No se pudo compartir la asociación: ${error.message}`); }
 });
 document.getElementById("match-omitir").addEventListener("click", () => {
   matchIndice++; mostrarMatchActual();
 });
-document.getElementById("match-ignorar").addEventListener("click", () => {
+document.getElementById("match-ignorar").addEventListener("click", async () => {
   const p = matchPendientes[matchIndice];
+  try { await publicarMatchCompartido(p.id, null, true); }
+  catch (error) { return alert(`No se pudo compartir la decisión: ${error.message}`); }
   if (!matches.ignorados.includes(p.id)) matches.ignorados.push(p.id);
   guardarMatches();
   construirItems();
@@ -1764,32 +1829,28 @@ document.querySelectorAll(".modal-overlay").forEach(overlay => {
 });
 
 /* ==========================================================================
-   RESTABLECER PRECIOS/MATCHES GUARDADOS EN ESTE NAVEGADOR
-   ==========================================================================
-   Si en algún momento se importó un Excel viejo, se corrigió un precio a
-   mano, o se confirmó un match incorrecto (por ejemplo con la lista de
-   Invierno para un producto de Verano), esos datos quedan guardados en el
-   navegador y pisan los precios nuevos que vienen cargados en el archivo.
-   Este botón los borra para que vuelvan a valer los precios "de fábrica"
-   que trae el archivo (los que Claude cargó más recientemente).
+   RESTABLECER PRECIOS Y ASOCIACIONES COMPARTIDAS
    ========================================================================== */
-document.getElementById("btn-reset").addEventListener("click", () => {
+document.getElementById("btn-reset").addEventListener("click", async () => {
   const detalle = [];
-  if (Object.keys(preciosImportados).length) detalle.push(`${Object.keys(preciosImportados).length} artículo(s) de Excel importados en este navegador`);
+  if (Object.keys(preciosImportados).length) detalle.push(`${Object.keys(preciosImportados).length} artículo(s) de Excel compartidos`);
   const nMatches = Object.keys(matches.matches || {}).length;
   const nIgnorados = (matches.ignorados || []).length;
   if (nMatches || nIgnorados) detalle.push(`${nMatches} match(es) y ${nIgnorados} producto(s) marcado(s) como "sin match"`);
 
   if (!detalle.length) {
-    alert("No hay datos guardados en este navegador para restablecer. Ya estás usando los precios que trae el archivo.");
+    alert("No hay datos compartidos para restablecer. Ya estás usando los precios base del sistema.");
     return;
   }
 
   const mensaje =
-    "Esto va a borrar, sólo en este navegador:\n\n- " + detalle.join("\n- ") +
+    "Esto va a borrar para todo el equipo:\n\n- " + detalle.join("\n- ") +
     "\n\nDespués de esto se usarán únicamente los precios que ya vienen cargados " +
     "en el archivo. ¿Confirmás?";
   if (!confirm(mensaje)) return;
+
+  const { error } = await supabaseClient.rpc("clear_commercial_config");
+  if (error) return alert(`No se pudo restablecer la configuración compartida: ${error.message}`);
 
   preciosManuales = {};
   preciosImportados = {};
@@ -1800,7 +1861,7 @@ document.getElementById("btn-reset").addEventListener("click", () => {
   construirItems();
   actualizarBarraEstado();
   limpiarSeleccion();
-  alert("Listo. Se restablecieron los precios y matches de este navegador.");
+  alert("Listo. Se restablecieron los precios y matches para todo el equipo.");
 });
 
 function actualizarBarraEstado() {
@@ -1936,12 +1997,15 @@ function mostrarCreacionClave(session) {
 function aplicarPermisosInterfaz() {
   const editable = puedeEditarPedidos();
   const controlesPedido = [
-    "btn-guardar-borrador", "btn-nuevo-pedido", "btn-importar-excel", "btn-matching",
-    "btn-reset", "btn-agregar", "btn-vaciar"
+    "btn-guardar-borrador", "btn-nuevo-pedido", "btn-agregar", "btn-vaciar"
   ];
   for (const id of controlesPedido) {
     const control = document.getElementById(id);
     if (control) control.hidden = !editable;
+  }
+  for (const id of ["btn-importar-excel", "btn-matching", "btn-reset"]) {
+    const control = document.getElementById(id);
+    if (control) control.hidden = !puedeAdministrar();
   }
   document.querySelectorAll(".layout input,.layout textarea,.layout select").forEach(control => {
     if (control.id === "buscador") return;
@@ -2001,14 +2065,15 @@ async function activarBaseCompartida() {
   try {
     try {
       await sincronizarCatalogoAdministrado();
-      construirItems();
-      pedidoItems = pedidoItems.map(normalizarItemPedido);
-      renderTablaPedido();
-      actualizarBarraEstado();
-      if (document.activeElement === elBuscador || elBuscador.value.trim()) actualizarResultadosBuscador();
     } catch (errorCatalogo) {
       console.warn("Se conserva la copia local del catálogo.", errorCatalogo);
     }
+    await cargarConfiguracionComercialCompartida();
+    construirItems();
+    pedidoItems = pedidoItems.map(normalizarItemPedido);
+    renderTablaPedido();
+    actualizarBarraEstado();
+    if (document.activeElement === elBuscador || elBuscador.value.trim()) actualizarResultadosBuscador();
     await cargarInventario();
     const pedidosLocalesPendientes = await migrarPedidosLocales();
     await cargarPedidosDesdeBase(pedidosLocalesPendientes);

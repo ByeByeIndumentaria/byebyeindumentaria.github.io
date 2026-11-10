@@ -84,7 +84,7 @@ test('el buscador muestra el catálogo administrado completo, sin el límite his
   assert.match(appJs, /buscarItems\(elBuscador\.value, Math\.max\(ITEMS\.length, 1\)\)/);
   assert.match(appJs, /addEventListener\("focus", actualizarResultadosBuscador\)/);
   assert.match(appJs, /\$\{catalogoVisible\.length\} productos totales/);
-  assert.match(indexHtml, /app\.js\?v=20261110-password-recovery/);
+  assert.match(indexHtml, /app\.js\?v=20261110-shared-commercial-config/);
 });
 
 test('los productos administrados siguen buscables sin mostrar un cartel especial', () => {
@@ -214,7 +214,7 @@ test('Invierno 2027 conserva la primera foto de la muestra en notas de pedido', 
   })[0], 'color.jpg');
   assert.match(app, /coleccion: p\.coleccion \|\| ""/);
   assert.match(app, /coleccion: itemSeleccionado\.coleccion \|\| ""/);
-  assert.match(fs.readFileSync('pedidos/index.html', 'utf8'), /app\.js\?v=20261110-password-recovery/);
+  assert.match(fs.readFileSync('pedidos/index.html', 'utf8'), /app\.js\?v=20261110-shared-commercial-config/);
 });
 
 test('WH3125 también queda disponible con curvas completas en notas de pedido', () => {
@@ -316,4 +316,27 @@ test('las escrituras locales antiguas no evitan las RPC protegidas', () => {
   assert.match(app, /rpc\("save_order_with_inventory"/);
   assert.match(app, /rpc\("delete_order_with_inventory"/);
   assert.match(app, /rpc\("adjust_inventory"/);
+});
+
+test('precios y asociaciones comerciales se comparten con roles protegidos', () => {
+  const app = fs.readFileSync('pedidos/app.js', 'utf8');
+  const sql = fs.readFileSync('pedidos/commercial-config.sql', 'utf8');
+  assert.match(app, /from\("price_list_items"\)/);
+  assert.match(app, /from\("product_price_matches"\)/);
+  assert.match(app, /await cargarConfiguracionComercialCompartida\(\)/);
+  assert.match(app, /rpc\("upsert_price_list_items"/);
+  assert.match(app, /rpc\("set_product_price_match"/);
+  assert.match(app, /rpc\("clear_commercial_config"/);
+  assert.match(app, /control\.hidden = !puedeAdministrar\(\)/);
+  assert.match(sql, /create table if not exists public\.price_list_items/);
+  assert.match(sql, /create table if not exists public\.product_price_matches/);
+  assert.match(sql, /require_app_role\(array\['owner','admin'\]\)/);
+  assert.match(sql, /revoke all on public\.price_list_items from anon, authenticated/);
+  assert.doesNotMatch(sql, /grant (?:select|insert|update|delete|execute)[^;]+to anon/);
+});
+
+test('el borrador conserva una copia local de emergencia', () => {
+  const app = fs.readFileSync('pedidos/app.js', 'utf8');
+  assert.match(app, /bb_pedido_en_curso/);
+  assert.match(app, /save_order_with_inventory/);
 });
