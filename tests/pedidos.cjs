@@ -350,5 +350,6 @@ test('el manual operativo queda disponible desde Administración y Pedidos', () 
   assert.match(manual, /Trabajo diario sin depender de otra computadora/);
   assert.match(manual, /Caja por color/);
   assert.match(manual, /Importar precios/);
+  assert.match(manual, /Restaurar esta versión/);
   assert.match(manual, /Olvidé mi contraseña/);
 });
