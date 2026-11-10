@@ -46,9 +46,25 @@ const LS = {
 
 const SUPABASE_URL = "https://gkjnmzjwipvklmasprbm.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_qtUYoJtLCRi_EUxnZaKjSQ_viHYK4QU";
+const parametrosAuth = new URLSearchParams(location.hash.replace(/^#/, ""));
+const tipoCallbackAuth = parametrosAuth.get("type");
+const errorCallbackAuth = parametrosAuth.get("error_code");
 const supabaseClient = window.supabase
   ? window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY)
   : null;
+let usuarioSesion = null;
+let perfilAplicacion = null;
+let sesionPendienteNuevaClave = null;
+const ROLES_PEDIDOS = new Set(["owner", "admin", "operator"]);
+const ROLES_ADMIN = new Set(["owner", "admin"]);
+
+function tieneRol(roles) {
+  return Boolean(perfilAplicacion?.active && roles.has(perfilAplicacion.role));
+}
+
+function puedeEditarPedidos() { return tieneRol(ROLES_PEDIDOS); }
+function puedeAdministrar() { return tieneRol(ROLES_ADMIN); }
+
 let baseCompartidaLista = false;
 let inventarioProductos = new Map();
 let inventarioStock = [];
@@ -1018,6 +1034,10 @@ async function recuperarPedidoGuardado(id) {
 }
 
 async function guardarPedidoActual({ silencioso = false } = {}) {
+  if (!puedeEditarPedidos()) {
+    alert("Tu cuenta tiene acceso de consulta y no puede guardar pedidos.");
+    return null;
+  }
   if (!baseCompartidaLista) {
     alert("La base compartida todavía no está conectada. Volvé a ingresar e intentá nuevamente.");
     return null;
@@ -1091,6 +1111,7 @@ function cargarPedidoGuardado(id) {
 }
 
 function nuevoPedido() {
+  if (!puedeEditarPedidos()) return alert("Tu cuenta tiene acceso de consulta.");
   if (pedidoConCambios && !confirm("Hay cambios sin guardar. ¿Crear un pedido nuevo igualmente?")) return;
   cargandoPedido = true;
   pedidoActualId = null;
@@ -1119,7 +1140,7 @@ function renderHistorialPedidos() {
   lista.innerHTML = visibles.length ? visibles.map(pedido => `
     <div class="pedido-guardado">
       <div><strong>${escaparHTML(pedido.numero || "Sin número")} · ${escaparHTML(pedido.cliente || "Cliente sin completar")}</strong><div class="meta">${escaparHTML(pedido.fecha || "Sin fecha")} · <span class="${claseEstado(pedido.estado || "Borrador")}">${escaparHTML(pedido.estado || "Borrador")}</span> · ${(pedido.items || []).length} prendas · $${Number(pedido.total || 0).toFixed(2)}</div></div>
-      <div class="acciones-registro"><button class="btn btn-acento" data-abrir-pedido="${pedido.id}">Abrir y editar</button><button class="btn" data-borrar-pedido="${pedido.id}">Eliminar</button></div>
+      <div class="acciones-registro"><button class="btn btn-acento" data-abrir-pedido="${pedido.id}">${puedeEditarPedidos() ? "Abrir y editar" : "Ver"}</button>${puedeAdministrar() ? `<button class="btn" data-borrar-pedido="${pedido.id}">Eliminar</button>` : ""}</div>
     </div>`).join("") : '<div id="estado-vacio">No hay pedidos que coincidan con la búsqueda.</div>';
   lista.querySelectorAll("[data-abrir-pedido]").forEach(btn => btn.addEventListener("click", () => cargarPedidoGuardado(btn.dataset.abrirPedido)));
   lista.querySelectorAll("[data-borrar-pedido]").forEach(btn => btn.addEventListener("click", async () => {
@@ -1139,6 +1160,7 @@ function renderHistorialPedidos() {
 }
 
 function agregarItemAlPedido() {
+  if (!puedeEditarPedidos()) return alert("Tu cuenta tiene acceso de consulta.");
   if (!itemSeleccionado) return;
   const cajas = parseInt(document.getElementById("in-cajas").value || "0", 10) || 0;
   const unidCaja = parseInt(document.getElementById("in-unidcaja").value || "0", 10) || 0;
@@ -1837,7 +1859,8 @@ function renderStock() {
   }).sort((a, b) => `${a.producto.season} ${a.producto.name} ${a.variant}`.localeCompare(`${b.producto.season} ${b.producto.name} ${b.variant}`, "es"));
   tbody.innerHTML = filas.map(fila => {
     const estado = estadoFilaStock(fila);
-    return `<tr><td>${escaparHTML(fila.producto.season)}</td><td>${escaparHTML(fila.producto.code || "-")}</td><td>${escaparHTML(fila.producto.name)}</td><td>${escaparHTML(fila.variant === "TOTAL" ? "Stock general" : fila.variant)}</td><td class="numero">${fila.initial_quantity}</td><td class="numero"><strong>${fila.quantity}</strong></td><td class="${estado.clase}">${estado.texto}</td><td><button class="btn" data-ajustar-stock="${fila.product_id}" data-variante="${escaparHTML(fila.variant)}">Ajustar</button></td></tr>`;
+    const ajuste = puedeAdministrar() ? `<button class="btn" data-ajustar-stock="${fila.product_id}" data-variante="${escaparHTML(fila.variant)}">Ajustar</button>` : "";
+    return `<tr><td>${escaparHTML(fila.producto.season)}</td><td>${escaparHTML(fila.producto.code || "-")}</td><td>${escaparHTML(fila.producto.name)}</td><td>${escaparHTML(fila.variant === "TOTAL" ? "Stock general" : fila.variant)}</td><td class="numero">${fila.initial_quantity}</td><td class="numero"><strong>${fila.quantity}</strong></td><td class="${estado.clase}">${estado.texto}</td><td>${ajuste}</td></tr>`;
   }).join("") || '<tr><td colspan="8">No hay resultados.</td></tr>';
   const agotados = inventarioStock.filter(fila => estadoFilaStock(fila).clave === "agotado").length;
   const bajos = inventarioStock.filter(fila => estadoFilaStock(fila).clave === "bajo").length;
@@ -1872,25 +1895,105 @@ async function cargarPedidosDesdeBase(pedidosLocalesPendientes = []) {
 }
 
 async function migrarPedidosLocales() {
-  if (LS.get("bb_pedidos_migrados_supabase", false) || !pedidosGuardados.length) return [];
-  const migrados = new Set(LS.get("bb_pedidos_migrados_ids", []));
-  const pendientes = [];
-  for (const pedido of pedidosGuardados) {
-    if (migrados.has(pedido.id)) continue;
-    const { error } = await supabaseClient.from("orders").upsert(filaPedido(pedido), { onConflict: "id" });
-    if (error) {
-      console.error("No se pudo migrar el pedido local", pedido.id, error);
-      pendientes.push({ pedido, detalle: `${pedido.numero || "sin número"} (${error.message || "conflicto"})` });
-    } else {
-      migrados.add(pedido.id);
-      LS.set("bb_pedidos_migrados_ids", [...migrados]);
-    }
+  // Las escrituras directas quedan deshabilitadas. Los pedidos locales se
+  // conservan como respaldo y sólo se publican al guardarlos mediante la RPC.
+  return pedidosGuardados;
+}
+
+function nombreRol(role) {
+  return ({ owner: "Propietaria", admin: "Administradora", operator: "Operadora", viewer: "Solo lectura" })[role] || role;
+}
+
+function mostrarAcceso(error = "") {
+  document.body.classList.add("auth-pending");
+  sesionPendienteNuevaClave = null;
+  document.getElementById("auth-login-fields").hidden = false;
+  document.getElementById("auth-setup-fields").hidden = true;
+  document.getElementById("auth-email").required = true;
+  document.getElementById("auth-password").required = true;
+  document.getElementById("auth-new-password").required = false;
+  document.getElementById("auth-confirm-password").required = false;
+  document.getElementById("auth-submit").textContent = "Ingresar";
+  document.getElementById("auth-error").textContent = error;
+  document.getElementById("auth-password").value = "";
+  document.getElementById("auth-email").focus();
+}
+
+function mostrarCreacionClave(session) {
+  document.body.classList.add("auth-pending");
+  sesionPendienteNuevaClave = session;
+  document.getElementById("auth-login-fields").hidden = true;
+  document.getElementById("auth-setup-fields").hidden = false;
+  document.getElementById("auth-email").required = false;
+  document.getElementById("auth-password").required = false;
+  document.getElementById("auth-new-password").required = true;
+  document.getElementById("auth-confirm-password").required = true;
+  document.getElementById("auth-submit").textContent = "Activar mi cuenta";
+  document.getElementById("auth-error").textContent = "";
+  document.getElementById("auth-new-password").focus();
+}
+
+function aplicarPermisosInterfaz() {
+  const editable = puedeEditarPedidos();
+  const controlesPedido = [
+    "btn-guardar-borrador", "btn-nuevo-pedido", "btn-importar-excel", "btn-matching",
+    "btn-reset", "btn-agregar", "btn-vaciar"
+  ];
+  for (const id of controlesPedido) {
+    const control = document.getElementById(id);
+    if (control) control.hidden = !editable;
   }
-  LS.set("bb_pedidos_migrados_supabase", pendientes.length === 0);
-  if (pendientes.length) {
-    alert(`La base se conectó, pero ${pendientes.length} pedido(s) local(es) quedaron pendientes de migrar:\n${pendientes.map(item => item.detalle).join("\n")}`);
+  document.querySelectorAll(".layout input,.layout textarea,.layout select").forEach(control => {
+    if (control.id === "buscador") return;
+    control.disabled = !editable;
+  });
+  renderHistorialPedidos();
+  renderStock();
+}
+
+async function autorizarSesion(session) {
+  const { data: perfil, error } = await supabaseClient
+    .from("app_users")
+    .select("role,display_name,active")
+    .eq("user_id", session.user.id)
+    .maybeSingle();
+  if (error || !perfil?.active) {
+    await supabaseClient.auth.signOut();
+    throw new Error("Esta cuenta no está habilitada para administrar pedidos.");
   }
-  return pendientes.map(item => item.pedido);
+  usuarioSesion = session.user;
+  perfilAplicacion = perfil;
+  document.getElementById("usuario-actual").textContent =
+    `${perfil.display_name || session.user.email} · ${nombreRol(perfil.role)}`;
+  document.body.classList.remove("auth-pending");
+  document.getElementById("auth-error").textContent = "";
+  aplicarPermisosInterfaz();
+  recuperarPedidoEnCurso();
+  await activarBaseCompartida();
+}
+
+async function iniciarAplicacionProtegida() {
+  if (!supabaseClient) {
+    mostrarAcceso("No se pudo cargar la conexión segura. Revisá internet y recargá la página.");
+    return;
+  }
+  const { data, error } = await supabaseClient.auth.getSession();
+  if (error) return mostrarAcceso("No se pudo verificar la sesión. Volvé a ingresar.");
+  if (!data.session) {
+    const mensaje = errorCallbackAuth === "otp_expired"
+      ? "La invitación venció o ya fue utilizada. Pedí un enlace nuevo."
+      : "";
+    return mostrarAcceso(mensaje);
+  }
+  if (tipoCallbackAuth === "invite" || tipoCallbackAuth === "recovery") {
+    mostrarCreacionClave(data.session);
+    return;
+  }
+  try {
+    await autorizarSesion(data.session);
+  } catch (authorizationError) {
+    mostrarAcceso(authorizationError.message);
+  }
 }
 
 async function activarBaseCompartida() {
@@ -1956,6 +2059,49 @@ document.getElementById("btn-stock").addEventListener("click", async () => {
   try { await cargarInventario(); } catch (error) { console.error(error); alert("No se pudo actualizar el stock."); }
   abrirModal("modal-stock");
 });
+document.getElementById("auth-form").addEventListener("submit", async event => {
+  event.preventDefault();
+  if (!supabaseClient) return mostrarAcceso("No se pudo cargar la conexión segura.");
+  const button = document.getElementById("auth-submit");
+  const modoCreacionClave = Boolean(sesionPendienteNuevaClave);
+  button.disabled = true;
+  document.getElementById("auth-error").textContent = "Ingresando…";
+  try {
+    if (sesionPendienteNuevaClave) {
+      const password = document.getElementById("auth-new-password").value;
+      const confirmation = document.getElementById("auth-confirm-password").value;
+      if (password.length < 8) throw new Error("La contraseña debe tener al menos 8 caracteres.");
+      if (password !== confirmation) throw new Error("Las contraseñas no coinciden.");
+      document.getElementById("auth-error").textContent = "Activando cuenta…";
+      const { error } = await supabaseClient.auth.updateUser({ password });
+      if (error) throw new Error("No se pudo guardar la contraseña. Abrí nuevamente la invitación.");
+      history.replaceState(null, "", `${location.pathname}${location.search}`);
+      const session = sesionPendienteNuevaClave;
+      await autorizarSesion(session);
+      sesionPendienteNuevaClave = null;
+      return;
+    }
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
+      email: document.getElementById("auth-email").value.trim(),
+      password: document.getElementById("auth-password").value
+    });
+    if (error) throw new Error("Correo o contraseña incorrectos.");
+    await autorizarSesion(data.session);
+  } catch (error) {
+    if (modoCreacionClave) {
+      document.getElementById("auth-error").textContent = error.message || "No se pudo activar la cuenta.";
+    } else {
+      mostrarAcceso(error.message || "No se pudo ingresar.");
+    }
+  } finally {
+    button.disabled = false;
+  }
+});
+document.getElementById("btn-cerrar-sesion").addEventListener("click", async () => {
+  if (pedidoConCambios && !confirm("Hay cambios sin guardar. ¿Cerrar sesión igualmente?")) return;
+  await supabaseClient.auth.signOut();
+  location.reload();
+});
 document.getElementById("buscar-stock").addEventListener("input", renderStock);
 document.getElementById("filtrar-stock").addEventListener("change", renderStock);
 window.addEventListener("beforeunload", event => {
@@ -1999,6 +2145,4 @@ construirItems();
 renderTablaPedido();
 actualizarBarraEstado();
 actualizarEstiloEstado();
-renderHistorialPedidos();
-recuperarPedidoEnCurso();
-iniciarBaseCompartida();
+iniciarAplicacionProtegida();

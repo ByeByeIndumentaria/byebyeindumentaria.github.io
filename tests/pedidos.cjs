@@ -72,7 +72,7 @@ test('Notas de pedidos sincroniza automáticamente los productos publicados desd
   const app = fs.readFileSync('pedidos/app.js', 'utf8');
   const html = fs.readFileSync('pedidos/index.html', 'utf8');
   assert.match(html, /\.\.\/catalog-config\.js\?v=20261007-pedidos-sync/);
-  assert.match(html, /\.\.\/catalog-api\.js\?v=20261007-pedidos-sync/);
+  assert.match(html, /\.\.\/catalog-api\.js\?v=20261104-verified-save/);
   assert.match(app, /async function sincronizarCatalogoAdministrado\(\)/);
   assert.match(app, /CATALOGO\.push\(actualizado\)/);
   assert.match(app, /await sincronizarCatalogoAdministrado\(\)/);
@@ -84,7 +84,7 @@ test('el buscador muestra el catálogo administrado completo, sin el límite his
   assert.match(appJs, /buscarItems\(elBuscador\.value, Math\.max\(ITEMS\.length, 1\)\)/);
   assert.match(appJs, /addEventListener\("focus", actualizarResultadosBuscador\)/);
   assert.match(appJs, /\$\{catalogoVisible\.length\} productos totales/);
-  assert.match(indexHtml, /app\.js\?v=20261030-wh3125-stock/);
+  assert.match(indexHtml, /app\.js\?v=20261104-secure-access/);
 });
 
 test('los productos administrados siguen buscables sin mostrar un cartel especial', () => {
@@ -214,7 +214,7 @@ test('Invierno 2027 conserva la primera foto de la muestra en notas de pedido', 
   })[0], 'color.jpg');
   assert.match(app, /coleccion: p\.coleccion \|\| ""/);
   assert.match(app, /coleccion: itemSeleccionado\.coleccion \|\| ""/);
-  assert.match(fs.readFileSync('pedidos/index.html', 'utf8'), /app\.js\?v=20261030-wh3125-stock/);
+  assert.match(fs.readFileSync('pedidos/index.html', 'utf8'), /app\.js\?v=20261104-secure-access/);
 });
 
 test('WH3125 también queda disponible con curvas completas en notas de pedido', () => {
@@ -272,4 +272,46 @@ test('pedidos se mantiene alineado automáticamente con Administración', () => 
   assert.match(app, /visibilitychange/);
   assert.match(app, /pedidoItems = pedidoItems\.map\(normalizarItemPedido\)/);
   assert.match(app, /if \(p\.oculto \|\| CATALOGO_ELIMINADOS\.has\(Number\(p\.id\)\)\) return/);
+});
+
+test('pedidos exige una sesión y una membresía activa antes de leer datos privados', () => {
+  const app = fs.readFileSync('pedidos/app.js', 'utf8');
+  const html = fs.readFileSync('pedidos/index.html', 'utf8');
+  assert.match(html, /id="auth-form"/);
+  assert.match(html, /type="password" autocomplete="current-password"/);
+  assert.match(html, /id="auth-setup-fields" hidden/);
+  assert.match(html, /autocomplete="new-password"/);
+  assert.match(html, /body class="auth-pending"/);
+  assert.match(app, /auth\.getSession\(\)/);
+  assert.match(app, /auth\.signInWithPassword/);
+  assert.match(app, /tipoCallbackAuth === "invite"/);
+  assert.match(app, /auth\.updateUser\(\{ password \}\)/);
+  assert.match(app, /from\("app_users"\)/);
+  assert.match(app, /if \(!data\.session\) \{/);
+  assert.doesNotMatch(app, /iniciarBaseCompartida\(\);\s*$/);
+});
+
+test('la migración de seguridad elimina permisos anónimos y valida roles dentro de las RPC', () => {
+  const prepare = fs.readFileSync('pedidos/auth-prepare.sql', 'utf8');
+  const enforce = fs.readFileSync('pedidos/auth-enforce.sql', 'utf8');
+  assert.match(prepare, /create table if not exists public\.app_users/);
+  assert.match(prepare, /role in \('owner', 'admin', 'operator', 'viewer'\)/);
+  assert.match(prepare, /create table if not exists public\.app_audit_log/);
+  assert.match(enforce, /OWNER_REQUIRED/);
+  assert.match(enforce, /revoke all on public\.orders from anon, authenticated/);
+  assert.match(enforce, /revoke all on function public\.save_order_with_inventory\(jsonb\) from public, anon, authenticated/);
+  assert.match(enforce, /require_app_role\(array\['owner','admin','operator'\]\)/);
+  assert.match(enforce, /require_app_role\(array\['owner','admin'\]\)/);
+  assert.match(enforce, /grant execute on function public\.save_order_with_inventory\(jsonb\) to authenticated/);
+  assert.doesNotMatch(enforce, /grant execute[^;]+to anon/);
+});
+
+test('las escrituras locales antiguas no evitan las RPC protegidas', () => {
+  const app = fs.readFileSync('pedidos/app.js', 'utf8');
+  const migration = app.match(/async function migrarPedidosLocales\(\) \{[\s\S]*?\n\}/);
+  assert(migration);
+  assert.doesNotMatch(migration[0], /\.from\("orders"\)\.upsert/);
+  assert.match(app, /rpc\("save_order_with_inventory"/);
+  assert.match(app, /rpc\("delete_order_with_inventory"/);
+  assert.match(app, /rpc\("adjust_inventory"/);
 });

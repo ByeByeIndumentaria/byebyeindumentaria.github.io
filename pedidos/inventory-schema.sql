@@ -1,3 +1,5 @@
+-- Esquema canónico de inventario. Ejecutar auth-prepare.sql antes y
+-- auth-enforce.sql después para cerrar también pedidos y registrar auditoría.
 create table if not exists public.inventory_products (
   product_id integer primary key,
   code text,
@@ -32,11 +34,11 @@ alter table public.inventory_stock enable row level security;
 alter table public.inventory_movements enable row level security;
 
 drop policy if exists "inventory products readable" on public.inventory_products;
-create policy "inventory products readable" on public.inventory_products for select to anon, authenticated using (true);
+create policy "inventory products readable" on public.inventory_products for select to authenticated using (public.current_app_role() is not null);
 drop policy if exists "inventory stock readable" on public.inventory_stock;
-create policy "inventory stock readable" on public.inventory_stock for select to anon, authenticated using (true);
+create policy "inventory stock readable" on public.inventory_stock for select to authenticated using (public.current_app_role() is not null);
 drop policy if exists "inventory movements readable" on public.inventory_movements;
-create policy "inventory movements readable" on public.inventory_movements for select to anon, authenticated using (true);
+create policy "inventory movements readable" on public.inventory_movements for select to authenticated using (public.current_app_role() is not null);
 
 create or replace function public.order_affects_stock(status text)
 returns boolean language sql immutable as $$
@@ -75,6 +77,7 @@ declare
   v_old_affects boolean := false;
   v_new_affects boolean := public.order_affects_stock(p_order->>'estado');
 begin
+  perform public.require_app_role(array['owner','admin','operator']);
   -- public.orders.id is text, while movement order ids are UUIDs.
   select payload into v_old from public.orders where id = v_id::text for update;
   v_old_affects := v_old is not null and public.order_affects_stock(v_old->>'estado');
@@ -144,6 +147,7 @@ declare
   v_old jsonb;
   v_allocation jsonb;
 begin
+  perform public.require_app_role(array['owner','admin']);
   select payload into v_old from public.orders where id = p_order_id::text for update;
   if v_old is null then return jsonb_build_object('ok', true); end if;
   if public.order_affects_stock(v_old->>'estado') then
@@ -167,6 +171,7 @@ set search_path = public
 as $$
 declare v_old integer;
 begin
+  perform public.require_app_role(array['owner','admin']);
   if p_new_quantity < 0 then raise exception 'La cantidad no puede ser negativa.'; end if;
   select quantity into v_old from public.inventory_stock where product_id=p_product_id and variant=p_variant for update;
   if v_old is null then raise exception 'No existe esa variante de stock.'; end if;
@@ -177,6 +182,9 @@ begin
 end;
 $$;
 
-grant execute on function public.save_order_with_inventory(jsonb) to anon, authenticated;
-grant execute on function public.delete_order_with_inventory(uuid) to anon, authenticated;
-grant execute on function public.adjust_inventory(integer, text, integer, text) to anon, authenticated;
+revoke all on function public.save_order_with_inventory(jsonb) from public, anon, authenticated;
+revoke all on function public.delete_order_with_inventory(uuid) from public, anon, authenticated;
+revoke all on function public.adjust_inventory(integer, text, integer, text) from public, anon, authenticated;
+grant execute on function public.save_order_with_inventory(jsonb) to authenticated;
+grant execute on function public.delete_order_with_inventory(uuid) to authenticated;
+grant execute on function public.adjust_inventory(integer, text, integer, text) to authenticated;
