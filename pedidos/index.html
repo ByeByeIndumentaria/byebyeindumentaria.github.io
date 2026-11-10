@@ -295,6 +295,7 @@
   .auth-card h1{font-size:28px;margin-bottom:8px}.auth-card p{color:var(--tinta-suave);margin:0 0 20px}
   .auth-card input{width:100%;padding:11px;border:1px solid var(--borde);background:var(--crema);font:inherit;color:var(--tinta)}
   .auth-card .btn{width:100%;margin-top:18px;padding:11px}.auth-error{min-height:20px;margin-top:12px;color:var(--acento);font-size:12px}
+  .auth-link{display:block;margin:12px auto 0;border:0;background:none;color:var(--acento);font:inherit;font-size:12px;text-decoration:underline;cursor:pointer}
   .usuario-actual{font-size:11px;color:#c9bfa9;align-self:center;max-width:210px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   [hidden]{display:none!important}
 
@@ -312,6 +313,7 @@
       <input id="auth-email" type="email" autocomplete="username" required>
       <label for="auth-password">Contraseña</label>
       <input id="auth-password" type="password" autocomplete="current-password" required>
+      <button id="auth-reset-password" class="auth-link" type="button">Olvidé mi contraseña</button>
     </div>
     <div id="auth-setup-fields" hidden>
       <h1>Creá tu contraseña</h1>
@@ -517,6 +519,6 @@ const PRECIOS_POR_NOMBRE = [{"codigo":"","nombre":"Cumiana Jacket","descripcion"
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4/dist/umd/supabase.min.js" crossorigin="anonymous"></script>
 <script src="../catalog-config.js?v=20261007-pedidos-sync"></script>
 <script src="../catalog-api.js?v=20261104-verified-save"></script>
-<script src="app.js?v=20261110-invite-flow"></script>
+<script src="app.js?v=20261110-password-recovery"></script>
 </body>
 </html>

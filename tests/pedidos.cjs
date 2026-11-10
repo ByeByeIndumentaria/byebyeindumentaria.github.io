@@ -84,7 +84,7 @@ test('el buscador muestra el catálogo administrado completo, sin el límite his
   assert.match(appJs, /buscarItems\(elBuscador\.value, Math\.max\(ITEMS\.length, 1\)\)/);
   assert.match(appJs, /addEventListener\("focus", actualizarResultadosBuscador\)/);
   assert.match(appJs, /\$\{catalogoVisible\.length\} productos totales/);
-  assert.match(indexHtml, /app\.js\?v=20261104-secure-access/);
+  assert.match(indexHtml, /app\.js\?v=20261110-password-recovery/);
 });
 
 test('los productos administrados siguen buscables sin mostrar un cartel especial', () => {
@@ -214,7 +214,7 @@ test('Invierno 2027 conserva la primera foto de la muestra en notas de pedido', 
   })[0], 'color.jpg');
   assert.match(app, /coleccion: p\.coleccion \|\| ""/);
   assert.match(app, /coleccion: itemSeleccionado\.coleccion \|\| ""/);
-  assert.match(fs.readFileSync('pedidos/index.html', 'utf8'), /app\.js\?v=20261104-secure-access/);
+  assert.match(fs.readFileSync('pedidos/index.html', 'utf8'), /app\.js\?v=20261110-password-recovery/);
 });
 
 test('WH3125 también queda disponible con curvas completas en notas de pedido', () => {
@@ -281,11 +281,13 @@ test('pedidos exige una sesión y una membresía activa antes de leer datos priv
   assert.match(html, /type="password" autocomplete="current-password"/);
   assert.match(html, /id="auth-setup-fields" hidden/);
   assert.match(html, /autocomplete="new-password"/);
+  assert.match(html, /id="auth-reset-password"/);
   assert.match(html, /body class="auth-pending"/);
   assert.match(app, /auth\.getSession\(\)/);
   assert.match(app, /auth\.signInWithPassword/);
   assert.match(app, /tipoCallbackAuth === "invite"/);
   assert.match(app, /auth\.updateUser\(\{ password \}\)/);
+  assert.match(app, /auth\.resetPasswordForEmail\(email, \{ redirectTo \}\)/);
   assert.match(app, /from\("app_users"\)/);
   assert.match(app, /if \(!data\.session\) \{/);
   assert.doesNotMatch(app, /iniciarBaseCompartida\(\);\s*$/);

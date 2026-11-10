@@ -2097,6 +2097,24 @@ document.getElementById("auth-form").addEventListener("submit", async event => {
     button.disabled = false;
   }
 });
+document.getElementById("auth-reset-password").addEventListener("click", async () => {
+  if (!supabaseClient) return mostrarAcceso("No se pudo cargar la conexión segura.");
+  const email = document.getElementById("auth-email").value.trim();
+  if (!email || !document.getElementById("auth-email").checkValidity()) {
+    document.getElementById("auth-error").textContent = "Escribí primero tu correo.";
+    document.getElementById("auth-email").focus();
+    return;
+  }
+  const button = document.getElementById("auth-reset-password");
+  button.disabled = true;
+  document.getElementById("auth-error").textContent = "Enviando enlace…";
+  const redirectTo = `${location.origin}${location.pathname}`;
+  const { error } = await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo });
+  document.getElementById("auth-error").textContent = error
+    ? "No se pudo enviar el enlace. Intentá nuevamente en unos minutos."
+    : "Revisá tu correo. El enlace para crear una contraseña dura 60 minutos.";
+  button.disabled = false;
+});
 document.getElementById("btn-cerrar-sesion").addEventListener("click", async () => {
   if (pedidoConCambios && !confirm("Hay cambios sin guardar. ¿Cerrar sesión igualmente?")) return;
   await supabaseClient.auth.signOut();

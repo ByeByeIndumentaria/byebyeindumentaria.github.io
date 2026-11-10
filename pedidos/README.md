@@ -1,29 +1,35 @@
-# BYE BYE — Notas de Pedido (versión web, sin instalación)
+# BYE BYE — Centro de pedidos compartido
 
-Esta es la versión simple: una página estática que no necesita instalación ni
-un proceso de compilación. La app necesita conexión a internet para acceder a
-la base compartida de Supabase, pero las herramientas de PDF y Excel están
-incluidas en la carpeta y no dependen de CDN externas.
+La página funciona desde internet y no depende de la computadora ni de los
+archivos personales de Isabella. Pedidos, inventario y usuarios autorizados
+se administran en la base compartida de Supabase. Las herramientas de PDF y
+Excel están incluidas en el sitio.
 
 ---
 
-## 1. Cómo abrirlo
+## 1. Cómo entrar
 
-1. Copiá la carpeta completa **`bye_bye_pedidos_web/`** a la computadora
-   donde la vayas a usar (podés llevarla en un pendrive, por mail, por
-   WhatsApp comprimida en .zip, como quieras).
-2. Adentro de esa carpeta, reemplazá la carpeta `images/` (que viene vacía)
-   por tu carpeta real de fotos de productos — los mismos archivos que usa
-   tu sitio web (`prod_35_1.jpg`, etc.).
-3. Hacé doble clic en **`pedidos.html`**. Se abre en tu navegador (Chrome,
-   Edge, Firefox — cualquiera sirve) y ya podés usarlo.
+1. Abrí **https://byebyeindumentaria.github.io/pedidos/** en Chrome, Safari,
+   Edge o Firefox.
+2. Ingresá con tu correo y contraseña.
+3. Si recibiste una invitación o un enlace de recuperación, abrilo y elegí
+   una contraseña de al menos 8 caracteres.
 
-**Importante:** los archivos `pedidos.html`, `app.js` y la carpeta `images/`
-tienen que estar siempre juntos, en la misma carpeta. Si copiás sólo el
-`.html` suelto, no va a encontrar las fotos.
+No hay que instalar, copiar ni llevar carpetas de fotos. Puede usarse desde
+cualquier computadora o teléfono con internet.
 
-Podés copiar esta misma carpeta a varias computadoras (mostrador, depósito,
-notebook personal) — cada una funciona de forma independiente.
+### Si olvidaste la contraseña
+
+En la pantalla de ingreso escribí tu correo y tocá **Olvidé mi contraseña**.
+El enlace recibido dura 60 minutos. Nunca compartas ese enlace ni la
+contraseña. Si el correo no llega, revisá Spam antes de pedir otro.
+
+### Roles
+
+- **Propietaria:** administra usuarios, pedidos e inventario.
+- **Administradora:** administra pedidos e inventario.
+- **Operadora:** crea y edita pedidos, sin administrar accesos.
+- **Solo lectura:** consulta sin modificar.
 
 ---
 
@@ -56,9 +62,9 @@ La librería que lee Excel está incluida en `vendor/`, por lo que no se descarg
 desde un sitio externo. De todos modos, la app requiere internet para
 sincronizar pedidos e inventario con Supabase.
 
-Los precios importados quedan guardados **en esa computadora**. Si cargás
-la misma carpeta en otra compu, vas a tener que volver a importar los Excel
-ahí también.
+Por ahora, los precios importados y los matches manuales quedan guardados en
+el navegador donde se cargaron. Esto no afecta los pedidos ni el inventario,
+que sí son compartidos. La centralización de precios es una fase posterior.
 
 ---
 
@@ -125,19 +131,28 @@ no se descargan desde sitios externos.
 
 ## 7. Dónde queda todo guardado
 
-Los precios importados, los matches confirmados y la copia de emergencia del
-pedido en curso se guardan en el navegador de **esa computadora específica**.
-Los pedidos, el inventario y los números de pedido se administran en la base
-compartida. Si querés llevarte los datos locales a otra compu, por ahora hay que volver a hacer
-esos pasos ahí (importar Excel, confirmar matches). Si esto te complica el
-uso en varias computadoras a la vez, avisame y lo resolvemos de otra forma
-(por ejemplo, generando un archivo de precios ya "horneado" adentro del
-HTML, como el catálogo).
+Los pedidos, el inventario, los movimientos de stock, los números de pedido y
+los permisos se guardan en la base compartida. Los precios importados, los
+matches confirmados y la copia de emergencia del pedido en curso permanecen
+en el navegador usado. Para trabajar desde otra computadora sin diferencias,
+importá allí la misma lista de precios hasta completar su centralización.
 
 ---
 
-## 8. Si el catálogo cambia en tu sitio web
+## 8. Si el catálogo cambia
 
-Mandame el `script.js` actualizado (como hiciste ahora) y te regenero este
-mismo archivo `pedidos.html` con el catálogo al día — no hace falta que
-hagas nada técnico de tu lado.
+Los cambios guardados desde Administración de catálogo se sincronizan con
+Pedidos automáticamente. Si no aparecen, recargá la página y comprobá que
+figure **Base compartida conectada**. No hace falta copiar `script.js` ni
+regenerar archivos manualmente.
+
+## 9. Diagnóstico rápido
+
+- **No puedo entrar:** verificá el correo, usá *Olvidé mi contraseña* y abrí
+  solamente el enlace más reciente.
+- **El enlace venció:** pedí uno nuevo; duran 60 minutos.
+- **No aparecen cambios del catálogo:** recargá y revisá la conexión.
+- **No permite editar:** la cuenta puede tener rol de Solo lectura o estar
+  desactivada; debe revisarlo una Propietaria.
+- **Error de base compartida:** no sigas duplicando intentos. Conservá el
+  pedido abierto, revisá internet y recargá cuando vuelva la conexión.
