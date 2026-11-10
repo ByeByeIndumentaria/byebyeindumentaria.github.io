@@ -1,8 +1,8 @@
 /* ==========================================================================
    BYE BYE — Carga de Pedidos con base compartida
    ==========================================================================
-   Los pedidos se guardan en Supabase. Las preferencias locales (precios
-   manuales, matches y próximo número) siguen guardadas en el navegador.
+   Pedidos, inventario, precios importados y asociaciones se guardan en
+   Supabase. El navegador conserva una copia de emergencia del borrador.
    ========================================================================== */
 
 // --- Utilidades de texto -------------------------------------------------
