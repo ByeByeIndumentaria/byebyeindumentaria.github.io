@@ -43,6 +43,28 @@ window.CatalogAPI = (() => {
       remember(await request('/auth/v1/token?grant_type=password', { method: 'POST', body: JSON.stringify({ email, password }) }));
       try { await this.authorize(); } catch (e) { remember(null); throw e; }
     },
+    async requestPasswordReset(email, redirectTo) {
+      await request('/auth/v1/recover?redirect_to=' + encodeURIComponent(redirectTo), {
+        method: 'POST', body: JSON.stringify({ email })
+      });
+    },
+    async acceptPasswordRecovery() {
+      const params = new URLSearchParams(location.hash.replace(/^#/, ''));
+      if (params.get('type') !== 'recovery' || !params.get('access_token')) return false;
+      remember({
+        access_token: params.get('access_token'),
+        refresh_token: params.get('refresh_token'),
+        expires_at: Number(params.get('expires_at')) || Math.floor(Date.now() / 1000) + Number(params.get('expires_in') || 3600)
+      });
+      session.user = await request('/auth/v1/user', {}, true);
+      remember(session);
+      return true;
+    },
+    async updatePassword(password) {
+      const user = await request('/auth/v1/user', { method: 'PUT', body: JSON.stringify({ password }) }, true);
+      session.user = user;
+      remember(session);
+    },
     async authorize() {
       const rows = await request('/rest/v1/catalog_editors?select=user_id', {}, true);
       if (!rows.length) throw new Error('Esta cuenta no está habilitada para administrar el catálogo.');
