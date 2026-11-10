@@ -31,6 +31,7 @@ window.CatalogAPI = (() => {
     let result; try { result = data ? JSON.parse(data) : null; } catch { result = null; }
     if (!response.ok) {
       if (result?.message?.includes('EDIT_CONFLICT')) throw new Error('Tu socia modificó este producto. Cerrá y volvé a abrirlo para ver la última versión antes de guardar.');
+      if (result?.message?.includes('REVISION_NOT_FOUND')) throw new Error('Esa versión ya no está disponible. Cerrá el historial y volvé a abrirlo.');
       if (response.status === 401 || response.status === 403) throw new Error('No tenés permiso o tu sesión venció. Volvé a ingresar.');
       throw new Error(result?.msg || result?.message || result?.error_description || 'No se pudo guardar. Revisá la conexión e intentá nuevamente.');
     }
@@ -92,6 +93,13 @@ window.CatalogAPI = (() => {
     },
     save(id, expectedVersion, payload) {
       return request('/rest/v1/rpc/save_catalog_product', { method: 'POST', body: JSON.stringify({ product_id: id, expected_version: expectedVersion, product_data: payload }) }, true);
+    },
+    history(id) {
+      if (!Number.isSafeInteger(id)) throw new Error('ID inválido.');
+      return request('/rest/v1/catalog_product_revisions?select=id,product_id,version,payload,changed_at&product_id=eq.' + id + '&order=version.desc', {}, true);
+    },
+    restore(id, targetVersion, expectedVersion) {
+      return request('/rest/v1/rpc/restore_catalog_product', { method: 'POST', body: JSON.stringify({ p_product_id: id, p_target_version: targetVersion, p_expected_version: expectedVersion }) }, true);
     },
     async upload(blob) {
       const extensions = {'image/jpeg':'jpg','image/png':'png','image/webp':'webp'};

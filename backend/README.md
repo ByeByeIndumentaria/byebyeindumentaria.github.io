@@ -34,7 +34,9 @@ No hay borrado desde el panel ni registro público de cuentas. La tabla de
 productos contiene únicamente información de catálogo pública. Las membresías
 son privadas. Solo usuarios autorizados pueden guardar; los clientes no pueden
 escribir ni subir fotos. Un conflicto de versión impide sobrescribir cambios
-hechos por otra persona. No se implementa historial/reversión de versiones.
+hechos por otra persona. Después de ejecutar `add-catalog-history.sql`, cada
+publicación conserva una revisión y el panel permite restaurar una versión
+anterior sin borrar el historial.
 
 Verificación local: `node --test tests/catalog-admin.cjs`.
 
