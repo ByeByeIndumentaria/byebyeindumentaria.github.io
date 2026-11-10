@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>BYE BYE · Manual operativo</title>
+  <style>
+    :root{--ink:#292820;--muted:#6f7067;--cream:#f6f4ed;--paper:#fffefa;--line:#dedbcf;--green:#3f5545;--rust:#9c3b2e;--soft:#e9eee6}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--cream);color:var(--ink);font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    header{background:var(--paper);border-bottom:1px solid var(--line);padding:22px max(20px,5vw);display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;position:sticky;top:0;z-index:2}
+    .brand{font-size:25px;font-weight:800;letter-spacing:-1px}.brand small{display:block;font-size:9px;letter-spacing:2px;font-weight:600;color:var(--muted)}
+    nav{display:flex;gap:8px;flex-wrap:wrap}a{color:inherit}nav a,.cta{border:1px solid var(--line);border-radius:8px;padding:9px 13px;text-decoration:none;background:white;font-size:14px}.cta{background:var(--green);color:white;border-color:var(--green)}
+    main{width:min(1040px,calc(100% - 32px));margin:42px auto 80px}.hero{display:grid;grid-template-columns:1.4fr .8fr;gap:25px;align-items:start;margin-bottom:35px}
+    h1,h2{font-family:Georgia,serif;font-weight:400}h1{font-size:clamp(38px,7vw,62px);line-height:1.02;margin:8px 0 16px}h2{font-size:30px;margin:0 0 14px}h3{font-size:18px;margin:24px 0 8px}.eyebrow{font-size:11px;letter-spacing:2px;font-weight:700;color:var(--rust);text-transform:uppercase}.lead{font-size:19px;color:var(--muted)}
+    .status,.card,.step{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:22px}.status strong{display:block;color:var(--green);margin-bottom:8px}.status ul{padding-left:20px;margin-bottom:0}
+    .quick{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:26px 0 42px}.quick a{text-decoration:none}.quick strong{display:block;font-size:17px;margin-bottom:5px}.quick span{color:var(--muted);font-size:14px}
+    section{scroll-margin-top:105px;margin-top:50px}.steps{display:grid;gap:12px;counter-reset:steps}.step{padding-left:64px;position:relative}.step:before{counter-increment:steps;content:counter(steps);position:absolute;left:20px;top:20px;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--soft);color:var(--green);font-weight:700}.step h3{margin:0 0 5px}.step p{margin:0;color:var(--muted)}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.card h3{margin:0 0 8px}.card p,.card li{color:var(--muted)}.card ul{padding-left:20px}.warning{border-left:5px solid var(--rust)}
+    table{border-collapse:collapse;width:100%;background:var(--paper);border:1px solid var(--line)}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--line);vertical-align:top}th{font-size:13px;color:var(--muted)}
+    footer{border-top:1px solid var(--line);padding:28px 16px;text-align:center;color:var(--muted)}code{background:#ece9df;border-radius:4px;padding:2px 5px}
+    @media(max-width:760px){header{position:static}.hero,.grid{grid-template-columns:1fr}.quick{grid-template-columns:1fr}main{margin-top:26px}.step{padding-left:56px}table{font-size:14px}}
+  </style>
+</head>
+<body>
+<header>
+  <div class="brand">BYE BYE<small>MANUAL OPERATIVO</small></div>
+  <nav>
+    <a href="../">Catálogo</a>
+    <a href="../admin/">Administración</a>
+    <a class="cta" href="../pedidos/">Notas de pedido</a>
+  </nav>
+</header>
+<main>
+  <div class="hero">
+    <div><p class="eyebrow">Trabajo diario sin depender de otra computadora</p><h1>Todo lo necesario para administrar BYE BYE.</h1><p class="lead">Este manual acompaña el catálogo, su panel de administración y las notas de pedido. Las fotos, cambios, pedidos, stock, precios y permisos se guardan en servicios compartidos.</p></div>
+    <aside class="status"><strong>Antes del traspaso</strong><ul><li>Isabella y Valentina deben crear su contraseña desde el correo más reciente.</li><li>Ambas deben probar Administración y Pedidos.</li><li>Después se puede cerrar el acceso anterior de Pedidos.</li></ul></aside>
+  </div>
+
+  <div class="quick">
+    <a class="card" href="#catalogo"><strong>Administrar catálogo</strong><span>Productos, fotos, colores, cajas y colecciones.</span></a>
+    <a class="card" href="#pedidos"><strong>Preparar pedidos</strong><span>Clientes, prendas, precios, stock y PDF.</span></a>
+    <a class="card" href="#problemas"><strong>Resolver problemas</strong><span>Qué revisar antes de pedir ayuda.</span></a>
+  </div>
+
+  <section id="inicio"><p class="eyebrow">Inicio de jornada</p><h2>Comprobación de 60 segundos</h2><div class="steps">
+    <div class="step"><h3>Entrar con la cuenta propia</h3><p>No compartir contraseñas ni enlaces de recuperación. Si olvidaste la clave, usá “Olvidé mi contraseña”.</p></div>
+    <div class="step"><h3>Confirmar la conexión</h3><p>En Pedidos debe decir <b>Base compartida conectada</b>. En Administración debe aparecer el correo de la sesión.</p></div>
+    <div class="step"><h3>Hacer un cambio pequeño y verificar</h3><p>Después de publicar un producto, abrí el catálogo y recargá. La sincronización normal puede demorar hasta 10 segundos.</p></div>
+  </div></section>
+
+  <section id="catalogo"><p class="eyebrow">Administración de catálogo</p><h2>Productos, fotos y cajas</h2><div class="steps">
+    <div class="step"><h3>Agregar o editar una prenda</h3><p>Buscá por nombre o código. Completá nombre, código, colecciones, género, tipo y disponibilidad. Para una alta nueva usá “Agregar producto”.</p></div>
+    <div class="step"><h3>Cargar fotos</h3><p>Subí JPG, PNG o WebP desde el teléfono o computadora que estés usando. Las fotos se optimizan y se guardan en la nube; no hace falta Drive ni la computadora de Isabella.</p></div>
+    <div class="step"><h3>Ordenar y vincular fotos</h3><p>Usá las flechas para ordenar. Elegí el color correspondiente cuando una foto deba abrirse desde un botón de color. También puede quedar sin color como foto general.</p></div>
+    <div class="step"><h3>Definir la forma de venta</h3><p>Elegí una opción si sólo se vende de una manera. Elegí varias opciones para ofrecer, por ejemplo, “Caja por color” y “Caja surtida”. Cada opción puede incluir sólo los colores que correspondan.</p></div>
+    <div class="step"><h3>Cargar la curva</h3><p>Aplicá los talles y completá cuántas unidades trae cada talle. En caja por color, cada color conserva su propia curva; no es obligatorio ofrecer todos los colores en esa modalidad.</p></div>
+    <div class="step"><h3>Publicar y comprobar</h3><p>Tocá “Publicar producto” una sola vez y esperá la confirmación. Después abrí “Ver catálogo”, recargá y comprobá fotos, colores, stock y caja.</p></div>
+  </div>
+  <h3>Colecciones</h3><div class="grid"><div class="card"><h3>Stock</h3><p>La colección permite agregar prendas disponibles al pedido.</p></div><div class="card"><h3>Preventa</h3><p>Se muestra en el catálogo, pero avisa que todavía no está disponible para pedidos.</p></div></div>
+  </section>
+
+  <section id="pedidos"><p class="eyebrow">Notas de pedido</p><h2>Preparar, guardar y continuar</h2><div class="steps">
+    <div class="step"><h3>Crear el pedido</h3><p>Completá cliente, teléfono, transporte y estado. El número puede escribirse o dejarse vacío para asignarlo automáticamente.</p></div>
+    <div class="step"><h3>Agregar prendas</h3><p>Buscá por nombre o código, elegí formato y color cuando corresponda, indicá cajas y agregá. La falta de stock genera una advertencia, pero no bloquea el pedido.</p></div>
+    <div class="step"><h3>Guardar antes de salir</h3><p>“Guardar pedido” lo deja en la base compartida. “Pedidos guardados” permite abrirlo desde otra computadora. El navegador mantiene además un borrador de emergencia.</p></div>
+    <div class="step"><h3>Generar el PDF</h3><p>Guardá primero para asegurar el número y luego descargá el PDF. Revisá cliente, cantidades, precios y total antes de enviarlo.</p></div>
+  </div>
+  <h3>Herramientas de administradora</h3><div class="grid"><div class="card"><h3>Importar precios</h3><p>Elegí uno o más Excel. La lista queda compartida con todo el equipo; no hay que repetir la importación en otra computadora.</p></div><div class="card"><h3>Asistente de matching</h3><p>Relaciona una prenda sin código con su artículo de precios. La decisión confirmada también queda compartida.</p></div><div class="card"><h3>Stock</h3><p>Consultá movimientos y ajustá sólo con un motivo claro. El historial permite entender quién cambió una cantidad.</p></div><div class="card warning"><h3>Restablecer precios</h3><p>Borra precios importados y asociaciones para todo el equipo. Usalo únicamente si la lista completa es incorrecta.</p></div></div>
+  </section>
+
+  <section id="permisos"><p class="eyebrow">Acceso y seguridad</p><h2>Qué puede hacer cada rol</h2><table><thead><tr><th>Rol</th><th>Puede hacer</th><th>No necesita</th></tr></thead><tbody>
+    <tr><td><b>Propietaria</b></td><td>Administrar usuarios, pedidos, inventario y configuración.</td><td>La computadora de Isabella.</td></tr>
+    <tr><td><b>Administradora</b></td><td>Editar catálogo, pedidos, stock, precios y asociaciones.</td><td>Archivos locales del catálogo.</td></tr>
+    <tr><td><b>Operadora</b></td><td>Crear y editar pedidos.</td><td>Acceso a configuración sensible.</td></tr>
+    <tr><td><b>Solo lectura</b></td><td>Consultar información.</td><td>Permiso de edición.</td></tr>
+  </tbody></table></section>
+
+  <section id="problemas"><p class="eyebrow">Diagnóstico</p><h2>Si algo no se ve o no se guarda</h2><div class="grid">
+    <div class="card"><h3>No puedo ingresar</h3><ul><li>Revisá que el correo sea el autorizado.</li><li>Usá el enlace de recuperación más reciente.</li><li>Los enlaces vencen; pedí otro si hace falta.</li><li>Revisá Spam.</li></ul></div>
+    <div class="card"><h3>El catálogo no cambió</h3><ul><li>Confirmá que apareció el mensaje de publicación.</li><li>Esperá 10 segundos y recargá.</li><li>Abrí el producto nuevamente para confirmar que el cambio quedó guardado.</li></ul></div>
+    <div class="card"><h3>Una foto no aparece</h3><ul><li>Comprobá que terminó la subida.</li><li>Volvé a abrir el producto.</li><li>Revisá el orden y el color vinculado.</li><li>No cierres la ventana mientras diga que está guardando.</li></ul></div>
+    <div class="card"><h3>Pedidos dice error de conexión</h3><ul><li>No dupliques el pedido.</li><li>Conservá la pestaña abierta.</li><li>Revisá internet y recargá una vez.</li><li>Abrí Pedidos guardados para confirmar antes de volver a guardar.</li></ul></div>
+  </div></section>
+
+  <section id="cierre"><p class="eyebrow">Cierre de jornada</p><h2>Dejar todo preparado para la siguiente persona</h2><div class="steps">
+    <div class="step"><h3>Guardar lo que esté abierto</h3><p>No dejar pedidos con “Cambios sin guardar” ni productos abiertos en el editor.</p></div>
+    <div class="step"><h3>Comprobar los cambios importantes</h3><p>Si se modificaron fotos, cajas, stock o precios, revisarlos desde la vista que usa el equipo.</p></div>
+    <div class="step"><h3>Cerrar sesión en equipos ajenos</h3><p>Usá “Salir”. No guardes contraseñas en una computadora compartida.</p></div>
+  </div></section>
+</main>
+<footer>BYE BYE · Manual operativo compartido · Actualizado el 10/11/2026</footer>
+</body>
+</html>

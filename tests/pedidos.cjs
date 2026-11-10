@@ -340,3 +340,15 @@ test('el borrador conserva una copia local de emergencia', () => {
   assert.match(app, /bb_pedido_en_curso/);
   assert.match(app, /save_order_with_inventory/);
 });
+
+test('el manual operativo queda disponible desde Administración y Pedidos', () => {
+  const manual = fs.readFileSync('manual/index.html', 'utf8');
+  const admin = fs.readFileSync('admin/index.html', 'utf8');
+  const pedidos = fs.readFileSync('pedidos/index.html', 'utf8');
+  assert.match(admin, /href="\.\.\/manual\/">Manual/);
+  assert.match(pedidos, /href="\.\.\/manual\/">Manual/);
+  assert.match(manual, /Trabajo diario sin depender de otra computadora/);
+  assert.match(manual, /Caja por color/);
+  assert.match(manual, /Importar precios/);
+  assert.match(manual, /Olvidé mi contraseña/);
+});

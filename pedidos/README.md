@@ -73,10 +73,9 @@ muestra, uno por uno, los productos sin código propio y te sugiere el
 artículo de precio más parecido por nombre. Confirmás, corregís a mano, o
 marcás "sin match". La decisión queda compartida para todo el equipo.
 
-Actualmente hay **13 productos sin código** en tu catálogo (los mismos que
-ya te había listado). Si les agregás el código directamente en tu
-`script.js` y me lo volvés a pasar, regenero este archivo con todo ya
-resuelto.
+Los productos sin código pueden resolverse desde el asistente de matching o
+agregando el código desde Administración de catálogo. No hace falta editar ni
+enviar archivos del sitio.
 
 ---
 
@@ -109,12 +108,9 @@ Igual que antes:
 - Cada pedido puede marcarse como Borrador, En confirmación, Por pagar, Pagado, En preparación, Entregado o Cancelado.
 - Si intentás cerrar la página con cambios pendientes, el navegador muestra una advertencia.
 
-Actualmente **136 de 180 productos** ya tienen su curva de caja cargada
-(la misma info que usa tu sitio web). Los que todavía no la tienen son,
-sobre todo, productos de la colección anterior a "Producción Invierno
-2027". Si les cargás la curva en el sitio (con `packaging: { totalPieces:
-..., rows: [...] }`, como los demás) y me volvés a pasar el `script.js`,
-te regenero el archivo con eso ya resuelto también para esos.
+Las curvas faltantes se cargan desde Administración de catálogo. Cuando se
+publica una curva, queda disponible tanto en el catálogo como en Pedidos sin
+editar ni trasladar archivos.
 
 ---
 
