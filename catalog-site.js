@@ -39,7 +39,7 @@
     if(event.data?.type==='catalog-site-highlight'){
       document.querySelectorAll('[data-editor-selected]').forEach(node=>node.removeAttribute('data-editor-selected'));
       const id=safeText(event.data.id),target=[...document.querySelectorAll('[data-edit-id]')].find(node=>node.dataset.editId===id||node.dataset.editId.startsWith(`${id}.`));
-      if(target){target.dataset.editorSelected='true';target.scrollIntoView({block:'center',behavior:'smooth'});}
+      if(target)target.dataset.editorSelected='true';
     }
   });
   document.addEventListener('click',event=>{if(window.parent===window)return;const target=event.target.closest('[data-edit-id]');if(!target)return;event.preventDefault();window.parent.postMessage({type:'catalog-site-select',id:target.dataset.editId},location.origin);},true);

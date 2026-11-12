@@ -1,0 +1,11 @@
+/* Stable editor viewport: keep desktop/tablet/mobile widths predictable in Safari. */
+@media (min-width:901px){
+  :root{--panel-width:300px}
+  .canvas-area{justify-content:flex-start;padding:18px 18px 54px}
+  .canvas-frame.device-desktop{width:max(900px,100%);max-width:1440px}
+  .canvas-frame.device-tablet{width:768px;max-width:none}
+  .canvas-frame.device-mobile{width:390px;max-width:none}
+  .canvas-help{left:calc(82px + var(--panel-width) + 18px)}
+}
+.canvas-frame{transform:none;transition:width .18s ease;overflow:hidden}
+.canvas-frame iframe{min-width:100%;min-height:100%;background:var(--catalog-bg,#d8cbbb)}
