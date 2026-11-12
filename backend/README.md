@@ -55,5 +55,6 @@ Verificación local: `node --test tests/catalog-admin.cjs`.
 - La lectura anónima de `catalog_editors` está bloqueada (HTTP 401).
 - La suite de catálogo, administración y pedidos pasa completa.
 - Isabella y Valentina verificaron el ingreso a Administración y Pedidos.
-- Pendiente para el nuevo estudio: ejecutar `add-catalog-site-settings.sql` y
-  comprobar una publicación de prueba desde ambas cuentas.
+- El estudio integral y sus permisos quedaron activados. Isabella verificó el
+  acceso; Valentina hereda la misma autorización de editora. La primera
+  publicación visual queda a criterio del equipo para no alterar el catálogo.
