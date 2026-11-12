@@ -4889,7 +4889,7 @@ function clearActiveFilter(type) {
 
 // ── RENDER PRODUCTS ──────────────────────────────
 function getFilteredProducts() {
-  const managedOrder = new Map((window.CatalogSiteSettings?.productOrder || []).map((id,index) => [Number(id),index]));
+  const managedOrder = new Map((window.CatalogSiteSettings?.grid?.productOrder || window.CatalogSiteSettings?.productOrder || []).map((id,index) => [Number(id),index]));
   return getCollectionProducts().filter(p => {
     const genderOk = activeGender === 'all' || p.category === activeGender;
     const catOk = activeCategory === 'all' || getProductSubcategories(p).includes(activeCategory);
@@ -4900,7 +4900,7 @@ function getFilteredProducts() {
     ].filter(Boolean).join(' '));
     const searchOk = !productSearchQuery || searchableText.includes(productSearchQuery);
     return genderOk && catOk && searchOk;
-  }).sort((a, b) => (window.CatalogSiteSettings?.stockFirst === false ? 0 : Number(b.inStock) - Number(a.inStock)) || (managedOrder.get(Number(a.id)) ?? 999999) - (managedOrder.get(Number(b.id)) ?? 999999));
+  }).sort((a, b) => (window.CatalogSiteSettings?.grid?.stockFirst === false || window.CatalogSiteSettings?.stockFirst === false ? 0 : Number(b.inStock) - Number(a.inStock)) || (managedOrder.get(Number(a.id)) ?? 999999) - (managedOrder.get(Number(b.id)) ?? 999999));
 }
 
 function renderProducts() {
@@ -4931,6 +4931,7 @@ function renderProducts() {
     const inCart = cart.some(c => c.id === p.id);
     const card = document.createElement('div');
     card.className = 'product-card' + (preorderCollection ? ' preorder' : '') + (p.inStock ? '' : ' out-of-stock');
+    card.dataset.editId = 'card';
     card.dataset.id = p.id;
     card.tabIndex = 0;
     card.setAttribute('role', 'button');
@@ -5595,7 +5596,8 @@ function sendWhatsApp() {
   lines.push('¡Hola! Quisiera pedir cotizacion de estas prendas.');
 
   const msg = encodeURIComponent(lines.join('\n'));
-  window.open(`https://wa.me/?text=${msg}`, '_blank');
+  const whatsappNumber = String(window.CatalogSiteSettings?.whatsapp?.number || '').replace(/\D/g, '');
+  window.open(`https://wa.me/${whatsappNumber}?text=${msg}`, '_blank');
 }
 
 // ── PDF ───────────────────────────────────────────
@@ -6121,9 +6123,10 @@ function initHeroCarousel() {
 
   const restartAutoplay = () => {
     window.clearInterval(autoplayTimer);
+    if (carousel.dataset.autoplay === 'false') return;
     autoplayTimer = window.setInterval(() => {
       if (!document.hidden) showSlide(activeIndex + 1);
-    }, 7000);
+    }, Math.max(2, Number(carousel.dataset.autoplaySeconds) || 7) * 1000);
   };
 
   carousel.addEventListener('pointerdown', event => {
@@ -6143,6 +6146,8 @@ function initHeroCarousel() {
   showSlide(0);
   restartAutoplay();
 }
+
+window.addEventListener('catalog-managed-hero-replaced', initHeroCarousel);
 
 // ── EVENTS ───────────────────────────────────────
 function bindEvents() {
