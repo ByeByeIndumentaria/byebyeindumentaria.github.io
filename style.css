@@ -31,7 +31,22 @@
 
   --header-h: 64px;
   --sidebar-w: 400px;
+  --site-card-columns: 4;
+  --site-mobile-columns: 1;
   --transition: 0.22s ease;
+}
+
+.managed-content-blocks { max-width: 1400px; margin: 22px auto; padding: 0 24px; display: grid; gap: 12px; }
+.managed-block { padding: 22px; border-radius: var(--radius); background: var(--white); color: var(--black); text-align: center; }
+.managed-block-announcement { padding: 13px 20px; background: var(--accent); color: #fff; }
+.managed-block h2 { margin-bottom: 6px; font: 500 clamp(18px,2.5vw,28px)/1.15 var(--font-display); }
+.managed-block p { line-height: 1.5; }
+.managed-block-button { display: inline-flex; margin-top: 14px; padding: 11px 18px; border-radius: 999px; background: var(--black); color: var(--white); text-decoration: none; }
+.managed-hero-content .hero-title { white-space: pre-line; }
+.site-compact-cards .card-info { padding-top: 10px; padding-bottom: 14px; }
+@media (max-width: 768px) {
+  .managed-content-blocks { margin: 12px auto; padding: 0 12px; }
+  .managed-block { padding: 16px; }
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -328,7 +343,7 @@ input:focus-visible,
   margin: 0 auto;
   padding: 46px 24px 88px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(var(--site-card-columns), minmax(0, 1fr));
   gap: 32px 24px;
 }
 
@@ -1034,7 +1049,7 @@ input:focus-visible,
   }
 
   .catalog-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(var(--site-mobile-columns), minmax(0, 1fr));
     gap: 28px;
     padding: 24px 16px 60px;
   }
@@ -1062,7 +1077,7 @@ input:focus-visible,
 }
 
 @media (max-width: 400px) {
-  .catalog-grid { grid-template-columns: 1fr; gap: 26px; padding-inline: 12px; }
+  .catalog-grid { grid-template-columns: repeat(var(--site-mobile-columns), minmax(0, 1fr)); gap: 26px; padding-inline: 12px; }
   .card-name { font-size: 14px; }
   .card-code { font-size: 8px; }
   .card-img-wrap { margin-bottom: 10px; }

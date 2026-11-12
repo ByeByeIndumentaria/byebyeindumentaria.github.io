@@ -22,6 +22,12 @@ En un proyecto que ya tenía el panel activado, ejecutar una vez
 `add-collections.sql` para habilitar el alta de colecciones y
 la configuración Stock/Preventa desde el panel.
 
+Para activar el estudio integral de diseño y organización, ejecutar una vez
+`add-catalog-site-settings.sql`. Este agregado mantiene separados el borrador y
+la versión publicada: los clientes sólo pueden leer la publicada. Habilita
+estética, flyers desktop/mobile, bloques y botones, categorías, orden de
+productos, vista previa e historial recuperable de publicaciones.
+
 El catálogo consulta cambios cada 10 segundos y al volver a la pestaña. Ante
 un error conserva lo que ya estaba cargado y, al abrir la web, puede usar el
 catálogo histórico como respaldo. Los cambios más recientes requieren conexión.
@@ -30,7 +36,9 @@ Los archivos subidos son WebP de hasta 1600 px en el lado mayor; se conserva la
 proporción, sin recortar. No se sobrescriben archivos. Si falla la publicación,
 se permite reintentar; pueden quedar fotos sin asociar que se limpian manualmente.
 
-No hay borrado desde el panel ni registro público de cuentas. La tabla de
+No hay borrado destructivo desde el panel ni registro público de cuentas. Los
+productos pueden archivarse y restaurarse; colecciones y categorías pueden
+ocultarse sin perder datos. La tabla de
 productos contiene únicamente información de catálogo pública. Las membresías
 son privadas. Solo usuarios autorizados pueden guardar; los clientes no pueden
 escribir ni subir fotos. Un conflicto de versión impide sobrescribir cambios
@@ -40,13 +48,12 @@ anterior sin borrar el historial.
 
 Verificación local: `node --test tests/catalog-admin.cjs`.
 
-## Estado verificado el 24/09/2026
+## Estado verificado el 12/11/2026
 
 - Proyecto conectado: `fkqiqyorfbihezpjfcru` (BYE BYE Catálogo).
-- La lectura pública de `catalog_products` responde HTTP 200; todavía no hay
-  productos guardados en la nube. El catálogo histórico permanece en el sitio.
+- La lectura pública de productos funciona y las ediciones se guardan en la nube.
 - La lectura anónima de `catalog_editors` está bloqueada (HTTP 401).
-- Las 13 pruebas de `tests/catalog-admin.cjs` y `tests/catalog-api.cjs` pasan.
-- Las dos cuentas indicadas por la propietaria existen y sus membresías en
-  `catalog_editors` están verificadas.
-- Pendiente: probar ingreso y guardado con una sesión de editora.
+- La suite de catálogo, administración y pedidos pasa completa.
+- Isabella y Valentina verificaron el ingreso a Administración y Pedidos.
+- Pendiente para el nuevo estudio: ejecutar `add-catalog-site-settings.sql` y
+  comprobar una publicación de prueba desde ambas cuentas.

@@ -7,6 +7,7 @@ let seed, modelImagesByProductId={}, records=new Map(), editing=null, editingId=
 let pendingPhotos=new Map(), currentGroup=0, savedPackaging=new Map(), galleryDirty=false;
 let collections=new Map(), editingCollectionId=null, collectionVersion=0, collectionBusy=false;
 let photoMaintenanceBusy=false, historyBusy=false;
+let showArchived=false, archiveBusy=false;
 const cardImageObserver='IntersectionObserver' in window?new IntersectionObserver(entries=>{for(const entry of entries)if(entry.isIntersecting){loadCardImage(entry.target);cardImageObserver.unobserve(entry.target);}},{rootMargin:'800px 0px'}):null;
 const legacyPreorders=new Set(['verano-2027','produccion-invierno-2027','sweaters-2027','hoodies-2027']);
 function el(tag,text,className){const e=document.createElement(tag);if(text!=null)e.textContent=text;if(className)e.className=className;return e;}
@@ -159,7 +160,19 @@ async function loadCollections(){
 }
 function renderCollections(){
   const list=$('collections-list');list.replaceChildren();
-  for(const row of [...collections.values()].sort((a,b)=>(a.position??999)-(b.position??999))){const c=row.payload,card=el('article',null,'collection-card'),kind=el('span',c.type==='preorder'?'Preventa':'Stock','collection-kind'+(c.type==='preorder'?' preorder':''));card.append(kind,el('h3',c.name),el('p',c.label||c.tagline||'Sin descripción'));const edit=el('button','Editar colección');edit.type='button';edit.onclick=()=>openCollectionEditor(row.id);card.append(edit);list.append(card);}
+  const ordered=[...collections.values()].sort((a,b)=>(a.position??999)-(b.position??999));
+  ordered.forEach((row,index)=>{const c=row.payload,card=el('article',null,'collection-card'),kind=el('span',c.hidden?'Oculta':c.type==='preorder'?'Preventa':'Stock','collection-kind'+(c.type==='preorder'?' preorder':''));card.append(kind,el('h3',c.name),el('p',c.label||c.tagline||'Sin descripción'));const edit=el('button','Editar colección');edit.type='button';edit.onclick=()=>openCollectionEditor(row.id);const up=el('button','↑');up.disabled=index===0;up.onclick=()=>moveCollection(index,-1);const down=el('button','↓');down.disabled=index===ordered.length-1;down.onclick=()=>moveCollection(index,1);const hide=el('button',c.hidden?'Mostrar':'Ocultar');hide.onclick=()=>updateCollection(row,{hidden:!c.hidden});card.append(edit,up,down,hide);list.append(card);});
+}
+async function updateCollection(row,changes){
+  if(collectionBusy||preview)return;collectionBusy=true;
+  try{const payload={...clone(row.payload),...changes,position:changes.position??row.position};const result=await api.saveCollection(row.id,row.version,payload);collections.set(result.id,result);refreshCollectionControls();notice('Colección actualizada.');}
+  catch(error){notice(error.message);}finally{collectionBusy=false;}
+}
+async function moveCollection(index,direction){
+  if(collectionBusy||preview)return;const ordered=[...collections.values()].sort((a,b)=>(a.position??999)-(b.position??999)),first=ordered[index],second=ordered[index+direction];if(!first||!second)return;
+  collectionBusy=true;notice('Reordenando colecciones…');
+  try{const firstPayload={...clone(first.payload),position:second.position},secondPayload={...clone(second.payload),position:first.position};const savedFirst=await api.saveCollection(first.id,first.version,firstPayload),savedSecond=await api.saveCollection(second.id,second.version,secondPayload);collections.set(savedFirst.id,savedFirst);collections.set(savedSecond.id,savedSecond);refreshCollectionControls();notice('Orden de colecciones actualizado.');}
+  catch(error){notice(error.message);}finally{collectionBusy=false;}
 }
 function openCollectionEditor(id=null){
   editingCollectionId=id;const row=id?collections.get(id):null;collectionVersion=row?.version||0;const c=row?.payload||{name:'',label:'',tagline:'',type:'stock'};
@@ -184,14 +197,21 @@ async function loadRecords(){
 function renderCards(){
   cardImageObserver?.disconnect();
   const q=model.normalize($('search').value),collection=$('collection-filter').value;
-  const list=[...records.values()].filter(r=>(!collection||(r.payload.collections||[r.payload.collection]).includes(collection))&&model.normalize(r.payload.name+' '+(r.payload.orderNumber||'')).includes(q));
+  const list=[...records.values()].filter(r=>Boolean(r.payload.archived)===showArchived&&(!collection||(r.payload.collections||[r.payload.collection]).includes(collection))&&model.normalize(r.payload.name+' '+(r.payload.orderNumber||'')).includes(q));
   $('count').textContent=`${list.length} productos`;
   $('products').replaceChildren();
   for(const r of list){const p=r.payload,card=el('article',null,'card'),img=el('img');img.alt=p.name;
     const src=galleryFor(p).sources[0];if(src)queueCardImage(img,asset(src));else img.alt='Sin foto · '+p.name;
     const body=el('div',null,'card-info');body.append(el('span',p.isHidden?'Oculto':p.inStock===false?'Sin stock':p.subcategory,'badge'),el('h3',p.name),el('p',p.orderNumber||'Sin código'),el('p',`${p.colors.length} colores · ${p.packaging||p.purchaseOptions?.length?'Curva cargada':'Curva pendiente'}`));
-    const actions=el('div',null,'actions');for(const [label,curve] of [['Editar',false],['Editar curva',true]]){const b=el('button',label);b.onclick=()=>openEditor(r.id,curve);actions.append(b);}if(!preview&&r.version>0){const history=el('button','Historial');history.onclick=()=>openHistory(Number(r.id));actions.append(history);}body.append(actions);card.append(img,body);$('products').append(card);
+    const actions=el('div',null,'actions');for(const [label,curve] of [['Editar',false],['Editar curva',true]]){const b=el('button',label);b.onclick=()=>openEditor(r.id,curve);actions.append(b);}if(!preview&&r.version>0){const history=el('button','Historial');history.onclick=()=>openHistory(Number(r.id));actions.append(history);const archive=el('button',p.archived?'Restaurar':'Archivar');archive.onclick=()=>setArchived(Number(r.id),!p.archived);actions.append(archive);}body.append(actions);card.append(img,body);$('products').append(card);
   }
+}
+async function setArchived(id,archived){
+  if(archiveBusy||preview)return;const row=records.get(id);if(!row)return;
+  if(archived&&!confirm(`¿Archivar ${row.payload.name}? Dejará de verse en el catálogo, pero se puede restaurar.`))return;
+  archiveBusy=true;notice(archived?'Archivando producto…':'Restaurando producto…');
+  try{const payload=clone(row.payload);payload.archived=archived;const result=await api.save(id,row.version,payload);const [persisted]=await api.getProducts([id]);if(!persisted||persisted.version!==result.version)throw new Error('No se pudo verificar el cambio.');records.set(id,persisted);renderCards();notice(archived?'Producto archivado. Podés recuperarlo desde “Ver archivados”.':'Producto restaurado y nuevamente visible.');}
+  catch(error){notice(error.message);}finally{archiveBusy=false;}
 }
 async function openHistory(id){
   const current=records.get(id),list=$('history-list');
@@ -327,6 +347,7 @@ async function save(event){event.preventDefault();if(preview||busy||uploads)retu
   }catch(e){message(e);}finally{busy=false;$('save').disabled=preview;}
 }
 $('add-product').onclick=()=>openEditor(null);$('close-editor').onclick=closeEditor;$('cancel').onclick=closeEditor;
+{const settingsButton=el('button','Diseño, flyers y orden');settingsButton.type='button';settingsButton.onclick=()=>{location.href='settings.html';};$('optimize-photos').before(settingsButton);}
 $('close-history').onclick=()=>{if(!historyBusy)$('history-dialog').close();};$('history-dialog').addEventListener('cancel',event=>{if(historyBusy)event.preventDefault();});
 $('editor').addEventListener('cancel',e=>{e.preventDefault();closeEditor();});$('product-form').addEventListener('submit',save);
 $('product-form').addEventListener('input',()=>{dirty=true;});window.addEventListener('beforeunload',e=>{if(dirty||busy){e.preventDefault();e.returnValue='';}});
@@ -344,6 +365,7 @@ $('pending').onchange=()=>{const g=group();if($('pending').checked){savedPackagi
 $('set-sizes').onclick=()=>{try{const g=group(),next=model.sizes($('sizes').value);if(g.sizes.some(s=>!next.includes(s))&&!confirm('Los talles quitados perderán sus cantidades. ¿Continuar?'))return;g.sizes=next;for(const row of g.packaging.rows){row.sizePieces=Object.fromEntries(next.map(s=>[s,row.sizePieces?.[s]??null]));delete row.curveText;delete row.pieces;}dirty=true;renderCurve();}catch(e){message(e);}};
 $('copy-curve').onclick=()=>{try{const g=group(),first=g.packaging.rows[0];if(!first||!g.sizes.length)throw new Error('Primero agregá colores, talles y completá la primera curva.');g.sizes.forEach(s=>model.quantity(first.sizePieces[s]));for(const row of g.packaging.rows){row.sizePieces=clone(first.sizePieces);delete row.curveText;delete row.pieces;}dirty=true;renderCurve();}catch(e){message(e);}};
 $('search').oninput=renderCards;$('collection-filter').onchange=renderCards;
+{const archivedLabel=el('label',null,'check'),archivedInput=el('input');archivedInput.type='checkbox';archivedInput.onchange=()=>{showArchived=archivedInput.checked;renderCards();};archivedLabel.append(archivedInput,document.createTextNode('Ver archivados'));$('count').before(archivedLabel);}
 $('optimize-photos').onclick=optimizeExistingPhotos;
 $('manage-collections').onclick=()=>{$('collections-panel').hidden=!$('collections-panel').hidden;if(!$('collections-panel').hidden)$('collections-panel').scrollIntoView({behavior:'smooth',block:'start'});};
 $('add-collection').onclick=()=>openCollectionEditor();$('close-collection-editor').onclick=closeCollectionEditor;$('cancel-collection').onclick=closeCollectionEditor;$('collection-form').addEventListener('submit',saveCollection);$('collection-editor').addEventListener('cancel',event=>{event.preventDefault();closeCollectionEditor();});

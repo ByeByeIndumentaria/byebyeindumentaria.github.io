@@ -4521,7 +4521,7 @@ function getModalAddButtonLabel(product, selectedOption, inCart) {
 function getCollectionProducts() {
   return products.filter(product => (
     activeCollection === "todos" || product.collections.includes(activeCollection)
-  ) && !product.isHidden);
+  ) && !product.isHidden && !product.archived);
 }
 
 const GENDER_LABELS = {
@@ -4546,8 +4546,16 @@ function getProductSubcategories(product) {
   return product.subcategory ? [product.subcategory] : [];
 }
 
+function getManagedCategory(name) {
+  return (window.CatalogSiteSettings?.categories || []).find(category => category?.name === name);
+}
+
+function getCategoryLabel(name) {
+  return getManagedCategory(name)?.label || name;
+}
+
 function formatProductSubcategory(product) {
-  return getProductSubcategories(product).join(" / ");
+  return getProductSubcategories(product).filter(name => getManagedCategory(name)?.hidden !== true).map(getCategoryLabel).join(" / ");
 }
 
 function getStockLabel(product) {
@@ -4784,13 +4792,16 @@ function buildCategoryFilters() {
   allBtn.textContent = 'Todas las prendas';
   categoryFilters.appendChild(allBtn);
 
-  const cats = [...new Set(getCollectionProducts().flatMap(getProductSubcategories))].sort();
+  const managedOrder = new Map((window.CatalogSiteSettings?.categories || []).map((category,index) => [category.name,index]));
+  const cats = [...new Set(getCollectionProducts().flatMap(getProductSubcategories))]
+    .filter(cat => getManagedCategory(cat)?.hidden !== true)
+    .sort((a,b) => (managedOrder.get(a) ?? 9999) - (managedOrder.get(b) ?? 9999) || a.localeCompare(b));
   cats.forEach(cat => {
     const btn = document.createElement('button');
     btn.className = `pill ${activeCategory === cat ? 'active' : ''}`;
     btn.dataset.filter = 'category';
     btn.dataset.value = cat;
-    btn.textContent = cat;
+    btn.textContent = getCategoryLabel(cat);
     categoryFilters.appendChild(btn);
   });
 }
@@ -4878,6 +4889,7 @@ function clearActiveFilter(type) {
 
 // ── RENDER PRODUCTS ──────────────────────────────
 function getFilteredProducts() {
+  const managedOrder = new Map((window.CatalogSiteSettings?.productOrder || []).map((id,index) => [Number(id),index]));
   return getCollectionProducts().filter(p => {
     const genderOk = activeGender === 'all' || p.category === activeGender;
     const catOk = activeCategory === 'all' || getProductSubcategories(p).includes(activeCategory);
@@ -4888,7 +4900,7 @@ function getFilteredProducts() {
     ].filter(Boolean).join(' '));
     const searchOk = !productSearchQuery || searchableText.includes(productSearchQuery);
     return genderOk && catOk && searchOk;
-  }).sort((a, b) => Number(b.inStock) - Number(a.inStock));
+  }).sort((a, b) => (window.CatalogSiteSettings?.stockFirst === false ? 0 : Number(b.inStock) - Number(a.inStock)) || (managedOrder.get(Number(a.id)) ?? 999999) - (managedOrder.get(Number(b.id)) ?? 999999));
 }
 
 function renderProducts() {
@@ -6157,7 +6169,7 @@ function bindEvents() {
     document.body.classList.remove('filter-menu-open');
     filterMenuLastFocus?.focus?.();
   };
-  document.querySelectorAll('.hero-cta[data-collection]').forEach(link => {
+  document.querySelectorAll('.hero-cta[data-collection], .managed-block-button[data-collection]').forEach(link => {
     link.addEventListener('click', () => activateCatalogCollection(link.dataset.collection));
   });
 
@@ -6297,4 +6309,4 @@ function bindEvents() {
 }
 
 // ── START ─────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', async () => { await (window.CatalogSiteReady || Promise.resolve()); init(); });

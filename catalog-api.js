@@ -88,6 +88,28 @@ window.CatalogAPI = (() => {
     async listCollections() {
       return request('/rest/v1/catalog_collections?select=*&order=position,id');
     },
+    async getSiteSettings() {
+      return await request('/rest/v1/rpc/get_catalog_site_settings', { method: 'POST', body: '{}' }) || {};
+    },
+    async getEditorSiteSettings() {
+      const rows = await request('/rest/v1/rpc/get_catalog_site_editor_settings', { method: 'POST', body: '{}' }, true);
+      return Array.isArray(rows) ? rows[0] : rows;
+    },
+    async saveSiteDraft(expectedVersion, payload) {
+      const rows = await request('/rest/v1/rpc/save_catalog_site_draft', { method: 'POST', body: JSON.stringify({ expected_version: expectedVersion, settings_data: payload }) }, true);
+      return Array.isArray(rows) ? rows[0] : rows;
+    },
+    async publishSiteSettings(expectedVersion) {
+      const rows = await request('/rest/v1/rpc/publish_catalog_site_settings', { method: 'POST', body: JSON.stringify({ expected_version: expectedVersion }) }, true);
+      return Array.isArray(rows) ? rows[0] : rows;
+    },
+    async siteSettingsHistory() {
+      return request('/rest/v1/rpc/list_catalog_site_revisions', { method: 'POST', body: '{}' }, true);
+    },
+    async restoreSiteSettings(targetVersion, expectedVersion) {
+      const rows = await request('/rest/v1/rpc/restore_catalog_site_revision', { method: 'POST', body: JSON.stringify({ target_version: targetVersion, expected_version: expectedVersion }) }, true);
+      return Array.isArray(rows) ? rows[0] : rows;
+    },
     saveCollection(id, expectedVersion, payload) {
       return request('/rest/v1/rpc/save_catalog_collection', { method: 'POST', body: JSON.stringify({ collection_id: id, expected_version: expectedVersion, collection_data: payload }) }, true);
     },

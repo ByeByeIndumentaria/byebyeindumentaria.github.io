@@ -67,7 +67,7 @@
       fingerprint=next;
       // Refresh open detail only when its saved version changes, preserving its option.
       const openId=currentModalProduct?.id,openBefore=currentModalProduct;
-      cart=cart.map(item=>{const p=products.find(p=>p.id===item.id),cartCollection=collections.find(c=>c.id===(item.cartCollectionId||item.collection));if(!p||p.isHidden||(cartCollection&&isPreorderCollection(cartCollection)))return null;const selectedPurchaseOption=p.purchaseOptions?.find(o=>o.id===item.selectedPurchaseOption?.id)||null;if(!canOrderProduct(p,cartCollection||getActiveCollection(),selectedPurchaseOption))return null;return {...item,...p,selectedPurchaseOption};}).filter(Boolean);
+      cart=cart.map(item=>{const p=products.find(p=>p.id===item.id),cartCollection=collections.find(c=>c.id===(item.cartCollectionId||item.collection));if(!p||p.isHidden||p.archived||(cartCollection&&isPreorderCollection(cartCollection)))return null;const selectedPurchaseOption=p.purchaseOptions?.find(o=>o.id===item.selectedPurchaseOption?.id)||null;if(!canOrderProduct(p,cartCollection||getActiveCollection(),selectedPurchaseOption))return null;return {...item,...p,selectedPurchaseOption};}).filter(Boolean);
       buildCategoryFilters();renderProducts();updateCartUI();persistCart();
       if(openId){const p=products.find(p=>p.id===openId);if(p?.isHidden)closeModal();else if(p&&(collectionChanged||JSON.stringify(p)!==JSON.stringify(openBefore)))openModal(p,currentPurchaseOptionId);}
     }catch(error){console.warn('El catálogo conserva su última versión disponible.',error.message);}finally{running=false;}
