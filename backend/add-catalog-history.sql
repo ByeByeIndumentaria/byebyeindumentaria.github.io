@@ -68,7 +68,7 @@ begin
   end if;
   insert into public.catalog_product_revisions(product_id,version,payload,changed_by,changed_at)
   values(result.id,result.version,result.payload,auth.uid(),result.updated_at)
-  on conflict (product_id,version) do nothing;
+  on conflict on constraint catalog_product_revisions_product_id_version_key do nothing;
   return result;
 end;
 $$;

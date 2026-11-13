@@ -30,9 +30,11 @@ window.CatalogAPI = (() => {
     const data = await response.text();
     let result; try { result = data ? JSON.parse(data) : null; } catch { result = null; }
     if (!response.ok) {
+      console.error('Error técnico del catálogo', { path, status: response.status, response: result || data });
       if (result?.message?.includes('EDIT_CONFLICT')) throw new Error('Tu socia modificó este producto. Cerrá y volvé a abrirlo para ver la última versión antes de guardar.');
       if (result?.message?.includes('REVISION_NOT_FOUND')) throw new Error('Esa versión ya no está disponible. Cerrá el historial y volvé a abrirlo.');
       if (response.status === 401 || response.status === 403) throw new Error('No tenés permiso o tu sesión venció. Volvé a ingresar.');
+      if (path.includes('/rpc/save_catalog_product')) throw new Error('No se pudo guardar el producto. Tus cambios siguen en el formulario.');
       throw new Error(result?.msg || result?.message || result?.error_description || 'No se pudo guardar. Revisá la conexión e intentá nuevamente.');
     }
     return result;
