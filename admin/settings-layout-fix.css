@@ -88,6 +88,21 @@
   color:#fff;
 }
 .canvas-help[hidden]{display:none!important}
+.hover-label{
+  position:fixed;
+  z-index:39;
+  padding:5px 8px;
+  border-radius:6px;
+  background:#1769ff;
+  color:#fff;
+  font-size:11px;
+  font-weight:700;
+  pointer-events:none;
+}
+.selection-path{display:flex;gap:5px;margin-top:3px;color:#6f7581;font-size:10px}
+.selection-path button{padding:0;border:0;background:transparent;color:inherit}
+.selection-path button+button::before{content:'›';margin-right:5px}
+.selection-toolbar{max-width:min(520px,calc(100vw - 30px))}
 .sheet-handle,.mobile-actions{display:none}
 
 @media(min-width:901px){

@@ -4991,6 +4991,7 @@ function renderProducts() {
       card.querySelector('.card-img-wrap')
     );
   });
+  window.CatalogSiteMarkEditable?.();
 }
 
 // ── IMAGE LOADER ─────────────────────────────────
@@ -5130,6 +5131,7 @@ function openModal(p, initialPurchaseOptionId = null) {
   modalDescription.hidden = !p.description;
   const modalPreorderNotice = document.getElementById('modal-preorder-notice');
   modalPreorderNotice.hidden = !isPreorderCollection() || !p.inStock;
+  window.CatalogSiteMarkEditable?.();
 
   // Colors
   const colorsEl = document.getElementById('modal-colors');
@@ -5552,6 +5554,7 @@ function updateCartUI() {
     item.querySelector('.cart-item-remove').addEventListener('click', () => removeFromCart(p.cartKey));
     cartItemsEl.appendChild(item);
   });
+  window.CatalogSiteMarkEditable?.();
 
   // Update modal add button if open
   if (currentModalProduct) {
