@@ -5,6 +5,7 @@
   const carousel=document.getElementById('hero-carousel'),originalHero=carousel?.innerHTML||'';
   const originalFooter=document.querySelector('.site-footer')?.innerHTML||'';
   const safeText=(value,fallback='')=>typeof value==='string'?value.slice(0,2000):fallback;
+  let editorMode='edit';
   const safeImage=value=>{if(typeof value!=='string')return'';if(/^images\/[\w./-]+\.(?:jpe?g|png|webp|svg)(?:\?.*)?$/i.test(value))return value;try{const url=new URL(value);return url.protocol==='https:'?url.href:'';}catch{return'';}};
   const safeLink=value=>{if(typeof value!=='string')return'';if(/^#[\w-]+$/.test(value)||/^(?:tel:|mailto:)/i.test(value))return value;try{const url=new URL(value);return url.protocol==='https:'?url.href:'';}catch{return'';}};
   const color=(value,fallback)=>window.CSS?.supports?.('color',value||'')?value:fallback;
@@ -53,11 +54,27 @@
       const id=safeText(event.data.id),target=[...document.querySelectorAll('[data-edit-id]')].find(node=>node.dataset.editId===id||node.dataset.editId.startsWith(`${id}.`));
       if(target)target.dataset.editorSelected='true';
     }
+    if(event.data?.type==='catalog-site-editor-mode'){
+      editorMode=event.data.mode==='navigate'?'navigate':'edit';
+      document.body.dataset.editorMode=editorMode;
+      document.querySelectorAll('[data-editor-selected]').forEach(node=>node.removeAttribute('data-editor-selected'));
+    }
+    if(event.data?.type==='catalog-site-open-screen'){
+      const screen=safeText(event.data.screen,'catalog');
+      const activate=node=>{if(!node)return;const previous=editorMode;editorMode='navigate';node.click();editorMode=previous;};
+      activate(document.getElementById('modal-close'));
+      activate(document.getElementById('filters-close'));
+      activate(document.getElementById('close-cart'));
+      if(screen==='product')setTimeout(()=>activate(document.querySelector('.product-card')),0);
+      if(screen==='filters')setTimeout(()=>activate(document.getElementById('filters-toggle')),0);
+      if(screen==='cart-empty')setTimeout(()=>activate(document.getElementById('cart-toggle')),0);
+      window.scrollTo({top:0,left:0,behavior:'auto'});
+    }
   });
   const editorMessage=(type,target,extra={})=>{const rect=target.getBoundingClientRect();window.parent.postMessage({type,id:target.dataset.editId,label:target.dataset.editLabel||target.dataset.editId,rect:{left:rect.left,top:rect.top,width:rect.width,height:rect.height},...extra},location.origin);};
-  document.addEventListener('mouseover',event=>{if(window.parent===window)return;const target=event.target.closest('[data-edit-id]');if(target)editorMessage('catalog-site-hover',target);},true);
+  document.addEventListener('mouseover',event=>{if(window.parent===window||editorMode!=='edit')return;const target=event.target.closest('[data-edit-id]');if(target)editorMessage('catalog-site-hover',target);},true);
   document.addEventListener('mouseout',event=>{if(window.parent===window)return;const target=event.target.closest('[data-edit-id]');if(target&&!target.contains(event.relatedTarget))window.parent.postMessage({type:'catalog-site-hover-end'},location.origin);},true);
-  document.addEventListener('click',event=>{if(window.parent===window)return;const target=event.target.closest('[data-edit-id]');if(!target)return;event.preventDefault();event.stopPropagation();document.querySelectorAll('[data-editor-selected]').forEach(node=>node.removeAttribute('data-editor-selected'));target.dataset.editorSelected='true';editorMessage('catalog-site-select',target,{inline:target.dataset.inlineEdit==='true'});},true);
-  document.addEventListener('dblclick',event=>{if(window.parent===window)return;const target=event.target.closest('[data-inline-edit="true"]');if(!target)return;event.preventDefault();event.stopPropagation();target.contentEditable='plaintext-only';target.focus();const selection=getSelection(),range=document.createRange();range.selectNodeContents(target);selection.removeAllRanges();selection.addRange(range);const finish=()=>{target.removeAttribute('contenteditable');editorMessage('catalog-site-inline-change',target,{value:target.textContent.trim()});};target.addEventListener('blur',finish,{once:true});target.addEventListener('keydown',keyEvent=>{if(keyEvent.key==='Enter'){keyEvent.preventDefault();target.blur();}if(keyEvent.key==='Escape'){keyEvent.preventDefault();target.blur();}},{once:true});},true);
+  document.addEventListener('click',event=>{if(window.parent===window||editorMode!=='edit')return;const target=event.target.closest('[data-edit-id]');if(!target)return;event.preventDefault();event.stopPropagation();document.querySelectorAll('[data-editor-selected]').forEach(node=>node.removeAttribute('data-editor-selected'));target.dataset.editorSelected='true';editorMessage('catalog-site-select',target,{inline:target.dataset.inlineEdit==='true'});},true);
+  document.addEventListener('dblclick',event=>{if(window.parent===window||editorMode!=='edit')return;const target=event.target.closest('[data-inline-edit="true"]');if(!target)return;event.preventDefault();event.stopPropagation();target.contentEditable='plaintext-only';target.focus();const selection=getSelection(),range=document.createRange();range.selectNodeContents(target);selection.removeAllRanges();selection.addRange(range);const finish=()=>{target.removeAttribute('contenteditable');editorMessage('catalog-site-inline-change',target,{value:target.textContent.trim()});};target.addEventListener('blur',finish,{once:true});target.addEventListener('keydown',keyEvent=>{if(keyEvent.key==='Enter'){keyEvent.preventDefault();target.blur();}if(keyEvent.key==='Escape'){keyEvent.preventDefault();target.blur();}},{once:true});},true);
   window.CatalogSiteReady=(async()=>{let settings={};if(new URLSearchParams(location.search).has('site-preview')){try{settings=JSON.parse(localStorage.getItem('byebye-site-draft-preview')||'{}');}catch{}}else if(window.CatalogAPI?.configured){try{settings=await window.CatalogAPI.getSiteSettings();}catch(error){console.warn('Se usa el diseño base del catálogo.',error.message);}}const result=apply(settings,{preview:new URLSearchParams(location.search).has('editor')});if(window.parent!==window)window.parent.postMessage({type:'catalog-site-preview-ready'},location.origin);return result;})();
 })();

@@ -66,6 +66,15 @@
   font-size:12px;
   font-weight:650;
 }
+.interaction-switch{display:flex;gap:3px;padding:4px;border:1px solid var(--chrome-line);border-radius:10px;background:#fff}
+.interaction-switch button{min-height:34px;padding:0 15px;border:0;border-radius:7px;background:transparent;color:#59606b;font-size:12px;font-weight:650}
+.interaction-switch button.active{background:#e8f0ff;color:#1769ff}
+.page-switcher{position:relative;display:flex;align-items:center;gap:6px}
+.page-back{min-height:36px;padding:0 10px;border:0;background:transparent;color:#1769ff;font-weight:650}
+.page-popover{position:absolute;z-index:100;top:calc(100% + 7px);left:0;width:230px;padding:7px;border:1px solid var(--chrome-line);border-radius:12px;background:#fff;box-shadow:0 14px 40px #20253426}
+.page-popover[hidden]{display:none}
+.page-popover button{display:block;width:100%;padding:10px 11px;border:0;border-radius:7px;background:#fff;text-align:left}
+.page-popover button:hover{background:#f0f4fb}
 
 .canvas-help{
   left:auto;
@@ -125,7 +134,7 @@
     font-size:11px;
   }
   .editor-subbar{justify-content:center;padding:0}
-  .page-button,.settings-search{display:none}
+  .page-switcher,.interaction-switch,.settings-search{display:none}
   .device-switch{display:flex;align-self:stretch;margin:0;padding:4px}
   .device-switch button{display:block;min-width:118px;padding:0 12px}
   .editor-body,.editor-body:has(.editor-panel.closed){display:block;min-height:0}
