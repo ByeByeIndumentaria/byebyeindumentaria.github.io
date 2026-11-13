@@ -1,30 +1,195 @@
-/* Stable editor viewport: keep desktop/tablet/mobile widths predictable in Safari. */
-@media (min-width:901px){
-  :root{--panel-width:300px}
-  .canvas-area{justify-content:flex-start;padding:18px 18px 54px}
-  .canvas-frame.device-desktop{width:max(900px,100%);max-width:1440px}
-  .canvas-frame.device-tablet{width:768px;max-width:none}
-  .canvas-frame.device-mobile{width:390px;max-width:none}
-  .canvas-help{left:calc(82px + var(--panel-width) + 18px)}
+/* Preview viewport and mobile editor shell.
+   Loaded after admin.css/settings.css so the generic admin <main> rule cannot
+   constrain the visual editor canvas. */
+:root{
+  --preview-width:1440px;
+  --preview-height:900px;
+  --preview-scale:1;
+  --preview-stage-width:1440px;
+  --preview-stage-height:900px;
 }
+
+.canvas-area{
+  box-sizing:border-box;
+  width:auto;
+  max-width:none;
+  margin:0;
+  padding:18px 18px 58px;
+  justify-content:center;
+  overflow:hidden;
+}
+
+.canvas-stage{
+  position:relative;
+  flex:0 0 auto;
+  width:var(--preview-stage-width);
+  height:var(--preview-stage-height);
+}
+
 .canvas-frame{
-  transform:none!important;
-  zoom:1!important;
+  position:absolute;
+  inset:0 auto auto 0;
+  width:var(--preview-width)!important;
+  min-width:var(--preview-width)!important;
+  max-width:none!important;
+  height:var(--preview-height)!important;
+  min-height:var(--preview-height)!important;
+  overflow:hidden;
+  contain:layout paint;
+  transform:scale(var(--preview-scale))!important;
+  transform-origin:top left!important;
   transition:none;
-  overflow:visible;
-  contain:none;
-  height:calc(100dvh - 150px)!important;
-  min-height:620px;
+  zoom:1!important;
 }
+
 .canvas-frame iframe{
   display:block;
-  width:100%;
-  height:calc(100dvh - 150px)!important;
-  min-width:0;
-  min-height:620px;
+  width:var(--preview-width)!important;
+  min-width:var(--preview-width)!important;
+  height:var(--preview-height)!important;
+  min-height:var(--preview-height)!important;
+  border:0;
   background:var(--catalog-bg,#d8cbbb);
 }
-.zoom-tools button{display:none}
+
+.canvas-frame.device-mobile{
+  border-radius:30px;
+  box-shadow:0 0 0 8px #20242b,0 16px 45px #20253438;
+}
+
+.device-switch{gap:4px;padding:5px;margin-left:8px}
+.device-switch button{
+  min-width:118px;
+  min-height:36px;
+  padding:0 16px;
+  border-radius:8px;
+  font-size:12px;
+  font-weight:650;
+}
+
+.canvas-help{
+  left:auto;
+  right:18px;
+  bottom:10px;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  max-width:min(620px,calc(100vw - 460px));
+  pointer-events:auto;
+}
+.canvas-help button{
+  width:24px;
+  height:24px;
+  flex:0 0 24px;
+  padding:0;
+  border:0;
+  border-radius:50%;
+  background:#ffffff24;
+  color:#fff;
+}
+.canvas-help[hidden]{display:none!important}
+.sheet-handle,.mobile-actions{display:none}
+
+@media(min-width:901px){
+  :root{--panel-width:300px}
+}
+
 @media(max-width:900px){
-  .canvas-frame,.canvas-frame iframe{height:calc(100dvh - 125px)!important;min-height:540px}
+  .editor-app{grid-template-rows:54px 44px minmax(0,1fr)}
+  .editor-topbar{padding:0 7px;gap:6px}
+  .editor-brand{min-width:72px;font-size:12px;letter-spacing:.14em}
+  .editor-brand span,.document-state,.editor-actions #redo,.editor-actions #preview,.editor-actions #publish,.editor-actions #more-menu{display:none}
+  .editor-actions{margin-left:auto;gap:5px}
+  .editor-actions #undo,.editor-actions #save-draft{
+    display:inline-flex!important;
+    align-items:center;
+    justify-content:center;
+    width:auto;
+    min-height:34px;
+    padding:0 10px;
+    font-size:11px;
+  }
+  .editor-subbar{justify-content:center;padding:0}
+  .page-button,.settings-search{display:none}
+  .device-switch{display:flex;align-self:stretch;margin:0;padding:4px}
+  .device-switch button{display:block;min-width:118px;padding:0 12px}
+  .editor-body,.editor-body:has(.editor-panel.closed){display:block;min-height:0}
+  .tool-rail{display:none}
+  .canvas-area{
+    position:absolute;
+    inset:98px 0 0;
+    width:100%;
+    max-width:none;
+    margin:0;
+    padding:8px 8px 72px;
+    overflow:hidden;
+  }
+  .canvas-help{
+    left:8px;
+    right:8px;
+    bottom:66px;
+    max-width:none;
+    white-space:normal;
+    text-align:left;
+  }
+  .editor-panel{
+    position:fixed;
+    z-index:70;
+    left:0;
+    right:0;
+    bottom:58px;
+    width:100%;
+    border:1px solid var(--chrome-line);
+    border-bottom:0;
+    border-radius:20px 20px 0 0;
+    transition:height .2s ease;
+  }
+  .editor-panel.sheet-peek{height:22dvh}
+  .editor-panel.sheet-half{height:50dvh}
+  .editor-panel.sheet-full{height:calc(100dvh - 104px)}
+  .editor-panel.closed{display:none}
+  .sheet-handle{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:100%;
+    height:26px;
+    padding:0;
+    border:0;
+    background:transparent;
+    touch-action:none;
+  }
+  .sheet-handle span{width:44px;height:5px;border-radius:999px;background:#c8ccd4}
+  .panel-heading{height:55px;padding:0 15px}
+  .panel-heading h2{font-size:19px}
+  .panel-content{height:calc(100% - 81px);padding:14px}
+  .selection-toolbar{left:8px;right:8px;top:106px;max-width:none;overflow:auto}
+  .mobile-actions{
+    position:fixed;
+    z-index:90;
+    left:0;
+    right:0;
+    bottom:0;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    height:58px;
+    padding-bottom:env(safe-area-inset-bottom);
+    border-top:1px solid var(--chrome-line);
+    background:#fff;
+  }
+  .mobile-actions button{
+    border:0;
+    border-radius:0;
+    background:#fff;
+    color:#252a33;
+    font-size:12px;
+    font-weight:650;
+  }
+  .mobile-actions button:last-child{color:var(--editor-blue)}
+}
+
+@media(max-width:380px){
+  .device-switch button{min-width:105px}
+  .editor-brand{min-width:62px;font-size:11px}
+  .editor-actions #undo,.editor-actions #save-draft{padding-inline:7px}
 }
