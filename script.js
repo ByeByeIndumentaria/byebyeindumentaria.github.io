@@ -4889,7 +4889,16 @@ function clearActiveFilter(type) {
 
 // ── RENDER PRODUCTS ──────────────────────────────
 function getFilteredProducts() {
-  const managedOrder = new Map((window.CatalogSiteSettings?.grid?.productOrder || window.CatalogSiteSettings?.productOrder || []).map((id,index) => [Number(id),index]));
+  const siteSettings = window.CatalogSiteSettings || {};
+  const managedOrder = new Map((siteSettings.grid?.productOrder || siteSettings.productOrder || []).map((id,index) => [Number(id),index]));
+  const categoryOrder = new Map((siteSettings.categories || []).map((category,index) => [category.name,index]));
+  const orderByCollection = siteSettings.grid?.orderByCollection || {};
+  const orderMaps = new Map();
+  const orderMapFor = category => {
+    const key = `${activeCollection}::${category}`;
+    if (!orderMaps.has(key)) orderMaps.set(key,new Map((orderByCollection[key] || []).map((id,index) => [Number(id),index])));
+    return orderMaps.get(key);
+  };
   return getCollectionProducts().filter(p => {
     const genderOk = activeGender === 'all' || p.category === activeGender;
     const catOk = activeCategory === 'all' || getProductSubcategories(p).includes(activeCategory);
@@ -4900,7 +4909,19 @@ function getFilteredProducts() {
     ].filter(Boolean).join(' '));
     const searchOk = !productSearchQuery || searchableText.includes(productSearchQuery);
     return genderOk && catOk && searchOk;
-  }).sort((a, b) => (window.CatalogSiteSettings?.grid?.stockFirst === false || window.CatalogSiteSettings?.stockFirst === false ? 0 : Number(b.inStock) - Number(a.inStock)) || (managedOrder.get(Number(a.id)) ?? 999999) - (managedOrder.get(Number(b.id)) ?? 999999));
+  }).sort((a, b) => {
+    const categoryA = activeCategory === 'all' ? (a.subcategory || getProductSubcategories(a)[0] || '') : activeCategory;
+    const categoryB = activeCategory === 'all' ? (b.subcategory || getProductSubcategories(b)[0] || '') : activeCategory;
+    if (activeCategory === 'all') {
+      const groupDifference = (categoryOrder.get(categoryA) ?? 9999) - (categoryOrder.get(categoryB) ?? 9999) || categoryA.localeCompare(categoryB,'es');
+      if (groupDifference) return groupDifference;
+    }
+    const stockDifference = siteSettings.grid?.stockFirst === false || siteSettings.stockFirst === false ? 0 : Number(b.inStock) - Number(a.inStock);
+    if (stockDifference) return stockDifference;
+    const categoryMapA = orderMapFor(categoryA),categoryMapB = orderMapFor(categoryB);
+    return (categoryMapA.get(Number(a.id)) ?? 999999) - (categoryMapB.get(Number(b.id)) ?? 999999)
+      || (managedOrder.get(Number(a.id)) ?? 999999) - (managedOrder.get(Number(b.id)) ?? 999999);
+  });
 }
 
 function renderProducts() {
@@ -6333,4 +6354,8 @@ function bindEvents() {
 }
 
 // ── START ─────────────────────────────────────────
+window.addEventListener('catalog-site-settings-applied', () => {
+  if (document.readyState === 'loading' || !productGrid?.childElementCount) return;
+  renderProducts();
+});
 document.addEventListener('DOMContentLoaded', async () => { await (window.CatalogSiteReady || Promise.resolve()); init(); });

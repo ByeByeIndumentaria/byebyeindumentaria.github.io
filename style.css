@@ -1562,6 +1562,7 @@ body[data-hero-text-mobile="true"] .managed-hero-content { display:block; }
 body[data-preview="true"] [data-edit-id] { cursor:crosshair; }
 body[data-preview="true"] [data-edit-id]:hover { outline:2px solid #1677ff; outline-offset:-2px; }
 body[data-preview="true"] [data-edit-id][data-editor-selected="true"] { outline:3px solid #7254ff !important; outline-offset:-3px; position:relative; }
+body[data-preview="true"] .product-card[data-editor-drop="true"] { outline:4px solid #1769ff !important; outline-offset:-4px; }
 .managed-banner{background-position:var(--hero-focal-x,50%) var(--hero-focal-y,50%);}
 .managed-hero-content[data-free-position="true"]{
   position:absolute;
