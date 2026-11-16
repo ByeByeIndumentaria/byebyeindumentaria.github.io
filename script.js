@@ -4534,6 +4534,18 @@ function getCollectionProducts() {
   ) && !product.isHidden && !product.archived);
 }
 
+function getCollectionsConfig(){return window.CatalogSiteSettings?.collectionsConfig||{};}
+function collectionCanBeSelected(id){
+  const config=getCollectionsConfig();
+  if(id==='todos')return config.showAll===true;
+  return collections.some(collection=>collection.id===id&&!collection.hidden);
+}
+function getInitialCollectionId(){
+  const config=getCollectionsConfig(),requested=config.initial||'verano-2027';
+  if(collectionCanBeSelected(requested))return requested;
+  return collections.find(collection=>!collection.hidden)?.id||collections[0]?.id||'todos';
+}
+
 const GENDER_LABELS = {
   MUJER: "Mujer",
   HOMBRE: "Hombre",
@@ -4575,13 +4587,20 @@ function getStockLabel(product) {
 function buildCollectionFilters() {
   const collectionFilters = document.getElementById("collection-filters");
   if (!collectionFilters) return;
+  const config=getCollectionsConfig();
   const visibleCollections = collections.filter(collection => !collection.hidden);
-  collectionFilters.innerHTML = visibleCollections.map(collection => `
-    <button class="pill ${collection.id === activeCollection ? "active" : ""}" data-filter="collection" data-value="${collection.id}">
-      <span>${collection.name}</span>
-      ${isPreorderCollection(collection) ? '<small class="pill-preorder">Preventa</small>' : ''}
-    </button>
-  `).join("");
+  const options=[...(config.showAll===true?[{id:'todos',name:config.allLabel||'Todo el catálogo',type:'all'}]:[]),...visibleCollections];
+  const markup=options.map(collection => `
+      <button class="pill ${collection.id === activeCollection ? "active" : ""}" data-filter="collection" data-value="${collection.id}">
+        <span>${collection.name}</span>
+        ${collection.type!=='all'&&isPreorderCollection(collection) ? '<small class="pill-preorder">Preventa</small>' : ''}
+      </button>
+    `).join("");
+  collectionFilters.innerHTML=markup;
+  let tabs=document.getElementById('catalog-collection-tabs');
+  if(!tabs){tabs=document.createElement('nav');tabs.id='catalog-collection-tabs';tabs.className='catalog-collection-tabs';tabs.setAttribute('aria-label','Colecciones');document.querySelector('.catalog-search')?.after(tabs);}
+  tabs.hidden=config.showTabs!==true;
+  tabs.innerHTML=config.showTabs===true?markup:'';
 }
 
 function renderPackagingTable(product) {
@@ -4700,11 +4719,11 @@ const CATALOG_STORAGE_KEY = 'byebye-catalog-state-v1';
 
 function loadPersistedState() {
   try {
+    const config=getCollectionsConfig();
+    activeCollection=getInitialCollectionId();
     const savedCatalog = JSON.parse(localStorage.getItem(CATALOG_STORAGE_KEY) || 'null');
     if (savedCatalog) {
-      activeCollection = savedCatalog.collection === 'todos'
-        ? 'invierno-2027'
-        : (savedCatalog.collection || activeCollection);
+      if(config.rememberLast!==false&&collectionCanBeSelected(savedCatalog.collection))activeCollection=savedCatalog.collection;
       activeGender = savedCatalog.gender || activeGender;
       activeCategory = savedCatalog.category || activeCategory;
       productSearchQuery = savedCatalog.search || '';
@@ -4863,8 +4882,10 @@ function updateCategoryFilters() {
 function updateFilterSummary(resultCount = getFilteredProducts().length) {
   const activeFilters = [];
   const collection = collections.find(item => item.id === activeCollection);
-  if (collection && activeCollection !== 'invierno-2027') {
+  if (collection && activeCollection !== getInitialCollectionId()) {
     activeFilters.push({ type: 'collection', label: collection.name });
+  } else if(activeCollection==='todos'&&activeCollection!==getInitialCollectionId()){
+    activeFilters.push({type:'collection',label:getCollectionsConfig().allLabel||'Todo el catálogo'});
   }
   if (activeGender !== 'all') activeFilters.push({ type: 'gender', label: getGenderLabel(activeGender) });
   if (activeCategory !== 'all') activeFilters.push({ type: 'category', label: activeCategory });
@@ -4902,7 +4923,7 @@ function refreshFilterControls() {
 }
 
 function resetCatalogFilters() {
-  activeCollection = 'invierno-2027';
+  activeCollection = getInitialCollectionId();
   activeGender = 'all';
   activeCategory = 'all';
   productSearchQuery = '';
@@ -4913,7 +4934,7 @@ function resetCatalogFilters() {
 }
 
 function clearActiveFilter(type) {
-  if (type === 'collection') activeCollection = 'invierno-2027';
+  if (type === 'collection') activeCollection = getInitialCollectionId();
   if (type === 'gender') activeGender = 'all';
   if (type === 'category') activeCategory = 'all';
   refreshFilterControls();
@@ -6198,14 +6219,14 @@ function keepFocusInside(container, event) {
 }
 
 function activateCatalogCollection(collectionId) {
-  if (!collections.some(collection => collection.id === collectionId)) return;
+  if (!collectionCanBeSelected(collectionId)) return;
   activeCollection = collectionId;
   activeGender = 'all';
   activeCategory = 'all';
   productSearchQuery = '';
   if (productSearchInput) productSearchInput.value = '';
   if (productSearchClear) productSearchClear.hidden = true;
-  document.querySelectorAll('#collection-filters .pill').forEach(button => {
+  document.querySelectorAll('#collection-filters .pill,#catalog-collection-tabs .pill').forEach(button => {
     button.classList.toggle('active', button.dataset.value === activeCollection);
   });
   genderFilters.querySelectorAll('.pill').forEach(button => {
@@ -6378,13 +6399,12 @@ function bindEvents() {
   cartOverlay.addEventListener('click', closeCart);
 
   // Collection filters
-  const collectionFilters = document.getElementById('collection-filters');
-  if (collectionFilters) {
+  document.querySelectorAll('#collection-filters,#catalog-collection-tabs').forEach(collectionFilters => {
     collectionFilters.addEventListener('click', e => {
       const btn = e.target.closest('.pill');
       if (!btn) return;
       activeCollection = btn.dataset.value;
-      collectionFilters.querySelectorAll('.pill').forEach(b => b.classList.toggle('active', b === btn));
+      document.querySelectorAll('#collection-filters .pill,#catalog-collection-tabs .pill').forEach(b => b.classList.toggle('active', b.dataset.value===activeCollection));
       activeGender = 'all';
       activeCategory = 'all';
       updateGenderFilters();
@@ -6393,7 +6413,7 @@ function bindEvents() {
       buildCategoryFilters();
       renderProducts();
     });
-  }
+  });
 
   // Gender filters
   genderFilters.addEventListener('click', e => {
@@ -6453,6 +6473,8 @@ function bindEvents() {
 // ── START ─────────────────────────────────────────
 window.addEventListener('catalog-site-settings-applied', () => {
   if (document.readyState === 'loading') return;
+  if(!collectionCanBeSelected(activeCollection)||getCollectionsConfig().rememberLast===false)activeCollection=getInitialCollectionId();
+  buildCollectionFilters();
   if (currentModalProduct) {
     renderPackagingTable(currentModalProduct);
     applyProductModalSettings();
