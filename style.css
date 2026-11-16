@@ -1571,6 +1571,7 @@ body.filter-menu-open {
 .site-footer .footer-brand { color: var(--footer-text); }
 .card-info { text-align: var(--card-text-align,left); }
 body[data-card-align="center"] { --card-text-align:center; }
+body[data-cart-enabled="false"] .card-add,body[data-cart-enabled="false"] #modal-add-btn{display:none!important;}
 body[data-card-hover="none"] .product-card:hover { transform:none; }
 body[data-card-hover="zoom"] .product-card:hover { transform:none; }
 body[data-card-hover="zoom"] .product-card:hover .card-img { transform:scale(1.035); }

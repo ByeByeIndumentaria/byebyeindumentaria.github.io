@@ -4517,6 +4517,9 @@ function catalogText(key,vars={}) {
   return value;
 }
 
+function pdfColor(value,fallback){const match=String(value||fallback).match(/^#([\da-f]{2})([\da-f]{2})([\da-f]{2})$/i);return match?match.slice(1).map(part=>parseInt(part,16)):fallback;}
+function managedPdfFilename(pattern,vars,fallback){let value=String(pattern||fallback);for(const [name,replacement]of Object.entries(vars))value=value.replaceAll(`{${name}}`,safePdfFilename(replacement));return value.toLowerCase().endsWith('.pdf')?value:`${value}.pdf`;}
+
 function getModalAddButtonLabel(product, selectedOption, inCart) {
   if (!product.inStock) return catalogText('modal.outOfStock');
   if (!hasAvailableColor(product, selectedOption)) return catalogText('modal.noColors');
@@ -5725,19 +5728,20 @@ function downloadPDF() {
   let y = margin;
 
   // Header bar
-  doc.setFillColor(10, 10, 10);
+  const selectionSettings=window.CatalogSiteSettings?.selectionPdf||{},selectionHeader=pdfColor(selectionSettings.headerColor,[10,10,10]),selectionAccent=pdfColor(selectionSettings.accentColor,[200,169,110]);
+  doc.setFillColor(...selectionHeader);
   doc.rect(0, 0, pageW, 28, 'F');
 
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(20);
   doc.setFont('helvetica', 'bold');
-  doc.text('BYE BYE', margin, 17);
+  doc.text(catalogText('selectionPdf.brand'), margin, 17);
 
   doc.setFontSize(9);
   doc.setFont('helvetica', 'normal');
-  doc.setTextColor(200, 169, 110);
+  doc.setTextColor(...selectionAccent);
   const collection = getActiveCollection();
-  doc.text(`CATÁLOGO ${collection.name.toUpperCase()}`, pageW - margin, 10, { align: 'right' });
+  doc.text(catalogText('selectionPdf.catalog',{coleccion:collection.name}).toUpperCase(), pageW - margin, 10, { align: 'right' });
   doc.setTextColor(180, 180, 180);
   doc.text(collection.tagline, pageW - margin, 17, { align: 'right' });
 
@@ -5747,7 +5751,7 @@ function downloadPDF() {
   doc.setTextColor(10, 10, 10);
   doc.setFontSize(13);
   doc.setFont('helvetica', 'bold');
-  doc.text('MI SELECCIÓN', margin, y);
+  doc.text(catalogText('selectionPdf.title'), margin, y);
 
   const date = new Date().toLocaleDateString('es-AR', { day: 'numeric', month: 'long', year: 'numeric' });
   doc.setFontSize(9);
@@ -5768,7 +5772,7 @@ function downloadPDF() {
     }
 
     // Item number circle
-    doc.setFillColor(10, 10, 10);
+    doc.setFillColor(...selectionHeader);
     doc.circle(margin + 4, y + 3, 4, 'F');
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(8);
@@ -5791,8 +5795,8 @@ function downloadPDF() {
     y += 6;
 
     // Colors
-    doc.setTextColor(150, 100, 50);
-    doc.text('Colores: ', margin + 12, y);
+    doc.setTextColor(...selectionAccent);
+    doc.text(`${catalogText('selectionPdf.colors')} `, margin + 12, y);
     doc.setTextColor(60, 60, 60);
     const colText = getCartProductColors(p).join(', ');
     const colLines = doc.splitTextToSize(colText, pageW - margin * 2 - 30);
@@ -5800,8 +5804,8 @@ function downloadPDF() {
     y += colLines.length * 5 + 2;
 
     // Total pieces
-    doc.setTextColor(150, 100, 50);
-    doc.text('Piezas por caja: ', margin + 12, y);
+    doc.setTextColor(...selectionAccent);
+    doc.text(`${catalogText('selectionPdf.pieces')} `, margin + 12, y);
     doc.setTextColor(60, 60, 60);
     doc.text(getCartProductTotalLabel(p), margin + 42, y);
     y += 6;
@@ -5819,7 +5823,7 @@ function downloadPDF() {
   doc.setTextColor(10, 10, 10);
   doc.setFontSize(10);
   doc.setFont('helvetica', 'bold');
-  doc.text(`Total de prendas seleccionadas: ${cart.length}`, margin + 8, y + 11);
+  doc.text(catalogText('selectionPdf.total',{n:cart.length}), margin + 8, y + 11);
 
   // Footer on all pages
   const totalPages = doc.internal.getNumberOfPages();
@@ -5828,11 +5832,12 @@ function downloadPDF() {
     doc.setFontSize(7.5);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(180, 180, 180);
-    doc.text(`BYE BYE — Catálogo ${collection.name}`, margin, 292);
-    doc.text(`Pág. ${pg} / ${totalPages}`, pageW - margin, 292, { align: 'right' });
+    doc.text(catalogText('selectionPdf.footer',{coleccion:collection.name}), margin, 292);
+    doc.text(catalogText('selectionPdf.page',{pagina:pg,total:totalPages}), pageW - margin, 292, { align: 'right' });
   }
 
-  doc.save(`ByeBye_Seleccion_${collection.name.replace(/\s+/g, '')}.pdf`);
+  const selectionFilename=managedPdfFilename(selectionSettings.filename,{coleccion:collection.name.replace(/\s+/g,'')},`ByeBye_Seleccion_${collection.name.replace(/\s+/g, '')}.pdf`);
+  doc.save(selectionFilename||`ByeBye_Seleccion_${collection.name.replace(/\s+/g, '')}.pdf`);
   showToast(catalogText('toast.pdf'));
 }
 
@@ -5927,7 +5932,7 @@ async function downloadProductPDF(product, optionId = null) {
   const originalButtonHtml = button?.innerHTML;
   if (button) {
     button.disabled = true;
-    button.textContent = 'Preparando ficha...';
+    button.textContent = catalogText('productPdf.preparing');
   }
 
   try {
@@ -5952,9 +5957,10 @@ async function downloadProductPDF(product, optionId = null) {
     const pageW = 210;
     const pageH = 297;
     const margin = 16;
-    const beige = [246, 239, 228];
-    const ink = [31, 26, 21];
-    const terracotta = [157, 79, 56];
+    const productPdfSettings=window.CatalogSiteSettings?.productPdf||{};
+    const beige = pdfColor(productPdfSettings.background,[246, 239, 228]);
+    const ink = pdfColor(productPdfSettings.textColor,[31, 26, 21]);
+    const terracotta = pdfColor(productPdfSettings.accentColor,[157, 79, 56]);
     const muted = [108, 96, 82];
 
     function paintPageHeader(kicker) {
@@ -5963,7 +5969,7 @@ async function downloadProductPDF(product, optionId = null) {
       doc.setTextColor(...ink);
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(17);
-      doc.text('BYE BYE', margin, 17);
+      doc.text(catalogText('productPdf.brand'), margin, 17);
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(8);
       doc.setTextColor(...terracotta);
@@ -5976,8 +5982,8 @@ async function downloadProductPDF(product, optionId = null) {
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(7.5);
       doc.setTextColor(...muted);
-      doc.text('BYE BYE · Ficha comercial mayorista', margin, 289);
-      doc.text(`Página ${doc.internal.getCurrentPageInfo().pageNumber}`, pageW - margin, 289, { align: 'right' });
+      doc.text(catalogText('productPdf.footer'), margin, 289);
+      doc.text(catalogText('productPdf.page',{pagina:doc.internal.getCurrentPageInfo().pageNumber}), pageW - margin, 289, { align: 'right' });
     }
 
     function drawCoverImage(image, x, y, width, height) {
@@ -5985,6 +5991,8 @@ async function downloadProductPDF(product, optionId = null) {
     }
 
     function drawPhotoPage(title, images) {
+      if(title==='Fotos de modelo')title=catalogText('productPdf.modelPhotos');
+      if(title==='Fotos por color')title=catalogText('productPdf.colorPhotos');
       paintPageHeader(`${product.name} · ${title}`);
       doc.setTextColor(...ink);
       doc.setFont('helvetica', 'bold');
@@ -6027,7 +6035,7 @@ async function downloadProductPDF(product, optionId = null) {
         doc.setFontSize(Math.max(6.5, Math.min(9, best.frameWidth / 9)));
         doc.setTextColor(...terracotta);
         doc.text(
-          image.label || `Foto de modelo ${index + 1}`,
+          image.label || catalogText('productPdf.modelPhoto',{n:index+1}),
           cellX + best.cellWidth / 2,
           imageY + best.frameHeight + 4.8,
           { align: 'center', maxWidth: best.cellWidth }
@@ -6052,7 +6060,7 @@ async function downloadProductPDF(product, optionId = null) {
 
     // Product information deliberately comes after every photo page.
     startSectionPage();
-    paintPageHeader(`${getActiveCollection().name} · Información del producto`);
+    paintPageHeader(`${getActiveCollection().name} · ${catalogText('productPdf.info')||'Información del producto'}`);
     let y = 34;
     doc.setTextColor(...ink);
     doc.setFont('helvetica', 'bold');
@@ -6085,19 +6093,19 @@ async function downloadProductPDF(product, optionId = null) {
       y += blockH + 3;
     }
 
-    drawInfoBlock('Código', orderNumber);
-    drawInfoBlock('Colores', colors.join(', '));
-    drawInfoBlock('Talles', sizes.map(normalizeCatalogSize).join(', '));
-    drawInfoBlock('Empaque', packingLabel);
-    if (packaging?.totalLabel) drawInfoBlock('Cantidad', packaging.totalLabel);
-    if (product.description) drawInfoBlock('Detalle', product.description);
+    drawInfoBlock(catalogText('productPdf.code'), orderNumber);
+    drawInfoBlock(catalogText('productPdf.colors'), colors.join(', '));
+    drawInfoBlock(catalogText('productPdf.sizes'), sizes.map(normalizeCatalogSize).join(', '));
+    drawInfoBlock(catalogText('productPdf.packing'), packingLabel);
+    if (packaging?.totalLabel) drawInfoBlock(catalogText('productPdf.quantity'), packaging.totalLabel);
+    if (product.description) drawInfoBlock(catalogText('productPdf.detail'), product.description);
 
     if (packaging?.rows?.length) {
       y += 3;
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(11);
       doc.setTextColor(...ink);
-      doc.text('CURVA Y CANTIDADES', margin, y + 5);
+      doc.text(catalogText('productPdf.curveTitle'), margin, y + 5);
       y += 11;
 
       function drawTableHeader() {
@@ -6106,9 +6114,9 @@ async function downloadProductPDF(product, optionId = null) {
         doc.setTextColor(255, 250, 241);
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(7.5);
-        doc.text('COLOR', margin + 4, y + 6);
-        doc.text('CURVA POR TALLE', margin + 55, y + 6);
-        doc.text('PIEZAS', pageW - margin - 4, y + 6, { align: 'right' });
+        doc.text(catalogText('productPdf.curveColor'), margin + 4, y + 6);
+        doc.text(catalogText('productPdf.curveSizes'), margin + 55, y + 6);
+        doc.text(catalogText('productPdf.curvePieces'), pageW - margin - 4, y + 6, { align: 'right' });
         y += 9;
       }
 
@@ -6119,7 +6127,7 @@ async function downloadProductPDF(product, optionId = null) {
         const rowH = Math.max(10, curveLines.length * 4 + 4);
         if (y + rowH > 280) {
           doc.addPage();
-          paintPageHeader(`${product.name} · Curva (continuación)`);
+          paintPageHeader(`${product.name} · ${catalogText('productPdf.continued')}`);
           y = 32;
           drawTableHeader();
         }
@@ -6146,11 +6154,12 @@ async function downloadProductPDF(product, optionId = null) {
 
     doc.setProperties({
       title: product.name,
-      subject: `Ficha comercial mayorista de ${product.name}`,
-      author: 'BYE BYE',
-      creator: 'BYE BYE'
+      subject: catalogText('productPdf.subject',{producto:product.name}),
+      author: catalogText('productPdf.brand'),
+      creator: catalogText('productPdf.brand')
     });
-    doc.save(`ByeBye_${safePdfFilename(product.name)}.pdf`);
+    const productFilename=managedPdfFilename(productPdfSettings.filename,{producto:product.name},`ByeBye_${safePdfFilename(product.name)}.pdf`);
+    doc.save(productFilename||`ByeBye_${safePdfFilename(product.name)}.pdf`);
     showToast(catalogText('toast.productPdf'));
   } catch (error) {
     console.error('No se pudo generar la ficha PDF', error);
