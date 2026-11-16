@@ -184,9 +184,13 @@
     touch-action:none;
   }
   .sheet-handle span{width:44px;height:5px;border-radius:999px;background:#c8ccd4}
-  .panel-heading{height:55px;padding:0 15px}
-  .panel-heading h2{font-size:19px}
-  .panel-content{height:calc(100% - 81px);padding:14px}
+  .panel-heading{box-sizing:border-box;height:84px;padding:7px 52px 8px 15px;align-items:flex-start;overflow:hidden}
+  .panel-heading>div{width:100%;min-width:0}
+  .panel-heading #close-panel{position:absolute;right:14px;top:39px}
+  .selection-path{display:flex;flex-wrap:nowrap;width:100%;overflow:hidden;white-space:nowrap}
+  .selection-path button{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .panel-heading h2{margin-top:5px;overflow:hidden;font-size:19px;line-height:1.2;text-overflow:ellipsis;white-space:nowrap}
+  .panel-content{height:calc(100% - 110px);padding:14px}
   .selection-toolbar{left:8px;right:8px;top:106px;max-width:none;overflow:auto}
   .mobile-actions{
     position:fixed;
