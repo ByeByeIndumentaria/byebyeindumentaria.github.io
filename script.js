@@ -4591,17 +4591,45 @@ function renderPackagingTable(product) {
   const showQuantities = packaging.totalPieces !== null && packaging.totalPieces !== undefined
     || packaging.rows.some(row => getRowPiecesLabel(row) !== "-");
 
+  const modalSettings = (typeof window === 'undefined' ? null : window.CatalogSiteSettings?.productModal) || {};
+  const escapeText = value => String(value ?? '').replace(/[&<>"']/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[character]));
+  const format = ['inline','table','chips'].includes(modalSettings.curveFormat) ? modalSettings.curveFormat : 'inline';
+  const separator = String(modalSettings.curveSeparator ?? ' - ');
+  const hiddenColumns = new Set(modalSettings.hiddenCurveColumns || []);
+  const configuredColumns = (modalSettings.curveColumns || ['color','stock','curve','pieces']).filter(column => ['color','stock','curve','pieces'].includes(column));
+  const visibleColumns = configuredColumns.filter(column => !hiddenColumns.has(column) && (column !== 'stock' || showStockByColor) && (column !== 'pieces' || showQuantities));
+  const labels = {color:'Color',stock:'Stock',curve:'Curva de talles',pieces:'Piezas',...(modalSettings.curveLabels || {})};
+  const sizeOrder = selectedOption?.sizes || product.sizes || [];
+  const allSizes = [...new Set(sizeOrder.map(normalizeCatalogSize))];
+  const orderedEntries = row => {
+    const entries = Object.entries(row.sizePieces || {}),result=[];
+    for (const size of sizeOrder) {
+      const match = entries.find(([key]) => normalizeCatalogSize(key) === normalizeCatalogSize(size));
+      if (match && !result.some(([key]) => key === match[0])) result.push(match);
+    }
+    for (const entry of entries) if (!result.some(([key]) => key === entry[0])) result.push(entry);
+    return result;
+  };
+  const curveCell = row => {
+    const entries = orderedEntries(row);
+    if (format === 'chips') return `<td class="curve-chip-cell">${entries.length ? entries.map(([size,value]) => `<span class="curve-size-chip"><strong>${escapeText(normalizeCatalogSize(size))}</strong>${escapeText(value ?? '-')}</span>`).join('') : escapeText(row.curveText || '-')}</td>`;
+    const text = row.curveText || entries.map(([size,value]) => `${normalizeCatalogSize(size)}/${value == null ? '-' : value}`).join(separator);
+    return `<td>${escapeText(text || '-')}</td>`;
+  };
+  const rowCells = (row,unavailable) => visibleColumns.map(column => {
+    if (column === 'color') return `<td>${escapeText(row.color)}</td>`;
+    if (column === 'stock') return `<td><span class="curve-stock-badge ${unavailable ? 'out-of-stock' : 'in-stock'}">${escapeText(unavailable ? (modalSettings.unavailableLabel || 'Agotado') : (modalSettings.availableLabel || 'Disponible'))}</span></td>`;
+    if (column === 'pieces') return `<td>${escapeText(getRowPiecesLabel(row))}</td>`;
+    if (format === 'table') {const quantities=Object.fromEntries(orderedEntries(row).map(([size,value])=>[normalizeCatalogSize(size),value]));return allSizes.map(size=>`<td class="curve-size-value">${escapeText(quantities[size] ?? '-')}</td>`).join('');}
+    return curveCell(row);
+  }).join('');
   const rows = packaging.rows.map(row => {
     const unavailable = showStockByColor && isColorUnavailable(product, row.color, selectedOption);
-    return `
-    <tr class="packaging-row${showStockByColor ? ` ${unavailable ? "out-of-stock" : "in-stock"}` : ""}">
-      <td>${row.color}</td>
-      ${showStockByColor ? `<td><span class="curve-stock-badge ${unavailable ? "out-of-stock" : "in-stock"}">${unavailable ? "Agotado" : "Disponible"}</span></td>` : ""}
-      <td>${formatCurve(row, selectedOption?.sizes || product.sizes || [])}</td>
-      ${showQuantities ? `<td>${getRowPiecesLabel(row)}</td>` : ""}
-    </tr>
-  `;
-  }).join("");
+    return `<tr class="packaging-row${showStockByColor ? ` ${unavailable ? 'out-of-stock' : 'in-stock'}` : ''}">${rowCells(row,unavailable)}</tr>`;
+  }).join('');
+  const headers = visibleColumns.map(column => column === 'curve' && format === 'table'
+    ? allSizes.map(size => `<th>${escapeText(size)}</th>`).join('')
+    : `<th>${escapeText(labels[column])}</th>`).join('');
 
   const optionSelector = purchaseOptions.length > 1 ? `
     <div class="purchase-options" role="group" aria-label="Opciones de compra">
@@ -4626,19 +4654,14 @@ function renderPackagingTable(product) {
   wrap.innerHTML = `
     ${optionSelector}
     ${optionDetails}
-    ${packaging.totalPieces === null || packaging.totalPieces === undefined ? "" : `<div class="packaging-summary">
+    ${modalSettings.showCurveSummary === false || packaging.totalPieces === null || packaging.totalPieces === undefined ? "" : `<div class="packaging-summary">
       <span>Piezas totales</span>
       <strong>${packaging.totalLabel || `${packaging.totalPieces} piezas`}</strong>
     </div>`}
     <div class="packaging-table-wrap">
       <table class="packaging-table">
         <thead>
-          <tr>
-            <th>Color</th>
-            ${showStockByColor ? "<th>Stock</th>" : ""}
-            <th>Curva de talles</th>
-            ${showQuantities ? "<th>Piezas</th>" : ""}
-          </tr>
+          <tr>${headers}</tr>
         </thead>
         <tbody>${rows}</tbody>
       </table>
@@ -5129,6 +5152,42 @@ function selectPurchaseOption(product, optionId) {
   openModal(product, optionId);
 }
 
+function getProductModalSettings() {
+  return window.CatalogSiteSettings?.productModal || {};
+}
+
+function applyProductModalSettings() {
+  const config = getProductModalSettings();
+  const modal = document.getElementById('product-modal');
+  if (!modal) return;
+  const imageWrap = modal.querySelector('.modal-image-wrap');
+  const info = modal.querySelector('.modal-info');
+  modal.dataset.mediaSide = config.mediaSide === 'right' ? 'right' : 'left';
+  modal.dataset.mobileMode = config.mobileMode === 'full' ? 'full' : 'stack';
+  modal.style.setProperty('--modal-image-ratio', String(config.imageRatio || '3/4').replace('/', ' / '));
+  modal.style.setProperty('--modal-zoom-level', String(Number(config.zoomLevel) || 2.25));
+  if (imageWrap) imageWrap.style.aspectRatio = String(config.imageRatio || '3/4').replace('/', ' / ');
+  const image = document.getElementById('modal-img');
+  if (image) image.style.objectFit = window.matchMedia('(max-width: 768px)').matches ? (config.mobileFit || 'contain') : (config.desktopFit || 'cover');
+  if (imageWrap) imageWrap.style.order = config.mediaSide === 'right' ? '2' : '1';
+  if (info) info.style.order = config.mediaSide === 'right' ? '1' : '2';
+  const hiddenParts = new Set(config.hiddenParts || []);
+  const parts = (config.parts || ['collection','title','code','description','notice','colors','sizes','curve','pdf','add']);
+  const nodes = {collection:'modal-collection',title:'modal-name',code:'modal-code',description:'modal-desc',notice:'modal-preorder-notice',colors:'modal-colors',sizes:'modal-sizes',curve:'modal-packaging',pdf:'modal-pdf-btn',add:'modal-add-btn'};
+  for (const [part,id] of Object.entries(nodes)) {
+    const node = document.getElementById(id);
+    if (!node) continue;
+    node.style.order = String(Math.max(0,parts.indexOf(part)) + 1);
+    node.classList.toggle('site-part-hidden', hiddenParts.has(part) || (part === 'pdf' && config.showPdf === false));
+  }
+  document.getElementById('modal-gender')?.classList.toggle('site-part-hidden', config.showGender === false);
+  document.getElementById('modal-subcat')?.classList.toggle('site-part-hidden', config.showCategory === false);
+  document.getElementById('modal-zoom-toggle')?.classList.toggle('site-part-hidden', config.showZoom === false);
+  modal.querySelectorAll('.gallery-arrow').forEach(node => node.classList.toggle('site-part-hidden', config.showArrows === false));
+  modal.querySelectorAll('.modal-gallery-dots').forEach(node => node.classList.toggle('site-part-hidden', config.showDots === false));
+  modal.querySelectorAll('.modal-gallery-thumbnails').forEach(node => node.classList.toggle('site-part-hidden', config.showThumbnails !== true));
+}
+
 function openModal(p, initialPurchaseOptionId = null) {
   lastFocusedElement = document.activeElement;
   currentModalProduct = p;
@@ -5136,6 +5195,7 @@ function openModal(p, initialPurchaseOptionId = null) {
   const selectedOption = getSelectedPurchaseOption(p);
   const inCart = cart.some(c => c.cartKey === getCartKey(p, selectedOption?.id));
   const modalEl = document.getElementById('product-modal');
+  modalEl.dataset.productId = String(p.id);
 
   document.getElementById('modal-name').textContent = p.name;
   document.getElementById('modal-gender').textContent = getGenderLabel(p.category);
@@ -5191,20 +5251,22 @@ function openModal(p, initialPurchaseOptionId = null) {
   modalImgWrap.classList.remove('no-image');
   modalImg.style.display = 'none';
   modalImg.alt = p.name;
-  modalImg.style.objectFit = window.matchMedia('(max-width: 768px)').matches ? 'contain' : 'cover';
+  const modalSettings = getProductModalSettings();
+  modalImg.style.objectFit = window.matchMedia('(max-width: 768px)').matches ? (modalSettings.mobileFit || 'contain') : (modalSettings.desktopFit || 'cover');
   modalImgWrap.style.background = '#d6c8b7';
-  modalImgWrap.style.aspectRatio = '3 / 4';
+  modalImgWrap.style.aspectRatio = String(modalSettings.imageRatio || '3/4').replace('/', ' / ');
   modalEl.style.removeProperty('--modal-media-w');
   modalEl.style.removeProperty('--modal-w');
 
   // Remove old gallery controls if any
-  modalImgWrap.querySelectorAll('.modal-gallery-dots, .gallery-arrow, .modal-empty-image').forEach(el => el.remove());
+  modalImgWrap.querySelectorAll('.modal-gallery-dots, .modal-gallery-thumbnails, .gallery-arrow, .modal-empty-image').forEach(el => el.remove());
 
   // Build gallery without blocking the modal opening.
   const gallery = getProduction2027Gallery(p, displayedColors, selectedOption);
   const gallerySrcs = gallery.sources;
   let galleryIdx = 0;
   let dots = null;
+  let thumbnails = null;
   let didSwipe = false;
   modalImg.onclick = null;
   modalImg.style.cursor = '';
@@ -5260,10 +5322,8 @@ function openModal(p, initialPurchaseOptionId = null) {
   }
 
   function updateDots() {
-    if (!dots) return;
-    dots.querySelectorAll('.gallery-dot').forEach((dot, di) => {
-      dot.classList.toggle('active', di === galleryIdx);
-    });
+    dots?.querySelectorAll('.gallery-dot').forEach((dot, di) => dot.classList.toggle('active', di === galleryIdx));
+    thumbnails?.querySelectorAll('.gallery-thumbnail').forEach((thumb, di) => {thumb.classList.toggle('active',di===galleryIdx);thumb.setAttribute('aria-pressed',String(di===galleryIdx));});
   }
 
   function updateColorChips() {
@@ -5282,8 +5342,9 @@ function openModal(p, initialPurchaseOptionId = null) {
   }
 
   function fitModalToImage() {
-    const ratioW = 3;
-    const ratioH = 4;
+    const ratioParts = String(modalSettings.imageRatio || '3/4').split('/').map(Number);
+    const ratioW = ratioParts[0] > 0 ? ratioParts[0] : 3;
+    const ratioH = ratioParts[1] > 0 ? ratioParts[1] : 4;
     const ratio = ratioW / ratioH;
     const viewportW = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
     const viewportH = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
@@ -5294,7 +5355,7 @@ function openModal(p, initialPurchaseOptionId = null) {
     const mediaW = Math.max(320, Math.min(maxImageH * ratio, 620, maxModalW - infoW));
     const modalW = Math.min(maxModalW, mediaW + infoW);
 
-    modalImgWrap.style.aspectRatio = '3 / 4';
+    modalImgWrap.style.aspectRatio = `${ratioW} / ${ratioH}`;
     modalEl.style.setProperty('--modal-media-w', `${Math.round(mediaW)}px`);
     modalEl.style.setProperty('--modal-w', `${Math.round(modalW)}px`);
   }
@@ -5315,7 +5376,7 @@ function openModal(p, initialPurchaseOptionId = null) {
     setModalZoom(false);
     galleryIdx = index;
     const targetSrc = gallerySrcs[index];
-    modalImg.style.objectFit = window.matchMedia('(max-width: 768px)').matches ? 'contain' : 'cover';
+    modalImg.style.objectFit = window.matchMedia('(max-width: 768px)').matches ? (modalSettings.mobileFit || 'contain') : (modalSettings.desktopFit || 'cover');
     modalImgWrap.style.background = '#d6c8b7';
     const isFirstImage = !modalImg.src || modalImg.style.display === 'none';
 
@@ -5446,6 +5507,20 @@ function openModal(p, initialPurchaseOptionId = null) {
 
     modalImgWrap.appendChild(prevBtn);
     modalImgWrap.appendChild(nextBtn);
+
+    thumbnails = document.createElement('div');
+    thumbnails.className = 'modal-gallery-thumbnails';
+    gallerySrcs.forEach((source,index) => {
+      const thumb = document.createElement('button');
+      thumb.type = 'button';
+      thumb.className = `gallery-thumbnail${index===0?' active':''}`;
+      thumb.setAttribute('aria-label',`Ver miniatura ${index+1}`);
+      thumb.setAttribute('aria-pressed',String(index===0));
+      const image = document.createElement('img');image.src=source;image.alt='';image.loading='lazy';
+      thumb.append(image);thumb.addEventListener('click',event=>{event.stopPropagation();showGalleryImage(index);});
+      thumbnails.append(thumb);
+    });
+    modalImgWrap.appendChild(thumbnails);
   }
 
   showGalleryImage(0);
@@ -5454,6 +5529,8 @@ function openModal(p, initialPurchaseOptionId = null) {
   addBtn.disabled = !canOrderProduct(p, getActiveCollection(), selectedOption);
   addBtn.textContent = getModalAddButtonLabel(p, selectedOption, inCart);
   addBtn.className = 'btn-add-modal' + (inCart ? ' in-cart' : '') + (canOrderProduct(p, getActiveCollection(), selectedOption) ? '' : ' disabled');
+
+  applyProductModalSettings();
 
   modalOverlay.classList.add('active');
   modalOverlay.setAttribute('aria-hidden', 'false');
@@ -6355,7 +6432,19 @@ function bindEvents() {
 
 // ── START ─────────────────────────────────────────
 window.addEventListener('catalog-site-settings-applied', () => {
-  if (document.readyState === 'loading' || !productGrid?.childElementCount) return;
-  renderProducts();
+  if (document.readyState === 'loading') return;
+  if (currentModalProduct) {
+    renderPackagingTable(currentModalProduct);
+    applyProductModalSettings();
+  }
+  if (productGrid?.childElementCount) renderProducts();
+});
+window.addEventListener('catalog-site-preview-product', event => {
+  const product = event.detail;
+  if (!product || !Number.isSafeInteger(Number(product.id))) return;
+  const index = products.findIndex(item => Number(item.id) === Number(product.id));
+  if (index >= 0) products[index] = product;
+  if (currentModalProduct && Number(currentModalProduct.id) === Number(product.id)) openModal(product,currentPurchaseOptionId);
+  else if (productGrid?.childElementCount) renderProducts();
 });
 document.addEventListener('DOMContentLoaded', async () => { await (window.CatalogSiteReady || Promise.resolve()); init(); });

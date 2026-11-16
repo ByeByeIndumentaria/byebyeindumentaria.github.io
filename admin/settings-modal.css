@@ -1,0 +1,13 @@
+.embedded-curve-wrap {
+  margin: 10px 0;
+  overflow: auto;
+  border: 1px solid #e1e4e9;
+  border-radius: 9px;
+}
+.embedded-curve-table { width: 100%; border-collapse: collapse; font-size: 10px; }
+.embedded-curve-table th,
+.embedded-curve-table td { padding: 6px; border-bottom: 1px solid #eceef2; text-align: center; white-space: nowrap; }
+.embedded-curve-table th:first-child,
+.embedded-curve-table td:first-child { text-align: left; }
+.embedded-curve-table input[type="number"] { box-sizing: border-box; width: 54px; min-height: 30px; padding: 4px; border: 1px solid #dfe2e8; border-radius: 6px; }
+.primary-panel-button { width: 100%; min-height: 40px; border: 0; border-radius: 8px; background: var(--editor-blue); color: #fff; font-weight: 700; }
