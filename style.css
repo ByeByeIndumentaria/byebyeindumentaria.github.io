@@ -122,6 +122,8 @@ input:focus-visible,
 }
 .header-left { justify-self: start; }
 .header-right { justify-self: end; }
+.header-brand { display:flex;align-items:center;justify-content:center;gap:10px;min-width:0; }
+.brand-logo { width:auto;height:var(--header-logo-h,36px);max-width:min(240px,42vw);object-fit:contain; }
 .collection-tag {
   font-size: 11px;
   letter-spacing: 0.12em;
@@ -147,6 +149,7 @@ input:focus-visible,
   transition: border-color var(--transition), background var(--transition);
 }
 .cart-btn:hover { border-color: var(--clay); background: #cbbba8; }
+.cart-label[hidden],.brand-logo[hidden],.brand-name[hidden]{display:none}
 .cart-count {
   background: var(--clay);
   color: #fffaf1;
@@ -1579,12 +1582,18 @@ body[data-card-hover="none"] .product-card:hover { transform:none; }
 body[data-card-hover="zoom"] .product-card:hover { transform:none; }
 body[data-card-hover="zoom"] .product-card:hover .card-img { transform:scale(1.035); }
 body[data-header-sticky-desktop="false"] #site-header { position:relative; }
-body[data-header-brand="left"] .header-brand { justify-self:start; }
+body[data-header-brand="left"] .header-brand { grid-column:1;grid-row:1;justify-self:start; }
 body[data-header-brand="left"] .brand-name { justify-self:start; }
-body[data-header-brand="right"] .header-brand { justify-self:end; }
+body[data-header-brand="right"] .header-brand { grid-column:3;grid-row:1;justify-self:end; }
 body[data-header-brand="right"] .brand-name { justify-self:end; }
 body[data-header-cart="left"] .header-right { grid-column:1; grid-row:1; justify-self:start; }
 body[data-header-cart="left"] .header-left { grid-column:3; justify-self:end; }
+body[data-header-brand="left"][data-header-cart="right"] .header-left{grid-column:2;justify-self:center}
+body[data-header-brand="left"][data-header-cart="left"] .header-right{grid-column:2;justify-self:center}
+body[data-header-brand="left"][data-header-cart="left"] .header-left{grid-column:3;justify-self:end}
+body[data-header-brand="right"][data-header-cart="left"] .header-left{grid-column:2;justify-self:center}
+body[data-header-brand="right"][data-header-cart="right"] .header-left{grid-column:1;justify-self:start}
+body[data-header-brand="right"][data-header-cart="right"] .header-right{grid-column:2;justify-self:center}
 body[data-filters-side="right"] .filters-drawer { left:auto; right:0; transform:translateX(104%); }
 body[data-filters-side="right"] .filters-drawer.open { transform:translateX(0); }
 body[data-filter-label="true"] .filters-toggle { width:auto; border-radius:var(--radius-button); padding-inline:14px; gap:8px; }
@@ -1626,7 +1635,14 @@ body[data-preview="true"] .hero-position-handle{display:block;position:absolute;
 @media (max-width: 1024px) and (min-width:769px){.catalog-grid{grid-template-columns:repeat(var(--site-tablet-columns),minmax(0,1fr));}}
 @media (max-width:768px){
   #site-header{height:var(--header-h-mobile);}
-  .header-inner,.catalog-search{padding-inline:var(--gutter-mobile);}.catalog-collection-tabs{padding-inline:var(--gutter-mobile);}
+  .header-inner{position:relative}.header-inner,.catalog-search{padding-inline:var(--gutter-mobile);}.catalog-collection-tabs{padding-inline:var(--gutter-mobile);}
+  .brand-logo{height:var(--header-logo-h-mobile,28px)}
+  body[data-header-brand] .header-brand{grid-column:1;grid-row:1}
+  body[data-header-cart="right"] .header-right{grid-column:2;grid-row:1;justify-self:end}
+  body[data-header-cart="left"] .header-right{grid-column:1;grid-row:1;justify-self:start}
+  body[data-header-cart="left"] .header-brand{grid-column:2;grid-row:1;justify-self:end}
+  body[data-tagline-mobile="true"] .header-left{display:block;position:absolute;left:50%;bottom:1px;transform:translateX(-50%);white-space:nowrap}
+  body[data-tagline-mobile="true"] .collection-tag{font-size:7px;letter-spacing:.08em}
   .catalog-grid{gap:var(--grid-gap-mobile);padding-inline:var(--gutter-mobile);}
   body[data-header-sticky-mobile="true"] #site-header{position:sticky;}
   body[data-tagline-mobile="true"] .collection-tag{display:block;}

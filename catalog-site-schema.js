@@ -28,7 +28,7 @@
         colors:{page:'#d8c9b8',catalog:'#d8cbbb',surface:'#f4ede3',surfaceAlt:'#f5f1eb',filters:'#fffdf9',header:'#f4ede3',text:'#1f1a15',muted:'#564b3e',subtle:'#7d7162',border:'#bcae9b',photo:'#d6c8b7',accent:'#9d4f38',accentAlt:'#a24f36',secondary:'#7e8765',available:'#3e6844',unavailable:'#9b352c',footerBg:'#302219',footerText:'#dfe6c5',overlay:'#2d1c0f'},
         opacity:{header:92,search:90,overlay:56},typography:{display:'montserrat',body:'dm-sans',baseSize:15,lineHeight:1.6,displayWeight:400},radii:{card:6,photo:8,button:999,chip:8,search:999,modal:10,panel:14},shadow:'medium',motion:{enabled:true,speed:.22},layout:{maxWidth:1400,gutterDesktop:24,gutterMobile:12}
       },
-      header:{visible:true,tagline:'BYE BYE Mayorista',showTagline:true,showTaglineMobile:false,brandName:'BYE BYE',logoUrl:'',logoAlt:'BYE BYE',brandMode:'text',heightDesktop:64,heightMobile:52,stickyDesktop:true,stickyMobile:false,brandAlign:'center',cartSide:'right',showCart:true,cartLabel:'',cartIcon:'bag'},
+      header:{visible:true,tagline:'BYE BYE Mayorista',showTagline:true,showTaglineMobile:false,brandName:'BYE BYE',logoUrl:'',logoAlt:'BYE BYE',brandMode:'text',logoHeightDesktop:36,logoHeightMobile:28,heightDesktop:64,heightMobile:52,stickyDesktop:true,stickyMobile:false,brandAlign:'center',cartSide:'right',showCart:true,cartLabel:'',cartIcon:'bag'},
       announcementBar:{enabled:false,messages:[],closable:true,background:'#9d4f38',textColor:'#ffffff'},
       hero:{visible:true,managed:false,banners:[],desktopHeight:500,mobileRatio:'1013/1800',showTextMobile:false,autoplay:true,autoplaySeconds:7,transition:'fade',showDots:true,showArrows:false,swipe:true,hideOnMobileScroll:true},
       sections:[],
