@@ -4510,12 +4510,19 @@ function canOrderProduct(product, collection = getActiveCollection(), selectedOp
   return hasAvailableColor(product, selectedOption) && !isPreorderCollection(collection);
 }
 
+function catalogText(key,vars={}) {
+  const fallback={'modal.outOfStock':'Fuera de stock','modal.noColors':'Sin colores en stock','modal.soon':'Próximamente','modal.added':'✓ Opción en tu selección','modal.addOption':'Agregar esta opción','modal.add':'Agregar a la selección','toast.empty':'Tu selección está vacía','toast.pdf':'PDF descargado','toast.productPdf':'Ficha PDF descargada','toast.pdfError':'No se pudo generar el PDF','cart.clearConfirm':'¿Vaciar toda la selección?'};
+  let value=(typeof window!=='undefined'?window.CatalogSiteSettings?.texts?.[key]:null)||fallback[key]||key;
+  for(const [name,replacement] of Object.entries(vars))value=String(value).replaceAll(`{${name}}`,String(replacement));
+  return value;
+}
+
 function getModalAddButtonLabel(product, selectedOption, inCart) {
-  if (!product.inStock) return 'Fuera de stock';
-  if (!hasAvailableColor(product, selectedOption)) return 'Sin colores en stock';
-  if (isPreorderCollection()) return 'Próximamente';
-  if (inCart) return '✓ Opción en tu selección';
-  return selectedOption ? 'Agregar esta opción' : 'Agregar a la selección';
+  if (!product.inStock) return catalogText('modal.outOfStock');
+  if (!hasAvailableColor(product, selectedOption)) return catalogText('modal.noColors');
+  if (isPreorderCollection()) return catalogText('modal.soon');
+  if (inCart) return catalogText('modal.added');
+  return selectedOption ? catalogText('modal.addOption') : catalogText('modal.add');
 }
 
 function getCollectionProducts() {
@@ -4812,7 +4819,7 @@ function buildCategoryFilters() {
   allBtn.className = `pill ${activeCategory === 'all' ? 'active' : ''}`;
   allBtn.dataset.filter = 'category';
   allBtn.dataset.value = 'all';
-  allBtn.textContent = 'Todas las prendas';
+  allBtn.textContent = window.CatalogSiteSettings?.filtersPanel?.allCategoriesLabel || window.CatalogSiteSettings?.texts?.['filters.allCategories'] || 'Todas las prendas';
   categoryFilters.appendChild(allBtn);
 
   const managedOrder = new Map((window.CatalogSiteSettings?.categories || []).map((category,index) => [category.name,index]));
@@ -4925,11 +4932,16 @@ function getFilteredProducts() {
   return getCollectionProducts().filter(p => {
     const genderOk = activeGender === 'all' || p.category === activeGender;
     const catOk = activeCategory === 'all' || getProductSubcategories(p).includes(activeCategory);
-    const searchableText = normalizeColorName([
-      p.name,
-      p.orderNumber,
-      ...(p.purchaseOptions || []).flatMap(option => [option.label, option.orderNumber])
-    ].filter(Boolean).join(' '));
+    const searchSettings=siteSettings.searchBar||{};
+    const searchableValues=[];
+    if(searchSettings.searchName!==false)searchableValues.push(p.name);
+    if(searchSettings.searchCode!==false)searchableValues.push(p.orderNumber);
+    if(searchSettings.searchDescription===true)searchableValues.push(p.description);
+    if(searchSettings.searchColors===true)searchableValues.push(...(p.colors||[]),...(p.purchaseOptions||[]).flatMap(option=>option.colors||[]));
+    if(searchSettings.searchCategory===true)searchableValues.push(p.category,...getProductSubcategories(p));
+    if(searchSettings.searchCollection===true)searchableValues.push(p.collection,...(p.collections||[]));
+    if(searchSettings.searchPurchaseOptions!==false)searchableValues.push(...(p.purchaseOptions||[]).flatMap(option=>[option.label,option.orderNumber]));
+    const searchableText = normalizeColorName(searchableValues.filter(Boolean).join(' '));
     const searchOk = !productSearchQuery || searchableText.includes(productSearchQuery);
     return genderOk && catOk && searchOk;
   }).sort((a, b) => {
@@ -4955,7 +4967,8 @@ function renderProducts() {
   resetProductImageObserver();
   productGrid.innerHTML = '';
 
-  resultsCountEl.textContent = `${filtered.length} prenda${filtered.length !== 1 ? 's' : ''}`;
+  const searchSettings=window.CatalogSiteSettings?.searchBar||{},resultTemplate=filtered.length===1?(searchSettings.resultTemplateOne||'{n} prenda'):(searchSettings.resultTemplate||'{n} prendas');
+  resultsCountEl.textContent = resultTemplate.replaceAll('{n}',String(filtered.length));
   updateFilterSummary(filtered.length);
   const preorderNotice = document.getElementById('preorder-notice');
   if (preorderNotice) preorderNotice.hidden = !preorderCollection;
@@ -4965,8 +4978,8 @@ function renderProducts() {
     const emptyMessage = emptyState.querySelector('p');
     if (emptyMessage) {
       emptyMessage.textContent = productSearchQuery
-        ? 'No encontramos productos con ese nombre o código.'
-        : 'No hay productos para los filtros seleccionados.';
+        ? (window.CatalogSiteSettings?.texts?.['results.emptySearch']||'No encontramos productos con ese nombre o código.')
+        : (window.CatalogSiteSettings?.texts?.['results.empty']||'No hay productos para los filtros seleccionados.');
     }
     return;
   }
@@ -5681,7 +5694,7 @@ function updateCardStates() {
 
 // ── WHATSAPP ─────────────────────────────────────
 function sendWhatsApp() {
-  if (cart.length === 0) { showToast('Tu selección está vacía'); return; }
+  if (cart.length === 0) { showToast(catalogText('toast.empty')); return; }
 
   const collection = getActiveCollection();
   const lines = [`*Mi selección — BYE BYE ${collection.name}*`, ''];
@@ -5693,18 +5706,16 @@ function sendWhatsApp() {
     lines.push(`   Piezas por caja: ${getCartProductTotalLabel(p)}`);
     lines.push('');
   });
-  lines.push(`Total prendas seleccionadas: ${cart.length}`);
-  lines.push('');
-  lines.push('¡Hola! Quisiera pedir cotizacion de estas prendas.');
-
-  const msg = encodeURIComponent(lines.join('\n'));
+  const items=lines.join('\n').trim(),template=window.CatalogSiteSettings?.whatsapp?.template||'¡Hola! Quisiera pedir cotización de estas prendas.\n\n{items}\n\nTotal de prendas seleccionadas: {n}';
+  const message=template.replaceAll('{marca}',window.CatalogSiteSettings?.header?.brandName||'BYE BYE').replaceAll('{coleccion}',collection.name).replaceAll('{items}',items).replaceAll('{n}',String(cart.length)).replaceAll('{cliente}','');
+  const msg = encodeURIComponent(message);
   const whatsappNumber = String(window.CatalogSiteSettings?.whatsapp?.number || '').replace(/\D/g, '');
   window.open(`https://wa.me/${whatsappNumber}?text=${msg}`, '_blank');
 }
 
 // ── PDF ───────────────────────────────────────────
 function downloadPDF() {
-  if (cart.length === 0) { showToast('Tu selección está vacía'); return; }
+  if (cart.length === 0) { showToast(catalogText('toast.empty')); return; }
 
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ unit: 'mm', format: 'a4' });
@@ -5822,7 +5833,7 @@ function downloadPDF() {
   }
 
   doc.save(`ByeBye_Seleccion_${collection.name.replace(/\s+/g, '')}.pdf`);
-  showToast('PDF descargado');
+  showToast(catalogText('toast.pdf'));
 }
 
 function loadPdfImage(src) {
@@ -6140,10 +6151,10 @@ async function downloadProductPDF(product, optionId = null) {
       creator: 'BYE BYE'
     });
     doc.save(`ByeBye_${safePdfFilename(product.name)}.pdf`);
-    showToast('Ficha PDF descargada');
+    showToast(catalogText('toast.productPdf'));
   } catch (error) {
     console.error('No se pudo generar la ficha PDF', error);
-    showToast('No se pudo generar el PDF');
+    showToast(catalogText('toast.pdfError'));
   } finally {
     if (button) {
       button.disabled = false;
@@ -6398,7 +6409,7 @@ function bindEvents() {
   document.getElementById('btn-whatsapp').addEventListener('click', sendWhatsApp);
   document.getElementById('btn-pdf').addEventListener('click', downloadPDF);
   document.getElementById('btn-clear').addEventListener('click', () => {
-    if (confirm('¿Vaciar toda la selección?')) clearCart();
+    if (confirm(catalogText('cart.clearConfirm'))) clearCart();
   });
 
   // Modal

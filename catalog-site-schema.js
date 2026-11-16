@@ -30,7 +30,7 @@
       announcementBar:{enabled:false,messages:[],closable:true,background:'#9d4f38',textColor:'#ffffff'},
       hero:{visible:true,managed:false,banners:[],desktopHeight:500,mobileRatio:'1013/1800',showTextMobile:false,autoplay:true,autoplaySeconds:7,transition:'fade',showDots:true,showArrows:false,swipe:true,hideOnMobileScroll:true},
       sections:[],
-      searchBar:{visible:true,sticky:true,placeholder:'Buscar por nombre o código',showFilterLabel:false,filterIcon:'lines',filterSide:'left',width:520,searchDescription:false,searchColors:false,searchCategory:false,showActiveChips:true,showResultCount:true,resultTemplate:'{n} prendas',resultTemplateOne:'{n} prenda',compactMobile:true,compactAfter:72},
+      searchBar:{visible:true,sticky:true,placeholder:'Buscar por nombre o código',showFilterLabel:false,filterIcon:'lines',filterSide:'left',width:520,searchName:true,searchCode:true,searchDescription:false,searchColors:false,searchCategory:false,searchCollection:false,searchPurchaseOptions:true,showActiveChips:true,showResultCount:true,resultTemplate:'{n} prendas',resultTemplateOne:'{n} prenda',compactMobile:true,compactAfter:72},
       filtersPanel:{sideDesktop:'left',sideMobile:'bottom',width:440,mobileHeight:55,title:'Explorar catálogo',eyebrow:'BYE BYE',showEyebrow:true,groups:['collections','genders','categories'],allCategoriesLabel:'Todas las prendas',showFooterDesktop:false,showFooterMobile:true,optionStyle:'list',extraFilters:{color:false,size:false,packing:false,availability:false}},
       collectionsConfig:{initial:'verano-2027',rememberLast:true,showAll:false,allLabel:'Todo el catálogo',showTabs:false},
       categories:clone(categories),

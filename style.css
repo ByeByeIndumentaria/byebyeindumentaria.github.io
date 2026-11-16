@@ -1555,6 +1555,9 @@ body.filter-menu-open {
 
 /* ── LIVE STUDIO TOKENS & LAYOUT VARIANTS ───────── */
 .catalog-search { max-width: var(--content-max); padding-inline: var(--gutter-desktop); }
+.catalog-search-field { width:min(100%,var(--search-field-width,520px)); }
+.catalog-search[data-filter-side="right"] { flex-direction:row-reverse; justify-content:flex-end; }
+.filters-section.site-search-not-sticky { position:relative; top:auto; }
 .catalog-search-input { border-radius: var(--radius-search); background: var(--search-bg); }
 .filters-toggle,.cart-btn,.hero-cta,.managed-block-button { border-radius: var(--radius-button); }
 .filters-drawer { width: min(var(--filters-width), 92vw); background: var(--filters-bg); border-radius: var(--radius-panel); }
