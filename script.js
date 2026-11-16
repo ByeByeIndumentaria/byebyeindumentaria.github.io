@@ -4905,6 +4905,7 @@ function getFilteredProducts() {
 
 function renderProducts() {
   persistCatalogState();
+  window.dispatchEvent(new CustomEvent('catalog-hero-audience-change',{detail:{collection:activeCollection,gender:activeGender}}));
   const filtered = getFilteredProducts();
   const preorderCollection = isPreorderCollection();
   resetProductImageObserver();
@@ -6101,53 +6102,68 @@ function activateCatalogCollection(collectionId) {
 function initHeroCarousel() {
   const carousel = document.getElementById('hero-carousel');
   if (!carousel) return;
-  const slides = [...carousel.querySelectorAll('.hero-slide')];
+  const allSlides = [...carousel.querySelectorAll('.hero-slide')];
   const dots = [...carousel.querySelectorAll('.hero-dot')];
-  if (slides.length < 2) return;
+  if (!allSlides.length) return;
 
   let activeIndex = 0;
   let pointerStartX = 0;
   let pointerStartY = 0;
-  let autoplayTimer = null;
 
+  let audience={collection:activeCollection,gender:activeGender};
+  const eligibleSlides=()=>{const matches=allSlides.filter(slide=>{const rule=slide.dataset.audience||'all';if(rule==='all')return true;if(rule.startsWith('gender:'))return audience.gender===rule.slice(7);if(rule.startsWith('collection:'))return audience.collection===rule.slice(11);return true;});return matches.length?matches:allSlides;};
   const showSlide = index => {
+    const slides=eligibleSlides();
     activeIndex = (index + slides.length) % slides.length;
-    carousel.dataset.activeCollection = slides[activeIndex].dataset.collection;
-    slides.forEach((slide, slideIndex) => {
-      const active = slideIndex === activeIndex;
+    const activeSlide=slides[activeIndex];
+    carousel.dataset.activeCollection = activeSlide.dataset.collection;
+    allSlides.forEach((slide, slideIndex) => {
+      const active = slide === activeSlide;
       slide.classList.toggle('active', active);
       slide.setAttribute('aria-hidden', String(!active));
       slide.querySelectorAll('a, button').forEach(control => {
         control.tabIndex = active ? 0 : -1;
       });
     });
-    dots.forEach((dot, dotIndex) => dot.classList.toggle('active', dotIndex === activeIndex));
+    dots.forEach((dot, dotIndex) => {dot.hidden=!slides.includes(allSlides[dotIndex]);dot.classList.toggle('active',allSlides[dotIndex]===activeSlide);});
   };
 
   const restartAutoplay = () => {
-    window.clearInterval(autoplayTimer);
+    window.clearInterval(carousel._autoplayTimer);
     if (carousel.dataset.autoplay === 'false') return;
-    autoplayTimer = window.setInterval(() => {
+    carousel._autoplayTimer = window.setInterval(() => {
       if (!document.hidden) showSlide(activeIndex + 1);
     }, Math.max(2, Number(carousel.dataset.autoplaySeconds) || 7) * 1000);
   };
 
-  carousel.addEventListener('pointerdown', event => {
+  if(carousel._pointerDown)carousel.removeEventListener('pointerdown',carousel._pointerDown);
+  if(carousel._pointerUp)carousel.removeEventListener('pointerup',carousel._pointerUp);
+  carousel._pointerDown=event => {
+    if (carousel.dataset.swipe === 'false') return;
     if (!event.isPrimary || event.target.closest('a, button')) return;
     pointerStartX = event.clientX;
     pointerStartY = event.clientY;
-  });
-  carousel.addEventListener('pointerup', event => {
+  };
+  carousel._pointerUp=event => {
+    if (carousel.dataset.swipe === 'false') return;
     if (!event.isPrimary || event.target.closest('a, button')) return;
     const deltaX = event.clientX - pointerStartX;
     const deltaY = event.clientY - pointerStartY;
     if (Math.abs(deltaX) < 45 || Math.abs(deltaX) <= Math.abs(deltaY)) return;
     showSlide(activeIndex + (deltaX > 0 ? 1 : -1));
     restartAutoplay();
-  });
+  };
+  carousel.addEventListener('pointerdown',carousel._pointerDown);
+  carousel.addEventListener('pointerup',carousel._pointerUp);
+  if(carousel._ctaHandler)carousel.removeEventListener('click',carousel._ctaHandler);
+  carousel._ctaHandler=event=>{const link=event.target.closest('.hero-cta[data-collection]');if(link)activateCatalogCollection(link.dataset.collection);};
+  carousel.addEventListener('click',carousel._ctaHandler);
 
   showSlide(0);
   restartAutoplay();
+  if(carousel._audienceHandler)window.removeEventListener('catalog-hero-audience-change',carousel._audienceHandler);
+  carousel._audienceHandler=event=>{audience=event.detail||audience;showSlide(0);restartAutoplay();};
+  window.addEventListener('catalog-hero-audience-change',carousel._audienceHandler);
 }
 
 window.addEventListener('catalog-managed-hero-replaced', initHeroCarousel);
@@ -6177,7 +6193,7 @@ function bindEvents() {
     document.body.classList.remove('filter-menu-open');
     filterMenuLastFocus?.focus?.();
   };
-  document.querySelectorAll('.hero-cta[data-collection], .managed-block-button[data-collection]').forEach(link => {
+  document.querySelectorAll('.managed-block-button[data-collection]').forEach(link => {
     link.addEventListener('click', () => activateCatalogCollection(link.dataset.collection));
   });
 
