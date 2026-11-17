@@ -19,5 +19,6 @@ test('filter groups can be renamed, hidden and reordered',()=>{
   assert.match(site,/body\.querySelectorAll\('\[data-filter-group\]'\)/);
   assert.match(site,/node\.hidden=hidden\.has\(id\)/);
   assert.match(site,/body\.append\(node\)/);
+  assert.match(admin,/\['filtersPanel','Panel de filtros',null\]/);
   assert.match(fs.readFileSync('style.css','utf8'),/\[data-filter-group\]\[hidden\][\s\S]*?display: none !important/);
 });
