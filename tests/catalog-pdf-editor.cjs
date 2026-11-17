@@ -16,7 +16,8 @@ test('both catalog PDFs expose real editable texts, colors and filenames',()=>{
 test('pedido only exposes controls that the catalog applies',()=>{
   const admin=fs.readFileSync('admin/settings.js','utf8'),site=fs.readFileSync('catalog-site.js','utf8'),css=fs.readFileSync('style.css','utf8');
   for(const path of ['cart.enabled','cart.title','cart.side','cart.width','cart.showWhatsapp','cart.showPdf','cart.showClear'])assert.match(admin,new RegExp(path.replace('.','\\.')));
-  for(const removed of ['cart.quantities','cart.customerFields','cart.notes'])assert.doesNotMatch(admin,new RegExp(removed.replace('.','\\.')));
+  for(const removed of ['cart.customerFields','cart.notes'])assert.doesNotMatch(admin,new RegExp(removed.replace('.','\\.')));
+  for(const path of ['cart.quantities','cart.maxQuantity','cart.showPieceTotals','cart.quantityLabel','cart.totalBoxesLabel','cart.totalPiecesLabel'])assert.match(admin,new RegExp(path.replace('.','\\.')));
   assert.match(admin,/whatsapp\.floating/);
   assert.match(site,/function applyFloatingWhatsapp/);
   assert.match(site,/function applyCart\(settings\)/);
