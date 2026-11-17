@@ -4714,8 +4714,10 @@ let productSearchQuery = '';
 let currentModalProduct = null;
 let currentPurchaseOptionId = null;
 let lastFocusedElement = null;
+let cartCustomer = { name:'', business:'', city:'', phone:'', note:'' };
 const CART_STORAGE_KEY = 'byebye-cart-v1';
 const CATALOG_STORAGE_KEY = 'byebye-catalog-state-v1';
+const CART_CUSTOMER_STORAGE_KEY = 'byebye-cart-customer-v1';
 
 function loadPersistedState() {
   try {
@@ -4729,6 +4731,8 @@ function loadPersistedState() {
       productSearchQuery = savedCatalog.search || '';
     }
 
+    const savedCustomer=JSON.parse(localStorage.getItem(CART_CUSTOMER_STORAGE_KEY)||'null');
+    if(savedCustomer&&typeof savedCustomer==='object')cartCustomer={...cartCustomer,...Object.fromEntries(Object.entries(savedCustomer).map(([key,value])=>[key,String(value||'').slice(0,key==='note'?500:120)]))};
     const savedCart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]');
     cart = savedCart.map(saved => {
       const product = products.find(item => item.id === saved.id);
@@ -4763,6 +4767,10 @@ function persistCart() {
   } catch (error) {}
 }
 
+function persistCartCustomer() {
+  try { localStorage.setItem(CART_CUSTOMER_STORAGE_KEY,JSON.stringify(cartCustomer)); } catch (error) {}
+}
+
 function persistCatalogState() {
   try {
     localStorage.setItem(CATALOG_STORAGE_KEY, JSON.stringify({
@@ -4784,6 +4792,7 @@ const cartEmptyEl = document.getElementById('cart-empty');
 const cartActionsEl = document.getElementById('cart-actions');
 const cartCountEl = document.getElementById('cart-count');
 const cartSummaryEl = document.getElementById('cart-summary');
+const cartCustomerEl = document.getElementById('cart-customer');
 const categoryFilters = document.getElementById('category-filters');
 const genderFilters = document.getElementById('gender-filters');
 const resultsCountEl = document.getElementById('results-count');
@@ -5682,6 +5691,33 @@ function updateCartSummary() {
   if(config.showPieceTotals!==false&&complete){const piecesRow=document.createElement('p'),piecesLabel=document.createElement('span'),piecesValue=document.createElement('strong');piecesLabel.textContent=config.totalPiecesLabel||'Total de piezas';piecesValue.textContent=String(minPieces===maxPieces?minPieces:`${minPieces}–${maxPieces}`);piecesRow.append(piecesLabel,piecesValue);cartSummaryEl.append(piecesRow);}
 }
 
+function getCartCustomerLines() {
+  const config=getCartSettings(),lines=[];
+  if(config.customerFields===true){
+    if(config.showCustomerName!==false&&cartCustomer.name.trim())lines.push([config.customerNameLabel||'Nombre',cartCustomer.name.trim()]);
+    if(config.showCustomerBusiness!==false&&cartCustomer.business.trim())lines.push([config.customerBusinessLabel||'Comercio',cartCustomer.business.trim()]);
+    if(config.showCustomerCity!==false&&cartCustomer.city.trim())lines.push([config.customerCityLabel||'Ciudad',cartCustomer.city.trim()]);
+    if(config.showCustomerPhone!==false&&cartCustomer.phone.trim())lines.push([config.customerPhoneLabel||'Teléfono',cartCustomer.phone.trim()]);
+  }
+  if(config.notes===true&&cartCustomer.note.trim())lines.push([config.noteLabel||'Nota para el pedido',cartCustomer.note.trim()]);
+  return lines;
+}
+
+function getCartCustomerText() {
+  return getCartCustomerLines().map(([label,value])=>`${label}: ${value}`).join('\n');
+}
+
+function updateCartCustomerForm() {
+  if(!cartCustomerEl)return;
+  const config=getCartSettings(),showFields=config.customerFields===true,showNote=config.notes===true;
+  cartCustomerEl.hidden=!(showFields||showNote);
+  cartCustomerEl.replaceChildren();
+  if(cartCustomerEl.hidden)return;
+  const addField=(key,label,type='text')=>{const wrap=document.createElement('label'),caption=document.createElement('span'),input=type==='textarea'?document.createElement('textarea'):document.createElement('input');caption.textContent=label;input.value=cartCustomer[key]||'';if(type!=='textarea')input.type=type;input.maxLength=key==='note'?500:120;input.autocomplete=key==='name'?'name':key==='phone'?'tel':key==='business'?'organization':key==='city'?'address-level2':'off';input.addEventListener('input',()=>{cartCustomer[key]=input.value;persistCartCustomer();});wrap.append(caption,input);cartCustomerEl.append(wrap);};
+  if(showFields){if(config.showCustomerName!==false)addField('name',config.customerNameLabel||'Nombre');if(config.showCustomerBusiness!==false)addField('business',config.customerBusinessLabel||'Comercio');if(config.showCustomerCity!==false)addField('city',config.customerCityLabel||'Ciudad');if(config.showCustomerPhone!==false)addField('phone',config.customerPhoneLabel||'Teléfono','tel');}
+  if(showNote)addField('note',config.noteLabel||'Nota para el pedido','textarea');
+}
+
 function updateCartUI() {
   persistCart();
   const count = cart.length;
@@ -5696,6 +5732,7 @@ function updateCartUI() {
   cartEmptyEl.style.display = count === 0 ? 'flex' : 'none';
   cartItemsEl.style.display = count === 0 ? 'none' : 'block';
   cartActionsEl.style.display = count === 0 ? 'none' : 'flex';
+  updateCartCustomerForm();
   updateCartSummary();
 
   // Render cart items
@@ -5779,7 +5816,7 @@ function sendWhatsApp() {
     lines.push('');
   });
   const items=lines.join('\n').trim(),template=window.CatalogSiteSettings?.whatsapp?.template||'¡Hola! Quisiera pedir cotización de estas prendas.\n\n{items}\n\nTotal de prendas seleccionadas: {n}';
-  const totalBoxes=cart.reduce((sum,item)=>sum+(Number(item.quantity)||1),0),message=template.replaceAll('{marca}',window.CatalogSiteSettings?.header?.brandName||'BYE BYE').replaceAll('{coleccion}',collection.name).replaceAll('{items}',items).replaceAll('{n}',String(cart.length)).replaceAll('{cajas}',String(totalBoxes)).replaceAll('{cliente}','');
+  const totalBoxes=cart.reduce((sum,item)=>sum+(Number(item.quantity)||1),0),customerText=getCartCustomerText(),hasCustomerVariable=template.includes('{cliente}');let message=template.replaceAll('{marca}',window.CatalogSiteSettings?.header?.brandName||'BYE BYE').replaceAll('{coleccion}',collection.name).replaceAll('{items}',items).replaceAll('{n}',String(cart.length)).replaceAll('{cajas}',String(totalBoxes)).replaceAll('{cliente}',customerText);if(customerText&&!hasCustomerVariable)message=`${message}\n\n${customerText}`;
   const msg = encodeURIComponent(message);
   const whatsappNumber = String(window.CatalogSiteSettings?.whatsapp?.number || '').replace(/\D/g, '');
   window.open(`https://wa.me/${whatsappNumber}?text=${msg}`, '_blank');
@@ -5832,6 +5869,9 @@ function downloadPDF() {
   doc.setDrawColor(220, 220, 220);
   doc.line(margin, y, pageW - margin, y);
   y += 10;
+
+  const customerPdfLines=getCartCustomerLines().flatMap(([label,value])=>doc.splitTextToSize(`${label}: ${value}`,pageW-margin*2-12));
+  if(customerPdfLines.length){const customerHeight=Math.max(16,customerPdfLines.length*5+9);doc.setFillColor(245,242,238);doc.roundedRect(margin,y,pageW-margin*2,customerHeight,2,2,'F');doc.setFontSize(8.5);doc.setFont('helvetica','normal');doc.setTextColor(70,70,70);doc.text(customerPdfLines,margin+6,y+7);y+=customerHeight+8;}
 
   // Products
   cart.forEach((p, i) => {
