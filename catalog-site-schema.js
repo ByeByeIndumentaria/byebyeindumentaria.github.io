@@ -29,7 +29,7 @@
         opacity:{header:92,search:90,overlay:56},typography:{display:'montserrat',body:'dm-sans',baseSize:15,lineHeight:1.6,displayWeight:400},radii:{card:6,photo:8,button:999,chip:8,search:999,modal:10,panel:14},shadow:'medium',motion:{enabled:true,speed:.22},layout:{maxWidth:1400,gutterDesktop:24,gutterMobile:12}
       },
       header:{visible:true,tagline:'BYE BYE Mayorista',showTagline:true,showTaglineMobile:false,brandName:'BYE BYE',logoUrl:'',logoAlt:'BYE BYE',brandMode:'text',logoHeightDesktop:36,logoHeightMobile:28,heightDesktop:64,heightMobile:52,stickyDesktop:true,stickyMobile:false,brandAlign:'center',cartSide:'right',showCart:true,cartLabel:'',cartIcon:'bag'},
-      announcementBar:{enabled:false,messages:[],closable:true,background:'#9d4f38',textColor:'#ffffff'},
+      announcementBar:{enabled:false,messages:[],closable:true,rotationSeconds:5,background:'#9d4f38',textColor:'#ffffff'},
       hero:{visible:true,managed:false,banners:[],desktopHeight:500,mobileRatio:'1013/1800',showTextMobile:false,autoplay:true,autoplaySeconds:7,transition:'fade',showDots:true,showArrows:false,swipe:true,hideOnMobileScroll:true},
       sections:[],
       searchBar:{visible:true,sticky:true,placeholder:'Buscar por nombre o código',showFilterLabel:false,filterIcon:'lines',filterSide:'left',width:520,searchName:true,searchCode:true,searchDescription:false,searchColors:false,searchCategory:false,searchCollection:false,searchPurchaseOptions:true,showActiveChips:true,showResultCount:true,resultTemplate:'{n} prendas',resultTemplateOne:'{n} prenda',compactMobile:true,compactAfter:72},
