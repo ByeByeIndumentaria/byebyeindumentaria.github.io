@@ -421,6 +421,10 @@ input:focus-visible,
   color: var(--gray-400);
   letter-spacing: 0.06em;
 }
+.results-info.has-customer-sort { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.catalog-sort { display: inline-flex; align-items: center; gap: 7px; color: var(--gray-600); font-size: 10px; letter-spacing: .03em; }
+.catalog-sort[hidden] { display: none; }
+.catalog-sort select { min-height: 34px; max-width: 190px; padding: 6px 28px 6px 10px; border: 1px solid var(--gray-200); border-radius: var(--radius-chip); background: var(--search-bg); color: var(--black); font: inherit; font-size: 11px; }
 .preorder-notice {
   max-width: 1400px;
   margin: 12px auto 0;
@@ -1490,6 +1494,10 @@ body.filter-menu-open {
     font-size: 10px;
     letter-spacing: .03em;
   }
+  .filters-section .results-info.has-customer-sort { grid-column: 1 / -1; width: 100%; }
+  .catalog-sort { min-width: 0; }
+  .catalog-sort > span { display: none; }
+  .catalog-sort select { max-width: 155px; min-height: 32px; font-size: 10px; }
   .catalog-search .filters-toggle {
     flex: 0 0 auto;
     position: relative;

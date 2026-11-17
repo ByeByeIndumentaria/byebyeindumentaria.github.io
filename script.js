@@ -4711,6 +4711,7 @@ let activeCollection = 'verano-2027';
 let activeGender = 'all';
 let activeCategory = 'all';
 let productSearchQuery = '';
+let customerProductSort = '';
 let currentModalProduct = null;
 let currentPurchaseOptionId = null;
 let lastFocusedElement = null;
@@ -4729,6 +4730,7 @@ function loadPersistedState() {
       activeGender = savedCatalog.gender || activeGender;
       activeCategory = savedCatalog.category || activeCategory;
       productSearchQuery = savedCatalog.search || '';
+      customerProductSort = savedCatalog.sort || '';
     }
 
     const savedCustomer=JSON.parse(localStorage.getItem(CART_CUSTOMER_STORAGE_KEY)||'null');
@@ -4777,7 +4779,8 @@ function persistCatalogState() {
       collection: activeCollection,
       gender: activeGender,
       category: activeCategory,
-      search: productSearchQuery
+      search: productSearchQuery,
+      sort: customerProductSort
     }));
   } catch (error) {}
 }
@@ -4796,6 +4799,8 @@ const cartCustomerEl = document.getElementById('cart-customer');
 const categoryFilters = document.getElementById('category-filters');
 const genderFilters = document.getElementById('gender-filters');
 const resultsCountEl = document.getElementById('results-count');
+const productSortControl = document.getElementById('product-sort-control');
+const productSortSelect = document.getElementById('product-sort');
 const productSearchInput = document.getElementById('product-search');
 const productSearchClear = document.getElementById('product-search-clear');
 const filtersSection = document.getElementById('catalogo');
@@ -4822,6 +4827,7 @@ function init() {
     productSearchInput.value = productSearchQuery;
     productSearchClear.hidden = !productSearchQuery;
   }
+  updateCustomerSortControl();
   renderProducts();
   updateCartUI();
   bindEvents();
@@ -4954,9 +4960,25 @@ function clearActiveFilter(type) {
   renderProducts();
 }
 
+function getCustomerSortOptions() {
+  const grid=window.CatalogSiteSettings?.grid||{},definitions=[['featured','sortFeatured','sort.featured','Destacados'],['name','sortName','sort.name','Nombre A–Z'],['code','sortCode','sort.code','Código'],['stock','sortStock','sort.stock','Disponibles primero']];
+  return definitions.filter(([,flag])=>grid[flag]!==false).map(([value,,textKey,fallback])=>({value,label:window.CatalogSiteSettings?.texts?.[textKey]||fallback}));
+}
+
+function updateCustomerSortControl() {
+  if(!productSortControl||!productSortSelect)return;
+  const grid=window.CatalogSiteSettings?.grid||{},enabled=grid.customerSort===true,options=getCustomerSortOptions();
+  productSortControl.hidden=!enabled;productSortControl.closest('.results-info')?.classList.toggle('has-customer-sort',enabled);
+  if(!options.length){productSortControl.hidden=true;return;}
+  const allowed=options.map(option=>option.value),preferred=allowed.includes(grid.customerSortDefault)?grid.customerSortDefault:allowed[0];if(!allowed.includes(customerProductSort))customerProductSort=preferred;
+  document.getElementById('product-sort-label').textContent=window.CatalogSiteSettings?.texts?.['sort.label']||'Ordenar';
+  productSortSelect.replaceChildren(...options.map(item=>{const option=document.createElement('option');option.value=item.value;option.textContent=item.label;return option;}));productSortSelect.value=customerProductSort;
+}
+
 // ── RENDER PRODUCTS ──────────────────────────────
 function getFilteredProducts() {
   const siteSettings = window.CatalogSiteSettings || {};
+  const sortMode=siteSettings.grid?.customerSort===true?customerProductSort:'featured';
   const managedOrder = new Map((siteSettings.grid?.productOrder || siteSettings.productOrder || []).map((id,index) => [Number(id),index]));
   const categoryOrder = new Map((siteSettings.categories || []).map((category,index) => [category.name,index]));
   const orderByCollection = siteSettings.grid?.orderByCollection || {};
@@ -4984,11 +5006,14 @@ function getFilteredProducts() {
   }).sort((a, b) => {
     const categoryA = activeCategory === 'all' ? (a.subcategory || getProductSubcategories(a)[0] || '') : activeCategory;
     const categoryB = activeCategory === 'all' ? (b.subcategory || getProductSubcategories(b)[0] || '') : activeCategory;
-    if (activeCategory === 'all') {
+    if (activeCategory === 'all' && sortMode==='featured') {
       const groupDifference = (categoryOrder.get(categoryA) ?? 9999) - (categoryOrder.get(categoryB) ?? 9999) || categoryA.localeCompare(categoryB,'es');
       if (groupDifference) return groupDifference;
     }
-    const stockDifference = siteSettings.grid?.stockFirst === false || siteSettings.stockFirst === false ? 0 : Number(b.inStock) - Number(a.inStock);
+    if(sortMode==='name'){const difference=String(a.name||'').localeCompare(String(b.name||''),'es',{sensitivity:'base',numeric:true});if(difference)return difference;}
+    if(sortMode==='code'){const difference=String(a.orderNumber||'').localeCompare(String(b.orderNumber||''),'es',{sensitivity:'base',numeric:true});if(difference)return difference;}
+    if(sortMode==='stock'){const difference=Number(b.inStock)-Number(a.inStock);if(difference)return difference;}
+    const stockDifference = sortMode!=='featured'||siteSettings.grid?.stockFirst === false || siteSettings.stockFirst === false ? 0 : Number(b.inStock) - Number(a.inStock);
     if (stockDifference) return stockDifference;
     const categoryMapA = orderMapFor(categoryA),categoryMapB = orderMapFor(categoryB);
     return (categoryMapA.get(Number(a.id)) ?? 999999) - (categoryMapB.get(Number(b.id)) ?? 999999)
@@ -6496,6 +6521,7 @@ function bindEvents() {
     productSearchInput.focus();
     renderProducts();
   });
+  productSortSelect?.addEventListener('change',()=>{customerProductSort=productSortSelect.value;renderProducts();});
 
   // Cart open/close
   document.getElementById('cart-toggle').addEventListener('click', () => {
@@ -6595,6 +6621,7 @@ window.addEventListener('catalog-site-settings-applied', () => {
   if (document.readyState === 'loading') return;
   if(!collectionCanBeSelected(activeCollection)||getCollectionsConfig().rememberLast===false)activeCollection=getInitialCollectionId();
   buildCollectionFilters();
+  updateCustomerSortControl();
   if (currentModalProduct) {
     renderPackagingTable(currentModalProduct);
     applyProductModalSettings();
