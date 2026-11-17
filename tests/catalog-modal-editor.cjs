@@ -5,7 +5,7 @@ const schema = require('../catalog-site-schema.js');
 
 test('the product sheet editor controls real layout, gallery and curve output', () => {
   const defaults = schema.defaults().productModal;
-  assert.deepEqual(defaults.parts, ['collection','title','code','description','notice','colors','sizes','curve','pdf','add']);
+  assert.deepEqual(defaults.parts, ['collection','title','code','description','notice','colors','sizes','curve','share','pdf','add']);
   assert.deepEqual(defaults.curveColumns, ['color','stock','curve','pieces']);
   assert.equal(defaults.curveFormat, 'inline');
 
