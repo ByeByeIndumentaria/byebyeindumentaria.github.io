@@ -180,7 +180,7 @@ async function saveCollection(event){
 }
 async function loadRecords(){
   const next=new Map(seed.products.map(p=>[p.id,{id:p.id,payload:mergeImportedModelPhotos(p,p.id),version:0}]));
-  if(api.configured&&!preview){for(const r of await api.list()){mergeImportedModelPhotos(r.payload,r.id);next.set(Number(r.id),r);}}
+  if(api.configured&&!preview){for(const r of await api.list())next.set(Number(r.id),r);}
   records=next;renderCards();
 }
 function renderCards(){
@@ -225,14 +225,13 @@ async function restoreHistory(id,targetVersion){
   try{
     const result=await api.restore(id,targetVersion,current.version),[persisted]=await api.getProducts([id]);
     if(!persisted||persisted.version!==result.version)throw new Error('La restauración se recibió, pero no se pudo verificar. Recargá antes de volver a intentar.');
-    mergeImportedModelPhotos(persisted.payload,persisted.id);
     records.set(id,persisted);$('history-dialog').close();renderCards();notice(`Versión ${targetVersion} restaurada y verificada. El catálogo se actualizará en unos segundos.`);
   }catch(error){notice(error.message||'No se pudo restaurar la versión.');}
   finally{historyBusy=false;}
 }
 async function openEditor(id,curve=false){
   if(id!=null&&api.configured&&!preview){
-    try{const [latest]=await api.getProducts([Number(id)]);if(latest){mergeImportedModelPhotos(latest.payload,latest.id);records.set(Number(id),latest);}}
+    try{const [latest]=await api.getProducts([Number(id)]);if(latest)records.set(Number(id),latest);}
     catch(e){notice('No se pudo cargar la última versión. '+e.message);return;}
   }
   resetPhotos();savedPackaging.clear();currentGroup=0;galleryDirty=false;editingId=id;version=id==null?0:records.get(id).version;
