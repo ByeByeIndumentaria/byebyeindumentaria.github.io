@@ -44,6 +44,12 @@ function normalizeOption(option,index){
   return option;
 }
 function colorIsInStock(color){return !(editing.outOfStockColors||[]).some(item=>model.normalize(item)===model.normalize(color));}
+function sizeIsInStock(color,size){const entry=Object.entries(editing.outOfStockVariants||{}).find(([name])=>model.normalize(name)===model.normalize(color));return !entry?.[1]?.some(item=>model.normalize(item)===model.normalize(size));}
+function setSizeStock(color,size,inStock){
+  editing.outOfStockVariants||={};const match=Object.keys(editing.outOfStockVariants).find(name=>model.normalize(name)===model.normalize(color)),key=match||color,current=(editing.outOfStockVariants[key]||[]).filter(item=>model.normalize(item)!==model.normalize(size));
+  if(inStock){if(current.length)editing.outOfStockVariants[key]=current;else delete editing.outOfStockVariants[key];}else editing.outOfStockVariants[key]=[...current,size];
+  dirty=true;
+}
 function setColorStock(color,inStock){
   const current=(editing.outOfStockColors||[]).filter(item=>model.normalize(item)!==model.normalize(color));
   editing.outOfStockColors=inStock?current:[...current,color];dirty=true;renderColors();renderCurve();
@@ -248,7 +254,7 @@ async function openEditor(id,curve=false){
   }
   resetPhotos();savedPackaging.clear();currentGroup=0;galleryDirty=false;editingId=id;version=id==null?0:records.get(id).version;
   editing=id==null?{name:'',orderNumber:'',category:'MUJER',subcategory:'Camperas',collection:'produccion-invierno-2027',collections:['produccion-invierno-2027'],colors:[],outOfStockColors:[],sizes:[],packaging:{rows:[]},packingType:'mixed-colors',sourcePacking:'CAJA SURTIDA DE COLORES',inStock:true,description:'',gallery:{sources:[],colorGalleryIndexByNormalizedColor:{}},preserveProductName:true,preserveCatalogColors:true}:clone(records.get(id).payload);
-  editing.outOfStockColors=Array.isArray(editing.outOfStockColors)?editing.outOfStockColors:[];
+  editing.outOfStockColors=Array.isArray(editing.outOfStockColors)?editing.outOfStockColors:[];editing.outOfStockVariants=editing.outOfStockVariants&&typeof editing.outOfStockVariants==='object'?editing.outOfStockVariants:{};
   editing.packingType||=inferredPackingType(editing.sourcePacking);if(editing.purchaseOptions?.length)editing.purchaseOptions.forEach(normalizeOption);
   normalizeGallery(editing);
   dirty=false;$('save-status').textContent='';$('editor-title').textContent=id==null?'Agregar producto':editing.name;$('save').textContent=preview?'Vista previa · sin publicar':id==null?'Publicar producto':'Guardar cambios';$('save').disabled=preview;
@@ -263,7 +269,7 @@ function renderColors(){
   $('colors').replaceChildren();
   for(const color of editing.colors){const row=el('div',null,'color-row'),src=colorPhoto(editing,color),img=el('img');img.alt=src?'Foto vinculada a '+color:'Sin foto vinculada';if(src)img.src=photoSrc(src);
     const title=el('strong',color,'color-name'),status=el('span',src?'Foto vinculada':'Sin foto vinculada','color-photo-status'),stock=el('label',null,'color-stock-toggle'+(colorIsInStock(color)?'':' out')),checkbox=el('input');checkbox.type='checkbox';checkbox.checked=colorIsInStock(color);checkbox.setAttribute('aria-label',`${color} en stock`);checkbox.onchange=()=>setColorStock(color,checkbox.checked);stock.append(checkbox,document.createTextNode(checkbox.checked?'En stock':'Fuera de stock'));row.append(img,title,status,stock);
-    const remove=el('button','Quitar');remove.type='button';remove.onclick=()=>{if(!confirm('¿Quitar el color '+color+' y sus curvas?'))return;removeColorPhoto(editing,color);editing.colors=editing.colors.filter(c=>c!==color);editing.outOfStockColors=editing.outOfStockColors.filter(c=>model.normalize(c)!==model.normalize(color));if(editing.packaging)editing.packaging.rows=editing.packaging.rows.filter(r=>r.color!==color);syncColorAcrossOptions(color,true);galleryDirty=true;dirty=true;renderColors();renderPhotos();renderOptionColors();renderCurve();};row.append(remove);
+    const remove=el('button','Quitar');remove.type='button';remove.onclick=()=>{if(!confirm('¿Quitar el color '+color+' y sus curvas?'))return;removeColorPhoto(editing,color);editing.colors=editing.colors.filter(c=>c!==color);editing.outOfStockColors=editing.outOfStockColors.filter(c=>model.normalize(c)!==model.normalize(color));for(const key of Object.keys(editing.outOfStockVariants||{}))if(model.normalize(key)===model.normalize(color))delete editing.outOfStockVariants[key];if(editing.packaging)editing.packaging.rows=editing.packaging.rows.filter(r=>r.color!==color);syncColorAcrossOptions(color,true);galleryDirty=true;dirty=true;renderColors();renderPhotos();renderOptionColors();renderCurve();};row.append(remove);
     $('colors').append(row);
   }
 }
@@ -313,7 +319,7 @@ function renderCurve(){
   for(const row of g.packaging.rows){const inStock=colorIsInStock(row.color),tr=el('tr');tr.className=inStock?'curve-row-in-stock':'curve-row-out-of-stock';const name=el('th',row.color);name.scope='row';if(row.curveText)name.append(el('small',' · '+row.curveText));const stock=el('td'),stockBadge=el('span',inStock?'Disponible':'Agotado','curve-stock-badge '+(inStock?'in-stock':'out-of-stock'));stock.append(stockBadge);tr.append(name,stock);const total=el('td');
     const updateTotal=()=>{const values=(g.sizes||[]).map(s=>row.sizePieces?.[s]);total.textContent=values.length&&values.every(Number.isInteger)?values.reduce((a,b)=>a+b,0):'—';};
     for(const size of g.sizes||[]){const td=el('td'),input=el('input');input.type='number';input.min='0';input.max='9999';input.step='1';input.value=row.sizePieces?.[size]??'';input.setAttribute('aria-label',`${row.color}, talle ${size}`);
-      input.oninput=()=>{row.sizePieces||={};row.sizePieces[size]=input.value===''?null:Number(input.value);delete row.curveText;delete row.pieces;dirty=true;updateTotal();};td.append(input);tr.append(td);}
+      input.oninput=()=>{row.sizePieces||={};row.sizePieces[size]=input.value===''?null:Number(input.value);delete row.curveText;delete row.pieces;dirty=true;updateTotal();};const availability=el('label',null,'curve-size-stock'),checkbox=el('input');checkbox.type='checkbox';checkbox.checked=sizeIsInStock(row.color,size);checkbox.setAttribute('aria-label',`${row.color}, talle ${size} disponible`);checkbox.onchange=()=>{setSizeStock(row.color,size,checkbox.checked);availability.classList.toggle('out',!checkbox.checked);availability.lastChild.textContent=checkbox.checked?'Disponible':'Agotado';};availability.classList.toggle('out',!checkbox.checked);availability.append(checkbox,document.createTextNode(checkbox.checked?'Disponible':'Agotado'));td.append(input,availability);tr.append(td);}
     updateTotal();tr.append(total);tbody.append(tr);
   }table.append(tbody);$('curve-table').append(table);
 }
@@ -327,6 +333,12 @@ function preparePayload(){
   p.inStock=$('stock').checked;p.preserveProductName=true;
   const groups=p.purchaseOptions?.length?p.purchaseOptions:[p];
   p.outOfStockColors=(p.outOfStockColors||[]).filter(color=>p.colors.some(item=>model.normalize(item)===model.normalize(color)));
+  p.outOfStockVariants=Object.fromEntries(
+    Object.entries(p.outOfStockVariants||{})
+      .filter(([color,sizes])=>p.colors.some(item=>model.normalize(item)===model.normalize(color))&&Array.isArray(sizes))
+      .map(([color,sizes])=>[color,[...new Set(sizes.filter(size=>groups.some(item=>(item.sizes||[]).some(value=>model.normalize(value)===model.normalize(size)))))]])
+      .filter(([,sizes])=>sizes.length)
+  );
   if(p.purchaseOptions?.length){p.sizes=[...new Set(p.purchaseOptions.flatMap(o=>o.sizes||[]))];p.packaging=clone(p.purchaseOptions[0].packaging);p.sourcePacking='';p.purchaseOptions.forEach(option=>{option.outOfStockColors=clone(p.outOfStockColors);option.sourcePacking=model.packingLabel(option.packingType);});}
   else p.sourcePacking=model.packingLabel(p.packingType);
   model.validate(p, editingId == null ? null : records.get(editingId).payload);

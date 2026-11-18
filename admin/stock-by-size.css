@@ -1,0 +1,6 @@
+.curve-size-stock{display:flex;align-items:center;gap:4px;margin-top:5px;color:#3f6844;font-size:10px;font-weight:600}
+.curve-size-stock input{width:14px;min-width:14px;height:14px;margin:0;padding:0}
+.curve-size-stock.out{color:#9b352c}
+.embedded-size-stock{display:flex;align-items:center;justify-content:center;gap:3px;margin-top:3px;color:#2f7144;font-size:9px;font-weight:700}
+.embedded-size-stock input{width:13px;height:13px;margin:0}
+.embedded-size-stock.out{color:#a13b32}

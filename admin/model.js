@@ -47,6 +47,11 @@
     if(!Array.isArray(p.outOfStockColors)) p.outOfStockColors=[];
     const productColors=new Set(p.colors.map(normalize));
     if(p.outOfStockColors.some(color=>!productColors.has(normalize(color)))) throw new Error('El stock por color incluye un color que ya no existe.');
+    if(!p.outOfStockVariants||typeof p.outOfStockVariants!=='object'||Array.isArray(p.outOfStockVariants)) p.outOfStockVariants={};
+    for(const [color,sizes] of Object.entries(p.outOfStockVariants)) {
+      if(!productColors.has(normalize(color))) throw new Error('El stock por talle incluye un color que ya no existe.');
+      if(!Array.isArray(sizes)) throw new Error('El stock por talle no tiene un formato válido.');
+    }
     // The legacy storefront interpolates labels into HTML. Reject markup in editable text.
     const text=[p.name,p.orderNumber,p.description,p.subcategory,...p.colors,...p.sizes,...(p.purchaseOptions||[]).flatMap(option=>[option.label,option.sourcePacking,...(option.colors||[]),...(option.sizes||[])])];
     if(text.some(s=>/[<>"`]/.test(s||''))) throw new Error('Los textos no pueden incluir <, >, comillas dobles ni acentos invertidos.');
