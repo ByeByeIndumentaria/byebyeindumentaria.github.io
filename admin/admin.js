@@ -243,7 +243,7 @@ async function openEditor(id,curve=false){
   dirty=false;$('save-status').textContent='';$('editor-title').textContent=id==null?'Agregar producto':editing.name;$('save').textContent=preview?'Vista previa · sin publicar':id==null?'Publicar producto':'Guardar cambios';$('save').disabled=preview;
   for(const [input,key] of [['name','name'],['code','orderNumber'],['gender','category'],['description','description']])$(input).value=editing[key]||'';$('subcategory').value=(Array.isArray(editing.subcategories)&&editing.subcategories.length?editing.subcategories:[editing.subcategory]).filter(Boolean).join(', ');
   renderProductCollections(Array.isArray(editing.collections)&&editing.collections.length?editing.collections:[editing.collection]);
-  $('stock').checked=editing.inStock!==false;
+  $('stock').checked=editing.inStock!==false;$('hidden-product').checked=editing.isHidden===true;$('preserve-name').checked=editing.preserveProductName===true;
   $('new-color').disabled=false;$('add-color').disabled=false;refreshOptionEditor();
   renderColors();renderPhotos();renderCurve();$('editor').showModal();if(curve)$('curve-section').scrollIntoView({block:'start'});
 }
@@ -312,7 +312,7 @@ function preparePayload(){
   const selectedCollections=[...document.querySelectorAll('input[name="product-collection"]:checked')].map(input=>input.value);
   const primaryCollection=selectedCollections.includes(editing.collection)?editing.collection:selectedCollections[0];
   p.collection=primaryCollection||'';p.collections=primaryCollection?[primaryCollection,...selectedCollections.filter(id=>id!==primaryCollection)]:[];
-  p.inStock=$('stock').checked;p.preserveProductName=true;
+  p.inStock=$('stock').checked;p.isHidden=$('hidden-product').checked;p.preserveProductName=$('preserve-name').checked;
   const groups=p.purchaseOptions?.length?p.purchaseOptions:[p];
   p.outOfStockColors=(p.outOfStockColors||[]).filter(color=>p.colors.some(item=>model.normalize(item)===model.normalize(color)));
   p.outOfStockVariants=Object.fromEntries(
