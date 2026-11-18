@@ -4370,10 +4370,12 @@ function applyCatalogData() {
         ? ["produccion-invierno-2027"]
         : [])
     ])];
-    product.subcategory = OUTERWEAR_SUBCATEGORY_BY_PRODUCT_ID[product.id] || product.subcategory;
-    product.description = PRODUCT_DESCRIPTION_BY_ID[product.id] || product.description;
-    product.isHidden = HIDDEN_PRODUCT_IDS.includes(product.id);
-    product.inStock = !OUT_OF_STOCK_PRODUCT_IDS.includes(product.id);
+    product.subcategory = product.subcategory || OUTERWEAR_SUBCATEGORY_BY_PRODUCT_ID[product.id];
+    product.description = product.description || PRODUCT_DESCRIPTION_BY_ID[product.id] || '';
+    product.isHidden ??= HIDDEN_PRODUCT_IDS.includes(product.id);
+    product.inStock ??= !OUT_OF_STOCK_PRODUCT_IDS.includes(product.id);
+    product.outOfStockColors ??= [...(OUT_OF_STOCK_COLORS[product.id] || [])];
+    product.outOfStockVariants ??= Object.fromEntries(Object.entries(OUT_OF_STOCK_VARIANTS[product.id] || {}).map(([color, sizes]) => [color, [...sizes]]));
     const packaging = packagingByProductId[product.id];
     if (!packaging) return;
     product.packaging = {
@@ -4463,14 +4465,13 @@ function isPreorderCollection(collection = getActiveCollection()) {
 
 function getUnavailableColors(product, selectedOption = null) {
   return new Set([
-    ...(OUT_OF_STOCK_COLORS[product.id] || []),
     ...(product.outOfStockColors || []),
     ...(selectedOption?.outOfStockColors || [])
   ].map(normalizeColorName));
 }
 
 function isColorExhaustedBySizes(product, color, selectedOption = null) {
-  const variants = OUT_OF_STOCK_VARIANTS[product.id] || {};
+  const variants = product.outOfStockVariants || {};
   const matchedColor = Object.keys(variants).find(item => normalizeColorName(item) === normalizeColorName(color));
   if (!matchedColor) return false;
   const unavailableSizes = new Set((variants[matchedColor] || []).map(normalizeCatalogSize));
@@ -5383,7 +5384,7 @@ function openModal(p, initialPurchaseOptionId = null) {
   const sizesEl = document.getElementById('modal-sizes');
   const displayedSizes = selectedOption?.sizes || p.sizes;
   function renderSizeAvailability(color) {
-    const unavailableSizes = new Set(OUT_OF_STOCK_VARIANTS[p.id]?.[color] || []);
+    const unavailableSizes = new Set(p.outOfStockVariants?.[color] || []);
     sizesEl.innerHTML = displayedSizes.map(size => {
       const normalizedSize = normalizeCatalogSize(size);
       const isUnavailable = showStockByColor && (isColorUnavailable(p, color, selectedOption) || unavailableSizes.has(normalizedSize));
