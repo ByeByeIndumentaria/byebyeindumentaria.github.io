@@ -198,6 +198,43 @@ function updateState(next){serverState=next;settings=schema.migrate(next.draft_p
 async function saveDraft(){if(busy)return false;busy=true;$('save-draft').disabled=true;notify('Guardando borrador…');try{updateState(await api.saveSiteDraft(serverState.draft_version,settings));notify('Borrador guardado. El catálogo público no cambió.');return true;}catch(error){notify(error.message);return false;}finally{busy=false;$('save-draft').disabled=false;}}
 async function publish(){if(busy)return;if(dirty&&!await saveDraft())return;if(!confirm('¿Publicar estos cambios para todos los clientes?'))return;busy=true;$('publish').disabled=true;notify('Publicando…');try{updateState(await api.publishSiteSettings(serverState.draft_version));notify('Publicado.');await loadHistory();}catch(error){notify(error.message);}finally{busy=false;$('publish').disabled=false;}}
 async function loadHistory(){try{historyRows=await api.siteSettingsHistory();if(selectedLayer==='history')renderPanel();}catch(error){notify(error.message);}}
+
+async function migrateLegacyProductRules(seedProducts){
+  const seedById=new Map((seedProducts||[]).map(product=>[Number(product.id),product])),staleVersions=new Map([[154,1],[163,1],[172,3],[178,2],[190,2]]),forcedHidden=new Set([239,242,246]),forcedWinter=new Set([75,76]);
+  const sweaterSize=size=>size==='S/M'?'1':size==='M/L'?'2':size;
+  const changes=[];
+  for(const row of productRecords.values()){
+    if(!row.version)continue;
+    const original=row.payload,payload=clone(original),memberships=Array.isArray(payload.collections)&&payload.collections.length?[...payload.collections]:[payload.collection].filter(Boolean);
+    if(memberships.includes('primavera-2027'))memberships.push('invierno-2027');
+    if(memberships.some(id=>id==='sweaters-2027'||id==='hoodies-2027'))memberships.push('produccion-invierno-2027');
+    if(forcedWinter.has(Number(row.id)))memberships.push('produccion-invierno-2027');
+    payload.collections=[...new Set(memberships)];
+    if(forcedHidden.has(Number(row.id)))payload.isHidden=true;
+    if(payload.category==='MUJER'&&payload.subcategory==='Sweaters')for(const group of [payload,...(payload.purchaseOptions||[])]){
+      group.sizes=(group.sizes||[]).map(sweaterSize);
+      for(const curveRow of group.packaging?.rows||[])curveRow.sizePieces=Object.fromEntries(Object.entries(curveRow.sizePieces||{}).map(([size,pieces])=>[sweaterSize(size),pieces]));
+    }
+    const seed=seedById.get(Number(row.id));
+    if(Number(row.id)===123&&seed){if(!payload.sizes?.length)payload.sizes=clone(seed.sizes||[]);if(!payload.packaging?.rows?.length&&seed.packaging)payload.packaging=clone(seed.packaging);}
+    if(seed&&staleVersions.get(Number(row.id))===Number(row.version))for(const key of ['colors','sizes','packaging','sourcePacking','packingType','inStock','outOfStockColors','warehouseStock']){
+      if(seed[key]===undefined)delete payload[key];else payload[key]=clone(seed[key]);
+    }
+    if(JSON.stringify(payload)!==JSON.stringify(original))changes.push({row,payload});
+  }
+  if(!changes.length)return 0;
+  notify(`Actualizando datos antiguos… 0 de ${changes.length}`);
+  let saved=0;
+  for(const {row,payload} of changes){
+    const result=await api.save(Number(row.id),Number(row.version),payload);
+    productRecords.set(Number(row.id),{...result,id:Number(row.id),payload:result.payload||payload});
+    saved++;notify(`Actualizando datos antiguos… ${saved} de ${changes.length}`);
+  }
+  const verified=await api.getProducts(changes.map(({row})=>Number(row.id)));
+  for(const row of verified)productRecords.set(Number(row.id),row);
+  notify('Datos antiguos migrados. Desde ahora se pueden editar sin reglas ocultas.');
+  return saved;
+}
 function exportJson(){const blob=new Blob([JSON.stringify(settings,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),link=el('a');link.href=url;link.download=`BYEBYE-diseno-${new Date().toISOString().slice(0,10)}.json`;link.click();setTimeout(()=>URL.revokeObjectURL(url),500);}
 async function importJson(file){try{const parsed=JSON.parse(await file.text());remember();settings=schema.migrate(parsed,{products});setDirty();renderPanel();notify('Configuración importada como cambios sin guardar.');}catch{notify('El archivo JSON no es válido.');}}
 function resetPreviewViewport(){try{$('live-preview').contentWindow?.scrollTo({top:0,left:0,behavior:'auto'});}catch{};}
@@ -268,4 +305,4 @@ window.addEventListener('resize',scalePreview);
 new ResizeObserver(scalePreview).observe(document.querySelector('.canvas-area'));
 window.addEventListener('message',event=>{if(event.origin!==location.origin)return;const message=event.data||{};if(message.type==='catalog-site-preview-ready'){previewReady=true;resetPreviewViewport();sendPreview();setInteractionMode(interactionMode);openPreviewScreen(previewScreen,{remember:false});}if(message.type==='catalog-site-hover'&&message.rect){$('hover-label').textContent=message.label||message.id;$('hover-label').hidden=false;requestAnimationFrame(()=>placeEditorBubble($('hover-label'),message.rect));}if(message.type==='catalog-site-hover-end')$('hover-label').hidden=true;if(message.type==='catalog-site-select'&&message.rect)selectPreviewElement(message);if(message.type==='catalog-site-inline-change'){applyInlineChange(String(message.id||''),String(message.value||''));sendPreview();}if(message.type==='catalog-site-hero-drag')applyHeroDrag(message);if(message.type==='catalog-site-product-reorder')applyPreviewProductOrder(message);});
 $('live-preview').addEventListener('load',()=>requestAnimationFrame(()=>{resetPreviewViewport();scalePreview();}));
-(async()=>{try{if(!api.configured||!api.user){$('locked').hidden=false;return;}await api.authorize();const [seedResponse,cloudProducts,cloudCollections,editorState]=await Promise.all([fetch('catalog-seed.json'),api.list(),api.listCollections(),api.getEditorSiteSettings()]),seed=await seedResponse.json();productRecords.clear();for(const product of seed.products)productRecords.set(Number(product.id),{id:Number(product.id),version:0,payload:product});for(const row of cloudProducts)productRecords.set(Number(row.id),row);products=[...productRecords.values()].map(row=>({...row.payload,id:Number(row.id)})).filter(product=>!product.archived);const collectionMap=new Map((seed.collections||[]).map((payload,position)=>[payload.id,{id:payload.id,payload,position}]));for(const row of cloudCollections)collectionMap.set(row.id,row);collections=[...collectionMap.values()].filter(row=>!row.payload?.hidden).sort((a,b)=>(a.position??999)-(b.position??999));updateState(editorState);$('studio').hidden=false;showLayer('layers');await loadHistory();}catch(error){$('locked').hidden=false;notify(error.message);}})();
+(async()=>{try{if(!api.configured||!api.user){$('locked').hidden=false;return;}await api.authorize();const [seedResponse,cloudProducts,cloudCollections,editorState]=await Promise.all([fetch('catalog-seed.json'),api.list(),api.listCollections(),api.getEditorSiteSettings()]),seed=await seedResponse.json();productRecords.clear();for(const product of seed.products)productRecords.set(Number(product.id),{id:Number(product.id),version:0,payload:product});for(const row of cloudProducts)productRecords.set(Number(row.id),row);await migrateLegacyProductRules(seed.products);products=[...productRecords.values()].map(row=>({...row.payload,id:Number(row.id)})).filter(product=>!product.archived);const collectionMap=new Map((seed.collections||[]).map((payload,position)=>[payload.id,{id:payload.id,payload,position}]));for(const row of cloudCollections)collectionMap.set(row.id,row);collections=[...collectionMap.values()].filter(row=>!row.payload?.hidden).sort((a,b)=>(a.position??999)-(b.position??999));updateState(editorState);$('studio').hidden=false;showLayer('layers');await loadHistory();}catch(error){$('locked').hidden=false;notify(error.message);}})();
