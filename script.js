@@ -4712,6 +4712,7 @@ let activeGender = 'all';
 let activeCategory = 'all';
 let productSearchQuery = '';
 let customerProductSort = '';
+const activeExtraFilters = { color:new Set(), size:new Set(), packing:new Set(), availability:new Set() };
 let currentModalProduct = null;
 let currentPurchaseOptionId = null;
 let lastFocusedElement = null;
@@ -4731,6 +4732,7 @@ function loadPersistedState() {
       activeCategory = savedCatalog.category || activeCategory;
       productSearchQuery = savedCatalog.search || '';
       customerProductSort = savedCatalog.sort || '';
+      for(const key of Object.keys(activeExtraFilters))for(const value of savedCatalog.extraFilters?.[key]||[])activeExtraFilters[key].add(String(value));
     }
 
     const savedCustomer=JSON.parse(localStorage.getItem(CART_CUSTOMER_STORAGE_KEY)||'null');
@@ -4780,7 +4782,8 @@ function persistCatalogState() {
       gender: activeGender,
       category: activeCategory,
       search: productSearchQuery,
-      sort: customerProductSort
+      sort: customerProductSort,
+      extraFilters:Object.fromEntries(Object.entries(activeExtraFilters).map(([key,values])=>[key,[...values]]))
     }));
   } catch (error) {}
 }
@@ -4898,6 +4901,29 @@ function updateCategoryFilters() {
   }
 }
 
+function productExtraFilterValues(product,type) {
+  const groups=product.purchaseOptions?.length?product.purchaseOptions:[product];
+  if(type==='color')return [...new Set([...(product.colors||[]),...groups.flatMap(group=>group.colors||[])].map(value=>normalizeColorName(value)).filter(Boolean))];
+  if(type==='size')return [...new Set([...(product.sizes||[]),...groups.flatMap(group=>group.sizes||[])].map(value=>String(value).trim()).filter(Boolean))];
+  if(type==='packing')return [...new Set(groups.map(group=>group.packingType||(/POR COLOR|SOLID COLOR/i.test(group.sourcePacking||'')&&!/SURTID|ASSORT/i.test(group.sourcePacking||'')?'single-color':'mixed-colors')))];
+  if(type==='availability')return[product.inStock===false?'unavailable':'available'];
+  return[];
+}
+
+function buildExtraFilters() {
+  const config=window.CatalogSiteSettings?.filtersPanel?.extraFilters||{},texts=window.CatalogSiteSettings?.texts||{},baseProducts=getCollectionProducts().filter(product=>(activeGender==='all'||product.category===activeGender)&&(activeCategory==='all'||getProductSubcategories(product).includes(activeCategory))),definitions={
+    color:{enabled:config.color===true,group:'color-filter-group',container:'color-filters',label:texts['filters.colors']||'Colores'},
+    size:{enabled:config.size===true,group:'size-filter-group',container:'size-filters',label:texts['filters.sizes']||'Talles'},
+    packing:{enabled:config.packing===true,group:'packing-filter-group',container:'packing-filters',label:texts['filters.packing']||'Formato de caja'},
+    availability:{enabled:config.availability===true,group:'availability-filter-group',container:'availability-filters',label:texts['filters.availability']||'Disponibilidad'}
+  };
+  for(const [type,definition]of Object.entries(definitions)){const group=document.getElementById(definition.group),container=document.getElementById(definition.container);if(!group||!container)continue;group.hidden=!definition.enabled;group.querySelector('.filter-label').textContent=definition.label;if(!definition.enabled){activeExtraFilters[type].clear();container.replaceChildren();continue;}let options=[];if(type==='availability')options=[['available',texts['filters.available']||'Disponible'],['unavailable',texts['filters.unavailable']||'Sin stock']];else if(type==='packing')options=[['mixed-colors',texts['filters.mixedPacking']||'Caja surtida'],['single-color',texts['filters.singlePacking']||'Caja por color']].filter(([value])=>baseProducts.some(product=>productExtraFilterValues(product,type).includes(value)));else{const labels=new Map();for(const product of baseProducts){const raw=type==='color'?[...(product.colors||[]),...(product.purchaseOptions||[]).flatMap(option=>option.colors||[])]:[...(product.sizes||[]),...(product.purchaseOptions||[]).flatMap(option=>option.sizes||[])];for(const value of raw){const token=type==='color'?normalizeColorName(value):String(value).trim();if(token&&!labels.has(token))labels.set(token,String(value).trim());}}options=[...labels].sort((a,b)=>a[1].localeCompare(b[1],'es',{numeric:true,sensitivity:'base'}));}const available=new Set(options.map(([value])=>value));for(const value of [...activeExtraFilters[type]])if(!available.has(value))activeExtraFilters[type].delete(value);container.replaceChildren(...options.map(([value,label])=>{const button=document.createElement('button');button.type='button';button.className=`pill${activeExtraFilters[type].has(value)?' active':''}`;button.dataset.extraFilter=type;button.dataset.value=value;button.textContent=label;return button;}));}
+}
+
+function productMatchesExtraFilters(product) {
+  return Object.entries(activeExtraFilters).every(([type,selected])=>!selected.size||productExtraFilterValues(product,type).some(value=>selected.has(value)));
+}
+
 function updateFilterSummary(resultCount = getFilteredProducts().length) {
   const activeFilters = [];
   const collection = collections.find(item => item.id === activeCollection);
@@ -4908,6 +4934,7 @@ function updateFilterSummary(resultCount = getFilteredProducts().length) {
   }
   if (activeGender !== 'all') activeFilters.push({ type: 'gender', label: getGenderLabel(activeGender) });
   if (activeCategory !== 'all') activeFilters.push({ type: 'category', label: activeCategory });
+  for(const [type,values]of Object.entries(activeExtraFilters))for(const value of values){const button=[...document.querySelectorAll(`[data-extra-filter="${type}"]`)].find(node=>node.dataset.value===value);activeFilters.push({type:`extra-${type}`,value,label:button?.textContent||value});}
 
   if (filtersToggleCount) {
     filtersToggleCount.textContent = String(activeFilters.length);
@@ -4923,6 +4950,7 @@ function updateFilterSummary(resultCount = getFilteredProducts().length) {
     button.type = 'button';
     button.className = 'active-filter-chip';
     button.dataset.clearFilter = filter.type;
+    if(filter.value)button.dataset.clearValue=filter.value;
     button.textContent = `${filter.label} ×`;
     button.setAttribute('aria-label', `Quitar filtro ${filter.label}`);
     return button;
@@ -4946,16 +4974,18 @@ function resetCatalogFilters() {
   activeGender = 'all';
   activeCategory = 'all';
   productSearchQuery = '';
+  for(const values of Object.values(activeExtraFilters))values.clear();
   if (productSearchInput) productSearchInput.value = '';
   if (productSearchClear) productSearchClear.hidden = true;
   refreshFilterControls();
   renderProducts();
 }
 
-function clearActiveFilter(type) {
+function clearActiveFilter(type,value='') {
   if (type === 'collection') activeCollection = getInitialCollectionId();
   if (type === 'gender') activeGender = 'all';
   if (type === 'category') activeCategory = 'all';
+  if(type.startsWith('extra-'))activeExtraFilters[type.slice(6)]?.delete(value);
   refreshFilterControls();
   renderProducts();
 }
@@ -5002,7 +5032,7 @@ function getFilteredProducts() {
     if(searchSettings.searchPurchaseOptions!==false)searchableValues.push(...(p.purchaseOptions||[]).flatMap(option=>[option.label,option.orderNumber]));
     const searchableText = normalizeColorName(searchableValues.filter(Boolean).join(' '));
     const searchOk = !productSearchQuery || searchableText.includes(productSearchQuery);
-    return genderOk && catOk && searchOk;
+    return genderOk && catOk && searchOk && productMatchesExtraFilters(p);
   }).sort((a, b) => {
     const categoryA = activeCategory === 'all' ? (a.subcategory || getProductSubcategories(a)[0] || '') : activeCategory;
     const categoryB = activeCategory === 'all' ? (b.subcategory || getProductSubcategories(b)[0] || '') : activeCategory;
@@ -5022,6 +5052,7 @@ function getFilteredProducts() {
 }
 
 function renderProducts() {
+  buildExtraFilters();
   persistCatalogState();
   window.dispatchEvent(new CustomEvent('catalog-hero-audience-change',{detail:{collection:activeCollection,gender:activeGender}}));
   const filtered = getFilteredProducts();
@@ -6487,8 +6518,9 @@ function bindEvents() {
   filtersReset?.addEventListener('click', resetCatalogFilters);
   activeFilterChips?.addEventListener('click', event => {
     const button = event.target.closest('[data-clear-filter]');
-    if (button) clearActiveFilter(button.dataset.clearFilter);
+    if (button) clearActiveFilter(button.dataset.clearFilter,button.dataset.clearValue||'');
   });
+  filtersPanel?.addEventListener('click',event=>{const button=event.target.closest('[data-extra-filter]');if(!button)return;const selected=activeExtraFilters[button.dataset.extraFilter];if(!selected)return;selected.has(button.dataset.value)?selected.delete(button.dataset.value):selected.add(button.dataset.value);renderProducts();});
 
   const mobileQuery = window.matchMedia('(max-width: 768px)');
   const dismissMobileHero = () => {
