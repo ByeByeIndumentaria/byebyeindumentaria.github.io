@@ -757,6 +757,10 @@ body[data-prices-visible="false"] .card-price,body[data-prices-visible="false"] 
 .cart-summary[hidden] { display: none; }
 .cart-summary p { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0; color: var(--gray-600); font-size: 11px; }
 .cart-summary strong { color: var(--black); font-size: 13px; }
+.cart-summary .cart-minimum,.cart-summary .cart-terms{display:block;line-height:1.45}
+.cart-summary .cart-minimum.unmet{color:var(--unavailable)}
+.cart-summary .cart-minimum.met{color:var(--available)}
+.cart-summary .cart-terms{padding-top:7px;border-top:1px solid var(--gray-100);white-space:pre-line}
 .btn-primary {
   display: flex; align-items: center; justify-content: center; gap: 8px;
   padding: 14px 20px;

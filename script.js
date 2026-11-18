@@ -5801,13 +5801,14 @@ function getCartTotals() {
 }
 
 function updateCartSummary() {
-  const config=getCartSettings(),enabled=config.quantities===true&&cart.length>0;
+  const config=getCartSettings(),minimum=Math.max(0,Number(config.minimumBoxes)||0),terms=String(config.termsText||'').trim(),enabled=cart.length>0&&(config.quantities===true||minimum>0||terms);
   if(!cartSummaryEl)return;
   cartSummaryEl.hidden=!enabled;
-  if(!enabled){cartSummaryEl.replaceChildren();return;}
+  if(!enabled){cartSummaryEl.replaceChildren();const whatsapp=document.getElementById('btn-whatsapp');if(whatsapp)whatsapp.disabled=false;return;}
   const {boxes,minPieces,maxPieces,complete}=getCartTotals();
-  const boxesRow=document.createElement('p'),boxesLabel=document.createElement('span'),boxesValue=document.createElement('strong');boxesLabel.textContent=config.totalBoxesLabel||'Total de cajas';boxesValue.textContent=String(boxes);boxesRow.append(boxesLabel,boxesValue);cartSummaryEl.replaceChildren(boxesRow);
-  if(config.showPieceTotals!==false&&complete){const piecesRow=document.createElement('p'),piecesLabel=document.createElement('span'),piecesValue=document.createElement('strong');piecesLabel.textContent=config.totalPiecesLabel||'Total de piezas';piecesValue.textContent=String(minPieces===maxPieces?minPieces:`${minPieces}–${maxPieces}`);piecesRow.append(piecesLabel,piecesValue);cartSummaryEl.append(piecesRow);}
+  cartSummaryEl.replaceChildren();
+  if(config.quantities===true){const boxesRow=document.createElement('p'),boxesLabel=document.createElement('span'),boxesValue=document.createElement('strong');boxesLabel.textContent=config.totalBoxesLabel||'Total de cajas';boxesValue.textContent=String(boxes);boxesRow.append(boxesLabel,boxesValue);cartSummaryEl.append(boxesRow);if(config.showPieceTotals!==false&&complete){const piecesRow=document.createElement('p'),piecesLabel=document.createElement('span'),piecesValue=document.createElement('strong');piecesLabel.textContent=config.totalPiecesLabel||'Total de piezas';piecesValue.textContent=String(minPieces===maxPieces?minPieces:`${minPieces}–${maxPieces}`);piecesRow.append(piecesLabel,piecesValue);cartSummaryEl.append(piecesRow);}}
+  const belowMinimum=minimum>0&&boxes<minimum;if(minimum>0){const warning=document.createElement('p');warning.className=`cart-minimum${belowMinimum?' unmet':' met'}`;warning.textContent=belowMinimum?String(config.minimumMessage||'El pedido mínimo es de {n} cajas.').replaceAll('{n}',String(minimum)):`Mínimo alcanzado · ${minimum} cajas`;cartSummaryEl.append(warning);}if(terms){const conditions=document.createElement('p');conditions.className='cart-terms';conditions.textContent=terms;cartSummaryEl.append(conditions);}const whatsapp=document.getElementById('btn-whatsapp');if(whatsapp)whatsapp.disabled=belowMinimum;
 }
 
 function getCartCustomerLines() {
