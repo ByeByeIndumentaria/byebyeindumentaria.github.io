@@ -4717,6 +4717,7 @@ let currentModalProduct = null;
 let currentPurchaseOptionId = null;
 let lastFocusedElement = null;
 let cartCustomer = { name:'', business:'', city:'', phone:'', note:'' };
+let previewExampleCart = false;
 const CART_STORAGE_KEY = 'byebye-cart-v1';
 const CATALOG_STORAGE_KEY = 'byebye-catalog-state-v1';
 const CART_CUSTOMER_STORAGE_KEY = 'byebye-cart-customer-v1';
@@ -4761,6 +4762,7 @@ function loadPersistedState() {
 }
 
 function persistCart() {
+  if (previewExampleCart && document.body?.dataset.preview === 'true') return;
   try {
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart.map(item => ({
       id: item.id,
@@ -4836,6 +4838,24 @@ function init() {
   bindEvents();
   openProductFromUrl();
 }
+
+window.addEventListener('catalog-site-preview-screen',event=>{
+  if(document.body?.dataset.preview!=='true')return;
+  const screen=event.detail?.screen||'catalog';
+  if(screen!=='empty-results'&&productSearchQuery==='__vista_sin_resultados__'){
+    productSearchQuery='';if(productSearchInput)productSearchInput.value='';if(productSearchClear)productSearchClear.hidden=true;renderProducts();
+  }
+  if(screen==='empty-results'){
+    productSearchQuery='__vista_sin_resultados__';if(productSearchInput)productSearchInput.value='Búsqueda de ejemplo';if(productSearchClear)productSearchClear.hidden=false;renderProducts();
+  }
+  if(screen==='cart-empty'){
+    previewExampleCart=true;cart=[];updateCartUI();
+  }
+  if(screen==='cart-filled'){
+    const product=products.find(item=>!item.isHidden&&!item.archived&&item.inStock&&hasAvailableColor(item)&&item.collections?.some(id=>{const collection=collections.find(row=>row.id===id);return collection&&!isPreorderCollection(collection);}));
+    if(product){const collectionId=(product.collections||[product.collection]).find(id=>{const collection=collections.find(row=>row.id===id);return collection&&!isPreorderCollection(collection);})||product.collection,selectedOption=product.purchaseOptions?.find(option=>hasAvailableColor(product,option))||null;previewExampleCart=true;cart=[{...product,cartKey:getCartKey(product,selectedOption?.id||null),cartCollectionId:collectionId,selectedPurchaseOption:selectedOption,quantity:1}];updateCartUI();}
+  }
+});
 
 function updateGenderFilters() {
   const kidsFilter = genderFilters.querySelector('[data-value="NINOS"]');

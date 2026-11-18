@@ -124,8 +124,10 @@
       activate(document.getElementById('modal-close'));
       activate(document.getElementById('filters-close'));
       activate(document.getElementById('close-cart'));
+      window.dispatchEvent(new CustomEvent('catalog-site-preview-screen',{detail:{screen}}));
       if(screen==='product')setTimeout(()=>activate(document.querySelector('.product-card')),0);
       if(screen==='filters')setTimeout(()=>activate(document.getElementById('filters-toggle')),0);
+      if(screen==='cart-filled')setTimeout(()=>activate(document.getElementById('cart-toggle')),0);
       if(screen==='cart-empty')setTimeout(()=>activate(document.getElementById('cart-toggle')),0);
       window.scrollTo({top:0,left:0,behavior:'auto'});
     }
