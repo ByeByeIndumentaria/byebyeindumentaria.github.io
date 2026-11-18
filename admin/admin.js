@@ -243,6 +243,7 @@ async function openEditor(id,curve=false){
   for(const [input,key] of [['name','name'],['code','orderNumber'],['gender','category'],['description','description']])$(input).value=editing[key]||'';$('subcategory').value=(Array.isArray(editing.subcategories)&&editing.subcategories.length?editing.subcategories:[editing.subcategory]).filter(Boolean).join(', ');
   renderProductCollections(Array.isArray(editing.collections)&&editing.collections.length?editing.collections:[editing.collection]);
   $('stock').checked=editing.inStock!==false;$('hidden-product').checked=editing.isHidden===true;$('preserve-name').checked=editing.preserveProductName===true;
+  $('product-badge').value=editing.customBadge?.label||'';$('product-badge-color').value=/^#[0-9a-f]{6}$/i.test(editing.customBadge?.color||'')?editing.customBadge.color:'#9d4f38';
   $('new-color').disabled=false;$('add-color').disabled=false;refreshOptionEditor();
   renderColors();renderPhotos();renderCurve();$('editor').showModal();if(curve)$('curve-section').scrollIntoView({block:'start'});
 }
@@ -312,6 +313,7 @@ function preparePayload(){
   const primaryCollection=selectedCollections.includes(editing.collection)?editing.collection:selectedCollections[0];
   p.collection=primaryCollection||'';p.collections=primaryCollection?[primaryCollection,...selectedCollections.filter(id=>id!==primaryCollection)]:[];
   p.inStock=$('stock').checked;p.isHidden=$('hidden-product').checked;p.preserveProductName=$('preserve-name').checked;
+  const badgeLabel=$('product-badge').value.trim();if(badgeLabel)p.customBadge={label:badgeLabel,color:$('product-badge-color').value};else delete p.customBadge;
   const groups=p.purchaseOptions?.length?p.purchaseOptions:[p];
   p.outOfStockColors=(p.outOfStockColors||[]).filter(color=>p.colors.some(item=>model.normalize(item)===model.normalize(color)));
   p.outOfStockVariants=Object.fromEntries(

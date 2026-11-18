@@ -53,8 +53,9 @@
       if(!Array.isArray(sizes)) throw new Error('El stock por talle no tiene un formato válido.');
     }
     // The legacy storefront interpolates labels into HTML. Reject markup in editable text.
-    const text=[p.name,p.orderNumber,p.description,p.subcategory,...p.colors,...p.sizes,...(p.purchaseOptions||[]).flatMap(option=>[option.label,option.sourcePacking,...(option.colors||[]),...(option.sizes||[])])];
+    const text=[p.name,p.orderNumber,p.description,p.subcategory,p.customBadge?.label,...p.colors,...p.sizes,...(p.purchaseOptions||[]).flatMap(option=>[option.label,option.sourcePacking,...(option.colors||[]),...(option.sizes||[])])];
     if(text.some(s=>/[<>"`]/.test(s||''))) throw new Error('Los textos no pueden incluir <, >, comillas dobles ni acentos invertidos.');
+    if(p.customBadge?.label?.length>30||p.customBadge?.color&&!/^#[0-9a-f]{6}$/i.test(p.customBadge.color)) throw new Error('Revisá el texto y el color de la insignia.');
     const groups=p.purchaseOptions?.length?p.purchaseOptions:[p];
     // Older products did not persist packingType. Keep them editable; the form
     // infers the value from sourcePacking and writes it on the next save.

@@ -5108,12 +5108,15 @@ function renderProducts() {
     card.tabIndex = 0;
     card.setAttribute('role', 'button');
     card.setAttribute('aria-label', `Ver ${p.name}${p.inStock ? (preorderCollection ? ', preventa' : '') : ', sin stock'}`);
+    const customBadgeLabel=String(p.customBadge?.label||'').trim();
+    const customBadgeColor=/^#[0-9a-f]{6}$/i.test(p.customBadge?.color||'')?p.customBadge.color:'#9d4f38';
 
     card.innerHTML = `
       <div class="card-img-wrap">
         <span class="card-badge-gender">${getGenderLabel(p.category)}</span>
         ${preorderCollection && p.inStock ? `<span class="card-badge-preorder">Preventa · Próximamente</span>` : ''}
         ${p.inStock ? '' : `<span class="card-badge-stock">Sin stock</span>`}
+        ${customBadgeLabel ? `<span class="card-badge-custom" style="--product-badge-color:${customBadgeColor}">${escapeText(customBadgeLabel)}</span>` : ''}
         <img class="card-img" src="" alt="${p.name}" loading="lazy" decoding="async" style="display:none;width:100%;height:100%;object-fit:cover;" />
         <div class="card-placeholder" id="ph-${p.id}">
           <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">

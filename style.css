@@ -545,6 +545,24 @@ input:focus-visible,
   letter-spacing: .08em;
   text-transform: uppercase;
 }
+.card-badge-custom {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  max-width: calc(100% - 92px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--product-badge-color, var(--clay));
+  color: #fffaf1;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
 .product-card.out-of-stock .card-img-wrap img,
 .product-card.out-of-stock .card-placeholder { filter: grayscale(1); opacity: var(--card-out-of-stock-opacity,.58); }
 
@@ -1245,7 +1263,7 @@ input:focus-visible,
   .card-name { font-size: 14px; }
   .card-code { font-size: 8px; }
   .card-img-wrap { margin-bottom: 10px; }
-  .card-badge-gender, .card-badge-stock { font-size: 8px; padding: 3px 7px; }
+  .card-badge-gender, .card-badge-stock, .card-badge-custom { font-size: 8px; padding: 3px 7px; }
 }
 
 /* ── GALLERY DOTS ─────────────────────────────── */
