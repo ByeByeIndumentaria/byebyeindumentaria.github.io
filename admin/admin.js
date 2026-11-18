@@ -68,7 +68,7 @@ function refreshOptionEditor(){
   if(!multiple)return;
   editing.purchaseOptions.forEach(normalizeOption);currentGroup=Math.min(currentGroup,editing.purchaseOptions.length-1);
   selectOptions($('option'),editing.purchaseOptions.map((option,index)=>[String(index),option.label]));$('option').value=String(currentGroup);
-  const current=group();$('option-name').value=current.label;$('packing-type').value=current.packingType;$('remove-option').disabled=editing.purchaseOptions.length<=2;renderOptionColors();
+  const current=group();$('option-name').value=current.label;$('packing-type').value=current.packingType;$('remove-option').disabled=editing.purchaseOptions.length<=2;const imageSelect=$('option-image-product');imageSelect.replaceChildren(new Option('Usar sus propias fotos',''));for(const row of [...records.values()].filter(row=>Number(row.id)!==Number(editingId)&&!row.payload?.archived).sort((a,b)=>String(a.payload?.name||'').localeCompare(String(b.payload?.name||''),'es'))){const option=new Option(`${row.payload.name}${row.payload.orderNumber?' · '+row.payload.orderNumber:''}`,String(row.id));imageSelect.append(option);}imageSelect.value=current.imageProductId?String(current.imageProductId):'';renderOptionColors();
 }
 function makeOption(source,type,label){
   const taken=(editing.purchaseOptions||[]).map(option=>option.id),option=clone(source);
@@ -350,6 +350,7 @@ $('new-color').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();$('add-color
 $('purchase-mode').onchange=()=>{$('purchase-mode').value==='multiple'?enableMultipleOptions():disableMultipleOptions();};
 $('option').onchange=()=>{currentGroup=Number($('option').value);refreshOptionEditor();renderCurve();};
 $('option-name').oninput=()=>{const value=$('option-name').value.trim();if(value){group().label=value;$('option').options[currentGroup].textContent=value;dirty=true;}};
+$('option-image-product').onchange=()=>{const value=Number($('option-image-product').value);if(value)group().imageProductId=value;else delete group().imageProductId;dirty=true;};
 $('packing-type').onchange=()=>{const g=group();g.packingType=$('packing-type').value;g.sourcePacking=model.packingLabel(g.packingType);dirty=true;renderCurve();};
 $('add-option').onclick=()=>{const source=group(),type=source.packingType==='single-color'?'mixed-colors':'single-color',next=makeOption(source,type,optionLabel(type));editing.purchaseOptions.push(next);currentGroup=editing.purchaseOptions.length-1;dirty=true;refreshOptionEditor();renderCurve();};
 $('duplicate-option').onclick=()=>{const source=group(),next=makeOption(source,source.packingType,`${source.label} copia`);editing.purchaseOptions.push(next);currentGroup=editing.purchaseOptions.length-1;dirty=true;refreshOptionEditor();renderCurve();};
