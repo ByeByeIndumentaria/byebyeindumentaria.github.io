@@ -5309,8 +5309,9 @@ function applyProductModalSettings() {
   const hiddenParts = new Set(config.hiddenParts || []);
   const parts = [...(config.parts || ['collection','title','code','description','notice','colors','sizes','curve','share','pdf','add'])];
   if(!parts.includes('price'))parts.splice(Math.max(0,parts.indexOf('description')),0,'price');
+  if(!parts.includes('video'))parts.splice(Math.max(0,parts.indexOf('notice')),0,'video');
   if(!parts.includes('share'))parts.splice(Math.max(0,parts.indexOf('pdf')),0,'share');
-  const nodes = {collection:'modal-collection',title:'modal-name',code:'modal-code',price:'modal-price',description:'modal-desc',notice:'modal-preorder-notice',colors:'modal-colors',sizes:'modal-sizes',curve:'modal-packaging',share:'modal-share-btn',pdf:'modal-pdf-btn',add:'modal-add-btn'};
+  const nodes = {collection:'modal-collection',title:'modal-name',code:'modal-code',price:'modal-price',description:'modal-desc',video:'modal-product-video',notice:'modal-preorder-notice',colors:'modal-colors',sizes:'modal-sizes',curve:'modal-packaging',share:'modal-share-btn',pdf:'modal-pdf-btn',add:'modal-add-btn'};
   for (const [part,id] of Object.entries(nodes)) {
     const node = document.getElementById(id);
     if (!node) continue;
@@ -5373,6 +5374,7 @@ function openModal(p, initialPurchaseOptionId = null) {
   const modalDescription = document.getElementById('modal-desc');
   modalDescription.textContent = p.description || '';
   modalDescription.hidden = !p.description;
+  const modalVideo=document.getElementById('modal-product-video'),videoUrl=/^https:\/\/[^\s<>"`]+$/i.test(p.videoUrl||'')?p.videoUrl:'';if(videoUrl){if(modalVideo.src!==videoUrl)modalVideo.src=videoUrl;modalVideo.hidden=false;}else{modalVideo.pause();modalVideo.removeAttribute('src');modalVideo.load();modalVideo.hidden=true;}
   const modalPreorderNotice = document.getElementById('modal-preorder-notice');
   modalPreorderNotice.hidden = !isPreorderCollection() || !p.inStock;
   window.CatalogSiteMarkEditable?.();
@@ -5709,6 +5711,7 @@ function closeModal() {
   document.body.style.overflow = '';
   const modalImgWrap = document.querySelector('.modal-image-wrap');
   const zoomToggle = document.getElementById('modal-zoom-toggle');
+  document.getElementById('modal-product-video')?.pause();
   modalImgWrap?.classList.remove('is-zoomed');
   if (zoomToggle) zoomToggle.setAttribute('aria-pressed', 'false');
   currentModalProduct = null;

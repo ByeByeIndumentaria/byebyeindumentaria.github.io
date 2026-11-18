@@ -57,6 +57,7 @@
     if(text.some(s=>/[<>"`]/.test(s||''))) throw new Error('Los textos no pueden incluir <, >, comillas dobles ni acentos invertidos.');
     if(p.customBadge?.label?.length>30||p.customBadge?.color&&!/^#[0-9a-f]{6}$/i.test(p.customBadge.color)) throw new Error('Revisá el texto y el color de la insignia.');
     for(const price of [p.price,...(p.purchaseOptions||[]).map(option=>option.price)]) if(price!=null&&(!Number.isFinite(Number(price))||Number(price)<0||Number(price)>999999999)) throw new Error('Ingresá un precio válido o dejalo vacío.');
+    if(p.videoUrl&&!/^https:\/\/[^\s<>"`]+$/i.test(p.videoUrl)) throw new Error('El video debe tener un enlace https válido.');
     const groups=p.purchaseOptions?.length?p.purchaseOptions:[p];
     // Older products did not persist packingType. Keep them editable; the form
     // infers the value from sourcePacking and writes it on the next save.

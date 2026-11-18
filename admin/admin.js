@@ -12,6 +12,7 @@ const cardImageObserver='IntersectionObserver' in window?new IntersectionObserve
 const legacyPreorders=new Set(['verano-2027','produccion-invierno-2027','sweaters-2027','hoodies-2027']);
 function el(tag,text,className){const e=document.createElement(tag);if(text!=null)e.textContent=text;if(className)e.className=className;return e;}
 function ensurePriceFields(){if(!$('product-price')){const label=el('label','Precio público'),input=el('input'),help=el('small','Sólo se verá si activás “Mostrar precios” en Diseño.');input.id='product-price';input.type='number';input.min='0';input.step='0.01';input.placeholder='Opcional';label.append(input,help);$('code').closest('label').after(label);}if(!$('option-price')){const label=el('label','Precio de esta opción'),input=el('input');input.id='option-price';input.type='number';input.min='0';input.step='0.01';input.placeholder='Usar precio general';label.append(input);$('option-name').closest('label').after(label);}}
+function ensureVideoField(){if($('product-video'))return;const label=el('label','Video de la prenda'),input=el('input'),help=el('small','Enlace https a un video MP4 o WebM. Dejalo vacío para no mostrarlo.');input.id='product-video';input.type='url';input.placeholder='https://…/video.mp4';label.className='wide';label.append(input,help);$('description').closest('label').before(label);}
 function notice(text){$('notice').textContent=text;}
 function message(error){$('save-status').textContent=error.message||String(error);}
 function group(){return editing.purchaseOptions?.length?editing.purchaseOptions[currentGroup]:editing;}
@@ -246,6 +247,7 @@ async function openEditor(id,curve=false){
   $('stock').checked=editing.inStock!==false;$('hidden-product').checked=editing.isHidden===true;$('preserve-name').checked=editing.preserveProductName===true;
   $('product-badge').value=editing.customBadge?.label||'';$('product-badge-color').value=/^#[0-9a-f]{6}$/i.test(editing.customBadge?.color||'')?editing.customBadge.color:'#9d4f38';
   $('product-price').value=editing.price!=null&&Number.isFinite(Number(editing.price))?editing.price:'';
+  $('product-video').value=editing.videoUrl||'';
   $('new-color').disabled=false;$('add-color').disabled=false;refreshOptionEditor();
   renderColors();renderPhotos();renderCurve();$('editor').showModal();if(curve)$('curve-section').scrollIntoView({block:'start'});
 }
@@ -317,6 +319,7 @@ function preparePayload(){
   p.inStock=$('stock').checked;p.isHidden=$('hidden-product').checked;p.preserveProductName=$('preserve-name').checked;
   const badgeLabel=$('product-badge').value.trim();if(badgeLabel)p.customBadge={label:badgeLabel,color:$('product-badge-color').value};else delete p.customBadge;
   const price=$('product-price').value.trim();if(price!=='')p.price=Number(price);else delete p.price;
+  const videoUrl=$('product-video').value.trim();if(videoUrl)p.videoUrl=videoUrl;else delete p.videoUrl;
   const groups=p.purchaseOptions?.length?p.purchaseOptions:[p];
   p.outOfStockColors=(p.outOfStockColors||[]).filter(color=>p.colors.some(item=>model.normalize(item)===model.normalize(color)));
   p.outOfStockVariants=Object.fromEntries(
@@ -345,6 +348,7 @@ async function save(event){event.preventDefault();if(preview||busy||uploads)retu
   }catch(e){message(e);}finally{busy=false;$('save').disabled=preview;}
 }
 ensurePriceFields();
+ensureVideoField();
 $('add-product').onclick=()=>openEditor(null);$('close-editor').onclick=closeEditor;$('cancel').onclick=closeEditor;
 {const settingsButton=el('button','Diseño, flyers y orden');settingsButton.type='button';settingsButton.onclick=()=>{location.href='settings.html';};$('optimize-photos').before(settingsButton);}
 $('close-history').onclick=()=>{if(!historyBusy)$('history-dialog').close();};$('history-dialog').addEventListener('cancel',event=>{if(historyBusy)event.preventDefault();});
