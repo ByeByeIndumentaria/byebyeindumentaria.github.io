@@ -1003,6 +1003,9 @@ body[data-prices-visible="false"] .card-price,body[data-prices-visible="false"] 
   transition: background var(--transition), border-color var(--transition), color var(--transition);
 }
 .color-chip .color-name { font-size: 11px; font-weight: 700; letter-spacing: .06em; }
+.color-swatch{display:none;width:16px;height:16px;flex:0 0 16px;border-radius:50%;background:var(--swatch-color);border:1px solid rgba(31,26,21,.2);box-shadow:inset 0 0 0 1px rgba(255,255,255,.28)}
+body[data-color-swatches="true"] .color-swatch{display:inline-block}
+body[data-color-labels="false"] .color-chip .color-name{display:none}
 .color-chip .color-stock-label { display: flex; align-items: center; gap: 5px; color: #3e6844; font-size: 10px; font-weight: 700; letter-spacing: .02em; }
 .color-chip .color-stock-label::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
 .color-chip.out-of-stock { border-color: #d9aaa3; color: #7a3a33; background: #fff3f1; }

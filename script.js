@@ -5381,13 +5381,15 @@ function openModal(p, initialPurchaseOptionId = null) {
   const colorsEl = document.getElementById('modal-colors');
   const displayedColors = selectedOption?.colors || p.colors;
   const showStockByColor = showsStockByColor(p, selectedOption);
+  const swatchSettings=window.CatalogSiteSettings?.colorSwatches||{},swatchValues=swatchSettings.values||{};
   colorsEl.innerHTML = displayedColors.map((c, i) => {
     const unavailable = showStockByColor && isColorUnavailable(p, c, selectedOption);
     const status = unavailable ? 'Agotado' : 'Disponible';
     const stockClass = showStockByColor ? ` ${unavailable ? 'out-of-stock' : 'in-stock'}` : '';
     const stockLabel = showStockByColor ? `<span class="color-stock-label">${status}</span>` : '';
     const ariaLabel = showStockByColor ? `${c}: ${status}` : c;
-    return `<span class="color-option${stockClass}"><button type="button" class="color-chip${unavailable ? ' out-of-stock' : ''}" data-color-index="${i}" aria-label="${ariaLabel}" aria-pressed="${i === 0 ? 'true' : 'false'}"><span class="color-name">${c}</span>${stockLabel}</button></span>`;
+    const swatchColor=swatchValues[normalizeColorName(c)],validSwatch=/^#[0-9a-f]{6}$/i.test(swatchColor||'')?swatchColor:'#777777';
+    return `<span class="color-option${stockClass}"><button type="button" class="color-chip${unavailable ? ' out-of-stock' : ''}" data-color-index="${i}" data-color-key="${normalizeColorName(c)}" aria-label="${ariaLabel}" aria-pressed="${i === 0 ? 'true' : 'false'}"><span class="color-swatch" style="--swatch-color:${validSwatch}" aria-hidden="true"></span><span class="color-name">${c}</span>${stockLabel}</button></span>`;
   }).join('');
 
   // Sizes
