@@ -16,24 +16,6 @@ function message(error){$('save-status').textContent=error.message||String(error
 function group(){return editing.purchaseOptions?.length?editing.purchaseOptions[currentGroup]:editing;}
 function inferredPackingType(value=''){return /POR COLOR|SOLID COLOR/i.test(value)?'single-color':'mixed-colors';}
 function optionLabel(type){return type==='single-color'?'Caja por color':'Surtido de colores';}
-const womenSweaterSize=size=>size==='S/M'?'1':size==='M/L'?'2':size;
-function normalizeCatalogProduct(product){
-  const memberships=Array.isArray(product.collections)&&product.collections.length?product.collections:[product.collection].filter(Boolean);
-  if(memberships.includes('primavera-2027'))memberships.push('invierno-2027');
-  if(memberships.some(id=>id==='sweaters-2027'||id==='hoodies-2027'))memberships.push('produccion-invierno-2027');
-  product.collections=[...new Set(memberships)];
-  if(product.category==='MUJER'&&product.subcategory==='Sweaters')for(const group of [product,...(product.purchaseOptions||[])]){
-    group.sizes=(group.sizes||[]).map(womenSweaterSize);
-    for(const row of group.packaging?.rows||[])row.sizePieces=Object.fromEntries(Object.entries(row.sizePieces||{}).map(([size,pieces])=>[womenSweaterSize(size),pieces]));
-  }
-  return product;
-}
-function restoreMilanCurve(id,payload){
-  if(Number(id)!==123||(payload.sizes?.length&&payload.packaging?.rows?.length))return payload;
-  const original=seed.products.find(product=>Number(product.id)===123);
-  if(!original)return payload;
-  return {...payload,sizes:clone(original.sizes),packaging:clone(original.packaging)};
-}
 function normalizeOption(option,index){
   option.id||=model.optionId(option.label||`opcion-${index+1}`,editing.purchaseOptions?.map(item=>item.id).filter(Boolean)||[]);
   option.label||=optionLabel(inferredPackingType(option.sourcePacking));
@@ -196,8 +178,8 @@ async function saveCollection(event){
   catch(error){$('collection-save-status').textContent=error.message;}finally{collectionBusy=false;$('save-collection').disabled=preview;}
 }
 async function loadRecords(){
-  const next=new Map(seed.products.map(p=>[p.id,{id:p.id,payload:mergeImportedModelPhotos(normalizeCatalogProduct(p),p.id),version:0}]));
-  if(api.configured&&!preview){for(const r of await api.list()){r.payload=restoreMilanCurve(r.id,r.payload);normalizeCatalogProduct(r.payload);mergeImportedModelPhotos(r.payload,r.id);next.set(Number(r.id),r);}}
+  const next=new Map(seed.products.map(p=>[p.id,{id:p.id,payload:mergeImportedModelPhotos(p,p.id),version:0}]));
+  if(api.configured&&!preview){for(const r of await api.list()){mergeImportedModelPhotos(r.payload,r.id);next.set(Number(r.id),r);}}
   records=next;renderCards();
 }
 function renderCards(){
@@ -242,14 +224,14 @@ async function restoreHistory(id,targetVersion){
   try{
     const result=await api.restore(id,targetVersion,current.version),[persisted]=await api.getProducts([id]);
     if(!persisted||persisted.version!==result.version)throw new Error('La restauración se recibió, pero no se pudo verificar. Recargá antes de volver a intentar.');
-    persisted.payload=restoreMilanCurve(persisted.id,persisted.payload);normalizeCatalogProduct(persisted.payload);mergeImportedModelPhotos(persisted.payload,persisted.id);
+    mergeImportedModelPhotos(persisted.payload,persisted.id);
     records.set(id,persisted);$('history-dialog').close();renderCards();notice(`Versión ${targetVersion} restaurada y verificada. El catálogo se actualizará en unos segundos.`);
   }catch(error){notice(error.message||'No se pudo restaurar la versión.');}
   finally{historyBusy=false;}
 }
 async function openEditor(id,curve=false){
   if(id!=null&&api.configured&&!preview){
-    try{const [latest]=await api.getProducts([Number(id)]);if(latest){latest.payload=restoreMilanCurve(latest.id,latest.payload);normalizeCatalogProduct(latest.payload);mergeImportedModelPhotos(latest.payload,latest.id);records.set(Number(id),latest);}}
+    try{const [latest]=await api.getProducts([Number(id)]);if(latest){mergeImportedModelPhotos(latest.payload,latest.id);records.set(Number(id),latest);}}
     catch(e){notice('No se pudo cargar la última versión. '+e.message);return;}
   }
   resetPhotos();savedPackaging.clear();currentGroup=0;galleryDirty=false;editingId=id;version=id==null?0:records.get(id).version;
