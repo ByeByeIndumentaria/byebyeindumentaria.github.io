@@ -200,26 +200,13 @@ async function publish(){if(busy)return;if(dirty&&!await saveDraft())return;if(!
 async function loadHistory(){try{historyRows=await api.siteSettingsHistory();if(selectedLayer==='history')renderPanel();}catch(error){notify(error.message);}}
 
 async function migrateLegacyProductRules(seedProducts){
-  const seedById=new Map((seedProducts||[]).map(product=>[Number(product.id),product])),staleVersions=new Map([[154,1],[163,1],[172,3],[178,2],[190,2]]),forcedHidden=new Set([239,242,246]),forcedWinter=new Set([75,76]);
-  const sweaterSize=size=>size==='S/M'?'1':size==='M/L'?'2':size;
+  const legacyColorStock=new Map([[68,['Negro']]]),legacySizeStock=new Map([[40,{Negro:['S','M','L','XL','3XL']}],[66,{Negro:['S','M','L','XL','XXL']}]]) ;
   const changes=[];
   for(const row of productRecords.values()){
     if(!row.version)continue;
-    const original=row.payload,payload=clone(original),memberships=Array.isArray(payload.collections)&&payload.collections.length?[...payload.collections]:[payload.collection].filter(Boolean);
-    if(memberships.includes('primavera-2027'))memberships.push('invierno-2027');
-    if(memberships.some(id=>id==='sweaters-2027'||id==='hoodies-2027'))memberships.push('produccion-invierno-2027');
-    if(forcedWinter.has(Number(row.id)))memberships.push('produccion-invierno-2027');
-    payload.collections=[...new Set(memberships)];
-    if(forcedHidden.has(Number(row.id)))payload.isHidden=true;
-    if(payload.category==='MUJER'&&payload.subcategory==='Sweaters')for(const group of [payload,...(payload.purchaseOptions||[])]){
-      group.sizes=(group.sizes||[]).map(sweaterSize);
-      for(const curveRow of group.packaging?.rows||[])curveRow.sizePieces=Object.fromEntries(Object.entries(curveRow.sizePieces||{}).map(([size,pieces])=>[sweaterSize(size),pieces]));
-    }
-    const seed=seedById.get(Number(row.id));
-    if(Number(row.id)===123&&seed){if(!payload.sizes?.length)payload.sizes=clone(seed.sizes||[]);if(!payload.packaging?.rows?.length&&seed.packaging)payload.packaging=clone(seed.packaging);}
-    if(seed&&staleVersions.get(Number(row.id))===Number(row.version))for(const key of ['colors','sizes','packaging','sourcePacking','packingType','inStock','outOfStockColors','warehouseStock']){
-      if(seed[key]===undefined)delete payload[key];else payload[key]=clone(seed[key]);
-    }
+    const original=row.payload,payload=clone(original),id=Number(row.id),colors=legacyColorStock.get(id),variants=legacySizeStock.get(id);
+    if(colors&&!Array.isArray(payload.outOfStockColors))payload.outOfStockColors=clone(colors);
+    if(variants&&!payload.outOfStockVariants)payload.outOfStockVariants=clone(variants);
     if(JSON.stringify(payload)!==JSON.stringify(original))changes.push({row,payload});
   }
   if(!changes.length)return 0;
