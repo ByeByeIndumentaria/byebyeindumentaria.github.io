@@ -591,6 +591,10 @@ input:focus-visible,
 }
 
 .card-info { padding: 0 2px; }
+.card-price,.modal-price { color:var(--clay);font-weight:650;letter-spacing:.02em; }
+.card-price { margin-top:6px;font-size:13px; }
+.modal-price { margin:2px 0 10px;font-size:17px; }
+body[data-prices-visible="false"] .card-price,body[data-prices-visible="false"] .modal-price,body[data-prices-cards="false"] .card-price,body[data-prices-modal="false"] .modal-price{display:none!important}
 .card-subcat {
   font-size: 10px;
   letter-spacing: 0.12em;

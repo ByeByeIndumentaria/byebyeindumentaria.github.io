@@ -5072,6 +5072,9 @@ function getFilteredProducts() {
   });
 }
 
+function productPriceValue(product,option=null){if(option?.price!=null&&option.price!==''){const direct=Number(option.price);if(Number.isFinite(direct)&&direct>=0)return direct;}if(product?.price!=null&&product.price!==''){const base=Number(product.price);if(Number.isFinite(base)&&base>=0)return base;}return null;}
+function productCardPrice(product){const values=(product.purchaseOptions?.length?product.purchaseOptions:[null]).map(option=>productPriceValue(product,option)).filter(value=>value!==null);if(!values.length)return null;return{value:Math.min(...values),from:new Set(values).size>1};}
+function formatPublicPrice(value,{from=false}={}){if(value===null||value===undefined)return'';const config=window.CatalogSiteSettings?.pricing||{},decimals=Number(config.decimals)===2?2:0,amount=Number(value).toLocaleString('es-AR',{minimumFractionDigits:decimals,maximumFractionDigits:decimals});return`${from?'Desde ':''}${config.currency||'$'} ${amount}`;}
 function renderProducts() {
   buildExtraFilters();
   persistCatalogState();
@@ -5110,6 +5113,7 @@ function renderProducts() {
     card.setAttribute('aria-label', `Ver ${p.name}${p.inStock ? (preorderCollection ? ', preventa' : '') : ', sin stock'}`);
     const customBadgeLabel=String(p.customBadge?.label||'').trim();
     const customBadgeColor=/^#[0-9a-f]{6}$/i.test(p.customBadge?.color||'')?p.customBadge.color:'#9d4f38';
+    const cardPrice=productCardPrice(p);
 
     card.innerHTML = `
       <div class="card-img-wrap">
@@ -5135,6 +5139,7 @@ function renderProducts() {
         <p class="card-subcat">${formatProductSubcategory(p)}</p>
         <p class="card-name">${p.name}</p>
         ${p.orderNumber ? `<p class="card-code">Cód. ${p.orderNumber}</p>` : ''}
+        ${cardPrice ? `<p class="card-price" data-price="${cardPrice.value}" data-price-from="${cardPrice.from}">${formatPublicPrice(cardPrice.value,{from:cardPrice.from})}</p>` : ''}
       </div>
     `;
 
@@ -5303,8 +5308,9 @@ function applyProductModalSettings() {
   if (info) info.style.order = config.mediaSide === 'right' ? '1' : '2';
   const hiddenParts = new Set(config.hiddenParts || []);
   const parts = [...(config.parts || ['collection','title','code','description','notice','colors','sizes','curve','share','pdf','add'])];
+  if(!parts.includes('price'))parts.splice(Math.max(0,parts.indexOf('description')),0,'price');
   if(!parts.includes('share'))parts.splice(Math.max(0,parts.indexOf('pdf')),0,'share');
-  const nodes = {collection:'modal-collection',title:'modal-name',code:'modal-code',description:'modal-desc',notice:'modal-preorder-notice',colors:'modal-colors',sizes:'modal-sizes',curve:'modal-packaging',share:'modal-share-btn',pdf:'modal-pdf-btn',add:'modal-add-btn'};
+  const nodes = {collection:'modal-collection',title:'modal-name',code:'modal-code',price:'modal-price',description:'modal-desc',notice:'modal-preorder-notice',colors:'modal-colors',sizes:'modal-sizes',curve:'modal-packaging',share:'modal-share-btn',pdf:'modal-pdf-btn',add:'modal-add-btn'};
   for (const [part,id] of Object.entries(nodes)) {
     const node = document.getElementById(id);
     if (!node) continue;
@@ -5363,6 +5369,7 @@ function openModal(p, initialPurchaseOptionId = null) {
   const displayedOrderNumber = selectedOption?.orderNumber || p.orderNumber;
   modalCode.textContent = displayedOrderNumber ? `Cód. ${displayedOrderNumber}` : '';
   modalCode.hidden = !displayedOrderNumber;
+  const modalPrice=document.getElementById('modal-price'),displayedPrice=productPriceValue(p,selectedOption);modalPrice.dataset.price=displayedPrice??'';modalPrice.textContent=formatPublicPrice(displayedPrice);modalPrice.hidden=displayedPrice===null;
   const modalDescription = document.getElementById('modal-desc');
   modalDescription.textContent = p.description || '';
   modalDescription.hidden = !p.description;
