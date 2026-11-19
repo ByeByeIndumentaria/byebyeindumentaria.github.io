@@ -5143,6 +5143,7 @@ function renderProducts() {
     const customBadgeLabel=String(p.customBadge?.label||'').trim();
     const customBadgeColor=/^#[0-9a-f]{6}$/i.test(p.customBadge?.color||'')?p.customBadge.color:'#9d4f38';
     const cardPrice=productCardPrice(p);
+    const showSecondPhoto=window.CatalogSiteSettings?.grid?.hover==='second';
 
     card.innerHTML = `
       <div class="card-img-wrap">
@@ -5151,6 +5152,7 @@ function renderProducts() {
         ${p.inStock ? '' : `<span class="card-badge-stock">Sin stock</span>`}
         ${customBadgeLabel ? `<span class="card-badge-custom" style="--product-badge-color:${customBadgeColor}">${escapeText(customBadgeLabel)}</span>` : ''}
         <img class="card-img" src="" alt="${p.name}" loading="lazy" decoding="async" style="display:none;width:100%;height:100%;object-fit:cover;" />
+        ${showSecondPhoto ? '<img class="card-img card-img-secondary" src="" alt="" loading="lazy" decoding="async" style="display:none;width:100%;height:100%;object-fit:cover;" />' : ''}
         <div class="card-placeholder" id="ph-${p.id}">
           <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
             <path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.57a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.57a2 2 0 00-1.34-2.23z"/>
@@ -5197,7 +5199,8 @@ function renderProducts() {
       p.id,
       card.querySelector('.card-img'),
       card.querySelector(`#ph-${p.id}`),
-      card.querySelector('.card-img-wrap')
+      card.querySelector('.card-img-wrap'),
+      card.querySelector('.card-img-secondary')
     );
   });
   window.CatalogSiteMarkEditable?.();
@@ -5228,41 +5231,46 @@ function getProductImageObserver() {
         const queued = queuedProductImages.get(id);
         if (!queued) return;
         queuedProductImages.delete(id);
-        loadProductImage(id, queued.imgEl, queued.placeholderEl);
+        loadProductImage(id, queued.imgEl, queued.placeholderEl, queued.secondaryImgEl);
       });
     }, { rootMargin: '500px 0px' });
   }
   return productImageObserver;
 }
 
-function queueProductImage(id, imgEl, placeholderEl, observeEl) {
+function queueProductImage(id, imgEl, placeholderEl, observeEl, secondaryImgEl=null) {
   if (!imgEl) return;
   const observer = getProductImageObserver();
   if (observer && observeEl) {
     observeEl.dataset.productId = String(id);
-    queuedProductImages.set(id, { imgEl, placeholderEl });
+    queuedProductImages.set(id, { imgEl, placeholderEl, secondaryImgEl });
     observer.observe(observeEl);
     return;
   }
-  loadProductImage(id, imgEl, placeholderEl);
+  loadProductImage(id, imgEl, placeholderEl, secondaryImgEl);
 }
 
-function loadProductImage(id, imgEl, placeholderEl) {
+function loadProductImage(id, imgEl, placeholderEl, secondaryImgEl=null) {
   const product = products.find(item => item.id === id);
   const sources = getDisplayProductImageSources(product);
-  loadFirstAvailableImage(sources, imgEl, placeholderEl);
+  loadFirstAvailableImage(sources, imgEl, placeholderEl).then(primarySource=>{
+    if(!secondaryImgEl||!primarySource)return;
+    loadFirstAvailableImage(sources.filter(source=>source!==primarySource),secondaryImgEl,null);
+  });
 }
 
 // Prueba todas las fotos del producto en orden. De esta manera, si se borra
 // prod_ID_1 pero quedan prod_ID_2, prod_ID_3, etc., el producto sigue teniendo
 // una imagen visible en las tarjetas y en la selección.
 function loadFirstAvailableImage(sources, imgEl, placeholderEl) {
+  return new Promise(resolve=>{
   let sourceIndex = 0;
 
   const showPlaceholder = () => {
     imgEl.removeAttribute('src');
     imgEl.style.display = 'none';
     if (placeholderEl) placeholderEl.style.display = 'flex';
+    resolve(null);
   };
 
   const tryNextSource = () => {
@@ -5277,12 +5285,14 @@ function loadFirstAvailableImage(sources, imgEl, placeholderEl) {
       imgEl.src = src;
       imgEl.style.display = 'block';
       if (placeholderEl) placeholderEl.style.display = 'none';
+      resolve(src);
     };
     tester.onerror = tryNextSource;
     tester.src = src;
   };
 
   tryNextSource();
+  });
 }
 
 const modalImageCache = new Map();

@@ -518,6 +518,7 @@ input:focus-visible,
 
 .card-badge-gender {
   position: absolute;
+  z-index: 2;
   top: 10px; left: 10px;
   font-size: 10px;
   letter-spacing: 0.1em;
@@ -537,12 +538,12 @@ input:focus-visible,
   color: #fffaf1;
   padding: 4px 10px;
   border-radius: 999px;
-  z-index: 1;
+  z-index: 2;
 }
 .card-badge-preorder {
   position: absolute;
   top: 40px; left: 10px;
-  z-index: 1;
+  z-index: 2;
   max-width: calc(100% - 20px);
   padding: 4px 10px;
   border-radius: 999px;
@@ -576,6 +577,7 @@ input:focus-visible,
 
 .card-add {
   position: absolute;
+  z-index: 2;
   bottom: 10px; right: 10px;
   width: 36px; height: 36px;
   background: var(--white);
@@ -1740,6 +1742,10 @@ body[data-card-show-add-always="true"] .card-add{opacity:1;transform:scale(1) tr
 body[data-card-hover="none"] .product-card:hover { transform:none; }
 body[data-card-hover="zoom"] .product-card:hover { transform:none; }
 body[data-card-hover="zoom"] .product-card:hover .card-img { transform:scale(1.035); }
+body[data-card-hover="second"] .product-card:hover { transform:none; }
+.card-img-secondary { position:absolute; inset:0; z-index:1; opacity:0; }
+body[data-card-hover="second"] .product-card:hover .card-img-secondary { opacity:1; }
+body[data-card-hover="second"] .product-card.out-of-stock:hover .card-img-secondary { opacity:var(--card-out-of-stock-opacity,.58); }
 body[data-header-sticky-desktop="false"] #site-header { position:relative; }
 body[data-header-brand="left"] .header-brand { grid-column:1;grid-row:1;justify-self:start; }
 body[data-header-brand="left"] .brand-name { justify-self:start; }
