@@ -1837,3 +1837,6 @@ body[data-preview="true"] .hero-position-handle{display:block;position:absolute;
 
 /* Disponibilidad junto al selector de color. */
 .color-option { display: inline-flex; align-items: stretch; }
+
+/* "Mostrar botón del pedido" apagado: .cart-btn{display:flex} le ganaba al atributo hidden y el botón seguía visible. */
+.cart-btn[hidden]{display:none!important}

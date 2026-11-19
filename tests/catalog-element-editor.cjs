@@ -67,3 +67,9 @@ test('public catalog loads the new site script',()=>{
   assert.match(publicHtml,/catalog-site\.js\?v=20261119-etapa2/);
   assert.match(publicHtml,/catalog-site-schema\.js\?v=20261119-etapa2/);
 });
+
+test('turning off "Mostrar botón del pedido" really hides the cart button',()=>{
+  const css=fs.readFileSync('style.css','utf8');
+  assert.match(css,/\.cart-btn\[hidden\]\{display:none!important\}/);
+  assert.match(site,/toggle\.hidden=!enabled\|\|settings\.header\.showCart===false/);
+});
