@@ -169,13 +169,13 @@ async function moveCollection(index,direction){
 }
 function openCollectionEditor(id=null){
   editingCollectionId=id;const row=id?collections.get(id):null;collectionVersion=row?.version||0;const c=row?.payload||{name:'',label:'',tagline:'',type:'stock'};
-  $('collection-editor-title').textContent=id?'Editar colección':'Agregar colección';$('collection-name').value=c.name||'';$('collection-label').value=c.label||'';$('collection-tagline').value=c.tagline||'';
+  $('collection-editor-title').textContent=id?'Editar colección':'Agregar colección';$('collection-name').value=c.name||'';$('collection-label').value=c.label||'';$('collection-tagline').value=c.tagline||'';$('collection-estimated-date').value=c.estimatedDate||'';$('collection-countdown').value=String(c.showCountdown!==false);$('collection-countdown-label').value=c.countdownLabel||'';
   const radio=document.querySelector(`input[name="collection-type"][value="${c.type||'stock'}"]`);if(radio)radio.checked=true;$('collection-save-status').textContent='';$('save-collection').disabled=preview;$('save-collection').textContent=preview?'Vista previa · sin publicar':'Guardar colección';$('collection-editor').showModal();
 }
 function closeCollectionEditor(){if(collectionBusy)return;$('collection-editor').close();editingCollectionId=null;}
 async function saveCollection(event){
   event.preventDefault();if(preview||collectionBusy)return;
-  const payload={name:$('collection-name').value.trim(),label:$('collection-label').value.trim(),tagline:$('collection-tagline').value.trim(),type:document.querySelector('input[name="collection-type"]:checked')?.value};
+  const existing=editingCollectionId?clone(collections.get(editingCollectionId)?.payload||{}):{},payload={...existing,name:$('collection-name').value.trim(),label:$('collection-label').value.trim(),tagline:$('collection-tagline').value.trim(),type:document.querySelector('input[name="collection-type"]:checked')?.value,estimatedDate:$('collection-estimated-date').value,showCountdown:$('collection-countdown').value==='true',countdownLabel:$('collection-countdown-label').value.trim()};
   try{model.validateCollection(payload);}catch(error){$('collection-save-status').textContent=error.message;return;}
   const id=editingCollectionId||model.collectionId(payload.name);if(!editingCollectionId&&collections.has(id)){$('collection-save-status').textContent='Ya existe una colección con ese nombre.';return;}
   payload.id=id;payload.position=editingCollectionId?(collections.get(id).position??collections.size):collections.size;collectionBusy=true;$('save-collection').disabled=true;$('collection-save-status').textContent='Guardando colección…';

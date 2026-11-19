@@ -34,7 +34,7 @@
       sections:[],
       searchBar:{visible:true,sticky:true,placeholder:'Buscar por nombre o código',showFilterLabel:false,filterIcon:'lines',filterSide:'left',width:520,searchName:true,searchCode:true,searchDescription:false,searchColors:false,searchCategory:false,searchCollection:false,searchPurchaseOptions:true,showActiveChips:true,showResultCount:true,resultTemplate:'{n} prendas',resultTemplateOne:'{n} prenda',compactMobile:true,compactAfter:72},
       filtersPanel:{sideDesktop:'left',sideMobile:'bottom',width:440,mobileHeight:55,title:'Explorar catálogo',eyebrow:'BYE BYE',showEyebrow:true,groups:['collections','genders','categories'],hiddenGroups:[],allCategoriesLabel:'Todas las prendas',showFooterDesktop:false,showFooterMobile:true,optionStyle:'list',extraFilters:{color:false,size:false,packing:false,availability:false}},
-      collectionsConfig:{initial:'verano-2027',rememberLast:true,showAll:false,allLabel:'Todo el catálogo',showTabs:false},
+      collectionsConfig:{initial:'verano-2027',rememberLast:true,showAll:false,allLabel:'Todo el catálogo',showTabs:false,preorderDates:{}},
       categories:clone(categories),
       grid:{desktopColumns:4,tabletColumns:3,mobileColumns:1,compactCards:false,stockFirst:true,gapX:24,gapY:32,gapMobile:22,imageRatio:'3/4',imageFit:'cover',hover:'lift',maxItems:0,customerSort:false,customerSortDefault:'featured',sortFeatured:true,sortName:true,sortCode:true,sortStock:true,productOrder:products.map(product=>Number(product.id)),orderByCollection:{}},
       card:{showGender:true,showPreorder:true,showStock:true,showCategory:true,showName:true,showCode:true,showAdd:true,addAlwaysVisible:false,textAlign:'left',outOfStockOpacity:58,infoOrder:['category','name','code']},

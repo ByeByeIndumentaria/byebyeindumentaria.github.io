@@ -4463,6 +4463,30 @@ function isPreorderCollection(collection = getActiveCollection()) {
   return collection.type === 'preorder' || (!collection.type && PREORDER_COLLECTION_IDS.has(collection.id));
 }
 
+function parseCatalogDate(value) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(value || ''));
+  if (!match) return null;
+  const date = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]), 12);
+  return date.getFullYear() === Number(match[1]) && date.getMonth() === Number(match[2]) - 1 && date.getDate() === Number(match[3]) ? date : null;
+}
+
+function preorderSchedule(collection = getActiveCollection()) {
+  const overrides = window.CatalogSiteSettings?.collectionsConfig?.preorderDates || {};
+  const hasOverride = Object.prototype.hasOwnProperty.call(overrides, collection?.id);
+  const source = hasOverride ? overrides[collection.id] || {} : collection || {};
+  const date = parseCatalogDate(source.date ?? source.estimatedDate);
+  const enabled = hasOverride ? source.enabled !== false : source.showCountdown !== false;
+  if (!enabled || !date || !isPreorderCollection(collection)) return null;
+  const today = new Date();
+  today.setHours(12, 0, 0, 0);
+  const days = Math.ceil((date - today) / 86400000);
+  const formatted = new Intl.DateTimeFormat('es-AR', { day: 'numeric', month: 'long' }).format(date);
+  const custom = String(source.label ?? source.countdownLabel ?? '').trim();
+  let text = custom;
+  if (!text) text = days > 1 ? `Disponible en ${days} días · Fecha estimada: ${formatted}` : days === 1 ? `Disponible mañana · Fecha estimada: ${formatted}` : days === 0 ? 'Disponible desde hoy' : `Fecha estimada: ${formatted}`;
+  return text.replaceAll('{n}', String(Math.max(0, days))).replaceAll('{fecha}', formatted);
+}
+
 function getUnavailableColors(product, selectedOption = null) {
   return new Set([
     ...(product.outOfStockColors || []),
@@ -5089,7 +5113,11 @@ function renderProducts() {
   resultsCountEl.textContent = resultTemplate.replaceAll('{n}',String(filtered.length));
   updateFilterSummary(filtered.length);
   const preorderNotice = document.getElementById('preorder-notice');
-  if (preorderNotice) preorderNotice.hidden = !preorderCollection;
+  if (preorderNotice) {
+    preorderNotice.hidden = !preorderCollection;
+    const countdown = document.getElementById('preorder-countdown'), schedule = preorderSchedule();
+    if (countdown) { countdown.hidden = !schedule; countdown.textContent = schedule || ''; }
+  }
 
   if (filtered.length === 0) {
     emptyState.style.display = 'block';

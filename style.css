@@ -451,6 +451,14 @@ input:focus-visible,
   letter-spacing: .1em;
   text-transform: uppercase;
 }
+.preorder-countdown {
+  margin-left: auto;
+  padding-left: 10px;
+  border-left: 1px solid rgba(168,79,42,.25);
+  color: var(--clay);
+  font-weight: 650;
+}
+.preorder-countdown[hidden] { display: none; }
 
 /* ── PRODUCT GRID ─────────────────────── */
 .catalog-area {
@@ -1593,6 +1601,7 @@ body.filter-menu-open {
     padding: 2px 6px;
     font-size: 8px;
   }
+  .preorder-countdown { margin-left: 0; padding-left: 0; border-left: 0; }
   .filters-section.mobile-compact {
     padding-block: 6px;
     box-shadow: 0 8px 22px rgba(48,34,25,.10);

@@ -110,7 +110,8 @@
   function validateCollection(c) {
     if(!c?.name?.trim()) throw new Error('Ingresá el nombre de la colección.');
     if(!['stock','preorder'].includes(c.type)) throw new Error('Elegí Stock o Preventa.');
-    if([c.name,c.label,c.tagline].some(value=>/[<>"`]/.test(value||''))) throw new Error('Los textos no pueden incluir <, >, comillas dobles ni acentos invertidos.');
+    if(c.estimatedDate && !/^\d{4}-\d{2}-\d{2}$/.test(c.estimatedDate)) throw new Error('Ingresá una fecha estimada válida.');
+    if([c.name,c.label,c.tagline,c.countdownLabel].some(value=>/[<>"`]/.test(value||''))) throw new Error('Los textos no pueden incluir <, >, comillas dobles ni acentos invertidos.');
     return c;
   }
   const api={normalize,sizes,quantity,recalculate,validate,collectionId,validateCollection,optionId,packingLabel};
