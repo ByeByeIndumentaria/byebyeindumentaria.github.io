@@ -1,0 +1,7 @@
+/* Avisos de "¿Quisiste decir…?" y de enlaces que no funcionan (pantallas de administración). */
+.data-guard{margin:6px 0 2px}
+.data-guard[hidden]{display:none}
+.data-guard-line{margin:4px 0;padding:8px 10px;border-radius:9px;font-size:13px;line-height:1.4}
+.data-guard-line.new{background:#f2f5fa;color:#4b5060}
+.data-guard-line.spelling,.data-guard-line.similar{background:#fff4e0;color:#7a4a00}
+.data-guard-line button{margin-left:4px;padding:4px 10px;border:1px solid #e2b866;border-radius:7px;background:#fff;color:#7a4a00;font-size:12px;font-weight:600;cursor:pointer}
