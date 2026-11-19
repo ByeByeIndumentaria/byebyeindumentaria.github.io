@@ -21,5 +21,5 @@ test('the product sheet editor controls real layout, gallery and curve output', 
   assert.match(runtime, /modal-gallery-thumbnails/);
   assert.match(runtime, /hiddenCurveColumns/);
   assert.match(runtime, /catalog-site-preview-product/);
-  assert.match(bridge, /productId:modal\?\.dataset\.productId/);
+  assert.match(bridge, /productId=modal\?\.dataset\.productId/);
 });

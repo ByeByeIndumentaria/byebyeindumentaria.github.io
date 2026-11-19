@@ -41,6 +41,7 @@
       productModal:{mediaSide:'left',mobileMode:'stack',imageRatio:'3/4',desktopFit:'cover',mobileFit:'contain',showArrows:true,showDots:true,showThumbnails:false,showZoom:true,zoomLevel:2.25,showGender:true,showCategory:true,showPdf:true,showShare:false,parts:['collection','title','code','price','description','video','notice','colors','sizes','curve','related','share','pdf','add'],hiddenParts:[],curveColumns:['color','stock','curve','pieces'],hiddenCurveColumns:[],curveLabels:{color:'Color',stock:'Stock',curve:'Curva de talles',pieces:'Piezas'},curveFormat:'inline',curveSeparator:' - ',showCurveSummary:true,availableLabel:'Disponible',unavailableLabel:'Agotado'},
       pricing:{visible:false,currency:'$',decimals:0,showOnCards:true,showInModal:true},
       colorSwatches:{enabled:false,showLabels:true,values:{}},
+      elementStyles:{},
       maintenance:{enabled:false,title:'Estamos preparando el catálogo',message:'Volvé a visitarnos pronto.',returnDate:''},
       welcome:{enabled:false,title:'Bienvenida a BYE BYE',text:'Explorá el catálogo y armá tu pedido mayorista.',image:'',imageAlt:'',buttonLabel:'Ver catálogo',buttonUrl:'#catalogo',once:true},
       relatedProducts:{enabled:false,title:'Completá el conjunto',mode:'category',limit:4},
