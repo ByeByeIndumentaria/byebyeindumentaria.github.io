@@ -1,0 +1,63 @@
+/* Editor visual · Etapa 1: legibilidad, arreglos visuales y ventanas de aviso. Se carga al final para corregir sin reescribir los estilos anteriores. */
+
+/* Ruta "Catálogo › Sección › Elemento": la regla del botón redondo "×" ya no se aplica a cada palabra. */
+.panel-heading .selection-path{gap:6px;font-size:11px;line-height:1.35}
+.panel-heading .selection-path button{flex:0 1 auto;width:auto;height:auto;min-width:0;padding:0;border-radius:0;background:transparent;font-size:11px;line-height:1.35}
+.panel-heading .selection-path button:last-child{color:#2b3040;font-weight:600}
+.panel-heading .selection-path button:hover{text-decoration:underline}
+.panel-heading span{font-size:11px}
+
+/* Capas: el nombre ocupa todo el ancho (antes quedaba una palabra por renglón). */
+.layer-item{display:flex;align-items:center;gap:2px}
+.layer-item>button:first-child{flex:1 1 auto;min-width:0;padding:10px 6px;font-size:14px;line-height:1.25;white-space:normal;cursor:pointer}
+.layer-item>button:not(:first-child){flex:0 0 30px;height:30px;cursor:pointer}
+
+/* Panel más cómodo en pantallas grandes. */
+@media(min-width:1200px){:root{--panel-width:360px}}
+@media(min-width:1600px){:root{--panel-width:400px}}
+
+/* Letras mínimas legibles. */
+.editor-brand span{font-size:10px}
+.document-state span{font-size:12px}
+.tool-rail small{font-size:11px}
+.segmented button,.reset-button,.order-toolbar button,.order-toolbar input{font-size:12px}
+.order-product-image,.order-product-copy small,.order-position{font-size:11px}
+.order-product-copy span{font-size:10px}
+.embedded-curve-table,.embedded-photo-card strong,.embedded-photo-card select,.embedded-photo-actions button{font-size:12px}
+.curve-size-stock,.embedded-size-stock{font-size:11px}
+
+/* Estado de guardado bien visible. */
+#draft-state.unsaved{color:#b4541a}
+#draft-state.unsaved::before{content:'●';margin-right:5px;font-size:10px;vertical-align:1px}
+
+/* Botones para subir fotos (reemplazan el control gris del navegador). */
+.upload-button{display:inline-flex;align-items:center;justify-content:center;min-height:38px;margin:6px 0 2px;padding:0 14px;border:1px solid #c9d4f2;border-radius:9px;background:#f3f6ff;color:#1d4fd7;font-weight:600;font-size:13px;cursor:pointer}
+.upload-button:hover{background:#e7eeff}
+.upload-hint{display:block;margin:2px 0 6px;color:#6f7581;font-size:11px}
+
+/* Pantalla de carga. */
+.editor-loading{position:fixed;inset:0;z-index:200;display:grid;place-content:center;justify-items:center;gap:14px;background:#eef0f4;color:#4b5060;font:15px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+.editor-loading[hidden]{display:none}
+.editor-spinner{width:34px;height:34px;border:3px solid #d5d9e2;border-top-color:#1769ff;border-radius:50%;animation:editor-spin .9s linear infinite}
+@keyframes editor-spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.editor-spinner{animation:none}}
+
+/* Ventanas de aviso propias (reemplazan las del navegador). */
+.editor-dialog{width:min(460px,calc(100vw - 32px));padding:0;border:0;border-radius:16px;background:#fff;color:#1f2330;box-shadow:0 24px 60px #10142a40}
+.editor-dialog::backdrop{background:#1d2130a6}
+.editor-dialog-box{padding:24px 24px 20px;font:15px/1.5 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+.editor-dialog h2{margin:0 0 8px;font-size:20px;line-height:1.25}
+.editor-dialog p{margin:0 0 12px;color:#4b5060}
+.editor-dialog ul{margin:0 0 14px;padding:12px 14px 12px 32px;border-radius:10px;background:#f5f7fb}
+.editor-dialog li{margin:3px 0}
+.editor-dialog-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px;margin-top:18px}
+.editor-dialog-actions button{min-height:44px;padding:0 18px;border:1px solid #d6dae3;border-radius:10px;background:#fff;color:#1f2330;font-size:15px;font-weight:600;cursor:pointer}
+.editor-dialog-actions button.primary{border-color:#1769ff;background:#1769ff;color:#fff}
+.editor-dialog-actions button.danger-text{color:#b42318}
+@media(max-width:480px){.editor-dialog-actions{flex-direction:column-reverse}.editor-dialog-actions button{width:100%}}
+
+/* Avisos: antes quedaban con letra blanca sobre fondo beige (chocaban dos reglas). */
+.visual-editor-page #notice:not(:empty){max-width:min(560px,calc(100vw - 32px));margin:0;padding:12px 20px;border:0;border-radius:14px;background:#232832;color:#fff;font-size:14px;line-height:1.4;text-align:center}
+
+/* Cambios sin guardar: también se nota en el botón "Guardar" (en celular el texto de estado no se ve). */
+.visual-editor-page:has(#draft-state.unsaved) #save-draft::after{content:'';display:inline-block;width:8px;height:8px;margin-left:6px;border-radius:50%;background:#e0702b;vertical-align:1px}
