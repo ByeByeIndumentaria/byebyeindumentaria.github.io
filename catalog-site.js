@@ -125,6 +125,10 @@
       if(number(style.letterSpacing,-2,12)!==null)props.push(`letter-spacing:${number(style.letterSpacing,-2,12)}px`);
       if(props.length)rules.push(`${strong}{${props.map(prop=>`${prop}!important`).join(';')}}`);
       if(color(style.color))rules.push(`${selector} *:not(img):not(svg):not(path){color:inherit!important}`);
+      const mobileSize=number(style.fontSizeMobile,8,96),ghost=`{opacity:.35!important;outline:2px dashed #e0702b!important;outline-offset:2px}`;
+      if(mobileSize!==null)rules.push(`@media(max-width:768px){${strong}{font-size:${mobileSize}px!important}}`);
+      if(style.showOn==='desktop')rules.push(`@media(max-width:768px){${selector}${preview?ghost:'{display:none!important}'}}`);
+      if(style.showOn==='mobile')rules.push(`@media(min-width:769px){${selector}${preview?ghost:'{display:none!important}'}}`);
       if(style.hidden===true)rules.push(preview?`${selector}{opacity:.35!important;outline:2px dashed #e0702b!important;outline-offset:2px}`:`${selector}{display:none!important}`);
     }
     let node=document.getElementById('catalog-element-styles');

@@ -94,7 +94,8 @@
       box.append(choiceField('Alineación',id,'textAlign',[['','Como está'],['left','Izq.'],['center','Centro'],['right','Der.']]));
     }
     if(kind==='button'||kind==='image')box.append(rangeField('Esquinas redondeadas',id,'radius',0,60,computed.radius||0));
-    if(canHide(id))box.append(visibilityField(id));
+    if(kind==='text'||kind==='button')box.append(rangeField('Tamaño de letra en celular',id,'fontSizeMobile',9,64,styleOf(id).fontSize??computed.fontSize??14));
+    if(canHide(id)){box.append(visibilityField(id));box.append(choiceField('Dónde se ve',id,'showOn',[['','Compu y celular'],['desktop','Solo compu'],['mobile','Solo celular']]));}
     if(settings.elementStyles?.[id])box.append(button('↺ Restaurar este elemento como estaba',()=>{remember();delete settings.elementStyles[id];setDirty();configureSelectionActions();renderPanel();notify('Elemento restaurado.');},'element-reset'));
     return box;
   }
