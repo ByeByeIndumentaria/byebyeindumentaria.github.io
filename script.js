@@ -4536,6 +4536,7 @@ function getCollectionProducts() {
 }
 
 function getCollectionsConfig(){return window.CatalogSiteSettings?.collectionsConfig||{};}
+function productCollectionIds(product){return [...new Set([...(Array.isArray(product?.collections)?product.collections:[]),product?.collection].filter(Boolean))];}
 function collectionCanBeSelected(id){
   const config=getCollectionsConfig();
   if(id==='todos')return config.showAll===true;
@@ -5307,11 +5308,12 @@ function applyProductModalSettings() {
   if (imageWrap) imageWrap.style.order = config.mediaSide === 'right' ? '2' : '1';
   if (info) info.style.order = config.mediaSide === 'right' ? '1' : '2';
   const hiddenParts = new Set(config.hiddenParts || []);
-  const parts = [...(config.parts || ['collection','title','code','description','notice','colors','sizes','curve','share','pdf','add'])];
+  const parts = [...(config.parts || ['collection','title','code','description','notice','colors','sizes','curve','related','share','pdf','add'])];
   if(!parts.includes('price'))parts.splice(Math.max(0,parts.indexOf('description')),0,'price');
   if(!parts.includes('video'))parts.splice(Math.max(0,parts.indexOf('notice')),0,'video');
   if(!parts.includes('share'))parts.splice(Math.max(0,parts.indexOf('pdf')),0,'share');
-  const nodes = {collection:'modal-collection',title:'modal-name',code:'modal-code',price:'modal-price',description:'modal-desc',video:'modal-product-video',notice:'modal-preorder-notice',colors:'modal-colors',sizes:'modal-sizes',curve:'modal-packaging',share:'modal-share-btn',pdf:'modal-pdf-btn',add:'modal-add-btn'};
+  if(!parts.includes('related'))parts.splice(Math.max(0,parts.indexOf('share')),0,'related');
+  const nodes = {collection:'modal-collection',title:'modal-name',code:'modal-code',price:'modal-price',description:'modal-desc',video:'modal-product-video',notice:'modal-preorder-notice',colors:'modal-colors',sizes:'modal-sizes',curve:'modal-packaging',related:'modal-related',share:'modal-share-btn',pdf:'modal-pdf-btn',add:'modal-add-btn'};
   for (const [part,id] of Object.entries(nodes)) {
     const node = document.getElementById(id);
     if (!node) continue;
@@ -5347,6 +5349,26 @@ async function shareCurrentProduct() {
   const url=productPublicUrl(currentModalProduct.id),data={title:currentModalProduct.name,text:`${currentModalProduct.name} · BYE BYE`,url};
   if(navigator.share){try{await navigator.share(data);return;}catch(error){if(error?.name==='AbortError')return;}}
   try{await navigator.clipboard.writeText(url);showToast(catalogText('toast.linkCopied'));}catch(error){window.prompt('Copiá este enlace',url);}
+}
+
+function relatedProductsFor(product) {
+  const config=window.CatalogSiteSettings?.relatedProducts||{};
+  if(config.enabled!==true)return[];
+  const limit=Math.max(1,Math.min(8,Number(config.limit)||4));
+  const available=products.filter(item=>Number(item.id)!==Number(product.id)&&!item.isHidden&&!item.archived);
+  if(config.mode==='manual'){
+    const byId=new Map(available.map(item=>[Number(item.id),item]));
+    return (product.relatedProductIds||[]).map(Number).map(id=>byId.get(id)).filter(Boolean).slice(0,limit);
+  }
+  const categories=new Set(getProductSubcategories(product).map(normalizeColorName));
+  return available.filter(item=>getProductSubcategories(item).some(category=>categories.has(normalizeColorName(category)))).sort((a,b)=>Number(productCollectionIds(b).includes(activeCollection))-Number(productCollectionIds(a).includes(activeCollection))||Number(b.inStock!==false)-Number(a.inStock!==false)||String(a.name).localeCompare(String(b.name),'es')).slice(0,limit);
+}
+
+function renderRelatedProducts(product) {
+  const section=document.getElementById('modal-related'),grid=document.getElementById('modal-related-grid'),title=document.getElementById('modal-related-title');
+  if(!section||!grid||!title)return;
+  const config=window.CatalogSiteSettings?.relatedProducts||{},related=relatedProductsFor(product);grid.replaceChildren();title.textContent=String(config.title||'Completá el conjunto');section.hidden=!related.length;
+  for(const item of related){const card=document.createElement('button'),imageWrap=document.createElement('span'),name=document.createElement('strong'),code=document.createElement('small'),source=getDisplayProductImageSources(item)[0];card.type='button';card.className='modal-related-card';card.setAttribute('aria-label',`Ver ${item.name}`);imageWrap.className='modal-related-image';if(source){const image=document.createElement('img');image.src=source;image.alt='';image.loading='lazy';imageWrap.append(image);}name.textContent=item.name;code.textContent=item.orderNumber?`Cód. ${item.orderNumber}`:'';card.append(imageWrap,name,code);card.onclick=()=>openModal(item);grid.append(card);}
 }
 
 function openModal(p, initialPurchaseOptionId = null) {
@@ -5696,6 +5718,7 @@ function openModal(p, initialPurchaseOptionId = null) {
   addBtn.textContent = getModalAddButtonLabel(p, selectedOption, inCart);
   addBtn.className = 'btn-add-modal' + (inCart ? ' in-cart' : '') + (canOrderProduct(p, getActiveCollection(), selectedOption) ? '' : ' disabled');
 
+  renderRelatedProducts(p);
   applyProductModalSettings();
 
   modalOverlay.classList.add('active');
