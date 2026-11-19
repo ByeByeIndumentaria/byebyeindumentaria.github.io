@@ -12,7 +12,7 @@ test('the optional welcome window is editable and disabled by default',()=>{
   assert.match(settings,/imageField\('Subir imagen',settings\.welcome,'image'\)/);
   assert.match(site,/function applyWelcome/);
   assert.match(site,/applyWelcome\(settings,\{preview\}\)/);
-  assert.match(site,/else if\(filters\)filters\.before\(area\);\}\}\n  let announcementTimer/);
+  assert.match(site,/else if\(hero\)hero\.after\(area\);\}\}\n  let announcementTimer/);
   assert.match(site,/localStorage\.getItem\(key\)==='closed'/);
   assert.match(css,/\.welcome-overlay/);
   assert.match(css,/\.welcome-dialog/);

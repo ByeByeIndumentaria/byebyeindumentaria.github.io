@@ -1840,3 +1840,35 @@ body[data-preview="true"] .hero-position-handle{display:block;position:absolute;
 
 /* "Mostrar botón del pedido" apagado: .cart-btn{display:flex} le ganaba al atributo hidden y el botón seguía visible. */
 .cart-btn[hidden]{display:none!important}
+
+/* Bloques con contenido: foto, galería, video, preguntas, pasos, contacto, columnas, separador y espacio. */
+.managed-block p{white-space:pre-line}
+.managed-block[data-align="left"]{text-align:left}
+.managed-block figure{margin:12px auto 0;max-width:1100px}
+.managed-block .managed-block-image{display:block;width:100%;height:auto;border-radius:var(--radius-photo,8px)}
+.managed-block figcaption{margin-top:8px;color:var(--gray-600,#6b6155);font-size:13px}
+.managed-block .managed-block-gallery{display:grid;grid-template-columns:repeat(var(--gallery-columns,3),minmax(0,1fr));gap:10px;margin-top:12px}
+.managed-block .managed-block-gallery img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:var(--radius-photo,8px)}
+.managed-block .managed-block-video{position:relative;width:100%;max-width:960px;margin:12px auto 0;aspect-ratio:16/9;overflow:hidden;border-radius:var(--radius-photo,8px);background:#000}
+.managed-block .managed-block-video iframe,.managed-block .managed-block-video video{position:absolute;inset:0;width:100%;height:100%;border:0}
+.managed-block .managed-block-faq{max-width:760px;margin:12px auto 0;text-align:left}
+.managed-block .managed-block-faq details{border-bottom:1px solid rgba(31,26,21,.14)}
+.managed-block .managed-block-faq summary{position:relative;padding:14px 28px 14px 0;font-weight:600;list-style:none;cursor:pointer}
+.managed-block .managed-block-faq summary::-webkit-details-marker{display:none}
+.managed-block .managed-block-faq summary::after{content:'+';position:absolute;right:4px;top:12px;font-size:20px;font-weight:400}
+.managed-block .managed-block-faq details[open] summary::after{content:'−'}
+.managed-block .managed-block-faq details p{margin:0 0 14px;color:var(--gray-600,#564b3e)}
+.managed-block .managed-block-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;max-width:1100px;margin:14px auto 0;padding:0;list-style:none;counter-reset:step;text-align:left}
+.managed-block .managed-block-steps li{counter-increment:step;display:flex;flex-direction:column;gap:4px;padding:14px;border-radius:var(--radius-card,8px);background:rgba(31,26,21,.04)}
+.managed-block .managed-block-steps li::before{content:counter(step);display:grid;place-items:center;width:30px;height:30px;margin-bottom:4px;border-radius:50%;background:var(--accent,#9d4f38);color:#fff;font-weight:600}
+.managed-block .managed-block-contact{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;max-width:520px;margin:12px auto 0;text-align:left}
+.managed-block .managed-block-contact dt{color:var(--gray-600,#6b6155);font-size:13px}
+.managed-block .managed-block-contact dd{margin:0}
+.managed-block .managed-block-contact a{color:inherit}
+.managed-block .managed-block-columns{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;max-width:1100px;margin:14px auto 0}
+.managed-block .managed-block-columns img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:var(--radius-photo,8px)}
+.managed-block .managed-block-columns h3{margin:10px 0 4px;font:500 18px/1.2 var(--font-display,inherit)}
+.managed-block .managed-block-divider{width:min(100%,900px);margin:0 auto;border:0;border-top:1px solid rgba(31,26,21,.18)}
+.managed-block.managed-block-divider{padding:8px 0;background:transparent}
+.managed-block.managed-block-spacer{padding:0;background:transparent}
+@media (max-width:768px){.managed-block .managed-block-gallery{grid-template-columns:repeat(2,minmax(0,1fr))}.managed-block .managed-block-contact{grid-template-columns:1fr}.managed-block .managed-block-contact dt{margin-top:6px}}

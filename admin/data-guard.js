@@ -67,7 +67,7 @@
     note.hidden=!issues.length;
   }
   /* Enlaces: avisa si no van a funcionar y ofrece arreglarlos. */
-  function linkInput(input){const label=input.closest('label')?.querySelector('span')?.textContent||input.closest('label')?.textContent||'';return /^(Enlace|Enlace o sección|Link)/i.test(label.trim());}
+  function linkInput(input){const label=input.closest('label')?.querySelector('span')?.textContent||input.closest('label')?.textContent||'';return /^(Enlace|Destino|Link)/i.test(label.trim());}
   function checkLink(input){
     const note=noteFor(input);note.replaceChildren();const value=input.value.trim();
     const ok=!value||/^(https?:\/\/[^\s.]+\.[^\s]+|#[\w-]+|mailto:\S+@\S+|tel:\+?[\d\s-]+|https?:\/\/wa\.me\/\d+)/i.test(value);
