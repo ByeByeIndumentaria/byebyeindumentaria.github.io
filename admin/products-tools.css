@@ -1,0 +1,19 @@
+/* Pantalla de prendas · filtros, selección múltiple y duplicar. */
+.product-filters{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 4px}
+.product-filters select{min-height:40px;padding:0 10px;border:1px solid #d9d2c3;border-radius:8px;background:#fff;font:inherit;font-size:14px}
+.bulk-bar{position:sticky;top:8px;z-index:20;display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:10px 0;padding:10px 12px;border-radius:12px;background:#2f3a2c;color:#fff;box-shadow:0 10px 24px #0002}
+.bulk-bar[hidden]{display:none}
+.bulk-bar strong{margin-right:6px}
+.bulk-bar button{min-height:34px;padding:0 12px;border:0;border-radius:8px;background:#fff;color:#2f3a2c;font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.bulk-bar button.danger{background:#f6d7d2;color:#7a1f12}
+.bulk-bar button:disabled{opacity:.6;cursor:wait}
+.card{position:relative}
+.card.selected{outline:3px solid #2f6b3a;outline-offset:2px}
+.card-select{position:absolute;z-index:2;top:10px;left:10px;display:grid;place-items:center;width:34px;height:34px;border-radius:9px;background:#fffffff0;box-shadow:0 2px 8px #0002;cursor:pointer}
+.card-select input{width:20px;height:20px;cursor:pointer}
+.card-open{cursor:pointer}
+.product-filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+.product-filters select{width:100%}
+@media(max-width:640px){.product-filters{grid-template-columns:1fr}}
+.card .actions{display:flex!important;flex-wrap:wrap;gap:6px}
+.card .actions button{flex:1 1 auto;min-width:0;white-space:nowrap}

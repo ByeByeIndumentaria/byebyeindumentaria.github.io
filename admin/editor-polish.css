@@ -139,3 +139,23 @@
 .image-picker-item:hover,.image-picker-item:focus-visible{border-color:#1769ff}
 .image-picker-item img{width:100%;height:100%;object-fit:cover}
 .add-grid .add-card{white-space:pre-line}
+
+/* Etapa 6: formato de texto, variables y programación. */
+.format-bar{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:4px 0 6px}
+.format-bar button{min-width:34px;min-height:32px;padding:0 10px;border:1px solid #d6dae3;border-radius:8px;background:#fff;color:#1f2330;font-size:13px;cursor:pointer}
+.format-bar .format-bold{font-weight:800}
+.format-bar .format-italic{font-style:italic;font-family:Georgia,serif}
+.format-help{color:#6f7581;font-size:11px}
+.variable-note{margin:6px 0;padding:8px 10px;border-radius:9px;background:#fff4e0;color:#7a4a00;font-size:12px;line-height:1.4}
+.variable-note[hidden]{display:none}
+.variable-note button{margin-top:4px;padding:4px 10px;border:1px solid #e2b866;border-radius:7px;background:#fff;color:#7a4a00;font-size:12px;font-weight:600;cursor:pointer}
+.schedule-box{margin:10px 0;padding:10px 12px;border:1px dashed #c9d0dc;border-radius:10px;background:#fafbfd}
+.schedule-box>strong{display:block;margin-bottom:6px;font-size:13px}
+.schedule-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.schedule-row input{width:100%;box-sizing:border-box}
+.schedule-state{display:inline-block;margin:4px 0;padding:3px 8px;border-radius:999px;font-size:12px;font-weight:600}
+.schedule-state[data-state="live"]{background:#e3f4e6;color:#245c2f}
+.schedule-state[data-state="scheduled"]{background:#e6eeff;color:#1d4fd7}
+.schedule-state[data-state="expired"]{background:#f3e3e0;color:#8a2a1c}
+@media(max-width:420px){.schedule-row{grid-template-columns:1fr}}
+.schedule-row{grid-template-columns:1fr!important}
