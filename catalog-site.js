@@ -214,5 +214,27 @@
   document.addEventListener('mouseout',event=>{if(window.parent===window)return;const target=event.target.closest('[data-edit-id]');if(target&&!target.contains(event.relatedTarget))window.parent.postMessage({type:'catalog-site-hover-end'},location.origin);},true);
   document.addEventListener('click',event=>{if(window.parent===window||editorMode!=='edit')return;if(suppressEditorClick){suppressEditorClick=false;event.preventDefault();event.stopPropagation();return;}const target=event.target.closest('[data-edit-id]');if(!target)return;event.preventDefault();event.stopPropagation();document.querySelectorAll('[data-editor-selected]').forEach(node=>node.removeAttribute('data-editor-selected'));target.dataset.editorSelected='true';editorMessage('catalog-site-select',target,{inline:target.dataset.inlineEdit==='true'});},true);
   document.addEventListener('dblclick',event=>{if(window.parent===window||editorMode!=='edit')return;const target=event.target.closest('[data-inline-edit="true"]');if(!target)return;event.preventDefault();event.stopPropagation();target.contentEditable='plaintext-only';target.focus();const selection=getSelection(),range=document.createRange();range.selectNodeContents(target);selection.removeAllRanges();selection.addRange(range);const finish=()=>{target.removeAttribute('contenteditable');editorMessage('catalog-site-inline-change',target,{value:target.textContent.trim()});};target.addEventListener('blur',finish,{once:true});target.addEventListener('keydown',keyEvent=>{if(keyEvent.key==='Enter'){keyEvent.preventDefault();target.blur();}if(keyEvent.key==='Escape'){keyEvent.preventDefault();target.blur();}},{once:true});},true);
+  /* Encuadre de las fotos de la grilla (photoFrames de cada prenda, se edita en "Encuadrar"). La foto original no cambia. */
+  (()=>{
+    const clamp=(value,min,max)=>Math.min(max,Math.max(min,value));
+    const path=value=>{try{return decodeURIComponent(new URL(String(value).replace(/&amp;/g,'&'),location.href).pathname);}catch{return String(value);}};
+    function frameFor(img){
+      const card=img.closest('.product-card'),src=img.getAttribute('src');if(!card||!src)return null;
+      const list=typeof products!=='undefined'&&Array.isArray(products)?products:[],product=list.find(item=>String(item?.id)===card.dataset.id);
+      const frames=Array.isArray(product?.photoFrames)?product.photoFrames:[];
+      const match=frames.find(item=>item?.src===src)||frames.find(item=>item?.src&&path(item.src)===path(src));if(!match)return null;
+      const zoom=Number(match.zoom),x=Number(match.x),y=Number(match.y);
+      return Number.isFinite(zoom)&&Number.isFinite(x)&&Number.isFinite(y)?{zoom:clamp(zoom,1,8),x:clamp(x,0,100),y:clamp(y,0,100)}:null;
+    }
+    function applyFrame(img){
+      const frame=frameFor(img);
+      if(!frame){if(img.dataset.photoFrame){img.style.removeProperty('scale');img.style.removeProperty('transform-origin');img.style.removeProperty('object-fit');delete img.dataset.photoFrame;}return;}
+      img.style.setProperty('object-fit','contain','important');img.style.setProperty('scale',String(frame.zoom));img.style.setProperty('transform-origin',`${frame.x}% ${frame.y}%`);img.dataset.photoFrame='1';
+    }
+    const refreshAll=()=>document.querySelectorAll('.product-card .card-img').forEach(applyFrame);
+    new MutationObserver(records=>{for(const record of records)if(record.target.matches?.('.product-card .card-img'))applyFrame(record.target);}).observe(document.documentElement,{subtree:true,attributes:true,attributeFilter:['src']});
+    window.addEventListener('catalog-site-preview-product',()=>setTimeout(refreshAll,60));
+    window.CatalogPhotoFrames={refresh:refreshAll};
+  })();
   window.CatalogSiteReady=(async()=>{let settings={};if(new URLSearchParams(location.search).has('site-preview')){try{settings=JSON.parse(localStorage.getItem('byebye-site-draft-preview')||'{}');}catch{}}else if(window.CatalogAPI?.configured){try{settings=await window.CatalogAPI.getSiteSettings();}catch(error){console.warn('Se usa el diseño base del catálogo.',error.message);}}const result=apply(settings,{preview:new URLSearchParams(location.search).has('editor')});if(window.parent!==window)window.parent.postMessage({type:'catalog-site-preview-ready'},location.origin);return result;})();
 })();

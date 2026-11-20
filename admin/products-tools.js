@@ -56,6 +56,7 @@
       const p=r.payload,id=Number(r.id),card=el('article',null,`card${selected.has(id)?' selected':''}`),img=el('img');img.alt=p.name;
       const src=galleryFor(p).sources[0];if(src)queueCardImage(img,asset(src));else img.alt='Sin foto · '+p.name;
       img.classList.add('card-open');img.title='Abrir prenda';img.onclick=()=>openEditor(r.id,false);
+      const photo=el('div',null,'card-photo');photo.append(img);if(src)window.PhotoFrames?.apply(img,window.PhotoFrames.get(p,src));
       if(!preview){const check=el('label',null,'card-select'),box=el('input');box.type='checkbox';box.checked=selected.has(id);box.setAttribute('aria-label',`Seleccionar ${p.name}`);box.onchange=()=>{box.checked?selected.add(id):selected.delete(id);card.classList.toggle('selected',box.checked);renderBulkBar();};check.append(box);card.append(check);}
       const badgeText=p.isHidden?'Oculto':p.inStock===false?'Sin stock':categoriesOf(p)[0]||'';
       const body=el('div',null,'card-info');body.append(el('span',badgeText,'badge'),el('h3',p.name),el('p',p.orderNumber||'Sin código'),el('p',`${(p.colors||[]).length} colores · ${hasCurve(p)?'Curva cargada':'Curva pendiente'}${hasPhoto(p)?'':' · Sin fotos'}`));
@@ -63,7 +64,7 @@
       for(const [label,curve] of [['Editar',false],['Editar curva',true]]){const b=el('button',label);b.type='button';b.onclick=()=>openEditor(r.id,curve);actions.append(b);}
       if(!preview){const copy=el('button','Duplicar');copy.type='button';copy.onclick=()=>duplicateProduct(id);actions.append(copy);}
       if(!preview&&r.version>0){const history=el('button','Historial');history.type='button';history.onclick=()=>openHistory(id);actions.append(history);const archive=el('button',p.archived?'Restaurar':'Archivar');archive.type='button';archive.onclick=()=>setArchived(id,!p.archived);actions.append(archive);}
-      body.append(actions);card.append(img,body);$('products').append(card);
+      body.append(actions);card.append(photo,body);$('products').append(card);
     }
     renderBulkBar();
   };

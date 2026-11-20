@@ -273,7 +273,7 @@ async function addPhotos(files){
 }
 
 function adminPhotoUrls(payload){return [...new Set([...(payload.gallery?.sources||[]),...(payload.purchaseOptions||[]).flatMap(option=>option.gallery?.sources||[])].filter(src=>String(src).includes('/storage/v1/object/public/catalog-photos/')))];}
-function replacePhotoUrl(payload,from,to){for(const target of [payload,...(payload.purchaseOptions||[])])if(target.gallery)target.gallery.sources=target.gallery.sources.map(src=>src===from?to:src);}
+function replacePhotoUrl(payload,from,to){window.PhotoFrames?.remap(payload,from,to);for(const target of [payload,...(payload.purchaseOptions||[])])if(target.gallery)target.gallery.sources=target.gallery.sources.map(src=>src===from?to:src);}
 async function optimizeExistingPhotos(){
   if(preview||photoMaintenanceBusy)return;const affected=[...records.values()].filter(row=>adminPhotoUrls(row.payload).length);const total=[...new Set(affected.flatMap(row=>adminPhotoUrls(row.payload)))].length;
   if(!total){notice('No hay fotos de Administración para optimizar.');return;}
@@ -344,7 +344,8 @@ async function save(event){event.preventDefault();if(preview||busy||uploads)retu
   try{payload=preparePayload();}catch(e){message(e);return;}
   busy=true;$('save').disabled=true;$('save-status').textContent='Guardando fotos y producto…';
   try{
-    for(const [key,photo] of pendingPhotos){photo.remoteUrl||=await api.upload(photo.blob);for(const target of [payload,...(payload.purchaseOptions||[])]){const g=target.gallery;if(!g)continue;g.sources=g.sources.map(src=>src===key?photo.remoteUrl:src);}}
+    for(const [key,photo] of pendingPhotos){photo.remoteUrl||=await api.upload(photo.blob);for(const target of [payload,...(payload.purchaseOptions||[])]){const g=target.gallery;if(!g)continue;g.sources=g.sources.map(src=>src===key?photo.remoteUrl:src);}window.PhotoFrames?.remap(payload,key,photo.remoteUrl);}
+    window.PhotoFrames?.prune(payload);
     const result=await api.save(editingId,version,payload);
     const [persisted]=await api.getProducts([Number(result.id)]);
     if(!persisted||persisted.version!==result.version||JSON.stringify(persisted.payload)!==JSON.stringify(result.payload))throw new Error('El servidor recibió el cambio, pero no pudimos verificarlo. No cierres esta ventana y volvé a intentar en unos segundos.');
