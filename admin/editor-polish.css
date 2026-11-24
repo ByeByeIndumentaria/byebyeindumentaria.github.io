@@ -159,3 +159,6 @@
 .schedule-state[data-state="expired"]{background:#f3e3e0;color:#8a2a1c}
 @media(max-width:420px){.schedule-row{grid-template-columns:1fr}}
 .schedule-row{grid-template-columns:1fr!important}
+/* Orden de prendas: separador entre con stock y sin stock */
+.order-divider{grid-column:1/-1;margin:8px 0 2px;padding:7px 10px;border-radius:8px;background:#f7deda;color:#9b352c;font-size:11px;font-weight:600}
+.order-rule-help{margin:6px 0 0!important;color:#4b5263!important;font-size:12px!important;line-height:1.45}

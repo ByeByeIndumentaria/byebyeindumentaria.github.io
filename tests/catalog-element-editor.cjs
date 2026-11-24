@@ -64,7 +64,7 @@ test('opening a section takes the preview there and lost preview-ready signals a
 });
 
 test('public catalog loads the new site script',()=>{
-  assert.match(publicHtml,/catalog-site\.js\?v=20261120-fotos/);
+  assert.match(publicHtml,/catalog-site\.js\?v=20261124-orden/);
   assert.match(publicHtml,/catalog-site-schema\.js\?v=20261124-tienda/);
 });
 

@@ -5082,6 +5082,8 @@ function getFilteredProducts() {
   }).sort((a, b) => {
     const categoryA = activeCategory === 'all' ? (a.subcategory || getProductSubcategories(a)[0] || '') : activeCategory;
     const categoryB = activeCategory === 'all' ? (b.subcategory || getProductSubcategories(b)[0] || '') : activeCategory;
+    const stockDifference = sortMode!=='featured'||siteSettings.grid?.stockFirst === false || siteSettings.stockFirst === false ? 0 : Number(b.inStock) - Number(a.inStock);
+    if (stockDifference) return stockDifference;
     if (activeCategory === 'all' && sortMode==='featured') {
       const groupDifference = (categoryOrder.get(categoryA) ?? 9999) - (categoryOrder.get(categoryB) ?? 9999) || categoryA.localeCompare(categoryB,'es');
       if (groupDifference) return groupDifference;
@@ -5089,8 +5091,6 @@ function getFilteredProducts() {
     if(sortMode==='name'){const difference=String(a.name||'').localeCompare(String(b.name||''),'es',{sensitivity:'base',numeric:true});if(difference)return difference;}
     if(sortMode==='code'){const difference=String(a.orderNumber||'').localeCompare(String(b.orderNumber||''),'es',{sensitivity:'base',numeric:true});if(difference)return difference;}
     if(sortMode==='stock'){const difference=Number(b.inStock)-Number(a.inStock);if(difference)return difference;}
-    const stockDifference = sortMode!=='featured'||siteSettings.grid?.stockFirst === false || siteSettings.stockFirst === false ? 0 : Number(b.inStock) - Number(a.inStock);
-    if (stockDifference) return stockDifference;
     const categoryMapA = orderMapFor(categoryA),categoryMapB = orderMapFor(categoryB);
     return (categoryMapA.get(Number(a.id)) ?? 999999) - (categoryMapB.get(Number(b.id)) ?? 999999)
       || (managedOrder.get(Number(a.id)) ?? 999999) - (managedOrder.get(Number(b.id)) ?? 999999);

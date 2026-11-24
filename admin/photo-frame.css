@@ -49,3 +49,8 @@
 .embedded-photo-actions>.photo-frame-button,.embedded-photo-actions>.photo-first-button{grid-column:1/-1!important}
 /* Celular: los botones de arriba de "Tu catálogo" bajan de renglón en vez de ensanchar la página */
 @media(max-width:650px){.title-actions{flex-wrap:wrap;gap:8px}.title-actions button{flex:1 1 auto}}
+.photo-frame-bg{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:13px}
+.photo-frame-bg span{flex:1;color:#4b5263}
+.photo-frame-bg input{width:44px;height:34px;padding:2px;border:1px solid #dfe2e8;border-radius:8px;background:#fff;cursor:pointer}
+.photo-frame-bg button{min-height:34px;padding:6px 10px;border:1px solid #dfe2e8;border-radius:8px;background:#fff;font:inherit;font-size:12px;cursor:pointer}
+.photo-frame-bg button:disabled{opacity:.5;cursor:default}

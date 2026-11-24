@@ -37,3 +37,22 @@ test('the "Nuevo" label uses the date a product was first published, and duplica
   assert.match(tools,/delete copy\.createdAt/);
   assert.match(tools,/Novedad:/);
 });
+
+test('with "stock first" the whole catalog shows every in-stock product before any out-of-stock one',()=>{
+  const script=fs.readFileSync('script.js','utf8'),start=script.indexOf('}).sort((a, b) => {'),body=script.slice(start,script.indexOf('\n}\n',start));
+  assert.ok(body.indexOf('stockDifference')>0&&body.indexOf('stockDifference')<body.indexOf('groupDifference'),'stock must be compared before the category groups');
+  const settings=fs.readFileSync('admin/settings.js','utf8');
+  assert.match(settings,/Primero todas las prendas con stock/);
+  assert.match(settings,/Sin stock · se muestran al final del catálogo/);
+});
+
+test('framed photos fill their borders with the color of the photo background',()=>{
+  const frame=fs.readFileSync('admin/photo-frame.js','utf8'),site=fs.readFileSync('catalog-site.js','utf8');
+  assert.match(frame,/function edgeColor/);assert.match(frame,/Color de los bordes/);assert.match(frame,/clean\.bg=/);
+  assert.match(site,/setProperty\('background-color',frame\.bg\)/);
+  const window={};new Function('window',frame)(window);const product={};
+  window.PhotoFrames.set(product,'a.jpg',{zoom:1,x:50,y:50,bg:'#F4F4F2'});
+  assert.equal(product.photoFrames[0].bg,'#f4f4f2');
+  window.PhotoFrames.set(product,'a.jpg',{zoom:1,x:50,y:50,bg:'red;'});
+  assert.equal('bg' in product.photoFrames[0],false);
+});

@@ -8,17 +8,29 @@
 (()=>{
   const clamp=(value,min,max)=>Math.min(max,Math.max(min,value));
   const MAX_ZOOM=8;
+  const HEX=/^#[0-9a-f]{6}$/i;
+  const edgeCache=new Map();
+  // Devuelve el color del fondo de la foto mirando sus bordes: los costados si la foto es más angosta que el cuadro, arriba y abajo si es más ancha.
+  function edgeColor(url,boxRatio=.75){
+    const key=`${url}|${boxRatio}`;if(edgeCache.has(key))return edgeCache.get(key);
+    const promise=new Promise(resolve=>{const img=new Image();if(!/^(blob|data):/.test(url))img.crossOrigin='anonymous';
+      img.onload=()=>{try{const W=48,H=Math.max(2,Math.round(48*img.naturalHeight/img.naturalWidth)),canvas=document.createElement('canvas');canvas.width=W;canvas.height=H;const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.drawImage(img,0,0,W,H);const data=ctx.getImageData(0,0,W,H).data,pixels=[],add=(x,y)=>{const i=(y*W+x)*4;pixels.push([data[i],data[i+1],data[i+2]]);};
+        if(img.naturalWidth/img.naturalHeight<boxRatio){for(let y=0;y<H;y++){add(0,y);add(1,y);add(W-1,y);add(W-2,y);}}else{for(let x=0;x<W;x++){add(x,0);add(x,1);add(x,H-1);add(x,H-2);}}
+        const median=k=>{const values=pixels.map(p=>p[k]).sort((a,b)=>a-b);return values[values.length>>1];};resolve('#'+[0,1,2].map(k=>median(k).toString(16).padStart(2,'0')).join(''));}catch{resolve(null);}};
+      img.onerror=()=>resolve(null);img.src=url;});
+    edgeCache.set(key,promise);return promise;
+  }
   function valid(frame){
     if(!frame||typeof frame!=='object')return null;
     const zoom=Number(frame.zoom),x=Number(frame.x),y=Number(frame.y);
     if(!Number.isFinite(zoom)||!Number.isFinite(x)||!Number.isFinite(y))return null;
-    return{zoom:clamp(zoom,1,MAX_ZOOM),x:clamp(x,0,100),y:clamp(y,0,100)};
+    const clean={zoom:clamp(zoom,1,MAX_ZOOM),x:clamp(x,0,100),y:clamp(y,0,100)};if(HEX.test(frame.bg||''))clean.bg=frame.bg.toLowerCase();return clean;
   }
   const list=product=>Array.isArray(product?.photoFrames)?product.photoFrames:[];
   function get(product,src){return valid(list(product).find(item=>item?.src===src));}
   function set(product,src,frame){
     const rest=list(product).filter(item=>item?.src!==src),clean=valid(frame);
-    if(clean)rest.push({src,zoom:Math.round(clean.zoom*1000)/1000,x:Math.round(clean.x*10)/10,y:Math.round(clean.y*10)/10});
+    if(clean)rest.push({src,zoom:Math.round(clean.zoom*1000)/1000,x:Math.round(clean.x*10)/10,y:Math.round(clean.y*10)/10,...(clean.bg?{bg:clean.bg}:{})});
     if(rest.length)product.photoFrames=rest;else delete product.photoFrames;
   }
   function remap(product,from,to){for(const item of list(product))if(item?.src===from)item.src=to;}
@@ -30,10 +42,11 @@
   }
   function apply(img,frame){
     const clean=valid(frame);
-    if(!clean){if(img.dataset.photoFrame){img.style.removeProperty('object-fit');img.style.removeProperty('scale');img.style.removeProperty('transform-origin');delete img.dataset.photoFrame;}return;}
+    if(!clean){if(img.dataset.photoFrame){img.style.removeProperty('object-fit');img.style.removeProperty('scale');img.style.removeProperty('transform-origin');img.style.removeProperty('background-color');delete img.dataset.photoFrame;}return;}
     img.style.setProperty('object-fit','contain','important');
     img.style.setProperty('scale',String(clean.zoom));
     img.style.setProperty('transform-origin',`${clean.x}% ${clean.y}%`);
+    if(clean.bg)img.style.setProperty('background-color',clean.bg);else img.style.removeProperty('background-color');
     img.dataset.photoFrame='1';
   }
 
@@ -56,11 +69,13 @@
       const zoomRow=node('label',null,'photo-frame-zoom');zoomRow.append(node('span','−'),slider,node('span','+'),zoomLabel);
       const quick=node('div',null,'photo-frame-quick'),whole=node('button','Foto entera'),fill=node('button','Llenar el cuadro'),center=node('button','Centrar');
       for(const item of [whole,fill,center])item.type='button';quick.append(whole,fill,center);
+      const bgRow=node('div',null,'photo-frame-bg'),bgInput=node('input'),bgAuto=node('button','Igual a la foto');bgInput.type='color';bgInput.setAttribute('aria-label','Color de los bordes');bgAuto.type='button';
+      const bgLabel=node('span','Color de los bordes');bgRow.append(bgLabel,bgInput,bgAuto);let autoBg=null;
       const help=node('p','Arrastrá la foto para moverla. Para acercar: usá la barra, pellizcá con dos dedos o la ruedita del mouse.','photo-frame-help');
       const footer=node('div',null,'photo-frame-footer'),reset=node('button','Como estaba al principio','photo-frame-reset'),cancel=node('button','Cancelar'),done=node('button','Listo','primary');
       for(const item of [reset,cancel,done])item.type='button';footer.append(reset,cancel,done);
       const head=node('div',null,'photo-frame-head');head.append(node('strong',title),node('small','Así se va a ver en la grilla del catálogo. La foto original no se modifica.'));
-      dialog.append(head,stage,zoomRow,quick,status,help,footer);document.body.append(dialog);
+      dialog.append(head,stage,zoomRow,quick,bgRow,status,help,footer);document.body.append(dialog);
 
       let state=valid(frame),natural=null,cover=1;
       const size=()=>{const rect=box.getBoundingClientRect();return{w:rect.width,h:rect.height};};
@@ -72,14 +87,16 @@
         state.x=axis(w,natural.w*fit,state.x);state.y=axis(h,natural.h*fit,state.y);
       }
       function draw(){
-        settle();apply(img,state);slider.value=String(Math.round(state.zoom*100));zoomLabel.textContent=`${Math.round(state.zoom*100)} %`;
-        const filled=state.zoom>=cover-.01;status.textContent=filled?'Llena todo el cuadro.':state.zoom<=1.001?'Se ve la foto entera; los costados quedan con el color de fondo.':'Acercada, pero todavía se ve parte del fondo. Tocá “Llenar el cuadro” si no querés bordes.';status.dataset.filled=String(filled);
+        settle();apply(img,state);box.style.background=state.bg||site.background;bgInput.value=state.bg||autoBg||'#ffffff';bgAuto.disabled=!autoBg||state.bg===autoBg;slider.value=String(Math.round(state.zoom*100));zoomLabel.textContent=`${Math.round(state.zoom*100)} %`;
+        const filled=state.zoom>=cover-.01;status.textContent=filled?'Llena todo el cuadro.':state.zoom<=1.001?'Se ve la foto entera; los bordes se completan con el color del fondo de la foto.':'Acercada, pero todavía se ve parte del fondo. Tocá “Llenar el cuadro” si no querés bordes.';status.dataset.filled=String(filled);
       }
       const setZoom=value=>{state.zoom=clamp(value,1,Number(slider.max)/100);draw();};
-      img.onload=()=>{natural={w:img.naturalWidth,h:img.naturalHeight};measure();if(!state)state={zoom:site.fit==='contain'?1:cover,x:50,y:50};draw();};
+      img.onload=()=>{natural={w:img.naturalWidth,h:img.naturalHeight};measure();if(!state)state={zoom:site.fit==='contain'?1:cover,x:50,y:50};draw();
+        const {w,h}=size();edgeColor(url,w&&h?w/h:ratioNumber(site.ratio)).then(color=>{autoBg=color;if(color&&!state.bg)state.bg=color;draw();});};
       img.onerror=()=>{status.textContent='No se pudo cargar la foto.';};
       img.src=url;
       slider.oninput=()=>setZoom(Number(slider.value)/100);
+      bgInput.oninput=()=>{if(state){state.bg=bgInput.value;draw();}};bgAuto.onclick=()=>{if(state&&autoBg){state.bg=autoBg;draw();}};
       whole.onclick=()=>{state.zoom=1;state.x=50;state.y=50;draw();};
       fill.onclick=()=>{state.zoom=cover;draw();};
       center.onclick=()=>{state.x=50;state.y=50;draw();};
@@ -115,5 +132,5 @@
     });
   }
 
-  window.PhotoFrames={valid,get,set,remap,prune,apply,open,sortable,look};
+  window.PhotoFrames={valid,get,set,remap,prune,apply,open,sortable,look,edgeColor};
 })();
