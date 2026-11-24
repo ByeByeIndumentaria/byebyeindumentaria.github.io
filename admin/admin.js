@@ -346,6 +346,7 @@ async function save(event){event.preventDefault();if(preview||busy||uploads)retu
   try{
     for(const [key,photo] of pendingPhotos){photo.remoteUrl||=await api.upload(photo.blob);for(const target of [payload,...(payload.purchaseOptions||[])]){const g=target.gallery;if(!g)continue;g.sources=g.sources.map(src=>src===key?photo.remoteUrl:src);}window.PhotoFrames?.remap(payload,key,photo.remoteUrl);}
     window.PhotoFrames?.prune(payload);
+    if(editingId==null&&!payload.createdAt)payload.createdAt=new Date().toISOString();
     const result=await api.save(editingId,version,payload);
     const [persisted]=await api.getProducts([Number(result.id)]);
     if(!persisted||persisted.version!==result.version||JSON.stringify(persisted.payload)!==JSON.stringify(result.payload))throw new Error('El servidor recibió el cambio, pero no pudimos verificarlo. No cierres esta ventana y volvé a intentar en unos segundos.');

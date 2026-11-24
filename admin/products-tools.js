@@ -72,7 +72,7 @@
   /* ——— Duplicar ——— */
   async function duplicateProduct(id){
     const row=records.get(id);if(!row)return;
-    const copy=clone(row.payload);delete copy.id;copy.name=`${row.payload.name} (copia)`;copy.orderNumber='';copy.archived=false;copy.isHidden=true;
+    const copy=clone(row.payload);delete copy.id;copy.name=`${row.payload.name} (copia)`;copy.orderNumber='';copy.archived=false;copy.isHidden=true;delete copy.createdAt;
     const temporary=-Date.now();records.set(temporary,{id:temporary,version:0,payload:copy});
     try{await openEditor(temporary,false);}finally{records.delete(temporary);}
     editingId=null;version=0;dirty=true;
@@ -114,5 +114,18 @@
     selected.clear();renderCards();
     notice(failed.length?`Listo en ${done} de ${ids.length}. No se pudo en: ${failed.join(' · ')}`:`Listo: ${done} ${done===1?'prenda actualizada':'prendas actualizadas'}.`);
   }
+  /* ——— Novedad: la etiqueta «Nuevo» del catálogo usa la fecha de alta (createdAt) ——— */
+  let newDays=21;window.CatalogAPI?.getSiteSettings?.().then(site=>{newDays=Math.max(1,Number(site?.shop?.newDays)||21);}).catch(()=>{});
+  const longDate=time=>new Date(time).toLocaleDateString('es-AR',{day:'numeric',month:'long'});
+  function renderNovelty(){
+    let box=document.getElementById('novelty-field');const fields=document.querySelector('#product-form .fields');if(!fields||!editing)return;
+    if(!box){box=el('label',null,'check novelty-field wide');box.id='novelty-field';const input=el('input');input.type='checkbox';input.id='novelty';box.append(input,el('span'));fields.append(box);
+      input.onchange=()=>{if(input.checked)editing.createdAt=new Date().toISOString();else editing.createdAt=new Date(Date.now()-(newDays+1)*864e5).toISOString();dirty=true;renderNovelty();};}
+    const created=Date.parse(editing.createdAt||''),until=created+newDays*864e5,on=Number.isFinite(created)&&Date.now()<until;
+    box.querySelector('input').checked=on;
+    box.querySelector('span').textContent=on?`Novedad: el catálogo muestra «Nuevo» hasta el ${longDate(until)}`:editingId==null?'Novedad: al publicarla se muestra «Nuevo» durante '+newDays+' días':'Novedad: mostrar la etiqueta «Nuevo» desde hoy, durante '+newDays+' días';
+  }
+  const baseOpenEditor=openEditor;
+  openEditor=async function(...args){const result=await baseOpenEditor.apply(this,args);try{renderNovelty();}catch(error){console.warn(error);}return result;};
   if(records?.size)renderCards();
 })();
