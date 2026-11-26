@@ -98,6 +98,7 @@
       action('Quitar de colección…',()=>chooseCollection(collectionOptions,'Quitar de la colección',(id,name)=>bulk(`Quitar de «${name}»`,p=>{const list=(p.collections||[p.collection]).filter(item=>item&&item!==id);if(!list.length)throw new Error(`«${p.name}» quedaría sin colección`);p.collections=list;if(p.collection===id)p.collection=list[0];}))),
       action(showArchived?'Restaurar':'Archivar',()=>bulk(showArchived?'Restaurar':'Archivar (se puede recuperar desde la Papelera)',p=>{p.archived=!showArchived;}),showArchived?'':'danger'),
       ...(window.ProductFields?.bulkActions({action,bulk})||[]),
+      ...(window.ProductBulk?.bulkActions({action,bulk})||[]),
       action('Elegir todas',()=>{for(const row of filteredRows())selected.add(Number(row.id));renderCards();}),
       action('Cancelar',()=>{selected.clear();renderCards();}));
   }
@@ -148,6 +149,6 @@
   }
   const baseOpenEditor=openEditor;
   openEditor=async function(...args){const result=await baseOpenEditor.apply(this,args);try{renderNovelty();}catch(error){console.warn(error);}return result;};
-  window.ProductsTools={filteredRows,audienceOptions,priceRule,selected,renderBulkBar:()=>renderBulkBar()};
+  window.ProductsTools={bulkFor:(ids,label,mutate)=>{if(!ids.length)return notice('No hay prendas para cambiar.');selected.clear();ids.forEach(id=>selected.add(Number(id)));return bulk(label,mutate);},filteredRows,audienceOptions,priceRule,selected,renderBulkBar:()=>renderBulkBar()};
   if(records?.size)renderCards();
 })();

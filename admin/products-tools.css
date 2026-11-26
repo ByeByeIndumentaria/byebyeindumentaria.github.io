@@ -61,3 +61,26 @@
 .tag-editor input:focus{outline:none}
 .product-sheet td select{min-width:120px}
 @media(max-width:650px){.product-extras-grid{grid-template-columns:1fr}}
+/* Cargar en cantidad (products-bulk.js) */
+.bulk-dialog{width:min(860px,96vw);max-height:92dvh;padding:0;border:0;border-radius:16px;background:var(--cream);color:var(--ink)}
+.bulk-dialog::backdrop{background:#20251f99}
+.bulk-head{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid var(--line);background:#fdfcf8}
+.bulk-head h2{font-size:24px}
+.bulk-close{width:38px;height:38px;padding:0!important;border-radius:50%!important;font-size:20px}
+.bulk-body{display:grid;gap:14px;padding:20px 24px 24px}
+.bulk-card{padding:16px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.bulk-card h3{margin:0 0 6px}
+.bulk-card p{margin:0 0 12px;font-size:14px}
+.bulk-actions{display:flex;flex-wrap:wrap;gap:8px}
+.bulk-help{display:block;margin-top:10px;color:var(--muted);font-size:12px;line-height:1.45}
+.bulk-summary{display:flex;flex-wrap:wrap;gap:8px;font-weight:600}
+.bulk-pill{padding:6px 12px;border-radius:999px;background:#eef0ea;font-size:13px}
+.bulk-pill.new{background:#e3efe1;color:#2f5a37}.bulk-pill.change{background:#fff2d6;color:#7a4b00}.bulk-pill.error{background:#f8e0dc;color:#9b352c}
+.bulk-scroll{max-height:46dvh;overflow:auto;border:1px solid var(--line);border-radius:10px;background:#fff}
+.bulk-table{width:100%;border-collapse:collapse;font-size:13px}
+.bulk-table th{position:sticky;top:0;background:#f3f1ea;text-align:left}
+.bulk-table td,.bulk-table th{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.bulk-table tr.error td:last-child{color:#9b352c}.bulk-table tr.new td:last-child{color:#2f5a37}.bulk-table tr.change td:last-child{color:#7a4b00}
+.bulk-progress{font-weight:600}
+.bulk-errors{margin:0;padding-left:18px;color:#9b352c;font-size:13px}
+@media(max-width:650px){.bulk-body{padding:14px}.bulk-actions button{flex:1 1 100%}}
