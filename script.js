@@ -5076,6 +5076,7 @@ function getFilteredProducts() {
     if(searchSettings.searchCategory===true)searchableValues.push(p.category,...getProductSubcategories(p));
     if(searchSettings.searchCollection===true)searchableValues.push(p.collection,...(p.collections||[]));
     if(searchSettings.searchPurchaseOptions!==false)searchableValues.push(...(p.purchaseOptions||[]).flatMap(option=>[option.label,option.orderNumber]));
+    if(window.CatalogData)searchableValues.push(...window.CatalogData.searchValues(p));
     const searchableText = normalizeColorName(searchableValues.filter(Boolean).join(' '));
     const searchOk = !productSearchQuery || searchableText.includes(productSearchQuery);
     return genderOk && catOk && searchOk && productMatchesExtraFilters(p);

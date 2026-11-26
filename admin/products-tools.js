@@ -97,10 +97,11 @@
       action('Agregar a colección…',()=>chooseCollection(collectionOptions,'Agregar a la colección',(id,name)=>bulk(`Agregar a «${name}»`,p=>{const list=new Set(p.collections||[p.collection].filter(Boolean));list.add(id);p.collections=[...list];p.collection||=id;}))),
       action('Quitar de colección…',()=>chooseCollection(collectionOptions,'Quitar de la colección',(id,name)=>bulk(`Quitar de «${name}»`,p=>{const list=(p.collections||[p.collection]).filter(item=>item&&item!==id);if(!list.length)throw new Error(`«${p.name}» quedaría sin colección`);p.collections=list;if(p.collection===id)p.collection=list[0];}))),
       action(showArchived?'Restaurar':'Archivar',()=>bulk(showArchived?'Restaurar':'Archivar (se puede recuperar desde la Papelera)',p=>{p.archived=!showArchived;}),showArchived?'':'danger'),
+      ...(window.ProductFields?.bulkActions({action,bulk})||[]),
       action('Elegir todas',()=>{for(const row of filteredRows())selected.add(Number(row.id));renderCards();}),
       action('Cancelar',()=>{selected.clear();renderCards();}));
   }
-  function audienceOptions(){const labels={MUJER:'Mujer',HOMBRE:'Hombre',NINOS:'Niños / Niñas',UNISEX:'Unisex'};for(const row of records.values()){const value=row.payload?.category;if(value&&!labels[value])labels[value]=value;}return Object.entries(labels);}
+  function audienceOptions(){if(window.ProductFields)return window.ProductFields.audienceOptions();const labels={MUJER:'Mujer',HOMBRE:'Hombre',NINOS:'Niños / Niñas',UNISEX:'Unisex'};for(const row of records.values()){const value=row.payload?.category;if(value&&!labels[value])labels[value]=value;}return Object.entries(labels);}
   const money=value=>Number(value).toLocaleString('es-AR',{maximumFractionDigits:2});
   // "+10%", "-5 %", "+1500", "-300" o un precio fijo "25000". Redondea a la centena cuando el precio pasa de $1.000.
   function priceRule(text){const clean=String(text||'').replace(/\s/g,'').replace(/\./g,'').replace(',','.');let match=clean.match(/^([+-])(\d+(?:\.\d+)?)%$/);if(match){const factor=1+(match[1]==='-'?-1:1)*Number(match[2])/100;return{label:`${match[1]}${match[2]} %`,apply:price=>round(price*factor)};}

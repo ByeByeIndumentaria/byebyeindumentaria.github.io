@@ -19,8 +19,11 @@
   document.querySelector('.product-filters')?.after(switcher);
   function setMode(next){if(next==='cards'&&drafts.size&&!confirm('Hay cambios sin guardar en la planilla. ¿Descartarlos?'))return;if(next==='cards'){drafts.clear();errors.clear();}mode=next;try{localStorage.setItem(VIEW_KEY,mode);}catch{}renderCards();}
 
-  const value=(p,key)=>key==='subcategory'?(Array.isArray(p.subcategories)&&p.subcategories.length?p.subcategories.join(', '):p.subcategory||''):key==='badge'?p.customBadge?.label||'':key==='price'?(p.price??''):key==='visible'?!p.isHidden:key==='inStock'?p.inStock!==false:p[key]??'';
+  const extras=()=>window.ProductFields?.state||{fields:[],tags:{enabled:false}};
+  const value=(p,key)=>key==='tags'?(p.tags||[]).join(', '):key.startsWith('field:')?window.ProductFields.fieldValue(p,extras().fields.find(f=>`field:${f.id}`===key)||{}):key==='subcategory'?(Array.isArray(p.subcategories)&&p.subcategories.length?p.subcategories.join(', '):p.subcategory||''):key==='badge'?p.customBadge?.label||'':key==='price'?(p.price??''):key==='visible'?!p.isHidden:key==='inStock'?p.inStock!==false:p[key]??'';
   function setValue(p,key,input){
+    if(key==='tags'){window.ProductFields.setTags(p,String(input).split(','));return;}
+    if(key.startsWith('field:')){const field=extras().fields.find(f=>`field:${f.id}`===key);if(field)window.ProductFields.setField(p,field,input);return;}
     if(key==='subcategory'){const list=String(input).split(',').map(part=>part.trim()).filter(Boolean);p.subcategory=list[0]||'';if(list.length>1)p.subcategories=list;else delete p.subcategories;return;}
     if(key==='badge'){const text=String(input).trim().slice(0,24);if(text)p.customBadge={label:text,color:p.customBadge?.color||'#9d4f38'};else delete p.customBadge;return;}
     if(key==='price'){const clean=String(input).replace(/\s/g,'').replace(/\./g,'').replace(',','.');if(clean==='')delete p.price;else p.price=Number(clean);return;}
@@ -28,10 +31,12 @@
     if(key==='inStock'){p.inStock=!!input;return;}
     p[key]=String(input).trim();
   }
-  const columns=[['name','Nombre','text'],['orderNumber','Código','text'],['subcategory','Tipo de prenda','text'],['category','Público','select'],['inStock','Con stock','check'],['visible','Visible','check'],['badge','Insignia','text'],['price','Precio','number']];
+  const baseColumns=[['name','Nombre','text'],['orderNumber','Código','text'],['subcategory','Tipo de prenda','text'],['category','Público','select'],['inStock','Con stock','check'],['visible','Visible','check'],['badge','Insignia','text'],['price','Precio','number']];
+  let columns=baseColumns;
+  const buildColumns=()=>{const {fields,tags}=extras();columns=[...baseColumns,...(tags.enabled!==false?[['tags','Etiquetas','text']]:[]),...fields.map(field=>[`field:${field.id}`,field.label,'extra',field])];};
 
   function renderSheet(rows){
-    sheet.replaceChildren();
+    sheet.replaceChildren();buildColumns();
     const help=el('p','Tocá una celda para cambiarla. Tildá la casilla de la izquierda para hacer cambios en grupo (stock, precio, tipo, insignia…). Lo que cambies queda en amarillo hasta que toques «Guardar cambios». Enter baja a la fila siguiente.','sheet-help');
     const scroller=el('div',null,'sheet-scroll'),table=el('table'),head=el('tr');
     const all=el('input');all.type='checkbox';all.setAttribute('aria-label','Elegir todas para cambios en grupo');all.checked=rows.length>0&&rows.every(row=>tools.selected.has(Number(row.id)));all.onchange=()=>{for(const row of rows)all.checked?tools.selected.add(Number(row.id)):tools.selected.delete(Number(row.id));renderCards();};const allCell=el('th',null,'sheet-select');allCell.append(all);
@@ -44,12 +49,13 @@
       const photoCell=el('td',null,'sheet-photo'),img=el('img'),src=galleryFor(row.payload).sources[0];img.alt='';if(src){img.loading='lazy';img.src=asset(src);}photoCell.append(img);photoCell.title='Abrir la prenda completa';photoCell.onclick=()=>{if(drafts.has(id)&&!confirm('Esta prenda tiene cambios sin guardar en la planilla. ¿Abrirla igual? Los cambios de la planilla se descartan.'))return;drafts.delete(id);openEditor(id,false);};tr.append(photoCell);
       columns.forEach(([key,label,type],columnIndex)=>{
         const cell=el('td');cell.dataset.label=label;let input;
-        if(type==='select'){input=el('select');for(const [option,text] of audiences)input.append(new Option(text,option));input.value=value(p,key);}
+        if(type==='extra'){const field=columns[columnIndex][3];input=window.ProductFields.control(field,value(p,key),()=>{});if(input.tagName==='SELECT')type='select-extra';}
+        else if(type==='select'){input=el('select');for(const [option,text] of audiences)input.append(new Option(text,option));input.value=value(p,key);}
         else if(type==='check'){input=el('input');input.type='checkbox';input.checked=!!value(p,key);}
         else{input=el('input');input.type='text';input.value=value(p,key);if(type==='number'){input.inputMode='decimal';input.placeholder='—';}if(key==='subcategory')input.setAttribute('list','sheet-types');}
         input.setAttribute('aria-label',`${label} de ${row.payload.name}`);input.dataset.row=rowIndex;input.dataset.col=columnIndex;
         const changed=()=>{const next=drafts.get(id)||clone(row.payload);setValue(next,key,type==='check'?input.checked:input.value);if(stableJson(next)===stableJson(row.payload))drafts.delete(id);else drafts.set(id,next);errors.delete(id);tr.classList.toggle('changed',drafts.has(id));tr.classList.remove('failed');tr.querySelector('.sheet-error')?.remove();updateBar();};
-        input.addEventListener(type==='text'||type==='number'?'input':'change',changed);
+        input.addEventListener(type==='text'||type==='number'||type==='extra'?'input':'change',changed);
         input.addEventListener('keydown',event=>{if(event.key!=='Enter')return;event.preventDefault();sheet.querySelector(`[data-row="${rowIndex+(event.shiftKey?-1:1)}"][data-col="${columnIndex}"]`)?.focus();});
         cell.append(input);tr.append(cell);
       });

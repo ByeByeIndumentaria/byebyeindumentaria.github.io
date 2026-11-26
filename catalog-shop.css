@@ -103,3 +103,7 @@ body.shop-drawer-open{overflow:hidden}
 .shop-dots[hidden],.shop-arrow[hidden]{display:none!important}
 .header-right{display:flex;align-items:center;justify-content:flex-end;gap:2px}
 .shop-suggest-title{margin:4px 8px 6px;color:var(--gray-600,#564b3e);font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase}
+/* Datos de la prenda en la ficha (catalog-data.js) */
+.product-fields{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:14px 0 4px;padding:12px 0;border-top:1px solid rgba(168,79,42,.16);border-bottom:1px solid rgba(168,79,42,.16);font-size:13px}
+.product-fields dt{color:var(--gray-600,#564b3e);font-size:11px;letter-spacing:.06em;text-transform:uppercase;align-self:center}
+.product-fields dd{margin:0;color:var(--black,#1f1a15)}

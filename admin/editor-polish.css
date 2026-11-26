@@ -162,3 +162,16 @@
 /* Orden de prendas: separador entre con stock y sin stock */
 .order-divider{grid-column:1/-1;margin:8px 0 2px;padding:7px 10px;border-radius:8px;background:#f7deda;color:#9b352c;font-size:11px;font-weight:600}
 .order-rule-help{margin:6px 0 0!important;color:#4b5263!important;font-size:12px!important;line-height:1.45}
+/* Datos de las prendas (settings-fields.js) */
+.field-card .item-card-head{flex-wrap:wrap}
+.field-count{color:#747a87;font-size:10px;white-space:nowrap}
+.field-add{display:grid;grid-template-columns:1fr auto;gap:6px;margin-top:10px}
+.field-add input{min-height:38px;padding:8px 10px;border:1px solid #dfe2e8;border-radius:8px}
+.field-add .primary{padding:0 12px;border:0;border-radius:8px;background:var(--editor-blue,#1769ff);color:#fff;font-weight:600}
+.field-suggestions{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin-top:8px;font-size:11px;color:#747a87}
+.field-suggestions button{padding:5px 9px;border:1px solid #dfe2e8;border-radius:999px;background:#fff;font-size:11px}
+.tag-cloud{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.tag-chip{padding:4px 9px;border-radius:999px;background:#eef2ff;color:#3b3f8f;font-size:11px}
+.audience-row{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:8px;margin:6px 0}
+.audience-row input{min-height:36px;padding:7px 10px;border:1px solid #dfe2e8;border-radius:8px}
+.audience-row button{padding:6px 8px;border:0;border-radius:6px;background:#f6f0ef;font-size:11px}

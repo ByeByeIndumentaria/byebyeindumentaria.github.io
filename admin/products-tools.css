@@ -45,3 +45,19 @@
 .sheet-bar button{white-space:nowrap}
 .sheet-bar strong{font-size:13px;font-weight:600}
 @media(max-width:650px){.sheet-bar{left:12px;right:12px;bottom:12px;transform:none;flex-wrap:wrap}.sheet-bar strong{width:100%}.sheet-bar button{flex:1}.sheet-scroll{max-height:calc(100dvh - 140px)}}
+/* Más datos y etiquetas en la ventana de la prenda (product-fields.js) */
+.product-extras{grid-column:1/-1;margin-top:6px;padding:14px;border:1px solid var(--line);border-radius:10px}
+.product-extras legend{padding:0 6px;font-size:13px;font-weight:700}
+.product-extras-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.product-extras-grid label span{display:block;margin-bottom:4px}
+.product-extras-help{margin:0;font-size:12px}
+.product-extras-tags{margin-top:12px;font-size:13px;font-weight:600}
+.tag-editor{margin-top:6px;padding:6px;border:1px solid var(--line);border-radius:8px;background:#fff}
+.tag-editor-chips{display:flex;flex-wrap:wrap;gap:6px}
+.tag-editor-chips:empty{display:none}
+.tag-editor-chip{display:inline-flex;align-items:center;gap:2px;padding:3px 4px 3px 10px;border-radius:999px;background:var(--light);font-size:12px;font-weight:500}
+.tag-editor-chip button{width:22px;height:22px;padding:0;border:0;border-radius:50%;background:transparent;font-size:15px;line-height:1}
+.tag-editor input{margin-top:6px;border:0;padding:6px}
+.tag-editor input:focus{outline:none}
+.product-sheet td select{min-width:120px}
+@media(max-width:650px){.product-extras-grid{grid-template-columns:1fr}}
