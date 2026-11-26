@@ -84,3 +84,4 @@
 .bulk-progress{font-weight:600}
 .bulk-errors{margin:0;padding-left:18px;color:#9b352c;font-size:13px}
 @media(max-width:650px){.bulk-body{padding:14px}.bulk-actions button{flex:1 1 100%}}
+.card-no-photo{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-size:13px;letter-spacing:.04em}

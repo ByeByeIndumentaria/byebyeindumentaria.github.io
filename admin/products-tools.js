@@ -33,6 +33,7 @@
     const q=model.normalize($('search').value),collection=$('collection-filter').value,category=categoryFilter.value,state=stateFilter.value;
     const rows=[...records.values()].filter(r=>{const p=r.payload;
       if(Boolean(p.archived)!==showArchived)return false;
+      if(window.ProductsTools?.extraFilter&&!window.ProductsTools.extraFilter(r))return false;
       if(collection&&!(p.collections||[p.collection]).includes(collection))return false;
       if(!model.normalize(`${p.name} ${p.orderNumber||''}`).includes(q))return false;
       if(category&&!categoriesOf(p).includes(category))return false;
@@ -56,7 +57,7 @@
       const p=r.payload,id=Number(r.id),card=el('article',null,`card${selected.has(id)?' selected':''}`),img=el('img');img.alt=p.name;
       const src=galleryFor(p).sources[0];if(src)queueCardImage(img,asset(src));else img.alt='Sin foto · '+p.name;
       img.classList.add('card-open');img.title='Abrir prenda';img.onclick=()=>openEditor(r.id,false);
-      const photo=el('div',null,'card-photo');photo.append(img);if(src)window.PhotoFrames?.apply(img,window.PhotoFrames.get(p,src));
+      const photo=el('div',null,'card-photo');photo.append(img);if(!src){img.hidden=true;photo.append(el('span','Sin foto','card-no-photo'));}if(src)window.PhotoFrames?.apply(img,window.PhotoFrames.get(p,src));
       if(!preview){const check=el('label',null,'card-select'),box=el('input');box.type='checkbox';box.checked=selected.has(id);box.setAttribute('aria-label',`Seleccionar ${p.name}`);box.onchange=()=>{box.checked?selected.add(id):selected.delete(id);card.classList.toggle('selected',box.checked);renderBulkBar();};check.append(box);card.append(check);}
       const badgeText=p.isHidden?'Oculto':p.inStock===false?'Sin stock':categoriesOf(p)[0]||'';
       const body=el('div',null,'card-info');body.append(el('span',badgeText,'badge'),el('h3',p.name),el('p',p.orderNumber||'Sin código'),el('p',`${(p.colors||[]).length} colores · ${hasCurve(p)?'Curva cargada':'Curva pendiente'}${hasPhoto(p)?'':' · Sin fotos'}`));
