@@ -44,3 +44,7 @@ body[data-site-page] #hero-carousel,body[data-site-page] #filters-scroll-sentine
 /* Preguntas del pedido */
 .cart-question.missing input,.cart-question.missing select,.cart-question.missing textarea{border-color:var(--unavailable,#9b352c)!important;box-shadow:0 0 0 2px rgba(155,53,44,.15)}
 .cart-question select{width:100%;min-height:40px}
+
+/* Barra de búsqueda fija: se pega justo debajo del encabezado sólo si el encabezado también queda fijo; si no, arriba de todo (antes dejaba un hueco del alto del encabezado). */
+@media (min-width:769px){body[data-header-sticky-desktop="false"] .filters-section:not(.site-search-not-sticky){top:0}}
+@media (max-width:768px){body[data-header-sticky-mobile="true"] .filters-section:not(.site-search-not-sticky){top:var(--header-h-mobile,52px)}}

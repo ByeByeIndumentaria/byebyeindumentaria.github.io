@@ -31,3 +31,9 @@ test('collections can be reordered from the editor or Administración and the ca
   assert.match(editor,/Orden de las colecciones/);assert.match(editor,/api\.saveCollection\(row\.id/);
   assert.match(live,/sortCollections\(\);buildCollectionFilters\(\)/);assert.match(live,/r\.position\]/);
 });
+
+test('the sticky search bar only leaves room for the header when the header is sticky too',()=>{
+  const css=fs.readFileSync('catalog-content.css','utf8');
+  assert.match(css,/body\[data-header-sticky-desktop="false"\] \.filters-section:not\(\.site-search-not-sticky\)\{top:0\}/);
+  assert.match(css,/body\[data-header-sticky-mobile="true"\] \.filters-section:not\(\.site-search-not-sticky\)\{top:var\(--header-h-mobile,52px\)\}/);
+});
