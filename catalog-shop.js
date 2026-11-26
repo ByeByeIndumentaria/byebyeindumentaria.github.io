@@ -138,7 +138,7 @@
     const options=mobile()?[1,2]:[2,4,6],current=currentColumns();box.replaceChildren();
     for(const n of options){const button=make('button','shop-view-button');button.type='button';button.setAttribute('aria-label',`Ver ${n} ${n===1?'prenda':'prendas'} por fila`);button.title=button.getAttribute('aria-label');button.setAttribute('aria-pressed',String(n===current));
       const icon=make('span','shop-view-icon');icon.style.setProperty('--n',String(n));for(let i=0;i<n;i++)icon.append(make('i'));button.append(icon);
-      button.onclick=()=>{const saved=read(KEYS.view,{});saved[mobile()?'mobile':'desktop']=n;write(KEYS.view,saved);applyView();renderViewToggle();};box.append(button);}
+      button.onclick=()=>{const saved=read(KEYS.view,{});saved[mobile()?'mobile':'desktop']=n;write(KEYS.view,saved);applyView();renderViewToggle();document.body.dataset.cardColumns=String(currentColumns());};box.append(button);}
   }
 
   /* ——— Tarjetas: Nuevo, corazón, colores y fotos deslizables ——— */
@@ -229,7 +229,7 @@
   }
 
   /* ——— Enganches con el catálogo ——— */
-  function refresh(){try{applyView();updateFavoriteCount();renderViewToggle();decorateCards();renderRecent();}catch(error){console.warn('Funciones de la tienda:',error);}}
+  function refresh(){try{applyView();document.body.dataset.cardColumns=String(currentColumns());updateFavoriteCount();renderViewToggle();decorateCards();renderRecent();}catch(error){console.warn('Funciones de la tienda:',error);}}
   if(typeof renderProducts==='function'){const base=renderProducts;renderProducts=function(...args){const result=base.apply(this,args);refresh();return result;};}
   if(typeof openModal==='function'){const base=openModal;openModal=function(p,...args){const result=base.call(this,p,...args);remember(p);decorateModal(p);return result;};}
   // El catálogo ya vuelve a dibujar las tarjetas al aplicar el diseño; acá sólo se completan (antes se agregaban de nuevo y quedaban colores repetidos).
