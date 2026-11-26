@@ -197,3 +197,20 @@
 .collection-order-row b{color:#747a87;font-size:11px;text-align:center}
 .collection-order-row button{min-height:30px;padding:0 8px;border:0;border-radius:7px;background:#f0f2f5;font-size:12px}
 .collection-order-row button:disabled{opacity:.35}
+/* Paletas sugeridas (settings-palettes.js) */
+.palette-grid{display:grid;gap:10px}
+.palette-card{padding:10px;border:1px solid #e1e4e9;border-radius:12px;background:#fff}
+.palette-card.active{border-color:var(--editor-blue,#1769ff);box-shadow:0 0 0 2px #e9f1ff}
+.palette-strip{display:grid;grid-template-columns:repeat(6,1fr);height:16px;overflow:hidden;border-radius:6px;margin-bottom:8px;box-shadow:inset 0 0 0 1px #0000000f}
+.palette-sample{display:grid;grid-template-columns:44px 1fr;grid-template-rows:auto auto;gap:4px 10px;align-items:center;padding:8px;border-radius:8px}
+.palette-fake-card{grid-row:1/3;width:44px;height:56px;border-radius:4px}
+.palette-fake-info{display:grid;gap:1px;line-height:1.2}
+.palette-fake-info small{font-size:8px;letter-spacing:.14em}
+.palette-fake-info strong{font-size:12px;font-weight:600}
+.palette-fake-info em{font-size:10px;font-style:normal}
+.palette-fake-button{justify-self:start;padding:3px 8px;border-radius:999px;font-size:9px;font-weight:600}
+.palette-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px}
+.palette-head strong{font-size:13px}
+.palette-use{padding:6px 12px;border:0;border-radius:999px;background:var(--editor-blue,#1769ff);color:#fff;font-size:11px;font-weight:600}
+.palette-current{color:var(--editor-blue,#1769ff);font-size:11px;font-weight:700}
+.palette-card p{margin:4px 0 0;color:#747a87;font-size:11px;line-height:1.4}

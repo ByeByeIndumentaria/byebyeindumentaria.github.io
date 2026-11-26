@@ -136,3 +136,15 @@ body.shop-drawer-open{overflow:hidden}
 }
 /* Dos o más columnas en el celular: todo un poco más chico para que no se amontone */
 @media (max-width:768px){body[data-card-columns="2"] .product-card .card-name{font-size:13px}body[data-card-columns="2"] .product-card .card-code,body[data-card-columns="2"] .product-card .shop-color-name{font-size:10px}body[data-card-columns="2"] .product-card .shop-fav-card svg{width:16px;height:16px}body[data-card-columns="2"] .product-card .card-add{width:30px;height:30px;bottom:9px;right:9px}body[data-card-columns="2"] .product-card .shop-dots{bottom:10px}}
+
+/* ——— Colores del diseño en la barra de búsqueda y filtros (26/11) ———
+   Antes tenían un beige fijo y no acompañaban la paleta elegida en el editor. */
+.filters-section{background:var(--search-bg)}
+.catalog-search-input{background:var(--white);border-color:var(--gray-200);color:var(--black)}
+.catalog-search-input:focus{background:var(--white);border-color:var(--clay)}
+.filters-toggle{background:var(--white);border-color:var(--gray-200);color:var(--gray-600)}
+.pill{background:var(--white)}
+.active-filter-chip{background:var(--white);border-color:var(--gray-200)}
+.modal-gallery-thumbnails{background:color-mix(in srgb,var(--white) 80%,transparent)}
+.badge-cat{background:var(--white)}
+.shop-suggest{background:var(--white);border-color:var(--gray-200)}
