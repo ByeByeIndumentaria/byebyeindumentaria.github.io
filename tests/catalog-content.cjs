@@ -43,3 +43,8 @@ test('saving the collection order from the editor always sends a valid name and 
   assert.match(editor,/payload\.type\|\|=LEGACY_PREORDERS\.has\(row\.id\)\?'preorder':'stock'/);
   assert.match(editor,/payload\.name\|\|=/);
 });
+
+test('the garment-type filter list is rebuilt from scratch, so it never repeats',()=>{
+  const script=fs.readFileSync('script.js','utf8'),start=script.indexOf('function buildCategoryFilters() {');
+  assert.ok(start>0);assert.match(script.slice(start,start+300),/categoryFilters\.replaceChildren\(\);/);
+});

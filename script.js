@@ -4905,6 +4905,8 @@ function updateGenderFilters() {
 
 // ── CATEGORY FILTERS ────────────────────────────
 function buildCategoryFilters() {
+  // Siempre se arma desde cero: antes, al llegar cambios de la nube, se agregaba otra lista debajo de la anterior.
+  categoryFilters.replaceChildren();
   const allBtn = document.createElement('button');
   allBtn.className = `pill ${activeCategory === 'all' ? 'active' : ''}`;
   allBtn.dataset.filter = 'category';
