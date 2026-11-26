@@ -64,8 +64,8 @@ test('opening a section takes the preview there and lost preview-ready signals a
 });
 
 test('public catalog loads the new site script',()=>{
-  assert.match(publicHtml,/catalog-site\.js\?v=20261124-orden/);
-  assert.match(publicHtml,/catalog-site-schema\.js\?v=20261126-datos/);
+  assert.match(publicHtml,/catalog-site\.js\?v=20261126-contenido/);
+  assert.match(publicHtml,/catalog-site-schema\.js\?v=20261126-contenido/);
 });
 
 test('turning off "Mostrar botón del pedido" really hides the cart button',()=>{

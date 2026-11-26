@@ -8,7 +8,7 @@
    - Aviso si la foto subida es chica y puede verse borrosa. */
 (()=>{
   const blockTypes=[
-    ['image','Foto','Una imagen con texto y enlace'],['gallery','Galería','Varias fotos en grilla'],['video','Video','YouTube, Vimeo o archivo'],
+    ['products','Fila de prendas','Ofertas, nuevas, una etiqueta o un tipo'],['image','Foto','Una imagen con texto y enlace'],['gallery','Galería','Varias fotos en grilla'],['video','Video','YouTube, Vimeo o archivo'],
     ['faq','Preguntas frecuentes','Preguntas que se despliegan'],['howto','Cómo comprar','Pasos numerados'],['contact','Contacto','Horario, WhatsApp, Instagram, dirección'],
     ['columns','Columnas','Dos o tres columnas con foto y texto'],['announcement','Aviso','Un mensaje destacado'],['text','Texto','Título y párrafo'],
     ['button','Botón','Una llamada a la acción'],['divider','Separador','Una línea fina'],['spacer','Espacio','Aire entre secciones']];
@@ -21,6 +21,7 @@
     if(type==='contact')Object.assign(base,{hours:'Lunes a viernes de 9 a 18 h',whatsapp:settings.whatsapp?.number||'',phone:'',email:'',instagram:'',address:''});
     if(type==='columns')Object.assign(base,{items:[{title:'Calidad',text:'Escribí un texto corto.',image:''},{title:'Envíos',text:'Escribí un texto corto.',image:''},{title:'Atención',text:'Escribí un texto corto.',image:''}]});
     if(type==='gallery')Object.assign(base,{images:[],columns:3});
+    if(type==='products')Object.assign(base,{title:'Ofertas de la semana',rule:'tag',value:'',codes:'',limit:8,inStockOnly:true,buttonLabel:'',buttonUrl:''});
     if(type==='image')Object.assign(base,{image:'',imageAlt:'',imageUrl:'',caption:'',title:''});
     if(type==='video')Object.assign(base,{videoUrl:'',title:''});
     if(type==='divider'||type==='spacer')Object.assign(base,{title:'',height:40});
@@ -73,12 +74,29 @@
     if(type==='contact')box.append(field('Horario',section,'hours'),field('WhatsApp (con código de país)',section,'whatsapp',{placeholder:'5491112345678'}),field('Teléfono',section,'phone'),field('Correo',section,'email',{type:'email'}),field('Instagram',section,'instagram',{placeholder:'@byebye'}),field('Dirección',section,'address'));
     if(type==='columns')box.append(listEditor('Columnas',section,'items',[['Foto','image','image'],['Título','title'],['Texto','text','textarea']],{label:'columna',value:{title:'Nueva columna',text:'',image:''}},4));
     if(type==='spacer')box.append(field('Alto del espacio (px)',section,'height',{type:'number'}));
+    if(type==='products')appendProductRule(box,section);
     if(!['divider','spacer','gallery'].includes(type))box.append(field('Texto del botón (opcional)',section,'buttonLabel'),field('Enlace del botón',section,'buttonUrl',{placeholder:'https://…, #catalogo, mailto: o tel:'}));
     if(!['divider','spacer'].includes(type))box.append(choice('Alineación',section,'align',[['center','Centrado'],['left','A la izquierda']]));
-    box.append(itemInput('Ubicación',section,'location','select',[['before-header','Arriba del encabezado'],['after-header','Debajo del encabezado'],['after-hero','Después de los flyers'],['after-search','Después del buscador'],['before-footer','Antes del pie']]),itemToggle('Oculto',section,'hidden'));
+    box.append(itemInput('Ubicación',section,'location','select',[['before-header','Arriba del encabezado'],['after-header','Debajo del encabezado'],['after-hero','Después de los flyers'],['after-search','Después del buscador'],['before-footer','Antes del pie'],...(settings.pages||[]).map(page=>[`page:${page.id}`,`Página: ${page.title||'sin título'}`])]),itemToggle('Oculto',section,'hidden'));
     const actions=el('div',null,'mini-actions');actions.append(button('Subir',()=>moveManagedSection(index,-1)),button('Bajar',()=>moveManagedSection(index,1)),button('Duplicar',()=>duplicateManagedSection(index)),button('Eliminar',()=>deleteManagedSection(index),'danger-text'));
     box.append(actions);panel.append(box);
   };
+
+  /* ——— Fila de prendas: qué prendas muestra ——— */
+  function appendProductRule(box,section){
+    const RULES=[['tag','Con una etiqueta'],['category','De un tipo de prenda'],['audience','De un público'],['collection','De una colección'],['new','Las nuevas (etiqueta «Nuevo»)'],['manual','Elegidas a mano (por código)']];
+    const live=products.filter(product=>!product.archived&&!product.isHidden);
+    const valuesFor=rule=>{if(rule==='tag')return [...new Set(live.flatMap(product=>product.tags||[]))].sort((a,b)=>a.localeCompare(b,'es')).map(tag=>[tag,tag]);if(rule==='category')return [...new Set(live.flatMap(product=>Array.isArray(product.subcategories)&&product.subcategories.length?product.subcategories:String(product.subcategory||'').split(',').map(part=>part.trim())).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'es')).map(name=>[name,name]);if(rule==='audience')return (settings.audiences||[]).map(item=>[item.value,item.label]);if(rule==='collection')return collections.map(row=>[String(row.id),row.payload?.name||row.name||String(row.id)]);return[];};
+    const ruleWrap=el('label',null,'control'),ruleSelect=el('select');for(const [value,text] of RULES)ruleSelect.append(new Option(text,value));ruleSelect.value=section.rule||'tag';ruleSelect.onchange=()=>{remember();section.rule=ruleSelect.value;section.value='';setDirty();renderPanel();};ruleWrap.append(el('span','Qué prendas mostrar'),ruleSelect);box.append(ruleWrap);
+    const rule=section.rule||'tag';
+    if(['tag','category','audience','collection'].includes(rule)){const options=valuesFor(rule),wrap=el('label',null,'control'),select=el('select');select.append(new Option('Elegí…',''));for(const [value,text] of options)select.append(new Option(text,value));select.value=section.value||'';select.onchange=()=>{remember();section.value=select.value;setDirty();renderPanel();};wrap.append(el('span',rule==='tag'?'Etiqueta':rule==='category'?'Tipo de prenda':rule==='audience'?'Público':'Colección'),select);box.append(wrap);if(rule==='tag'&&!options.length)box.append(el('p','Todavía ninguna prenda tiene etiquetas. Se ponen en Administración (ventana de la prenda, Planilla o «Agregar etiqueta…» a varias).','element-help'));}
+    if(rule==='manual'){box.append(field('Códigos de las prendas, separados por coma (en ese orden)',section,'codes',{placeholder:'Ej. 125-314, 225-212'}));}
+    box.append(field('Cantidad máxima de prendas',section,'limit',{type:'number'}),itemToggle('Solo prendas con stock',section,'inStockOnly'));
+    const count=matchCount(section,live);box.append(el('p',count?`Ahora muestra ${count} ${count===1?'prenda':'prendas'}. Se actualiza solo cuando cambian las prendas.`:'Con esta regla no hay prendas para mostrar todavía; la fila no se ve en el catálogo.','element-help'));
+  }
+  function matchCount(section,live){const norm=value=>String(value||'').toLocaleLowerCase('es').normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();const rule=section.rule||'tag',value=norm(section.value);let list=live;if(section.inStockOnly!==false)list=list.filter(product=>product.inStock!==false);
+    if(rule==='tag')list=value?list.filter(product=>(product.tags||[]).some(tag=>norm(tag)===value)):[];else if(rule==='category')list=value?list.filter(product=>[product.subcategory,...(product.subcategories||[])].some(name=>norm(name)===value)):[];else if(rule==='audience')list=list.filter(product=>norm(product.category)===value);else if(rule==='collection')list=list.filter(product=>(product.collections||[product.collection]).map(String).includes(String(section.value)));else if(rule==='new'){const days=Number(settings.shop?.newDays)||21;list=list.filter(product=>Date.now()-Date.parse(product.createdAt||'')<days*864e5);}else if(rule==='manual'){const codes=String(section.codes||'').split(',').map(norm).filter(Boolean);list=list.filter(product=>codes.includes(norm(product.orderNumber)));}
+    return Math.min(list.length,Math.max(1,Number(section.limit)||8));}
 
   /* ——— Fotos ya subidas ——— */
   function usedImages(){

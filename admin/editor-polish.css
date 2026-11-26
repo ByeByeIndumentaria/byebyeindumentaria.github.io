@@ -175,3 +175,20 @@
 .audience-row{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:8px;margin:6px 0}
 .audience-row input{min-height:36px;padding:7px 10px;border:1px solid #dfe2e8;border-radius:8px}
 .audience-row button{padding:6px 8px;border:0;border-radius:6px;background:#f6f0ef;font-size:11px}
+/* Páginas, menú, guías de talles y preguntas (settings-content.js) */
+.page-link{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:6px 0;font-size:11px;color:#747a87}
+.page-link code{padding:3px 7px;border-radius:6px;background:#f1f3f7;color:#1f2430;font-size:11px;user-select:all}
+.page-blocks{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:6px 0;font-size:11px;color:#747a87}
+.page-block-link{padding:4px 8px;border:1px solid #dfe2e8;border-radius:999px;background:#fff;font-size:11px}
+.page-card .mini-actions,.size-card .mini-actions{flex-wrap:wrap}
+.size-types{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:8px 0;font-size:11px;color:#747a87}
+.size-types span{width:100%}
+.size-types button{padding:5px 9px;border:1px solid #dfe2e8;border-radius:999px;background:#fff;font-size:11px}
+.size-types button.active{border-color:var(--editor-blue,#1769ff);background:#e9f1ff;color:var(--editor-blue,#1769ff)}
+.size-editor{overflow-x:auto;margin:8px 0;border:1px solid #e1e4e9;border-radius:8px}
+.size-editor table{border-collapse:collapse}
+.size-editor th,.size-editor td{position:relative;padding:3px;border-bottom:1px solid #eceef2}
+.size-editor input{width:84px;min-height:32px;padding:5px 7px;border:1px solid #e1e4e9;border-radius:6px;font-size:12px}
+.size-editor th input{font-weight:700;background:#f7f8fa}
+.size-remove{width:22px;height:22px;padding:0;border:0;border-radius:50%;background:#f6f0ef;color:#9f352f;font-size:13px;line-height:1}
+.size-editor th .size-remove{position:absolute;top:-2px;right:-2px;width:18px;height:18px;font-size:11px}
