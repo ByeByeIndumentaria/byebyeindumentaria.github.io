@@ -140,11 +140,56 @@ body.shop-drawer-open{overflow:hidden}
 /* ——— Colores del diseño en la barra de búsqueda y filtros (26/11) ———
    Antes tenían un beige fijo y no acompañaban la paleta elegida en el editor. */
 .filters-section{background:var(--search-bg)}
-.catalog-search-input{background:var(--white);border-color:var(--gray-200);color:var(--black)}
-.catalog-search-input:focus{background:var(--white);border-color:var(--clay)}
-.filters-toggle{background:var(--white);border-color:var(--gray-200);color:var(--gray-600)}
+html body .catalog-search-input{background:var(--white);border-color:var(--gray-200);color:var(--black)}
+html body .catalog-search-input:focus{background:var(--white);border-color:var(--black);box-shadow:0 0 0 3px color-mix(in srgb,var(--black) 10%,transparent)}
+html body .filters-toggle{background:var(--white);border-color:var(--gray-200);color:var(--black)}
 .pill{background:var(--white)}
 .active-filter-chip{background:var(--white);border-color:var(--gray-200)}
 .modal-gallery-thumbnails{background:color-mix(in srgb,var(--white) 80%,transparent)}
 .badge-cat{background:var(--white)}
 .shop-suggest{background:var(--white);border-color:var(--gray-200)}
+/* Esquinas del diseño también en buscador, filtros y botón del pedido (antes quedaban redondos fijos). */
+html body .catalog-search-input{border-radius:var(--radius-search)}
+html body .filters-toggle{border-radius:var(--radius-chip)}
+html body .cart-btn{border-radius:var(--radius-button)}
+html body .catalog-search .filters-toggle{border-radius:var(--radius-chip)}
+html body .product-card .card-add{border-radius:var(--radius-button)}
+
+/* ——— Estilo «Editorial» (tipo Zara): limpio, fino, sin adornos. Se activa con settings.look = 'editorial'. ——— */
+body[data-look="editorial"] .card-img-wrap,body[data-look="editorial"] .product-card:hover .card-img-wrap{box-shadow:none!important;transform:none}
+body[data-look="editorial"] .product-card,body[data-look="editorial"] .product-card:hover{transform:none;box-shadow:none}
+body[data-look="editorial"] .product-card .card-img-wrap{margin-bottom:10px}
+body[data-look="editorial"] .product-card .card-info{gap:2px;padding:0 1px 6px}
+body[data-look="editorial"] .product-card .card-name{font-size:11px;font-weight:400;letter-spacing:.06em;text-transform:uppercase}
+body[data-look="editorial"] .product-card .card-code,body[data-look="editorial"] .product-card .shop-color-name,body[data-look="editorial"] .product-card .shop-colors-count{font-size:10px;letter-spacing:.04em;color:var(--gray-400)}
+body[data-look="editorial"] .product-card .card-subcat{font-size:9px;letter-spacing:.18em}
+/* Insignias sobre la foto: sólo texto chico, sin cajas */
+body[data-look="editorial"] .card-badge-gender,body[data-look="editorial"] .card-badge-new,body[data-look="editorial"] .card-badge-stock,body[data-look="editorial"] .card-badge-custom,body[data-look="editorial"] .card-badge-preorder{padding:0;border-radius:0;background:transparent!important;color:var(--black)!important;box-shadow:none;font-size:9px;font-weight:400;letter-spacing:.16em}
+body[data-look="editorial"] .card-badge-new{top:12px;right:12px}
+/* Botón + discreto: aparece al pasar el mouse; en el celular, chiquito y sin sombra */
+body[data-look="editorial"] .product-card .card-add{width:28px;height:28px;background:transparent;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;border:1px solid rgba(0,0,0,.18);color:var(--black)}
+body[data-look="editorial"] .product-card .card-add svg{width:11px;height:11px;stroke-width:1.3}
+body[data-look="editorial"] .product-card .card-add.added{background:var(--black);color:#fff;border-color:var(--black)}
+body[data-look="editorial"] .product-card .shop-fav-card svg{width:15px;height:15px;stroke-width:1.1}
+body[data-look="editorial"] .product-card .shop-dots i{width:3px;height:3px}
+body[data-look="editorial"] .product-card .shop-dots i.on{width:10px}
+/* Barra de búsqueda: línea fina, sin cajas */
+body[data-look="editorial"] .filters-section{border-bottom:1px solid var(--gray-200);box-shadow:none!important;-webkit-backdrop-filter:none;backdrop-filter:none}
+html body[data-look="editorial"] .catalog-search-input{border:0;border-bottom:1px solid var(--black);border-radius:0;background:transparent;padding-left:30px;font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+html body[data-look="editorial"] .catalog-search-input:focus{box-shadow:none}
+body[data-look="editorial"] .catalog-search-icon{left:4px}
+html body[data-look="editorial"] .catalog-search .filters-toggle{border:0;background:transparent}
+body[data-look="editorial"] .results-info{font-size:10px;letter-spacing:.14em;text-transform:uppercase}
+body[data-look="editorial"] .pill,body[data-look="editorial"] .active-filter-chip{border-radius:0;font-size:10px;letter-spacing:.12em;text-transform:uppercase}
+/* WhatsApp flotante: cuadradito negro, sin texto */
+body[data-look="editorial"] .floating-whatsapp{width:44px;height:44px;padding:0!important;justify-content:center;border-radius:0!important;box-shadow:none}
+body[data-look="editorial"] .floating-whatsapp>span:not(.floating-whatsapp-icon){display:none}
+body[data-look="editorial"] .floating-whatsapp .floating-whatsapp-icon{background:transparent!important}
+/* Encabezado, portada y pie más finos */
+body[data-look="editorial"] .site-header,body[data-look="editorial"] #site-header{border-bottom:1px solid var(--gray-200);box-shadow:none}
+body[data-look="editorial"] .cart-btn{border:0;background:transparent}
+body[data-look="editorial"] .hero-cta{border-width:1px;font-size:10px;letter-spacing:.22em;font-weight:400}
+body[data-look="editorial"] .site-footer{border-top:1px solid var(--gray-200)}
+body[data-look="editorial"] .site-footer .footer-brand{color:var(--footer-text);font-family:var(--font-display);font-weight:300}
+body[data-look="editorial"] .managed-block{box-shadow:none;border-radius:0}
+body[data-look="editorial"] .modal-title{font-weight:300;letter-spacing:.04em;text-transform:uppercase}

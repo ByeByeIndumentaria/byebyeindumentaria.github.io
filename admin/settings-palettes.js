@@ -46,8 +46,40 @@
     const head=el('div',null,'palette-head');head.append(el('strong',palette.name),isCurrent(palette)?el('small','En uso','palette-current'):button('Usar esta',()=>apply(palette),'palette-use'));
     box.append(strip,sample,head,el('p',palette.text));return box;
   }
+  /* ——— Estilo completo «Editorial» (onda Zara): colores, letras, esquinas, tarjeta, grilla, encabezado y detalles ——— */
+  const EDITORIAL={
+    colors:{page:'#ffffff',catalog:'#ffffff',surface:'#ffffff',surfaceAlt:'#f6f6f4',filters:'#ffffff',header:'#ffffff',text:'#000000',muted:'#4a4a4a',subtle:'#8c8c8c',border:'#e5e5e5',photo:'#f3f3f1',accent:'#000000',accentAlt:'#1a1a1a',secondary:'#6b6b6b',available:'#2f6b3f',unavailable:'#a33a2e',footerBg:'#ffffff',footerText:'#000000',overlay:'#000000'},
+    typography:{display:'inter-tight',body:'inter-tight',baseSize:13,lineHeight:1.5,displayWeight:300},
+    radii:{card:0,photo:0,button:0,chip:0,search:0,modal:0,panel:0},
+    styles:{'header.brandName':{fontSize:22,letterSpacing:9,fontWeight:'normal'},'announcementBar':{textTransform:'upper',letterSpacing:2,fontSize:10,fontWeight:'normal'},'header.tagline':{textTransform:'upper',fontSize:10,letterSpacing:2},'searchBar.resultCount':{textTransform:'upper',fontSize:10,letterSpacing:1.5}}};
+  function applyEditorial(){
+    if(!confirm('Estilo «Editorial»: cambia colores, letras, esquinas, la tarjeta de las prendas (sin cartelitos ni categoría), la grilla y la marca del encabezado (escrita en letras finas).\n\nLos colores y letras puestos a mano en elementos se quitan para que todo combine. Se ve en la vista previa; «Deshacer» vuelve atrás y las clientas lo ven sólo con «Publicar».\n\n¿Aplicarlo?'))return;
+    remember();settings.look='editorial';
+    Object.assign(settings.tokens.colors,EDITORIAL.colors);Object.assign(settings.tokens.typography,EDITORIAL.typography);Object.assign(settings.tokens.radii,EDITORIAL.radii);
+    Object.assign(settings.announcementBar??={},{background:'#000000',textColor:'#ffffff'});Object.assign(settings.footer??={},{background:'#ffffff',textColor:'#000000'});Object.assign(settings.whatsapp??={},{floatingColor:'#000000',floatingTextColor:'#ffffff'});Object.assign(settings.toast??={},{background:'#000000',textColor:'#ffffff'});
+    settings.meta??={};settings.meta.themeColor='#ffffff';
+    Object.assign(settings.header,{brandMode:'text',brandName:settings.header.brandName||'BYE BYE'});
+    Object.assign(settings.card,{showGender:false,showCategory:false,addAlwaysVisible:false});
+    Object.assign(settings.grid,{gapX:6,gapY:36,gapMobile:28});
+    settings.shop={...(settings.shop||{}),cardColors:false};
+    settings.elementStyles??={};
+    for(const [id,style] of Object.entries(settings.elementStyles)){for(const key of ['color','background','borderColor','borderWidth','fontSize','fontWeight','textTransform','letterSpacing','fontSizeMobile'])delete style[key];if(!Object.keys(style).length)delete settings.elementStyles[id];}
+    for(const [id,style] of Object.entries(EDITORIAL.styles))settings.elementStyles[id]={...(settings.elementStyles[id]||{}),...style};
+    (settings.hero?.banners||[]).forEach((_,index)=>{settings.elementStyles[`hero.banners.${index}.title`]={...(settings.elementStyles[`hero.banners.${index}.title`]||{}),textTransform:'upper',fontWeight:'normal',letterSpacing:6};});
+    setDirty();renderPanel();notify('Estilo «Editorial» aplicado en la vista previa. Si no te gusta, «Deshacer». Para que lo vean las clientas, «Publicar».');
+  }
+  function looksGroup(){
+    const box=group('Estilo completo','Cambia todo junto para un look determinado. Después podés retocar cualquier cosa tocándola en la vista previa.');
+    const active=settings.look==='editorial',card=el('article',null,`palette-card look-card${active?' active':''}`);
+    const sample=el('div',null,'look-sample');sample.append(el('span','BYE BYE','look-brand'),el('span','','look-photo'),el('span','REMERA BRODERIE','look-name'),el('span','Cód. T02','look-code'));
+    const head=el('div',null,'palette-head');head.append(el('strong','Editorial (onda Zara)'),active?el('small','En uso','palette-current'):button('Usar este',applyEditorial,'palette-use'));
+    card.append(sample,head,el('p','Blanco y negro, letras finas en mayúscula, fotos limpias sin cartelitos ni sombras, buscador en una línea y la marca escrita. Fino y elegante.'));
+    if(active)card.append(button('Volver al estilo anterior (quitar el modo editorial)',()=>{remember();settings.look='';setDirty();renderPanel();},'reset-button'));
+    box.append(card);return box;
+  }
   const base=renderers.theme;
   renderers.theme=panel=>{
+    panel.append(looksGroup());
     const box=group('Paletas sugeridas','Combinaciones pensadas para que todo combine: fondos, textos, botones, pie, barra de anuncio y avisos. Probalas: se ven al instante y se deshacen con «Deshacer».');
     const grid=el('div',null,'palette-grid');for(const palette of PALETTES)grid.append(card(palette));box.append(grid);panel.append(box);
     base(panel);
