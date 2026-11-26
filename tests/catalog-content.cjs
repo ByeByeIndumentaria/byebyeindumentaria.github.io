@@ -56,3 +56,8 @@ test('in the full catalog, collections marked "al final" (Accesorios by default)
   assert.ok(body.indexOf('lastDifference')>0&&body.indexOf('lastDifference')<body.indexOf('stockDifference'));
   assert.match(fs.readFileSync('admin/settings-content.js','utf8'),/mandar al final/);
 });
+
+test('tapping the brand (BYE BYE or the logo) goes back to the top, except inside the editor',()=>{
+  const content=fs.readFileSync('catalog-content.js','utf8');
+  assert.match(content,/event\.target\.closest\('\.header-brand'\)/);assert.match(content,/scrollTo\(\{top:0/);assert.match(content,/if\(editor\)return;/);assert.match(content,/aria-label','Ir al inicio'/);
+});

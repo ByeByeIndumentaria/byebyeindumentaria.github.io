@@ -127,8 +127,22 @@
     document.querySelector('.cart-question.missing input, .cart-question.missing select, .cart-question.missing textarea')?.focus();
     try{showToast(`Completá: ${missing.map(q=>plain(q.label)).join(', ')}`);}catch{}},true);
 
+  /* ——— Tocar la marca (BYE BYE o el logo) lleva al inicio, en celular y computadora ——— */
+  function goHome(event){
+    if(editor)return; // en el editor, tocar la marca la selecciona para editarla
+    const brand=event.target.closest('.header-brand');if(!brand)return;event.preventDefault();
+    try{if(typeof currentModalProduct!=='undefined'&&currentModalProduct&&typeof closeModal==='function')closeModal();}catch{}
+    document.querySelector('.shop-drawer.open .shop-drawer-close')?.click();
+    if(document.body.hasAttribute('data-site-page'))leavePage(false);
+    const url=new URL(location.href);if(url.searchParams.has('p')||url.hash){url.searchParams.delete('p');url.hash='';history.replaceState(history.state,'',url);}
+    scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+  }
+  document.addEventListener('click',goHome);
+  document.addEventListener('keydown',event=>{if((event.key==='Enter'||event.key===' ')&&event.target.closest?.('.header-brand'))goHome(event);});
+  function markBrand(){const brand=document.querySelector('.header-brand');if(!brand||editor)return;brand.setAttribute('role','link');brand.tabIndex=0;brand.setAttribute('aria-label','Ir al inicio');brand.title='Ir al inicio';brand.classList.add('brand-home');}
+
   /* ——— Enganches ——— */
-  function refresh(){try{renderMenu();renderRows();showPage();}catch(error){console.warn('Contenido:',error);}}
+  function refresh(){try{markBrand();renderMenu();renderRows();showPage();}catch(error){console.warn('Contenido:',error);}}
   if(typeof renderProducts==='function'){const base=renderProducts;renderProducts=function(...args){const result=base.apply(this,args);try{renderRows();}catch{}return result;};}
   // La galería de la ficha se arma un instante después: se vuelven a marcar sus partes para que se puedan tocar en el editor.
   if(typeof openModal==='function'){const base=openModal;openModal=function(p,...args){const result=base.call(this,p,...args);try{decorateModal(p);if(editor)for(const delay of [150,700])setTimeout(()=>window.CatalogSiteMarkEditable?.(),delay);}catch(error){console.warn(error);}return result;};}

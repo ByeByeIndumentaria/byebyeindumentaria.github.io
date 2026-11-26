@@ -48,3 +48,6 @@ body[data-site-page] #hero-carousel,body[data-site-page] #filters-scroll-sentine
 /* Barra de búsqueda fija: se pega justo debajo del encabezado sólo si el encabezado también queda fijo; si no, arriba de todo (antes dejaba un hueco del alto del encabezado). */
 @media (min-width:769px){body[data-header-sticky-desktop="false"] .filters-section:not(.site-search-not-sticky){top:0}}
 @media (max-width:768px){body[data-header-sticky-mobile="true"] .filters-section:not(.site-search-not-sticky){top:var(--header-h-mobile,52px)}}
+/* La marca lleva al inicio */
+.header-brand.brand-home{cursor:pointer;-webkit-tap-highlight-color:transparent}
+.header-brand.brand-home:focus-visible{outline:2px solid currentColor;outline-offset:4px}
