@@ -10,7 +10,7 @@
   Object.assign(layerMeta,{pricing:['Precios','Precios'],colors:['Muestras de color','Colores'],product:['Prenda','Prenda']});
   Object.assign(publishAreaLabels,{elementStyles:'Colores y estilos de elementos'});
   /* Ocultar un botón oculta sólo ese botón (antes "Ocultar" en el botón de WhatsApp apagaba todo el pedido). */
-  const exactVisibility={...visibilityPaths,'cart.whatsappButton':'cart.showWhatsapp','cart.pdfButton':'cart.showPdf','cart.clearButton':'cart.showClear','header.cartButton':'header.showCart','header.tagline':'header.showTagline','grid.customerSort':'grid.customerSort','relatedProducts':'relatedProducts.enabled'};
+  const exactVisibility={...visibilityPaths,'cart.whatsappButton':'cart.showWhatsapp','cart.pdfButton':'cart.showPdf','cart.clearButton':'cart.showClear','header.cartButton':'header.showCart','header.tagline':'header.showTagline','grid.customerSort':'grid.customerSort','relatedProducts':'relatedProducts.enabled','grid.collectionTabs':'collectionsConfig.showTabs','searchBar.activeChips':'searchBar.showActiveChips','productModal.zoom':'productModal.showZoom','productModal.dots':'productModal.showDots','productModal.arrows':'productModal.showArrows','productModal.thumbnails':'productModal.showThumbnails','productModal.genderBadge':'productModal.showGender','productModal.categoryBadge':'productModal.showCategory','productModal.shareButton':'productModal.showShare','productModal.pdfButton':'productModal.showPdf','shop.favorites':'shop.favorites','shop.cardColors':'shop.cardColors','shop.cardSwipe':'shop.cardSwipe','shop.gridToggle':'shop.gridToggle','shop.newBadge':'shop.newBadge','shop.recent':'shop.recent','shop.searchSuggest':'shop.searchSuggest','menu':'menu.enabled','texts.footer.back':'footer.showBack','texts.footer.admin':'footer.showAdmin'};
   const neverHide=new Set(['grid','card','productModal','filtersPanel','card.image','productModal.image','productModal.title']);
   const containerIds=new Set(['announcementBar','header','hero','searchBar','filtersPanel','grid','card','productModal','cart','whatsapp','footer','relatedProducts','cart.customerFields','cart.quantities','productModal.curve','productModal.colors','productModal.sizes']);
   let selectingFromPreview=false,selectedComputed=null,selectedProductName='';
@@ -40,7 +40,7 @@
     return'#'+[match[1],match[2],match[3]].map(part=>Number(part).toString(16).padStart(2,'0')).join('');
   }
   const hidePathFor=id=>exactVisibility[id]||null;
-  const canHide=id=>!!id&&!neverHide.has(id)&&!id.startsWith('texts.');
+  const canHide=id=>!!id&&!neverHide.has(id);
   function isHidden(id){const path=hidePathFor(id);return path?pathGet(path)===false:styleOf(id).hidden===true;}
   function toggleHidden(id){const path=hidePathFor(id);if(path)mutate(path,pathGet(path)===false);else styleSet(id,'hidden',isHidden(id)?'':true);}
   function clearSelection(){selectedEditId='';selectedEditLabel='';selectedComputed=null;$('selection-path').replaceChildren();$('selection-toolbar').hidden=true;}

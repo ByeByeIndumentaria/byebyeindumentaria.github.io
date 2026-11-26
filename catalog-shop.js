@@ -39,7 +39,7 @@
   let favorites=ids(KEYS.fav);
   const isFavorite=id=>favorites.includes(Number(id));
   function heartButton(p,className){
-    const button=make('button',`shop-fav ${className||''}`);button.type='button';button.dataset.favId=p.id;button.innerHTML=heartSvg;syncHeart(button);
+    const button=make('button',`shop-fav ${className||''}`);button.type='button';button.dataset.favId=p.id;button.dataset.editId='shop.favorites';button.dataset.editLabel='Corazón de favoritos';button.innerHTML=heartSvg;syncHeart(button);
     button.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();toggleFavorite(p);});
     return button;
   }
@@ -54,7 +54,7 @@
   let headerButton=null,drawer=null,overlay=null;
   function ensureHeaderButton(){
     if(headerButton)return headerButton;const cartButton=document.getElementById('cart-toggle');if(!cartButton)return null;
-    headerButton=make('button','shop-fav-toggle');headerButton.type='button';headerButton.id='favorites-toggle';headerButton.innerHTML=`${heartSvg}<span class="shop-fav-count" hidden>0</span>`;
+    headerButton=make('button','shop-fav-toggle');headerButton.type='button';headerButton.id='favorites-toggle';headerButton.dataset.editId='shop.favorites';headerButton.dataset.editLabel='Favoritos (corazón)';headerButton.innerHTML=`${heartSvg}<span class="shop-fav-count" hidden>0</span>`;
     headerButton.addEventListener('click',openFavorites);cartButton.before(headerButton);return headerButton;
   }
   function updateFavoriteCount(){
@@ -133,7 +133,7 @@
   function renderViewToggle(){
     const info=document.querySelector('.results-info');if(!info)return;let box=info.querySelector('.shop-view');
     if(cfg().gridToggle===false){box?.remove();info.classList.remove('has-shop-view');return;}
-    if(!box){box=make('div','shop-view');box.setAttribute('role','group');box.setAttribute('aria-label','Cambiar la vista');info.append(box);}
+    if(!box){box=make('div','shop-view');box.dataset.editId='shop.gridToggle';box.dataset.editLabel='Botones para cambiar la vista';box.setAttribute('role','group');box.setAttribute('aria-label','Cambiar la vista');info.append(box);}
     info.classList.add('has-shop-view');
     const options=mobile()?[1,2]:[2,4,6],current=currentColumns();box.replaceChildren();
     for(const n of options){const button=make('button','shop-view-button');button.type='button';button.setAttribute('aria-label',`Ver ${n} ${n===1?'prenda':'prendas'} por fila`);button.title=button.getAttribute('aria-label');button.setAttribute('aria-pressed',String(n===current));
@@ -154,8 +154,8 @@
   }
   function addSwipe(card,wrap,sources){
     card._shopPhotos=sources;card._shopIndex=0;card.classList.add('shop-swipe');
-    wrap.append(make('span','shop-dots'));
-    for(const [className,step,label] of [['shop-prev',-1,'Foto anterior'],['shop-next',1,'Foto siguiente']]){const arrow=make('button',`shop-arrow ${className}`);arrow.type='button';arrow.setAttribute('aria-label',label);arrow.addEventListener('click',event=>{event.stopPropagation();setCardPhoto(card,card._shopIndex+step,step);});wrap.append(arrow);}
+    const dotsNode=make('span','shop-dots');dotsNode.dataset.editId='shop.cardSwipe';dotsNode.dataset.editLabel='Fotos deslizables';wrap.append(dotsNode);
+    for(const [className,step,label] of [['shop-prev',-1,'Foto anterior'],['shop-next',1,'Foto siguiente']]){const arrow=make('button',`shop-arrow ${className}`);arrow.type='button';arrow.dataset.editId='shop.cardSwipe';arrow.dataset.editLabel='Fotos deslizables';arrow.setAttribute('aria-label',label);arrow.addEventListener('click',event=>{event.stopPropagation();setCardPhoto(card,card._shopIndex+step,step);});wrap.append(arrow);}
     drawDots(card);
     let start=null,swiped=0;
     wrap.addEventListener('touchstart',event=>{const t=event.touches[0];start=event.touches.length===1?{x:t.clientX,y:t.clientY}:null;},{passive:true});
@@ -166,7 +166,7 @@
     const colors=[...new Set([...(p.colors||[]),...(p.purchaseOptions||[]).flatMap(option=>option.colors||[])])];if(colors.length<2)return;
     const values=window.CatalogSiteSettings?.colorSwatches?.values||{},gallery=p.gallery||{},sources=gallery.sources||[],indexes=gallery.colorGalleryIndexByNormalizedColor||{};
     const chips=colors.map(color=>{const key=norm(color);return{color,hex:/^#[0-9a-f]{6}$/i.test(values[key]||'')?values[key]:'',photo:sources[indexes[key]]||''};});
-    const useDots=chips.every(chip=>chip.hex),row=make('div',`shop-colors${useDots?'':' shop-colors-names'}`),limit=useDots?6:3;
+    const useDots=chips.every(chip=>chip.hex),row=make('div',`shop-colors${useDots?'':' shop-colors-names'}`),limit=useDots?6:3;row.dataset.editId='shop.cardColors';row.dataset.editLabel='Colores de la tarjeta';
     for(const chip of chips.slice(0,limit)){const dot=make('button',useDots?'shop-color':'shop-color-name');dot.type='button';dot.title=plain(chip.color);dot.setAttribute('aria-label',`Ver en ${plain(chip.color)}`);
       if(useDots)dot.style.background=chip.hex;else dot.textContent=plain(chip.color);
       dot.addEventListener('click',event=>{event.stopPropagation();row.querySelectorAll('.shop-color,.shop-color-name').forEach(node=>node.classList.toggle('on',node===dot));if(!chip.photo)return;const list=card._shopPhotos||photosOf(p);let index=list.indexOf(chip.photo);if(index<0){card._shopPhotos=[chip.photo,...list];index=0;}else card._shopPhotos=list;setCardPhoto(card,index);});
@@ -189,7 +189,7 @@
   /* ——— Buscador con sugerencias ——— */
   function setupSuggestions(){
     const input=document.getElementById('product-search');if(!input||input.dataset.shopSuggest)return;input.dataset.shopSuggest='1';
-    const field=input.closest('.catalog-search-field')||input.parentElement,box=make('div','shop-suggest');box.hidden=true;box.setAttribute('role','listbox');box.id='shop-suggest';field.append(box);
+    const field=input.closest('.catalog-search-field')||input.parentElement,box=make('div','shop-suggest');box.dataset.editId='shop.searchSuggest';box.dataset.editLabel='Sugerencias del buscador';box.hidden=true;box.setAttribute('role','listbox');box.id='shop-suggest';field.append(box);
     input.setAttribute('aria-controls','shop-suggest');input.setAttribute('aria-autocomplete','list');
     let active=-1;
     const hide=()=>{box.hidden=true;active=-1;input.setAttribute('aria-expanded','false');};
@@ -232,7 +232,8 @@
   function refresh(){try{applyView();updateFavoriteCount();renderViewToggle();decorateCards();renderRecent();}catch(error){console.warn('Funciones de la tienda:',error);}}
   if(typeof renderProducts==='function'){const base=renderProducts;renderProducts=function(...args){const result=base.apply(this,args);refresh();return result;};}
   if(typeof openModal==='function'){const base=openModal;openModal=function(p,...args){const result=base.call(this,p,...args);remember(p);decorateModal(p);return result;};}
-  window.addEventListener('catalog-site-settings-applied',()=>setTimeout(()=>{document.querySelectorAll('#product-grid .product-card').forEach(card=>delete card.dataset.shopReady);refresh();if(typeof currentModalProduct!=='undefined'&&currentModalProduct)decorateModal(currentModalProduct);},0));
+  // El catálogo ya vuelve a dibujar las tarjetas al aplicar el diseño; acá sólo se completan (antes se agregaban de nuevo y quedaban colores repetidos).
+  window.addEventListener('catalog-site-settings-applied',()=>setTimeout(()=>{refresh();if(typeof currentModalProduct!=='undefined'&&currentModalProduct)decorateModal(currentModalProduct);},0));
   matchMedia('(max-width: 768px)').addEventListener?.('change',()=>{applyView();renderViewToggle();});
   window.addEventListener('storage',event=>{if(event.key===KEYS.fav){favorites=ids(KEYS.fav);document.querySelectorAll('.shop-fav[data-fav-id]').forEach(syncHeart);updateFavoriteCount();}});
   document.addEventListener('DOMContentLoaded',()=>{setupSuggestions();ensureHeaderButton();applyView();updateFavoriteCount();});

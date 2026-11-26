@@ -15,6 +15,7 @@
     box=group('Buscador','Mientras la clienta escribe aparecen sugerencias con foto, nombre y código, también de otras colecciones.');
     box.append(toggle('Mostrar sugerencias al buscar','shop.searchSuggest'));panel.append(box);
   };
+  const baseCard=renderers.card;renderers.card=panel=>{baseCard(panel);const box=group('También en la tarjeta','Lo que suman las funciones para las clientas. Apagalo acá o tocándolo en la vista previa y «Ocultar».');box.append(toggle('Colores debajo del nombre','shop.cardColors'),toggle('Corazón de favoritos','shop.favorites'),toggle('Fotos deslizables (puntitos y flechas)','shop.cardSwipe'),toggle('Etiqueta «Nuevo»','shop.newBadge'));const links=panel.querySelector('.panel-links');links?links.before(box):panel.append(box);};
   const baseGrid=renderers.grid;renderers.grid=panel=>{baseGrid(panel);panel.append(goTo('shop'));};renderers.products=renderers.grid;
   const baseLayers=renderLayers;
   renderLayers=function(panel){

@@ -114,7 +114,7 @@
   if(typeof updateCartCustomerForm==='function'){const base=updateCartCustomerForm;updateCartCustomerForm=function(...args){const result=base.apply(this,args);try{renderQuestions();}catch(error){console.warn(error);}return result;};}
   function renderQuestions(){
     const box=document.getElementById('cart-customer'),list=questions();if(!box)return;box.querySelectorAll('.cart-question').forEach(node=>node.remove());if(!list.length)return;box.hidden=false;
-    for(const q of list){const wrap=make('label','cart-question'),caption=make('span',null,`${plain(q.label)}${q.required?' *':''}`);let input;
+    for(const q of list){const wrap=make('label','cart-question');wrap.dataset.editId='cart.extraQuestions';wrap.dataset.editLabel=`Pregunta del pedido · ${plain(q.label)}`;constcaption=make('span',null,`${plain(q.label)}${q.required?' *':''}`);let input;
       if(q.type==='options'){input=make('select');input.append(new Option('Elegí una opción',''));for(const option of q.options||[])input.append(new Option(plain(option),plain(option)));}
       else if(q.type==='textarea'){input=make('textarea');input.rows=2;}else{input=make('input');input.type='text';}
       input.value=answers[q.id]||'';input.maxLength=300;input.dataset.question=q.id;if(q.required)input.required=true;
@@ -130,7 +130,8 @@
   /* ——— Enganches ——— */
   function refresh(){try{renderMenu();renderRows();showPage();}catch(error){console.warn('Contenido:',error);}}
   if(typeof renderProducts==='function'){const base=renderProducts;renderProducts=function(...args){const result=base.apply(this,args);try{renderRows();}catch{}return result;};}
-  if(typeof openModal==='function'){const base=openModal;openModal=function(p,...args){const result=base.call(this,p,...args);try{decorateModal(p);}catch(error){console.warn(error);}return result;};}
+  // La galería de la ficha se arma un instante después: se vuelven a marcar sus partes para que se puedan tocar en el editor.
+  if(typeof openModal==='function'){const base=openModal;openModal=function(p,...args){const result=base.call(this,p,...args);try{decorateModal(p);if(editor)for(const delay of [150,700])setTimeout(()=>window.CatalogSiteMarkEditable?.(),delay);}catch(error){console.warn(error);}return result;};}
   addEventListener('catalog-site-settings-applied',()=>setTimeout(()=>{refresh();try{if(typeof updateCartCustomerForm==='function')updateCartCustomerForm();if(typeof currentModalProduct!=='undefined'&&currentModalProduct)decorateModal(currentModalProduct);}catch{}},0));
   document.addEventListener('DOMContentLoaded',()=>setTimeout(refresh,0));
   window.CatalogContent={refresh,productsFor,showPage};
