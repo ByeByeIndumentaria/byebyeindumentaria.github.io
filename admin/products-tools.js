@@ -21,7 +21,7 @@
   const archivedText=[...document.querySelectorAll('label.check')].map(label=>[...label.childNodes].find(node=>node.nodeType===3&&/Ver archivados/.test(node.textContent))).find(Boolean);
   if(archivedText)archivedText.textContent='Papelera (archivadas)';
 
-  const categoriesOf=p=>String(p.subcategory||'').split(',').map(part=>part.trim()).filter(Boolean);
+  const categoriesOf=p=>Array.isArray(p.subcategories)&&p.subcategories.length?p.subcategories.map(String):String(p.subcategory||'').split(',').map(part=>part.trim()).filter(Boolean);
   const hasPhoto=p=>!!galleryFor(p).sources[0];
   const hasCurve=p=>!!(p.packaging?.rows?.length||p.purchaseOptions?.some(option=>option.packaging?.rows?.length));
   function refreshCategoryOptions(){
@@ -87,6 +87,11 @@
     bulkBar.append(el('strong',`${selected.size} ${selected.size===1?'seleccionada':'seleccionadas'}`),
       action('Ocultar',()=>bulk('Ocultar del catálogo',p=>{p.isHidden=true;})),
       action('Mostrar',()=>bulk('Mostrar en el catálogo',p=>{p.isHidden=false;})),
+      action('Marcar sin stock',()=>bulk('Marcar sin stock',p=>{p.inStock=false;})),
+      action('Marcar con stock',()=>bulk('Marcar con stock',p=>{p.inStock=true;})),
+      action('Cambiar tipo de prenda…',()=>{const value=prompt('Nuevo tipo de prenda para todas las elegidas (si son varios, separalos con coma):');if(value===null)return;const text=value.split(',').map(part=>part.trim()).filter(Boolean);if(!text.length)return;bulk(`Cambiar el tipo de prenda a «${text.join(', ')}»`,p=>{p.subcategory=text[0];if(text.length>1)p.subcategories=text;else delete p.subcategories;});}),
+      action('Cambiar público…',()=>{const options=audienceOptions(),answer=prompt(`Público para todas las elegidas: escribí el número\n\n${options.map(([,label],index)=>`${index+1}. ${label}`).join('\n')}`);if(answer===null)return;const choice=options[Number(answer)-1];if(!choice)return notice('Número inválido.');bulk(`Cambiar el público a «${choice[1]}»`,p=>{p.category=choice[0];});}),
+      action('Cambiar precio…',()=>changePrices()),
       action('Poner insignia…',()=>{const label=prompt('Texto de la insignia (por ejemplo: Nuevo, Oferta, Últimas unidades)');if(label===null)return;const text=label.trim().slice(0,24);if(!text)return;bulk(`Poner la insignia «${text}»`,p=>{p.customBadge={label:text,color:p.customBadge?.color||'#9d4f38'};});}),
       action('Quitar insignia',()=>bulk('Quitar la insignia',p=>{delete p.customBadge;})),
       action('Agregar a colección…',()=>chooseCollection(collectionOptions,'Agregar a la colección',(id,name)=>bulk(`Agregar a «${name}»`,p=>{const list=new Set(p.collections||[p.collection].filter(Boolean));list.add(id);p.collections=[...list];p.collection||=id;}))),
@@ -94,6 +99,21 @@
       action(showArchived?'Restaurar':'Archivar',()=>bulk(showArchived?'Restaurar':'Archivar (se puede recuperar desde la Papelera)',p=>{p.archived=!showArchived;}),showArchived?'':'danger'),
       action('Elegir todas',()=>{for(const row of filteredRows())selected.add(Number(row.id));renderCards();}),
       action('Cancelar',()=>{selected.clear();renderCards();}));
+  }
+  function audienceOptions(){const labels={MUJER:'Mujer',HOMBRE:'Hombre',NINOS:'Niños / Niñas',UNISEX:'Unisex'};for(const row of records.values()){const value=row.payload?.category;if(value&&!labels[value])labels[value]=value;}return Object.entries(labels);}
+  const money=value=>Number(value).toLocaleString('es-AR',{maximumFractionDigits:2});
+  // "+10%", "-5 %", "+1500", "-300" o un precio fijo "25000". Redondea a la centena cuando el precio pasa de $1.000.
+  function priceRule(text){const clean=String(text||'').replace(/\s/g,'').replace(/\./g,'').replace(',','.');let match=clean.match(/^([+-])(\d+(?:\.\d+)?)%$/);if(match){const factor=1+(match[1]==='-'?-1:1)*Number(match[2])/100;return{label:`${match[1]}${match[2]} %`,apply:price=>round(price*factor)};}
+    match=clean.match(/^([+-])(\d+(?:\.\d+)?)$/);if(match){const delta=(match[1]==='-'?-1:1)*Number(match[2]);return{label:`${match[1]}$${money(match[2])}`,apply:price=>Math.max(0,round(price+delta))};}
+    match=clean.match(/^\$?(\d+(?:\.\d+)?)$/);if(match){const fixed=Number(match[1]);return{label:`precio fijo $${money(fixed)}`,apply:()=>fixed,fixed:true};}return null;}
+  const round=value=>value>=1000?Math.round(value/100)*100:Math.round(value);
+  function changePrices(){
+    const answer=prompt('¿Cómo cambia el precio?\n\n• +10%  → sube 10 %\n• -15%  → baja 15 %\n• +1500 → suma $1.500\n• 25000 → todas a $25.000\n\nSe redondea a la centena. Si una prenda tiene precio por opción de compra, cambia cada opción.');if(answer===null)return;
+    const rule=priceRule(answer);if(!rule)return notice('No entendí el cambio. Escribí, por ejemplo, +10% o 25000.');
+    const sample=[...selected].map(id=>records.get(id)?.payload).find(p=>p&&(p.price!=null&&p.price!==''||(p.purchaseOptions||[]).some(o=>o.price!=null&&o.price!=='')));
+    const example=sample?`\n\nEjemplo: «${sample.name}» $${money(Number(sample.price??sample.purchaseOptions.find(o=>o.price!=null&&o.price!=='').price))} → $${money(rule.apply(Number(sample.price??sample.purchaseOptions.find(o=>o.price!=null&&o.price!=='').price)))}`:'';
+    if(!rule.fixed&&!sample)return notice('Las prendas elegidas no tienen precio cargado. Para ponerles uno, escribí el precio fijo (por ejemplo 25000).');
+    bulk(`Cambiar precio (${rule.label})${example}`,p=>{const has=v=>v!=null&&v!=='';if(rule.fixed){p.price=rule.apply();for(const option of p.purchaseOptions||[])if(has(option.price))option.price=rule.apply();return;}if(has(p.price))p.price=rule.apply(Number(p.price));for(const option of p.purchaseOptions||[])if(has(option.price))option.price=rule.apply(Number(option.price));});
   }
   function chooseCollection(options,title,done){
     if(!options.length)return notice('No hay colecciones cargadas.');
@@ -127,5 +147,6 @@
   }
   const baseOpenEditor=openEditor;
   openEditor=async function(...args){const result=await baseOpenEditor.apply(this,args);try{renderNovelty();}catch(error){console.warn(error);}return result;};
+  window.ProductsTools={filteredRows,audienceOptions,priceRule,selected,renderBulkBar:()=>renderBulkBar()};
   if(records?.size)renderCards();
 })();
