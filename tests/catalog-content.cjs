@@ -37,3 +37,9 @@ test('the sticky search bar only leaves room for the header when the header is s
   assert.match(css,/body\[data-header-sticky-desktop="false"\] \.filters-section:not\(\.site-search-not-sticky\)\{top:0\}/);
   assert.match(css,/body\[data-header-sticky-mobile="true"\] \.filters-section:not\(\.site-search-not-sticky\)\{top:var\(--header-h-mobile,52px\)\}/);
 });
+
+test('saving the collection order from the editor always sends a valid name and type',()=>{
+  const editor=fs.readFileSync('admin/settings-content.js','utf8');
+  assert.match(editor,/payload\.type\|\|=LEGACY_PREORDERS\.has\(row\.id\)\?'preorder':'stock'/);
+  assert.match(editor,/payload\.name\|\|=/);
+});

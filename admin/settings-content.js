@@ -98,11 +98,13 @@
   };
 
   /* ——— Orden de las colecciones (se guarda enseguida en la nube, igual que en Administración → Colecciones) ——— */
+  // Las colecciones originales no traen «type» en el editor; la base exige stock o preventa (igual que Administración).
+  const LEGACY_PREORDERS=new Set(['verano-2027','produccion-invierno-2027','sweaters-2027','hoodies-2027']);
   let collectionBusy=false;
   async function moveCollection(index,target){
     if(collectionBusy||target<0||target>=collections.length)return;const ordered=[...collections],[moved]=ordered.splice(index,1);ordered.splice(target,0,moved);
     collectionBusy=true;notify('Guardando el orden de las colecciones…');
-    try{for(const [position,row] of ordered.entries()){if(row.position===position)continue;const saved=await api.saveCollection(row.id,row.version||0,{...JSON.parse(JSON.stringify(row.payload||{})),position});Object.assign(row,saved);}
+    try{for(const [position,row] of ordered.entries()){if(row.position===position)continue;const payload={...JSON.parse(JSON.stringify(row.payload||{})),position};payload.name||=row.name||row.id;payload.type||=LEGACY_PREORDERS.has(row.id)?'preorder':'stock';const saved=await api.saveCollection(row.id,row.version||0,payload);Object.assign(row,saved);}
       collections.splice(0,collections.length,...ordered);notify('Listo: el catálogo muestra las colecciones en este orden (la vista previa se actualiza en unos segundos).');}
     catch(error){notify(error.message||'No se pudo guardar el orden. Probá de nuevo.');}finally{collectionBusy=false;renderPanel();}
   }
