@@ -5085,11 +5085,16 @@ function getFilteredProducts() {
   }).sort((a, b) => {
     const categoryA = activeCategory === 'all' ? (a.subcategory || getProductSubcategories(a)[0] || '') : activeCategory;
     const categoryB = activeCategory === 'all' ? (b.subcategory || getProductSubcategories(b)[0] || '') : activeCategory;
-    // En «Todo el catálogo», las prendas que sólo están en colecciones marcadas «al final» (por defecto Accesorios) van al fondo.
-    if (activeCollection === 'todos' && sortMode === 'featured') {
-      const lastSet = new Set(Array.isArray(siteSettings.grid?.lastInAll) ? siteSettings.grid.lastInAll : []);
-      const isLast = product => { const memberships = productCollectionIds(product); return lastSet.size > 0 && memberships.length > 0 && memberships.every(id => lastSet.has(id)); };
-      const lastDifference = Number(isLast(a)) - Number(isLast(b));
+    // «Al final del catálogo», en este orden (grid.endOrder; por defecto Niños, Deportivo, Accesorios):
+    // un público va al final en todas las vistas; una colección, sólo en «Todo el catálogo» y si la prenda está sólo en ella.
+    if (sortMode === 'featured') {
+      const endTier = product => { const rules = Array.isArray(siteSettings.grid?.endOrder) ? siteSettings.grid.endOrder : []; const memberships = productCollectionIds(product);
+        for (const [index, rule] of rules.entries()) {
+          if (rule?.type === 'audience' && product.category === rule.value && activeGender !== rule.value) return index + 1;
+          if (rule?.type === 'collection' && activeCollection === 'todos' && memberships.length && memberships.every(id => id === rule.value)) return index + 1;
+        }
+        return 0; };
+      const lastDifference = endTier(a) - endTier(b);
       if (lastDifference) return lastDifference;
     }
     const stockDifference = sortMode!=='featured'||siteSettings.grid?.stockFirst === false || siteSettings.stockFirst === false ? 0 : Number(b.inStock) - Number(a.inStock);

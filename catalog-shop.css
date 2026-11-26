@@ -193,3 +193,17 @@ body[data-look="editorial"] .site-footer{border-top:1px solid var(--gray-200)}
 body[data-look="editorial"] .site-footer .footer-brand{color:var(--footer-text);font-family:var(--font-display);font-weight:300}
 body[data-look="editorial"] .managed-block{box-shadow:none;border-radius:0}
 body[data-look="editorial"] .modal-title{font-weight:300;letter-spacing:.04em;text-transform:uppercase}
+/* Editorial: encabezado y barra de búsqueda finos y opacos (26/11) */
+body[data-look="editorial"] #site-header,body[data-look="editorial"] .filters-section{background:var(--white)!important;-webkit-backdrop-filter:none;backdrop-filter:none}
+@media (min-width:769px){
+  body[data-look="editorial"] .filters-section{display:grid;grid-template-columns:minmax(0,560px) 1fr;align-items:center;column-gap:24px;padding:8px var(--gutter-desktop,24px)}
+  body[data-look="editorial"] .filters-section>.catalog-search{grid-column:1;margin:0}
+  body[data-look="editorial"] .filters-section>.results-info{grid-column:2;grid-row:1;margin:0;max-width:none}
+  body[data-look="editorial"] .filters-section>.active-filter-chips,body[data-look="editorial"] .filters-section>.preorder-notice,body[data-look="editorial"] .filters-section>#catalog-collection-tabs{grid-column:1/-1}
+  html body[data-look="editorial"] .catalog-search-input{min-height:36px;padding-top:6px;padding-bottom:6px}
+  html body[data-look="editorial"] .catalog-search .filters-toggle{width:36px;height:36px;flex-basis:36px}
+}
+@media (max-width:768px){
+  body[data-look="editorial"] .filters-section{padding:6px 12px 6px}
+  html body[data-look="editorial"] .catalog-search-input{min-height:36px}
+}

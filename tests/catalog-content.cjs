@@ -49,12 +49,19 @@ test('the garment-type filter list is rebuilt from scratch, so it never repeats'
   assert.ok(start>0);assert.match(script.slice(start,start+300),/categoryFilters\.replaceChildren\(\);/);
 });
 
-test('in the full catalog, collections marked "al final" (Accesorios by default) go to the bottom',()=>{
+test('kids, then sports, then accessories go to the end, in that order (editable list in Orden)',()=>{
   const script=fs.readFileSync('script.js','utf8'),schema=require('../catalog-site-schema.js');
-  assert.deepEqual(schema.defaults().grid.lastInAll,['accesorios']);
+  assert.deepEqual(schema.defaults().grid.endOrder,[{type:'audience',value:'NINOS'},{type:'collection',value:'deportivo'},{type:'collection',value:'accesorios'}]);
   const start=script.indexOf('}).sort((a, b) => {'),body=script.slice(start,script.indexOf('\n}\n',start));
   assert.ok(body.indexOf('lastDifference')>0&&body.indexOf('lastDifference')<body.indexOf('stockDifference'));
-  assert.match(fs.readFileSync('admin/settings-content.js','utf8'),/mandar al final/);
+  assert.match(body,/rule\?\.type === 'audience' && product\.category === rule\.value/);
+  assert.match(fs.readFileSync('admin/settings-content.js','utf8'),/Al final del catálogo, en este orden/);
+});
+
+test('in the editorial look the search bar is a single thin opaque row',()=>{
+  const css=fs.readFileSync('catalog-shop.css','utf8');
+  assert.match(css,/body\[data-look="editorial"\] #site-header,body\[data-look="editorial"\] \.filters-section\{background:var\(--white\)!important/);
+  assert.match(css,/grid-template-columns:minmax\(0,560px\) 1fr/);
 });
 
 test('tapping the brand (BYE BYE or the logo) goes back to the top, except inside the editor',()=>{
