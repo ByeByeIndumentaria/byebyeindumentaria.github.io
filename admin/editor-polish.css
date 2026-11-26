@@ -192,3 +192,8 @@
 .size-editor th input{font-weight:700;background:#f7f8fa}
 .size-remove{width:22px;height:22px;padding:0;border:0;border-radius:50%;background:#f6f0ef;color:#9f352f;font-size:13px;line-height:1}
 .size-editor th .size-remove{position:absolute;top:-2px;right:-2px;width:18px;height:18px;font-size:11px}
+.collection-order{display:grid;gap:5px}
+.collection-order-row{display:grid;grid-template-columns:22px 1fr auto 34px 34px;align-items:center;gap:5px;padding:6px 8px;border:1px solid #e1e4e9;border-radius:9px;background:#fff;font-size:12px}
+.collection-order-row b{color:#747a87;font-size:11px;text-align:center}
+.collection-order-row button{min-height:30px;padding:0 8px;border:0;border-radius:7px;background:#f0f2f5;font-size:12px}
+.collection-order-row button:disabled{opacity:.35}

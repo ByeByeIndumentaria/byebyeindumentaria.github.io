@@ -162,9 +162,11 @@ async function updateCollection(row,changes){
   catch(error){notice(error.message);}finally{collectionBusy=false;}
 }
 async function moveCollection(index,direction){
-  if(collectionBusy||preview)return;const ordered=[...collections.values()].sort((a,b)=>(a.position??999)-(b.position??999)),first=ordered[index],second=ordered[index+direction];if(!first||!second)return;
+  // Renumera todas las colecciones 0, 1, 2… (antes intercambiaba dos números y, si eran iguales, no cambiaba nada).
+  if(collectionBusy||preview)return;const ordered=[...collections.values()].sort((a,b)=>(a.position??999)-(b.position??999)),target=index+direction;if(target<0||target>=ordered.length)return;
+  const [moved]=ordered.splice(index,1);ordered.splice(target,0,moved);const changes=ordered.map((row,position)=>[row,position]).filter(([row,position])=>row.position!==position);
   collectionBusy=true;notice('Reordenando colecciones…');
-  try{const firstPayload={...clone(first.payload),position:second.position},secondPayload={...clone(second.payload),position:first.position};const savedFirst=await api.saveCollection(first.id,first.version,firstPayload),savedSecond=await api.saveCollection(second.id,second.version,secondPayload);collections.set(savedFirst.id,savedFirst);collections.set(savedSecond.id,savedSecond);refreshCollectionControls();notice('Orden de colecciones actualizado.');}
+  try{for(const [row,position] of changes){const saved=await api.saveCollection(row.id,row.version,{...clone(row.payload),position});collections.set(saved.id,saved);}refreshCollectionControls();notice('Listo: el catálogo ya muestra las colecciones en este orden (puede tardar unos segundos en actualizarse).');}
   catch(error){notice(error.message);}finally{collectionBusy=false;}
 }
 function openCollectionEditor(id=null){

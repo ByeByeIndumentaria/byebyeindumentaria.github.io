@@ -97,6 +97,24 @@
     box.append(ideas);panel.append(box);
   };
 
+  /* ——— Orden de las colecciones (se guarda enseguida en la nube, igual que en Administración → Colecciones) ——— */
+  let collectionBusy=false;
+  async function moveCollection(index,target){
+    if(collectionBusy||target<0||target>=collections.length)return;const ordered=[...collections],[moved]=ordered.splice(index,1);ordered.splice(target,0,moved);
+    collectionBusy=true;notify('Guardando el orden de las colecciones…');
+    try{for(const [position,row] of ordered.entries()){if(row.position===position)continue;const saved=await api.saveCollection(row.id,row.version||0,{...JSON.parse(JSON.stringify(row.payload||{})),position});Object.assign(row,saved);}
+      collections.splice(0,collections.length,...ordered);notify('Listo: el catálogo muestra las colecciones en este orden (la vista previa se actualiza en unos segundos).');}
+    catch(error){notify(error.message||'No se pudo guardar el orden. Probá de nuevo.');}finally{collectionBusy=false;renderPanel();}
+  }
+  const baseOrder=renderers.order;
+  renderers.order=panel=>{
+    const box=group('Orden de las colecciones','Así aparecen en el catálogo (filtros y pestañas). Se guarda enseguida, sin tocar «Publicar».'),list=el('div',null,'collection-order');
+    collections.forEach((row,index)=>{const item=el('div',null,'collection-order-row'),up=button('↑',()=>moveCollection(index,index-1)),down=button('↓',()=>moveCollection(index,index+1)),first=button('Primera',()=>moveCollection(index,0));up.disabled=index===0||collectionBusy;down.disabled=index===collections.length-1||collectionBusy;first.disabled=index===0||collectionBusy;up.setAttribute('aria-label',`Subir ${row.payload?.name||row.id}`);down.setAttribute('aria-label',`Bajar ${row.payload?.name||row.id}`);
+      item.append(el('b',String(index+1)),el('span',row.payload?.name||row.name||row.id),first,up,down);list.append(item);});
+    box.append(list,el('p','Para ocultar, crear o cambiarle el nombre a una colección: Administración → Colecciones.','element-help'));panel.append(box);
+    baseOrder(panel);
+  };
+
   /* ——— Capas y vista previa ——— */
   const baseLayers=renderLayers;
   renderLayers=function(panel){baseLayers(panel);const tree=panel.querySelector('.layer-tree');if(!tree||tree.querySelector('[data-content-layer]'))return;let after=[...tree.querySelectorAll('.layer-item')].find(item=>/Datos de las prendas/.test(item.textContent||''));

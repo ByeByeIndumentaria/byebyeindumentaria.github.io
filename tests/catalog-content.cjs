@@ -24,3 +24,10 @@ test('the visual editor can add pages, menu links, size guides, product rows and
   for(const text of ['＋ Nueva página','Mostrar el menú','＋ Agregar enlace al menú','＋ Nueva guía de talles','＋ Fila','＋ Columna','Preguntas propias del pedido','Obligatoria'])assert.ok(editor.includes(text),text);
   assert.match(blocks,/\['products','Fila de prendas'/);assert.match(blocks,/Página: /);assert.match(blocks,/Elegidas a mano \(por código\)/);
 });
+
+test('collections can be reordered from the editor or Administración and the catalog follows that order',()=>{
+  const admin=fs.readFileSync('admin/admin.js','utf8'),editor=fs.readFileSync('admin/settings-content.js','utf8'),live=fs.readFileSync('catalog-live.js','utf8');
+  assert.match(admin,/Renumera todas las colecciones/);assert.doesNotMatch(admin,/position:second\.position/);
+  assert.match(editor,/Orden de las colecciones/);assert.match(editor,/api\.saveCollection\(row\.id/);
+  assert.match(live,/sortCollections\(\);buildCollectionFilters\(\)/);assert.match(live,/r\.position\]/);
+});

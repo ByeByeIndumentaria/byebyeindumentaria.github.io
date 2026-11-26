@@ -3,6 +3,9 @@
   if (!window.CatalogAPI?.configured) return;
   let running=false, fingerprint='', collectionFingerprint='';
   const versions=new Map();
+  // Orden original de las colecciones del catálogo; las guardadas en la nube usan su posición (Administración → Colecciones → ↑ ↓).
+  const seedOrder=new Map((typeof collections!=='undefined'?collections:[]).map((collection,index)=>[collection.id,index])),positions=new Map();
+  const sortCollections=()=>{const key=c=>positions.has(c.id)?positions.get(c.id):(seedOrder.get(c.id)??999);collections.sort((a,b)=>key(a)-key(b));};
   const escape=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   function normalizeCatalogProduct(product){
     const memberships=Array.isArray(product.collections)&&product.collections.length?product.collections:[product.collection].filter(Boolean);
@@ -25,10 +28,11 @@
     try{
       let collectionChanged=false;
       try {
-        const collectionRows=await CatalogAPI.listCollections(),nextCollections=JSON.stringify(collectionRows.map(r=>[r.id,r.version]));
+        const collectionRows=await CatalogAPI.listCollections(),nextCollections=JSON.stringify(collectionRows.map(r=>[r.id,r.version,r.position]));
         if(nextCollections!==collectionFingerprint){
+          for(const row of collectionRows)if(Number.isFinite(Number(row.position)))positions.set(row.id,Number(row.position));
           for(const row of collectionRows){if(!row.payload?.name||!['stock','preorder'].includes(row.payload.type))continue;const payload=sanitize(row.payload),next={...payload,id:row.id,type:row.payload.type};const index=collections.findIndex(c=>c.id===row.id);if(index<0)collections.push(next);else collections[index]=next;}
-          collectionFingerprint=nextCollections;collectionChanged=true;buildCollectionFilters();
+          collectionFingerprint=nextCollections;collectionChanged=true;sortCollections();buildCollectionFilters();
         }
       } catch(error) { console.warn('Las colecciones conservan su configuración local.',error.message); }
       const metadata=await CatalogAPI.list('id,version'),next=JSON.stringify(metadata.map(r=>[r.id,r.version]));
