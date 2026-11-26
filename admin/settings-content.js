@@ -114,6 +114,10 @@
     collections.forEach((row,index)=>{const item=el('div',null,'collection-order-row'),up=button('↑',()=>moveCollection(index,index-1)),down=button('↓',()=>moveCollection(index,index+1)),first=button('Primera',()=>moveCollection(index,0));up.disabled=index===0||collectionBusy;down.disabled=index===collections.length-1||collectionBusy;first.disabled=index===0||collectionBusy;up.setAttribute('aria-label',`Subir ${row.payload?.name||row.id}`);down.setAttribute('aria-label',`Bajar ${row.payload?.name||row.id}`);
       item.append(el('b',String(index+1)),el('span',row.payload?.name||row.name||row.id),first,up,down);list.append(item);});
     box.append(list,el('p','Para ocultar, crear o cambiarle el nombre a una colección: Administración → Colecciones.','element-help'));panel.append(box);
+    // En «Todo el catálogo»: colecciones que van al fondo (por ejemplo Accesorios).
+    settings.grid.lastInAll??=['accesorios'];const last=el('div',null,'collection-last');last.append(el('h4','En «Todo el catálogo», mandar al final:','block-list-title'));
+    for(const row of collections){const id=String(row.id),label=el('label',null,'toggle'),box2=el('input');box2.type='checkbox';box2.checked=settings.grid.lastInAll.includes(id);box2.onchange=()=>{remember();const set=new Set(settings.grid.lastInAll);box2.checked?set.add(id):set.delete(id);settings.grid.lastInAll=[...set];setDirty();};label.append(el('span',row.payload?.name||row.name||id),box2);last.append(label);}
+    last.append(el('p','Las prendas que están sólo en esas colecciones aparecen después de todas las demás. Recordá tocar «Publicar».','element-help'));box.append(last);
     baseOrder(panel);
   };
 

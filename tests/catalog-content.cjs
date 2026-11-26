@@ -48,3 +48,11 @@ test('the garment-type filter list is rebuilt from scratch, so it never repeats'
   const script=fs.readFileSync('script.js','utf8'),start=script.indexOf('function buildCategoryFilters() {');
   assert.ok(start>0);assert.match(script.slice(start,start+300),/categoryFilters\.replaceChildren\(\);/);
 });
+
+test('in the full catalog, collections marked "al final" (Accesorios by default) go to the bottom',()=>{
+  const script=fs.readFileSync('script.js','utf8'),schema=require('../catalog-site-schema.js');
+  assert.deepEqual(schema.defaults().grid.lastInAll,['accesorios']);
+  const start=script.indexOf('}).sort((a, b) => {'),body=script.slice(start,script.indexOf('\n}\n',start));
+  assert.ok(body.indexOf('lastDifference')>0&&body.indexOf('lastDifference')<body.indexOf('stockDifference'));
+  assert.match(fs.readFileSync('admin/settings-content.js','utf8'),/mandar al final/);
+});

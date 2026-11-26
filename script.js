@@ -5085,6 +5085,13 @@ function getFilteredProducts() {
   }).sort((a, b) => {
     const categoryA = activeCategory === 'all' ? (a.subcategory || getProductSubcategories(a)[0] || '') : activeCategory;
     const categoryB = activeCategory === 'all' ? (b.subcategory || getProductSubcategories(b)[0] || '') : activeCategory;
+    // En «Todo el catálogo», las prendas que sólo están en colecciones marcadas «al final» (por defecto Accesorios) van al fondo.
+    if (activeCollection === 'todos' && sortMode === 'featured') {
+      const lastSet = new Set(Array.isArray(siteSettings.grid?.lastInAll) ? siteSettings.grid.lastInAll : []);
+      const isLast = product => { const memberships = productCollectionIds(product); return lastSet.size > 0 && memberships.length > 0 && memberships.every(id => lastSet.has(id)); };
+      const lastDifference = Number(isLast(a)) - Number(isLast(b));
+      if (lastDifference) return lastDifference;
+    }
     const stockDifference = sortMode!=='featured'||siteSettings.grid?.stockFirst === false || siteSettings.stockFirst === false ? 0 : Number(b.inStock) - Number(a.inStock);
     if (stockDifference) return stockDifference;
     if (activeCategory === 'all' && sortMode==='featured') {
