@@ -248,5 +248,23 @@
     window.addEventListener('catalog-site-preview-product',()=>setTimeout(refreshAll,60));
     window.CatalogPhotoFrames={refresh:refreshAll};
   })();
-  window.CatalogSiteReady=(async()=>{let settings={};if(new URLSearchParams(location.search).has('site-preview')){try{settings=JSON.parse(localStorage.getItem('byebye-site-draft-preview')||'{}');}catch{}}else if(window.CatalogAPI?.configured){try{settings=await window.CatalogAPI.getSiteSettings();}catch(error){console.warn('Se usa el diseño base del catálogo.',error.message);}}const result=apply(settings,{preview:new URLSearchParams(location.search).has('editor')});if(window.parent!==window)window.parent.postMessage({type:'catalog-site-preview-ready'},location.origin);return result;})();
+    // Mostrar la página cuando ya tiene su diseño (antes se veía un instante el diseño base, beige y terracota).
+  const SITE_CACHE='byebye-site-cache-v1';
+  const reveal=()=>{const root=document.documentElement;if(!root.classList.contains('site-booting'))return;root.classList.add('site-shown');root.classList.remove('site-booting');};
+  window.CatalogSiteReady=(async()=>{
+    const params=new URLSearchParams(location.search),preview=params.has('editor');let settings={},result;
+    try{
+      if(params.has('site-preview')){try{settings=JSON.parse(localStorage.getItem('byebye-site-draft-preview')||'{}');}catch{}result=apply(settings,{preview});reveal();}
+      else{
+        // 1) Diseño guardado de la visita anterior: se aplica enseguida, antes de mostrar la página.
+        let cachedText='';try{cachedText=localStorage.getItem(SITE_CACHE)||'';}catch{}
+        if(cachedText){try{result=apply(JSON.parse(cachedText),{preview});reveal();}catch{cachedText='';}}
+        // 2) Diseño publicado actual: si cambió, se aplica y se guarda para la próxima visita.
+        const refresh=async()=>{try{settings=await window.CatalogAPI.getSiteSettings();const freshText=JSON.stringify(settings||{});if(freshText!==cachedText){const applied=apply(settings,{preview});if(!result)result=applied;try{localStorage.setItem(SITE_CACHE,freshText);}catch{}}}catch(error){console.warn('Se usa el diseño guardado o el base del catálogo.',error.message);if(!result)result=apply({},{preview});}};
+        // Con diseño guardado, el catálogo arranca enseguida y el diseño nuevo se aplica cuando llega; sin diseño guardado, se espera.
+        if(window.CatalogAPI?.configured){if(cachedText)refresh();else await refresh();}
+        else if(!result)result=apply({},{preview});
+      }
+    }finally{reveal();}
+    if(window.parent!==window)window.parent.postMessage({type:'catalog-site-preview-ready'},location.origin);return result;})();
 })();

@@ -4753,11 +4753,11 @@ function loadPersistedState() {
     const config=getCollectionsConfig();
     activeCollection=getInitialCollectionId();
     const savedCatalog = JSON.parse(localStorage.getItem(CATALOG_STORAGE_KEY) || 'null');
-    if (savedCatalog) {
-      if(config.rememberLast!==false&&collectionCanBeSelected(savedCatalog.collection))activeCollection=savedCatalog.collection;
+    // Cada visita arranca en la colección inicial («Todo») y sin búsqueda. Sólo si se activa «restoreView» vuelve a lo último que se miró.
+    if (savedCatalog && window.CatalogSiteSettings?.behavior?.restoreView === true) {
+      if(collectionCanBeSelected(savedCatalog.collection))activeCollection=savedCatalog.collection;
       activeGender = savedCatalog.gender || activeGender;
       activeCategory = savedCatalog.category || activeCategory;
-      productSearchQuery = savedCatalog.search || '';
       customerProductSort = savedCatalog.sort || '';
       for(const key of Object.keys(activeExtraFilters))for(const value of savedCatalog.extraFilters?.[key]||[])activeExtraFilters[key].add(String(value));
     }
@@ -5066,7 +5066,7 @@ function getFilteredProducts() {
     if (!orderMaps.has(key)) orderMaps.set(key,new Map((orderByCollection[key] || []).map((id,index) => [Number(id),index])));
     return orderMaps.get(key);
   };
-  return getCollectionProducts().filter(p => {
+  const filteredList = getCollectionProducts().filter(p => {
     const genderOk = activeGender === 'all' || p.category === activeGender;
     const catOk = activeCategory === 'all' || getProductSubcategories(p).includes(activeCategory);
     const searchSettings=siteSettings.searchBar||{};
@@ -5082,7 +5082,16 @@ function getFilteredProducts() {
     const searchableText = normalizeColorName(searchableValues.filter(Boolean).join(' '));
     const searchOk = !productSearchQuery || searchableText.includes(productSearchQuery);
     return genderOk && catOk && searchOk && productMatchesExtraFilters(p);
-  }).sort((a, b) => {
+  });
+  // «Todo el catálogo» como vitrina: primero el orden elegido a mano en el editor (Orden → Todo el catálogo), después tipos de prenda alternados.
+  let showcaseRank = null;
+  if (activeCollection === 'todos' && activeCategory === 'all' && sortMode === 'featured' && siteSettings.grid?.allMixed !== false && window.CatalogSiteSchema?.showcaseOrder) {
+    const manual = (orderByCollection['todos::*'] || []).map(Number), present = new Set(filteredList.map(p => Number(p.id)));
+    const rest = filteredList.filter(p => !manual.includes(Number(p.id)));
+    const auto = window.CatalogSiteSchema.showcaseOrder(rest, { categoryOrder: siteSettings.categories?.map(category => category.name) || [], typeOf: p => p.subcategory || getProductSubcategories(p)[0] || '', hasPhoto: p => { try { return getDisplayProductImageSources(p).length > 0; } catch { return true; } }, baseRank: p => managedOrder.get(Number(p.id)) ?? 999999 });
+    showcaseRank = new Map([...manual.filter(id => present.has(id)), ...auto].map((id, index) => [id, index]));
+  }
+  return filteredList.sort((a, b) => {
     const categoryA = activeCategory === 'all' ? (a.subcategory || getProductSubcategories(a)[0] || '') : activeCategory;
     const categoryB = activeCategory === 'all' ? (b.subcategory || getProductSubcategories(b)[0] || '') : activeCategory;
     // «Al final del catálogo», en este orden (grid.endOrder; por defecto Niños, Deportivo, Accesorios):
@@ -5099,6 +5108,7 @@ function getFilteredProducts() {
     }
     const stockDifference = sortMode!=='featured'||siteSettings.grid?.stockFirst === false || siteSettings.stockFirst === false ? 0 : Number(b.inStock) - Number(a.inStock);
     if (stockDifference) return stockDifference;
+    if (showcaseRank) return (showcaseRank.get(Number(a.id)) ?? 999999) - (showcaseRank.get(Number(b.id)) ?? 999999);
     if (activeCategory === 'all' && sortMode==='featured') {
       const groupDifference = (categoryOrder.get(categoryA) ?? 9999) - (categoryOrder.get(categoryB) ?? 9999) || categoryA.localeCompare(categoryB,'es');
       if (groupDifference) return groupDifference;
@@ -6764,7 +6774,7 @@ function bindEvents() {
 // ── START ─────────────────────────────────────────
 window.addEventListener('catalog-site-settings-applied', () => {
   if (document.readyState === 'loading') return;
-  if(!collectionCanBeSelected(activeCollection)||getCollectionsConfig().rememberLast===false)activeCollection=getInitialCollectionId();
+  if(!collectionCanBeSelected(activeCollection))activeCollection=getInitialCollectionId();
   buildCollectionFilters();
   updateCustomerSortControl();
   if (currentModalProduct) {

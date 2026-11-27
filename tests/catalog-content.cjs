@@ -52,7 +52,7 @@ test('the garment-type filter list is rebuilt from scratch, so it never repeats'
 test('kids, then sports, then accessories go to the end, in that order (editable list in Orden)',()=>{
   const script=fs.readFileSync('script.js','utf8'),schema=require('../catalog-site-schema.js');
   assert.deepEqual(schema.defaults().grid.endOrder,[{type:'audience',value:'NINOS'},{type:'collection',value:'deportivo'},{type:'collection',value:'accesorios'}]);
-  const start=script.indexOf('}).sort((a, b) => {'),body=script.slice(start,script.indexOf('\n}\n',start));
+  const start=script.indexOf('return filteredList.sort((a, b) => {'),body=script.slice(start,script.indexOf('\n}\n',start));
   assert.ok(body.indexOf('lastDifference')>0&&body.indexOf('lastDifference')<body.indexOf('stockDifference'));
   assert.match(body,/rule\?\.type === 'audience' && product\.category === rule\.value/);
   assert.match(fs.readFileSync('admin/settings-content.js','utf8'),/Al final del catálogo, en este orden/);
@@ -67,4 +67,20 @@ test('in the editorial look the search bar is a single thin opaque row',()=>{
 test('tapping the brand (BYE BYE or the logo) goes back to the top, except inside the editor',()=>{
   const content=fs.readFileSync('catalog-content.js','utf8');
   assert.match(content,/event\.target\.closest\('\.header-brand'\)/);assert.match(content,/scrollTo\(\{top:0/);assert.match(content,/if\(editor\)return;/);assert.match(content,/aria-label','Ir al inicio'/);
+});
+
+test('the page appears with its saved design instead of flashing the base design',()=>{
+  const html=fs.readFileSync('index.html','utf8'),site=fs.readFileSync('catalog-site.js','utf8');
+  assert.ok(html.indexOf("classList.add('site-booting')")>0&&html.indexOf("classList.add('site-booting')")<html.indexOf('style.css?v='),'se oculta antes de cargar los estilos');
+  assert.match(html,/setTimeout\(function\(\)\{d\.classList\.remove\('site-booting'\);\},2500\)/);
+  assert.match(site,/byebye-site-cache-v1/);assert.match(site,/if\(cachedText\)refresh\(\);else await refresh\(\);/);assert.match(site,/\}finally\{reveal\(\);\}/);
+});
+
+test('searches are not restored on reload; recent searches are suggested instead, and «Todo» is a showcase',()=>{
+  const script=fs.readFileSync('script.js','utf8'),shop=fs.readFileSync('catalog-shop.js','utf8'),schema=require('../catalog-site-schema.js');
+  assert.doesNotMatch(script,/productSearchQuery = savedCatalog\.search/);assert.equal(schema.defaults().behavior.restoreView,false);
+  assert.match(shop,/byebye-busquedas/);assert.match(shop,/Búsquedas recientes/);
+  const ids=schema.showcaseOrder([{id:1,subcategory:'A'},{id:2,subcategory:'A'},{id:3,subcategory:'B'},{id:4,subcategory:'C'},{id:5,subcategory:'B'}],{categoryOrder:['B','A','C'],hasPhoto:p=>p.id!==5});
+  assert.deepEqual(ids,[3,1,4,2,5]);
+  assert.match(script,/orderByCollection\['todos::\*'\]/);assert.match(fs.readFileSync('admin/settings.js','utf8'),/Mezclar tipos de prenda \(vitrina\)/);
 });

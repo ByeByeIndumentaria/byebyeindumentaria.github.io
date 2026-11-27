@@ -207,3 +207,12 @@ body[data-look="editorial"] #site-header,body[data-look="editorial"] .filters-se
   body[data-look="editorial"] .filters-section{padding:6px 12px 6px}
   html body[data-look="editorial"] .catalog-search-input{min-height:36px}
 }
+/* Foco del buscador y de botones: negro/gris del diseño en lugar del recuadro terracota */
+html body .catalog-search-input:focus,html body .catalog-search-input:focus-visible{outline:none;box-shadow:none;border-color:var(--black)}
+button:focus-visible,a:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline-color:color-mix(in srgb,var(--black) 45%,transparent)}
+.shop-recent-searches{display:flex;flex-wrap:wrap;gap:6px;padding:2px 8px 10px}
+.shop-recent-searches button{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border:1px solid var(--gray-200);border-radius:var(--radius-chip,999px);background:var(--white);color:var(--black);font:inherit;font-size:12px;cursor:pointer}
+.shop-recent-searches button:hover{border-color:var(--black)}
+.shop-suggest-head{display:flex;align-items:center;justify-content:space-between;padding-right:8px}
+.shop-suggest-head .shop-link{font-size:11px}
+body[data-look="editorial"] .shop-suggest,body[data-look="editorial"] .shop-recent-searches button{border-radius:0}

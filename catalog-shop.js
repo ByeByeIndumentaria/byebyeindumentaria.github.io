@@ -12,7 +12,7 @@
   const DEFAULTS={favorites:true,recent:true,gridToggle:true,cardSwipe:true,cardColors:true,searchSuggest:true,newBadge:true,newDays:21,newLabel:'Nuevo',favoritesTitle:'Favoritos',recentTitle:'Vistos recientemente'};
   const cfg=()=>({...DEFAULTS,...(window.CatalogSiteSettings?.shop||{})});
   const editorPreview=new URLSearchParams(location.search).has('site-preview');
-  const KEYS={fav:'byebye-favoritos',recent:'byebye-vistos',view:'byebye-vista-grilla'};
+  const KEYS={fav:'byebye-favoritos',recent:'byebye-vistos',view:'byebye-vista-grilla',searches:'byebye-busquedas'};
   const read=(key,fallback)=>{try{const value=JSON.parse(localStorage.getItem(key)||'null');return value??fallback;}catch{return fallback;}};
   const write=(key,value)=>{try{localStorage.setItem(key,JSON.stringify(value));}catch{}};
   const ids=key=>{const list=read(key,[]);return Array.isArray(list)?list.map(Number).filter(Number.isSafeInteger):[];};
@@ -191,7 +191,10 @@
     const input=document.getElementById('product-search');if(!input||input.dataset.shopSuggest)return;input.dataset.shopSuggest='1';
     const field=input.closest('.catalog-search-field')||input.parentElement,box=make('div','shop-suggest');box.dataset.editId='shop.searchSuggest';box.dataset.editLabel='Sugerencias del buscador';box.hidden=true;box.setAttribute('role','listbox');box.id='shop-suggest';field.append(box);
     input.setAttribute('aria-controls','shop-suggest');input.setAttribute('aria-autocomplete','list');
-    let active=-1;
+    let active=-1,saveTimer=null;
+    const searches=()=>{const list=read(KEYS.searches,[]);return Array.isArray(list)?list.filter(item=>typeof item==='string'&&item.trim()).slice(0,6):[];};
+    const saveSearch=text=>{const value=String(text||'').trim().slice(0,40);if(value.length<2)return;write(KEYS.searches,[value,...searches().filter(item=>norm(item)!==norm(value))].slice(0,6));};
+    const runSearch=text=>{input.value=text;input.dispatchEvent(new Event('input',{bubbles:true}));saveSearch(text);hide();input.blur();document.getElementById('product-grid')?.scrollIntoView({behavior:'smooth',block:'start'});};
     const hide=()=>{box.hidden=true;active=-1;input.setAttribute('aria-expanded','false');};
     function matches(query){
       const q=norm(query);if(q.length<2)return[];const words=q.split(/\s+/).filter(Boolean);
@@ -203,19 +206,22 @@
     function render(){
       if(cfg().searchSuggest===false){hide();return;}
       let list=matches(input.value);box.replaceChildren();active=-1;
-      // Buscador vacío: muestra lo último que miró la clienta.
-      if(!input.value.trim()&&cfg().recent!==false){list=recent.map(productById).filter(Boolean).slice(0,5);if(list.length)box.append(make('p','shop-suggest-title',cfg().recentTitle));}
-      if(!list.length){hide();return;}
+      // Buscador vacío: búsquedas recientes (para tocar y repetir) y lo último que miró la clienta.
+      if(!input.value.trim()){const past=searches();if(past.length){const head=make('div','shop-suggest-head'),clear=make('button','shop-link','Borrar');clear.type='button';clear.addEventListener('pointerdown',event=>event.preventDefault());clear.onclick=()=>{write(KEYS.searches,[]);render();};head.append(make('p','shop-suggest-title','Búsquedas recientes'),clear);const chips=make('div','shop-recent-searches');for(const text of past){const chip=make('button',null,'');chip.type='button';chip.textContent=text;chip.addEventListener('pointerdown',event=>event.preventDefault());chip.onclick=()=>runSearch(text);chips.append(chip);}box.append(head,chips);}
+        if(cfg().recent!==false){list=recent.map(productById).filter(Boolean).slice(0,5);if(list.length)box.append(make('p','shop-suggest-title',cfg().recentTitle));}
+        if(!list.length&&!past.length){hide();return;}if(!list.length){box.hidden=false;input.setAttribute('aria-expanded','true');return;}}
+      else if(!list.length){hide();return;}
       list.forEach((p,index)=>{const item=make('button','shop-suggest-item'),photo=thumbFor(p);item.type='button';item.setAttribute('role','option');item.id=`shop-suggest-${index}`;
         const text=make('span','shop-suggest-text');text.append(make('strong',null,plain(p.name)));
         const detail=[p.orderNumber?`Cód. ${plain(p.orderNumber)}`:'',plain(p.subcategory||'')].filter(Boolean).join(' · ');
         const elsewhere=typeof activeCollection!=='undefined'&&activeCollection!=='todos'&&!(p.collections||[]).includes(activeCollection);
         const collectionName=elsewhere?plain((typeof collections!=='undefined'?collections:[]).find(c=>(p.collections||[]).includes(c.id))?.name||''):'';
         text.append(make('small',null,detail),...(collectionName?[make('em',null,`En ${collectionName}`)]:[]));
-        item.append(photo,text);item.addEventListener('pointerdown',event=>event.preventDefault());item.onclick=()=>{hide();input.blur();openProduct(p);};box.append(item);});
+        item.append(photo,text);item.addEventListener('pointerdown',event=>event.preventDefault());item.onclick=()=>{if(input.value.trim())saveSearch(input.value);hide();input.blur();openProduct(p);};box.append(item);});
       box.hidden=false;input.setAttribute('aria-expanded','true');
     }
-    input.addEventListener('input',render);input.addEventListener('focus',render);input.addEventListener('blur',()=>setTimeout(hide,120));
+    input.addEventListener('input',()=>{render();clearTimeout(saveTimer);saveTimer=setTimeout(()=>{if(matches(input.value).length)saveSearch(input.value);},1500);});
+    input.addEventListener('keydown',event=>{if(event.key==='Enter'&&input.value.trim()){saveSearch(input.value);}});input.addEventListener('focus',render);input.addEventListener('blur',()=>setTimeout(hide,120));
     input.addEventListener('keydown',event=>{if(box.hidden)return;const items=[...box.querySelectorAll('.shop-suggest-item')];
       if(event.key==='ArrowDown'||event.key==='ArrowUp'){event.preventDefault();if(!items.length)return;active=(active+(event.key==='ArrowDown'?1:-1)+items.length)%items.length;items.forEach((item,i)=>item.classList.toggle('active',i===active));input.setAttribute('aria-activedescendant',items[active].id);}
       else if(event.key==='Enter'&&active>=0){event.preventDefault();items[active].click();}

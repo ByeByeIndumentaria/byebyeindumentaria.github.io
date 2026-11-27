@@ -39,7 +39,7 @@ test('the "Nuevo" label uses the date a product was first published, and duplica
 });
 
 test('with "stock first" the whole catalog shows every in-stock product before any out-of-stock one',()=>{
-  const script=fs.readFileSync('script.js','utf8'),start=script.indexOf('}).sort((a, b) => {'),body=script.slice(start,script.indexOf('\n}\n',start));
+  const script=fs.readFileSync('script.js','utf8'),start=script.indexOf('return filteredList.sort((a, b) => {'),body=script.slice(start,script.indexOf('\n}\n',start));
   assert.ok(body.indexOf('stockDifference')>0&&body.indexOf('stockDifference')<body.indexOf('groupDifference'),'stock must be compared before the category groups');
   const settings=fs.readFileSync('admin/settings.js','utf8');
   assert.match(settings,/Primero todas las prendas con stock/);

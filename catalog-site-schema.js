@@ -36,7 +36,7 @@
       filtersPanel:{sideDesktop:'left',sideMobile:'bottom',width:440,mobileHeight:55,title:'Explorar catálogo',eyebrow:'BYE BYE',showEyebrow:true,groups:['collections','genders','categories'],hiddenGroups:[],allCategoriesLabel:'Todas las prendas',showFooterDesktop:false,showFooterMobile:true,optionStyle:'list',extraFilters:{color:false,size:false,packing:false,availability:false}},
       collectionsConfig:{initial:'verano-2027',rememberLast:true,showAll:false,allLabel:'Todo el catálogo',showTabs:false,preorderDates:{}},
       categories:clone(categories),
-      grid:{desktopColumns:4,tabletColumns:3,mobileColumns:1,compactCards:false,stockFirst:true,gapX:24,gapY:32,gapMobile:22,imageRatio:'3/4',imageFit:'cover',hover:'lift',maxItems:0,customerSort:false,customerSortDefault:'featured',sortFeatured:true,sortName:true,sortCode:true,sortStock:true,productOrder:products.map(product=>Number(product.id)),orderByCollection:{},endOrder:[{type:'audience',value:'NINOS'},{type:'collection',value:'deportivo'},{type:'collection',value:'accesorios'}]},
+      grid:{desktopColumns:4,tabletColumns:3,mobileColumns:1,compactCards:false,stockFirst:true,gapX:24,gapY:32,gapMobile:22,imageRatio:'3/4',imageFit:'cover',hover:'lift',maxItems:0,customerSort:false,customerSortDefault:'featured',sortFeatured:true,sortName:true,sortCode:true,sortStock:true,productOrder:products.map(product=>Number(product.id)),orderByCollection:{},endOrder:[{type:'audience',value:'NINOS'},{type:'collection',value:'deportivo'},{type:'collection',value:'accesorios'}],allMixed:true},
       card:{showGender:true,showPreorder:true,showStock:true,showCategory:true,showName:true,showCode:true,showAdd:true,addAlwaysVisible:false,textAlign:'left',outOfStockOpacity:58,infoOrder:['category','name','code']},
       productModal:{mediaSide:'left',mobileMode:'stack',imageRatio:'3/4',desktopFit:'cover',mobileFit:'contain',showArrows:true,showDots:true,showThumbnails:false,showZoom:true,zoomLevel:2.25,showGender:true,showCategory:true,showPdf:true,showShare:false,parts:['collection','title','code','price','description','video','notice','colors','sizes','curve','related','share','pdf','add'],hiddenParts:[],curveColumns:['color','stock','curve','pieces'],hiddenCurveColumns:[],curveLabels:{color:'Color',stock:'Stock',curve:'Curva de talles',pieces:'Piezas'},curveFormat:'inline',curveSeparator:' - ',showCurveSummary:true,availableLabel:'Disponible',unavailableLabel:'Agotado'},
       pricing:{visible:false,currency:'$',decimals:0,showOnCards:true,showInModal:true},
@@ -60,7 +60,7 @@
       footer:{visible:true,brand:'BYE BYE',text:'Catálogo mayorista · Pedidos y cotizaciones por WhatsApp',showBack:true,showAdmin:true,background:'#302219',textColor:'#dfe6c5',links:[]},
       texts:clone(DEFAULT_TEXTS),
       features:{announcementBar:false,collectionTabs:false,floatingWhatsapp:false,productSharing:false,extraFilters:false,customerSort:false,relatedProducts:false,maintenance:false},
-      behavior:{refreshSeconds:10,rememberFilters:true,rememberCart:true,smoothScroll:true},
+      behavior:{refreshSeconds:10,rememberFilters:true,rememberCart:true,smoothScroll:true,restoreView:false},
       responsive:{},themes:[]
     };
   }
@@ -85,5 +85,16 @@
     return migrateV1(source,context);
   }
   function text(settings,key,vars={}){let value=settings?.texts?.[key]??DEFAULT_TEXTS[key]??key;for(const [name,replacement] of Object.entries(vars))value=String(value).replaceAll(`{${name}}`,String(replacement));return value;}
-  const api={DEFAULT_TEXTS,defaults,migrate,merge,text,clone};root.CatalogSiteSchema=api;if(typeof module!=='undefined')module.exports=api;
+  // «Todo el catálogo» como vitrina: alterna tipos de prenda (una de cada tipo por vuelta, en el orden de categorías),
+  // respeta el orden propio de cada tipo y deja al final las prendas sin foto. Devuelve los ids en orden.
+  function showcaseOrder(list,{categoryOrder=[],typeOf=p=>p.subcategory||'',hasPhoto=()=>true,baseRank=()=>0}={}){
+    const groups=new Map();for(const p of list){const type=String(typeOf(p)||'');if(!groups.has(type))groups.set(type,[]);groups.get(type).push(p);}
+    const position=new Map(categoryOrder.map((name,index)=>[name,index]));
+    const types=[...groups.keys()].sort((a,b)=>(position.get(a)??9999)-(position.get(b)??9999)||a.localeCompare(b,'es'));
+    for(const type of types)groups.get(type).sort((a,b)=>baseRank(a)-baseRank(b)||Number(a.id)-Number(b.id));
+    const withPhoto=new Map(types.map(type=>[type,groups.get(type).filter(hasPhoto)])),without=types.flatMap(type=>groups.get(type).filter(p=>!hasPhoto(p)));
+    const out=[];let added=true;for(let round=0;added;round++){added=false;for(const type of types){const item=withPhoto.get(type)[round];if(item){out.push(Number(item.id));added=true;}}}
+    return [...out,...without.map(p=>Number(p.id))];
+  }
+  const api={DEFAULT_TEXTS,defaults,migrate,merge,text,clone,showcaseOrder};root.CatalogSiteSchema=api;if(typeof module!=='undefined')module.exports=api;
 })(typeof window==='undefined'?globalThis:window);

@@ -125,6 +125,15 @@
     baseOrder(panel);
   };
 
+  /* «Todo el catálogo» en Orden: mostrar lo que va «al final» (Niños, Deportivo, Accesorios…) también al final, como en el catálogo. */
+  const baseOrderedIds=orderedProductIds;
+  orderedProductIds=function(collectionId=orderCollectionId,category=orderCategory){
+    const ids=baseOrderedIds(collectionId,category);if(String(collectionId)!=='todos')return ids;
+    const rules=Array.isArray(settings.grid?.endOrder)?settings.grid.endOrder:[],byId=new Map(products.map(product=>[Number(product.id),product]));
+    const tier=id=>{const product=byId.get(Number(id));if(!product)return 0;const memberships=productCollectionIds(product);for(const [index,rule] of rules.entries()){if(rule?.type==='audience'&&product.category===rule.value)return index+1;if(rule?.type==='collection'&&memberships.length&&memberships.every(item=>item===rule.value))return index+1;}return 0;};
+    return ids.map((id,index)=>[id,index]).sort((a,b)=>tier(a[0])-tier(b[0])||a[1]-b[1]).map(([id])=>id);
+  };
+
   /* ——— Capas y vista previa ——— */
   const baseLayers=renderLayers;
   renderLayers=function(panel){baseLayers(panel);const tree=panel.querySelector('.layer-tree');if(!tree||tree.querySelector('[data-content-layer]'))return;let after=[...tree.querySelectorAll('.layer-item')].find(item=>/Datos de las prendas/.test(item.textContent||''));
